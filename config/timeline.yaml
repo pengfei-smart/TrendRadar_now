@@ -145,7 +145,7 @@ presets:
       3: "all_day"                 # 周三
       4: "all_day"                 # 周四
       5: "all_day"                 # 周五
-      6: "all_day"                 # 周六
+      6: "periods"                 # 周六
       7: "all_day"                 # 周日
 
 
@@ -400,20 +400,20 @@ custom:
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   default:
     collect: true                  # 是否采集数据（爬取热榜 + RSS）
-    analyze: false                 # 是否执行 AI 分析
-    ai_mode: "current"            # AI 分析模式:
+    analyze: true                 # 是否执行 AI 分析
+    ai_mode: "incremental"            # AI 分析模式:
                                    #   follow_report → 跟随 report_mode
                                    #   daily         → 强制全天汇总
                                    #   current       → 强制当前榜单
                                    #   incremental   → 强制增量模式
-    push: false                    # 是否发送推送通知
-    report_mode: "current"         # 报告模式:
+    push: true                    # 是否发送推送通知
+    report_mode: "incremental"         # 报告模式:
                                    #   daily       → 当日所有新闻的汇总
                                    #   current     → 当前在榜的新闻
                                    #   incremental → 只推送新增内容
     once:
-      analyze: true                # 该时间段内只分析一次（省 API）
-      push: true                   # 该时间段内只推送一次（省打扰）
+      analyze: false                # 该时间段内只分析一次（省 API）
+      push: false                   # 该时间段内只推送一次（省打扰）
 
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -433,15 +433,15 @@ custom:
     deep_quiet:
       name: "深夜静默"
       start: "23:00"
-      end: "06:00"                 # 23:00 → 次日 06:00（跨日时间段）
+      end: "05:00"                 # 23:00 → 次日 06:00（跨日时间段）
       collect: true                # 夜间继续采集数据
       analyze: true                # 夜间可以跑 AI 分析（反正不推送）
       push: false                  # 深夜不推送，避免打扰
 
     weekday_morning:
       name: "工作日早间"
-      start: "08:00"
-      end: "10:00"                 # 跨度 2h，留足触发裕量
+      start: "07:00"
+      end: "17:00"                 # 跨度 2h，留足触发裕量
       push: true                   # 早上推送一次
       report_mode: "incremental"   # 只推新增内容
       # once 继承 default（push: true）→ 窗口内只推一次
@@ -457,7 +457,7 @@ custom:
     evening_summary:
       name: "晚间汇总"
       start: "19:00"
-      end: "21:00"
+      end: "22:00"
       analyze: true                # 晚间做 AI 分析
       ai_mode: "daily"             # AI 也分析全天内容
       push: true                   # 晚间推送
