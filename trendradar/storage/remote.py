@@ -31,6 +31,7 @@ except ImportError:
 from trendradar.storage.base import StorageBackend, NewsItem, NewsData, RSSItem, RSSData
 from trendradar.storage.sqlite_mixin import SQLiteStorageMixin
 from trendradar.utils.time import (
+    DEFAULT_TIMEZONE,
     get_configured_time,
     format_date_folder,
     format_time_filename,
@@ -60,7 +61,7 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
         enable_txt: bool = False,  # 远程模式默认不生成 TXT
         enable_html: bool = True,
         temp_dir: Optional[str] = None,
-        timezone: str = "Asia/Shanghai",
+        timezone: str = DEFAULT_TIMEZONE,
     ):
         """
         初始化远程存储后端
@@ -74,7 +75,7 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
             enable_txt: 是否启用 TXT 快照（默认关闭）
             enable_html: 是否启用 HTML 报告
             temp_dir: 临时目录路径（默认使用系统临时目录）
-            timezone: 时区配置（默认 Asia/Shanghai）
+            timezone: 时区配置
         """
         if not HAS_BOTO3:
             raise ImportError("远程存储后端需要安装 boto3: pip install boto3")
@@ -393,46 +394,28 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
         """检查是否是当天第一次抓取"""
         return self._is_first_crawl_today_impl(date)
 
-    def has_pushed_today(self, date: Optional[str] = None) -> bool:
-        """检查指定日期是否已推送过"""
-        return self._has_pushed_today_impl(date)
+    # ========================================
+    # 时间段执行记录（调度系统）
+    # ========================================
 
-    def record_push(self, report_type: str, date: Optional[str] = None) -> bool:
-        """记录推送"""
-        success = self._record_push_impl(report_type, date)
+    def has_period_executed(self, date_str: str, period_key: str, action: str) -> bool:
+        """检查指定时间段的某个 action 是否已执行"""
+        return self._has_period_executed_impl(date_str, period_key, action)
 
-        if success:
-            now_str = self._get_configured_time().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[远程存储] 推送记录已保存: {report_type} at {now_str}")
-
-            # 上传到远程存储 确保记录持久化
-            if self._upload_sqlite(date):
-                print(f"[远程存储] 推送记录已同步到远程存储")
-                return True
-            else:
-                print(f"[远程存储] 推送记录同步到远程存储失败")
-                return False
-
-        return False
-
-    def has_ai_analyzed_today(self, date: Optional[str] = None) -> bool:
-        """检查指定日期是否已进行过 AI 分析"""
-        return self._has_ai_analyzed_today_impl(date)
-
-    def record_ai_analysis(self, analysis_mode: str, date: Optional[str] = None) -> bool:
-        """记录 AI 分析"""
-        success = self._record_ai_analysis_impl(analysis_mode, date)
+    def record_period_execution(self, date_str: str, period_key: str, action: str) -> bool:
+        """记录时间段的 action 执行"""
+        success = self._record_period_execution_impl(date_str, period_key, action)
 
         if success:
             now_str = self._get_configured_time().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[远程存储] AI 分析记录已保存: {analysis_mode} at {now_str}")
+            print(f"[远程存储] 时间段执行记录已保存: {period_key}/{action} at {now_str}")
 
-            # 上传到远程存储 确保记录持久化
-            if self._upload_sqlite(date):
-                print(f"[远程存储] AI 分析记录已同步到远程存储")
+            # 上传到远程存储确保记录持久化
+            if self._upload_sqlite(date_str):
+                print(f"[远程存储] 时间段执行记录已同步到远程存储")
                 return True
             else:
-                print(f"[远程存储] AI 分析记录同步到远程存储失败")
+                print(f"[远程存储] 时间段执行记录同步到远程存储失败")
                 return False
 
         return False

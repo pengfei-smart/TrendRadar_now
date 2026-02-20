@@ -16,6 +16,7 @@ from typing import Dict, List, Optional
 from trendradar.storage.base import StorageBackend, NewsItem, NewsData, RSSItem, RSSData
 from trendradar.storage.sqlite_mixin import SQLiteStorageMixin
 from trendradar.utils.time import (
+    DEFAULT_TIMEZONE,
     get_configured_time,
     format_date_folder,
     format_time_filename,
@@ -37,7 +38,7 @@ class LocalStorageBackend(SQLiteStorageMixin, StorageBackend):
         data_dir: str = "output",
         enable_txt: bool = True,
         enable_html: bool = True,
-        timezone: str = "Asia/Shanghai",
+        timezone: str = DEFAULT_TIMEZONE,
     ):
         """
         初始化本地存储后端
@@ -46,7 +47,7 @@ class LocalStorageBackend(SQLiteStorageMixin, StorageBackend):
             data_dir: 数据目录路径
             enable_txt: 是否启用 TXT 快照
             enable_html: 是否启用 HTML 报告
-            timezone: 时区配置（默认 Asia/Shanghai）
+            timezone: 时区配置
         """
         self.data_dir = Path(data_dir)
         self.enable_txt = enable_txt
@@ -178,28 +179,20 @@ class LocalStorageBackend(SQLiteStorageMixin, StorageBackend):
             return []
         return self._get_crawl_times_impl(date)
 
-    def has_pushed_today(self, date: Optional[str] = None) -> bool:
-        """检查指定日期是否已推送过"""
-        return self._has_pushed_today_impl(date)
+    # ========================================
+    # 时间段执行记录（调度系统）
+    # ========================================
 
-    def record_push(self, report_type: str, date: Optional[str] = None) -> bool:
-        """记录推送"""
-        success = self._record_push_impl(report_type, date)
+    def has_period_executed(self, date_str: str, period_key: str, action: str) -> bool:
+        """检查指定时间段的某个 action 是否已执行"""
+        return self._has_period_executed_impl(date_str, period_key, action)
+
+    def record_period_execution(self, date_str: str, period_key: str, action: str) -> bool:
+        """记录时间段的 action 执行"""
+        success = self._record_period_execution_impl(date_str, period_key, action)
         if success:
             now_str = self._get_configured_time().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[本地存储] 推送记录已保存: {report_type} at {now_str}")
-        return success
-
-    def has_ai_analyzed_today(self, date: Optional[str] = None) -> bool:
-        """检查指定日期是否已进行过 AI 分析"""
-        return self._has_ai_analyzed_today_impl(date)
-
-    def record_ai_analysis(self, analysis_mode: str, date: Optional[str] = None) -> bool:
-        """记录 AI 分析"""
-        success = self._record_ai_analysis_impl(analysis_mode, date)
-        if success:
-            now_str = self._get_configured_time().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[本地存储] AI 分析记录已保存: {analysis_mode} at {now_str}")
+            print(f"[本地存储] 时间段执行记录已保存: {period_key}/{action} at {now_str}")
         return success
 
     # ========================================

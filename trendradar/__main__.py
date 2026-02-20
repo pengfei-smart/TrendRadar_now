@@ -6,6 +6,7 @@ TrendRadar 主程序
 支持: python -m trendradar
 """
 
+import argparse
 import os
 import re
 import webbrowser
@@ -20,8 +21,9 @@ from trendradar.core import load_config
 from trendradar.core.analyzer import convert_keyword_stats_to_platform_stats
 from trendradar.crawler import DataFetcher
 from trendradar.storage import convert_crawl_results_to_news_data
-from trendradar.utils.time import is_within_days
+from trendradar.utils.time import DEFAULT_TIMEZONE, is_within_days, calculate_days_old
 from trendradar.ai import AIAnalyzer, AIAnalysisResult
+from trendradar.core.scheduler import ResolvedSchedule
 
 
 def _parse_version(version_str: str) -> Tuple[int, int, int]:
@@ -213,7 +215,7 @@ class NewsAnalyzer:
             config = load_config()
         print(f"TrendRadar v{__version__} 配置加载完成")
         print(f"监控平台数量: {len(config['PLATFORMS'])}")
-        print(f"时区: {config.get('TIMEZONE', 'Asia/Shanghai')}")
+        print(f"时区: {config.get('TIMEZONE', DEFAULT_TIMEZONE)}")
 
         # 创建应用上下文
         self.ctx = AppContext(config)
@@ -451,33 +453,27 @@ class NewsAnalyzer:
         report_type: str,
         id_to_name: Optional[Dict],
         current_results: Optional[Dict] = None,
+        schedule: ResolvedSchedule = None,
+        standalone_data: Optional[Dict] = None,
     ) -> Optional[AIAnalysisResult]:
         """执行 AI 分析"""
         analysis_config = self.ctx.config.get("AI_ANALYSIS", {})
         if not analysis_config.get("ENABLED", False):
             return None
 
-        # AI 分析时间窗口控制
-        analysis_window = analysis_config.get("ANALYSIS_WINDOW", {})
-        if analysis_window.get("ENABLED", False):
-            push_manager = self.ctx.create_push_manager()
-            time_range_start = analysis_window["TIME_RANGE"]["START"]
-            time_range_end = analysis_window["TIME_RANGE"]["END"]
+        # 调度系统决策
+        if not schedule.analyze:
+            print("[AI] 调度器: 当前时间段不执行 AI 分析")
+            return None
 
-            if not push_manager.is_in_time_range(time_range_start, time_range_end):
-                now = self.ctx.get_time()
-                print(
-                    f"[AI] 分析窗口控制：当前时间 {now.strftime('%H:%M')} 不在分析时间窗口 {time_range_start}-{time_range_end} 内，跳过 AI 分析"
-                )
+        if schedule.once_analyze and schedule.period_key:
+            scheduler = self.ctx.create_scheduler()
+            date_str = self.ctx.format_date()
+            if scheduler.already_executed(schedule.period_key, "analyze", date_str):
+                print(f"[AI] 调度器: 时间段 {schedule.period_name or schedule.period_key} 今天已分析过，跳过")
                 return None
-
-            if analysis_window.get("ONCE_PER_DAY", False):
-                # 检查今天是否已经进行过 AI 分析
-                if push_manager.storage_backend.has_ai_analyzed_today():
-                    print(f"[AI] 分析窗口控制：今天已分析过，跳过本次 AI 分析")
-                    return None
-                else:
-                    print(f"[AI] 分析窗口控制：今天首次分析")
+            else:
+                print(f"[AI] 调度器: 时间段 {schedule.period_name or schedule.period_key} 今天首次分析")
 
         print("[AI] 正在进行 AI 分析...")
         try:
@@ -542,6 +538,7 @@ class NewsAnalyzer:
                 report_type=ai_report_type,
                 platforms=platforms,
                 keywords=keywords,
+                standalone_data=standalone_data,
             )
 
             # 设置 AI 分析使用的模式
@@ -553,10 +550,11 @@ class NewsAnalyzer:
                 else:
                     print("[AI] 分析完成")
 
-                # 记录 AI 分析（如果启用了 once_per_day）
-                if analysis_window.get("ENABLED", False) and analysis_window.get("ONCE_PER_DAY", False):
-                    push_manager = self.ctx.create_push_manager()
-                    push_manager.storage_backend.record_ai_analysis(ai_mode)
+                # 记录 AI 分析
+                if schedule.once_analyze and schedule.period_key:
+                    scheduler = self.ctx.create_scheduler()
+                    date_str = self.ctx.format_date()
+                    scheduler.record_execution(schedule.period_key, "analyze", date_str)
             else:
                 print(f"[AI] 分析失败: {result.error}")
 
@@ -644,6 +642,12 @@ class NewsAnalyzer:
         """
         从原始数据中提取独立展示区数据
 
+        纯数据准备方法，不检查 display.regions.standalone 开关。
+        各消费者自行决定是否使用：
+        - AI 分析：由 ai.include_standalone 控制
+        - 通知推送：由 display.regions.standalone 控制（在 dispatcher 层门控）
+        - HTML 报告：始终包含（如果有数据）
+
         Args:
             results: 原始爬取结果 {platform_id: {title: title_data}}
             id_to_name: 平台 ID 到名称的映射
@@ -651,14 +655,10 @@ class NewsAnalyzer:
             rss_items: RSS 条目列表
 
         Returns:
-            独立展示数据字典，如果未启用返回 None
+            独立展示数据字典，如果未配置数据源返回 None
         """
         display_config = self.ctx.config.get("DISPLAY", {})
-        regions = display_config.get("REGIONS", {})
         standalone_config = display_config.get("STANDALONE", {})
-
-        if not regions.get("STANDALONE", False):
-            return None
 
         platform_ids = standalone_config.get("PLATFORMS", [])
         rss_feed_ids = standalone_config.get("RSS_FEEDS", [])
@@ -725,6 +725,7 @@ class NewsAnalyzer:
                     "first_time": meta.get("first_time", ""),
                     "last_time": meta.get("last_time", ""),
                     "count": meta.get("count", 1),
+                    "rank_timeline": meta.get("rank_timeline", []),
                 }
                 items.append(item)
 
@@ -796,6 +797,7 @@ class NewsAnalyzer:
         rss_items: Optional[List[Dict]] = None,
         rss_new_items: Optional[List[Dict]] = None,
         standalone_data: Optional[Dict] = None,
+        schedule: ResolvedSchedule = None,
     ) -> Tuple[List[Dict], Optional[str], Optional[AIAnalysisResult]]:
         """统一的分析流水线：数据处理 → 统计计算 → AI分析 → HTML生成"""
 
@@ -828,7 +830,9 @@ class NewsAnalyzer:
             mode_strategy = self._get_mode_strategy()
             report_type = mode_strategy["report_type"]
             ai_result = self._run_ai_analysis(
-                stats, rss_items, mode, report_type, id_to_name, current_results=data_source
+                stats, rss_items, mode, report_type, id_to_name,
+                current_results=data_source, schedule=schedule,
+                standalone_data=standalone_data
             )
 
         # HTML生成（如果启用）
@@ -864,6 +868,7 @@ class NewsAnalyzer:
         standalone_data: Optional[Dict] = None,
         ai_result: Optional[AIAnalysisResult] = None,
         current_results: Optional[Dict] = None,
+        schedule: ResolvedSchedule = None,
     ) -> bool:
         """统一的通知发送逻辑，包含所有判断条件，支持热榜+RSS合并推送+AI分析+独立展示区"""
         has_notification = self._has_notification_configured()
@@ -876,7 +881,6 @@ class NewsAnalyzer:
 
         # 计算热榜匹配条数
         news_count = sum(len(stat.get("titles", [])) for stat in stats) if stats else 0
-        # rss_items 是统计列表 [{"word": "xx", "count": 5, ...}]，需累加 count
         rss_count = sum(stat.get("count", 0) for stat in rss_items) if rss_items else 0
 
         if (
@@ -893,32 +897,27 @@ class NewsAnalyzer:
             total_count = news_count + rss_count
             print(f"[推送] 准备发送：{' + '.join(content_parts)}，合计 {total_count} 条")
 
-            # 推送窗口控制
-            if cfg["PUSH_WINDOW"]["ENABLED"]:
-                push_manager = self.ctx.create_push_manager()
-                time_range_start = cfg["PUSH_WINDOW"]["TIME_RANGE"]["START"]
-                time_range_end = cfg["PUSH_WINDOW"]["TIME_RANGE"]["END"]
+            # 调度系统决策
+            if not schedule.push:
+                print("[推送] 调度器: 当前时间段不执行推送")
+                return False
 
-                if not push_manager.is_in_time_range(time_range_start, time_range_end):
-                    now = self.ctx.get_time()
-                    print(
-                        f"推送窗口控制：当前时间 {now.strftime('%H:%M')} 不在推送时间窗口 {time_range_start}-{time_range_end} 内，跳过推送"
-                    )
+            if schedule.once_push and schedule.period_key:
+                scheduler = self.ctx.create_scheduler()
+                date_str = self.ctx.format_date()
+                if scheduler.already_executed(schedule.period_key, "push", date_str):
+                    print(f"[推送] 调度器: 时间段 {schedule.period_name or schedule.period_key} 今天已推送过，跳过")
                     return False
-
-                if cfg["PUSH_WINDOW"]["ONCE_PER_DAY"]:
-                    if push_manager.has_pushed_today():
-                        print(f"推送窗口控制：今天已推送过，跳过本次推送")
-                        return False
-                    else:
-                        print(f"推送窗口控制：今天首次推送")
+                else:
+                    print(f"[推送] 调度器: 时间段 {schedule.period_name or schedule.period_key} 今天首次推送")
 
             # AI 分析：优先使用传入的结果，避免重复分析
             if ai_result is None:
                 ai_config = cfg.get("AI_ANALYSIS", {})
                 if ai_config.get("ENABLED", False):
                     ai_result = self._run_ai_analysis(
-                        stats, rss_items, mode, report_type, id_to_name, current_results=current_results
+                        stats, rss_items, mode, report_type, id_to_name,
+                        current_results=current_results, schedule=schedule
                     )
 
             # 准备报告数据
@@ -927,7 +926,7 @@ class NewsAnalyzer:
             # 是否发送版本更新信息
             update_info_to_send = self.update_info if cfg["SHOW_VERSION_UPDATE"] else None
 
-            # 使用 NotificationDispatcher 发送到所有渠道（合并热榜+RSS+AI分析+独立展示区）
+            # 使用 NotificationDispatcher 发送到所有渠道
             dispatcher = self.ctx.create_notification_dispatcher()
             results = dispatcher.dispatch_all(
                 report_data=report_data,
@@ -946,14 +945,12 @@ class NewsAnalyzer:
                 print("未配置任何通知渠道，跳过通知发送")
                 return False
 
-            # 如果成功发送了任何通知，且启用了每天只推一次，则记录推送
-            if (
-                cfg["PUSH_WINDOW"]["ENABLED"]
-                and cfg["PUSH_WINDOW"]["ONCE_PER_DAY"]
-                and any(results.values())
-            ):
-                push_manager = self.ctx.create_push_manager()
-                push_manager.record_push(report_type)
+            # 记录推送成功
+            if any(results.values()):
+                if schedule.once_push and schedule.period_key:
+                    scheduler = self.ctx.create_scheduler()
+                    date_str = self.ctx.format_date()
+                    scheduler.record_execution(schedule.period_key, "push", date_str)
 
             return True
 
@@ -1035,11 +1032,6 @@ class NewsAnalyzer:
         if txt_file:
             print(f"TXT 快照已保存: {txt_file}")
 
-        # 兼容：同时保存到原有 TXT 格式（确保向后兼容）
-        if self.ctx.config["STORAGE"]["FORMATS"]["TXT"]:
-            title_file = self.ctx.save_titles(results, id_to_name, failed_ids)
-            print(f"标题已保存到: {title_file}")
-
         return results, id_to_name, failed_ids
 
     def _crawl_rss_data(self) -> Tuple[Optional[List[Dict]], Optional[List[Dict]], Optional[List[Dict]]]:
@@ -1102,7 +1094,7 @@ class NewsAnalyzer:
             # RSS 代理：优先使用 RSS 专属代理，否则使用爬虫默认代理
             rss_proxy_url = rss_config.get("PROXY_URL", "") or self.proxy_url or ""
             # 获取配置的时区
-            timezone = self.ctx.config.get("TIMEZONE", "Asia/Shanghai")
+            timezone = self.ctx.config.get("TIMEZONE", DEFAULT_TIMEZONE)
             # 获取新鲜度过滤配置
             freshness_config = rss_config.get("FRESHNESS_FILTER", {})
             freshness_enabled = freshness_config.get("ENABLED", True)
@@ -1312,13 +1304,15 @@ class NewsAnalyzer:
         """将 RSS 条目字典转换为列表格式，并应用新鲜度过滤（用于推送）"""
         rss_items = []
         filtered_count = 0
+        filtered_details = []  # 用于 DEBUG 模式下的详细日志
 
         # 获取新鲜度过滤配置
         rss_config = self.ctx.rss_config
         freshness_config = rss_config.get("FRESHNESS_FILTER", {})
         freshness_enabled = freshness_config.get("ENABLED", True)
         default_max_age_days = freshness_config.get("MAX_AGE_DAYS", 3)
-        timezone = self.ctx.config.get("TIMEZONE", "Asia/Shanghai")
+        timezone = self.ctx.config.get("TIMEZONE", DEFAULT_TIMEZONE)
+        debug_mode = self.ctx.config.get("DEBUG", False)
 
         # 构建 feed_id -> max_age_days 的映射
         feed_max_age_map = {}
@@ -1342,6 +1336,16 @@ class NewsAnalyzer:
                 if freshness_enabled and max_days > 0:
                     if item.published_at and not is_within_days(item.published_at, max_days, timezone):
                         filtered_count += 1
+                        # 记录详细信息用于 DEBUG 模式
+                        if debug_mode:
+                            days_old = calculate_days_old(item.published_at, timezone)
+                            feed_name = id_to_name.get(feed_id, feed_id)
+                            filtered_details.append({
+                                "title": item.title[:50] + "..." if len(item.title) > 50 else item.title,
+                                "feed": feed_name,
+                                "days_old": days_old,
+                                "max_days": max_days,
+                            })
                         continue  # 跳过超过指定天数的文章
 
                 rss_items.append({
@@ -1357,6 +1361,14 @@ class NewsAnalyzer:
         # 输出过滤统计
         if filtered_count > 0:
             print(f"[RSS] 新鲜度过滤：跳过 {filtered_count} 篇超过指定天数的旧文章（仍保留在数据库中）")
+            # DEBUG 模式下显示详细信息
+            if debug_mode and filtered_details:
+                print(f"[RSS] 被过滤的文章详情（共 {len(filtered_details)} 篇）：")
+                for detail in filtered_details[:10]:  # 最多显示 10 条
+                    days_str = f"{detail['days_old']:.1f}" if detail['days_old'] else "未知"
+                    print(f"  - [{days_str}天前] [{detail['feed']}] {detail['title']} (限制: {detail['max_days']}天)")
+                if len(filtered_details) > 10:
+                    print(f"  ... 还有 {len(filtered_details) - 10} 篇被过滤")
 
         return rss_items
 
@@ -1426,13 +1438,25 @@ class NewsAnalyzer:
         - 每次运行都生成 HTML 报告（时间戳快照 + latest/{mode}.html + index.html）
         - 根据模式发送通知
         """
+        # 调度系统
+        scheduler = self.ctx.create_scheduler()
+        schedule = scheduler.resolve()
+
+        # 使用 schedule 决定的 report_mode 覆盖全局配置
+        effective_mode = schedule.report_mode
+        if effective_mode != self.report_mode:
+            print(f"[调度] 报告模式覆盖: {self.report_mode} -> {effective_mode}")
+        self.report_mode = effective_mode
+
+        # 如果调度器说不采集，则直接跳过
+        if not schedule.collect:
+            print("[调度] 当前时间段不执行数据采集，跳过分析流水线")
+            return None
         # 获取当前监控平台ID列表
         current_platform_ids = self.ctx.platform_ids
 
         new_titles = self.ctx.detect_new_titles(current_platform_ids)
         time_info = self.ctx.format_time()
-        if self.ctx.config["STORAGE"]["FORMATS"]["TXT"]:
-            self.ctx.save_titles(results, id_to_name, failed_ids)
         word_groups, filter_words, global_filters = self.ctx.load_frequency_words()
 
         html_file = None
@@ -1476,6 +1500,7 @@ class NewsAnalyzer:
                     rss_items=rss_items,
                     rss_new_items=rss_new_items,
                     standalone_data=standalone_data,
+                    schedule=schedule,
                 )
 
                 combined_id_to_name = {**historical_id_to_name, **id_to_name}
@@ -1518,6 +1543,7 @@ class NewsAnalyzer:
                     rss_items=rss_items,
                     rss_new_items=rss_new_items,
                     standalone_data=standalone_data,
+                    schedule=schedule,
                 )
 
                 combined_id_to_name = {**historical_id_to_name, **id_to_name}
@@ -1544,6 +1570,7 @@ class NewsAnalyzer:
                     rss_items=rss_items,
                     rss_new_items=rss_new_items,
                     standalone_data=standalone_data,
+                    schedule=schedule,
                 )
         else:
             # incremental 模式：只使用当前抓取的数据
@@ -1564,6 +1591,7 @@ class NewsAnalyzer:
                 rss_items=rss_items,
                 rss_new_items=rss_new_items,
                 standalone_data=standalone_data,
+                schedule=schedule,
             )
 
         if html_file:
@@ -1588,6 +1616,7 @@ class NewsAnalyzer:
                 standalone_data=standalone_data,
                 ai_result=ai_result,
                 current_results=results,
+                schedule=schedule,
             )
 
         # 打开浏览器（仅在非容器环境）
@@ -1631,10 +1660,37 @@ class NewsAnalyzer:
 
 def main():
     """主程序入口"""
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(
+        description="TrendRadar - 热点新闻聚合与分析工具",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+调度状态命令:
+  --show-schedule        显示当前调度状态（时间段、行为开关）
+
+示例:
+  python -m trendradar                    # 正常运行
+  python -m trendradar --show-schedule    # 查看当前调度状态
+"""
+    )
+    parser.add_argument(
+        "--show-schedule",
+        action="store_true",
+        help="显示当前调度状态"
+    )
+
+    args = parser.parse_args()
+
     debug_mode = False
     try:
-        # 先加载配置以获取 version_check_url
+        # 先加载配置
         config = load_config()
+
+        # 处理状态查看命令
+        if args.show_schedule:
+            _handle_status_commands(config, args)
+            return
+
         version_url = config.get("VERSION_CHECK_URL", "")
         configs_version_url = config.get("CONFIGS_VERSION_CHECK_URL", "")
 
@@ -1667,6 +1723,62 @@ def main():
         print(f"❌ 程序运行错误: {e}")
         if debug_mode:
             raise
+
+
+def _handle_status_commands(config: Dict, args) -> None:
+    """处理状态查看命令 - 显示当前调度状态"""
+    from trendradar.context import AppContext
+
+    ctx = AppContext(config)
+
+    print("=" * 60)
+    print(f"TrendRadar v{__version__} 调度状态")
+    print("=" * 60)
+
+    try:
+        scheduler = ctx.create_scheduler()
+        schedule = scheduler.resolve()
+
+        now = ctx.get_time()
+        date_str = ctx.format_date()
+
+        print(f"\n⏰ 当前时间: {now.strftime('%Y-%m-%d %H:%M:%S')} ({ctx.timezone})")
+        print(f"📅 当前日期: {date_str}")
+
+        print(f"\n📋 调度信息:")
+        print(f"  日计划: {schedule.day_plan}")
+        if schedule.period_key:
+            print(f"  当前时间段: {schedule.period_name or schedule.period_key} ({schedule.period_key})")
+        else:
+            print(f"  当前时间段: 无（使用默认配置）")
+
+        print(f"\n🔧 行为开关:")
+        print(f"  采集数据: {'✅ 是' if schedule.collect else '❌ 否'}")
+        print(f"  AI 分析:  {'✅ 是' if schedule.analyze else '❌ 否'}")
+        print(f"  推送通知: {'✅ 是' if schedule.push else '❌ 否'}")
+        print(f"  报告模式: {schedule.report_mode}")
+        print(f"  AI 模式:  {schedule.ai_mode}")
+
+        if schedule.period_key:
+            print(f"\n🔁 一次性控制:")
+            if schedule.once_analyze:
+                already_analyzed = scheduler.already_executed(schedule.period_key, "analyze", date_str)
+                print(f"  AI 分析:  仅一次 {'(今日已执行 ⚠️)' if already_analyzed else '(今日未执行 ✅)'}")
+            else:
+                print(f"  AI 分析:  不限次数")
+            if schedule.once_push:
+                already_pushed = scheduler.already_executed(schedule.period_key, "push", date_str)
+                print(f"  推送通知: 仅一次 {'(今日已执行 ⚠️)' if already_pushed else '(今日未执行 ✅)'}")
+            else:
+                print(f"  推送通知: 不限次数")
+
+    except Exception as e:
+        print(f"\n❌ 获取调度状态失败: {e}")
+
+    print("\n" + "=" * 60)
+
+    # 清理资源
+    ctx.cleanup()
 
 
 if __name__ == "__main__":

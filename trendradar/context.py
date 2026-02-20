@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from trendradar.utils.time import (
+    DEFAULT_TIMEZONE,
     get_configured_time,
     format_date_folder,
     format_time_filename,
@@ -19,10 +20,10 @@ from trendradar.utils.time import (
 from trendradar.core import (
     load_frequency_words,
     matches_word_groups,
-    save_titles_to_file,
     read_all_today_titles,
     detect_latest_new_titles,
     count_word_frequency,
+    Scheduler,
 )
 from trendradar.report import (
     clean_title,
@@ -35,7 +36,6 @@ from trendradar.notification import (
     render_dingtalk_content,
     split_content_into_batches,
     NotificationDispatcher,
-    PushRecordManager,
 )
 from trendradar.ai import AITranslator
 from trendradar.storage import get_storage_manager
@@ -72,13 +72,14 @@ class AppContext:
         """
         self.config = config
         self._storage_manager = None
+        self._scheduler = None
 
     # === 配置访问 ===
 
     @property
     def timezone(self) -> str:
         """获取配置的时区"""
-        return self.config.get("TIMEZONE", "Asia/Shanghai")
+        return self.config.get("TIMEZONE", DEFAULT_TIMEZONE)
 
     @property
     def rank_threshold(self) -> int:
@@ -191,11 +192,6 @@ class AppContext:
         return str(output_dir / filename)
 
     # === 数据处理 ===
-
-    def save_titles(self, results: Dict, id_to_name: Dict, failed_ids: List) -> str:
-        """保存标题到文件"""
-        output_path = self.get_output_path("txt", f"{self.format_time()}.txt")
-        return save_titles_to_file(results, id_to_name, failed_ids, output_path, clean_title)
 
     def read_today_titles(
         self, platform_ids: Optional[List[str]] = None, quiet: bool = False
@@ -429,7 +425,7 @@ class AppContext:
             get_time_func=self.get_time,
             rss_items=rss_items,
             rss_new_items=rss_new_items,
-            timezone=self.config.get("TIMEZONE", "Asia/Shanghai"),
+            timezone=self.config.get("TIMEZONE", DEFAULT_TIMEZONE),
             display_mode=self.display_mode,
             ai_content=ai_content,
             standalone_data=standalone_data,
@@ -457,12 +453,23 @@ class AppContext:
             translator=translator,
         )
 
-    def create_push_manager(self) -> PushRecordManager:
-        """创建推送记录管理器"""
-        return PushRecordManager(
-            storage_backend=self.get_storage_manager(),
-            get_time_func=self.get_time,
-        )
+    def create_scheduler(self) -> Scheduler:
+        """
+        创建调度器（延迟初始化，单例）
+
+        基于 config.yaml 的 schedule 段 + timeline.yaml 构建。
+        """
+        if self._scheduler is None:
+            schedule_config = self.config.get("SCHEDULE", {})
+            timeline_data = self.config.get("_TIMELINE_DATA", {})
+
+            self._scheduler = Scheduler(
+                schedule_config=schedule_config,
+                timeline_data=timeline_data,
+                storage_backend=self.get_storage_manager(),
+                get_time_func=self.get_time,
+            )
+        return self._scheduler
 
     # === 资源清理 ===
 
