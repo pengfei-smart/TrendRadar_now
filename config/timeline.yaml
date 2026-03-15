@@ -462,7 +462,7 @@ custom:
     deep_quiet:
       name: "深夜静默"
       start: "23:00"
-      end: "06:00"                 # 23:00 → 次日 06:00（跨日时间段）
+      end: "05:00"                 # 23:00 → 次日 06:00（跨日时间段）
       collect: true                # 夜间继续采集数据
       analyze: true                # 夜间可以跑 AI 分析（反正不推送）
       push: false                  # 深夜不推送，避免打扰
@@ -471,7 +471,7 @@ custom:
     weekday_morning:
       name: "工作日早间"
       start: "07:00"
-      end: "16:00"                 # 开盘前后 2h，关注当天盘面
+      end: "15:00"                 # 开盘前后 2h，关注当天盘面
       push: true                   # 早上推送一次
       report_mode: "incremental"   # 只推新增内容（增量）
       filter_method: "keyword"     # 早间用关键词快速过滤 A 股短线相关信息
