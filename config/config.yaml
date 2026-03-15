@@ -151,14 +151,7 @@ rss:
 # - incremental：最少打扰，只看新增
 # ===============================================================
 report:
-<<<<<<< HEAD
-  mode: "incremental"                     # 可选: daily | current | incremental
-                                      # ⚠️ 开启调度系统后，此值会被当前时间段的 report_mode 覆盖
-
-=======
-  mode: "current"                     # daily | current | incremental（schedule 开启时作为默认值）
->>>>>>> 94e907ab395b46ffb9c8ba23d3cd094d255a1df5
-
+  mode: "incremental"                     # 可选: daily | current | incremental                                      # ⚠️ 开启调度系统后，此值会被当前时间段的 report_mode 覆盖
   display_mode: "keyword"             # 分组维度: keyword | platform
                                       # keyword: 按关键词分组显示（默认）
                                       # platform: 按平台/来源分组显示
