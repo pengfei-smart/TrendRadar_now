@@ -435,7 +435,7 @@ custom:
                                    #   interests_file: "finance.txt"
                                    # 注意：仅在 filter_method 为 ai 时生效
 
-     filter_method: "ai"     # 筛选策略（可选: keyword | ai）
+    # filter_method: "ai"     # 筛选策略（可选: keyword | ai）
                                    # 不填则使用全局 config.yaml 的 filter.method
                                    # 时间段（period）中也可以设置此字段来覆盖
                                    # 例如晚间汇总用 AI 筛选：
