@@ -398,19 +398,21 @@ custom:
   name: "自定义"
   description: "完全自由定义时间段、日计划和周映射。"
 
-  # 默认配置：不在任何时间段内时使用
+  # 默认配置：不在任何时间段内时使用（安静模式）
   default:
     collect: true                  # 是否采集数据（爬取热榜 + RSS）
-    analyze: false                 # 是否执行 AI 分析
-    ai_mode: "current"             # AI 分析模式
-    push: true                     # 是否发送推送通知
-    report_mode: "current"         # 报告模式
-    # frequency_file: "general.txt"  # 关键词文件（可选）
-    # interests_file: "finance.txt"  # AI 兴趣文件（可选）
-    # filter_method: "ai"            # 筛选策略（可选: keyword | ai）
+    analyze: false                 # 默认不跑 AI（只采集）
+    ai_mode: "incremental"         # AI 分析模式：增量分析
+    push: false                    # 默认不推送
+    report_mode: "incremental"     # 报告模式：只推新增内容
+
+    # 默认筛选策略：用 AI + ai_interests.txt（晚间/周末会用到）
+    filter_method: "ai"            # keyword | ai
+
+    # 是否在时间段内只分析/推送一次（这里默认允许多次，由各 period 自己决定）
     once:
-      analyze: true                # 该时间段内只分析一次（省 API）
-      push: true                   # 该时间段内只推送一次（省打扰）
+      analyze: false
+      push: false
 
   # 第 1 步：定义时间段（积木块）
   periods:
@@ -418,45 +420,83 @@ custom:
     deep_quiet:
       name: "深夜静默"
       start: "23:00"
-      end: "05:00"                 # 23:00 → 次日 05:00（跨日时间段）
+      end: "06:00"                 # 23:00 → 次日 06:00（跨日时间段）
       collect: true                # 夜间继续采集数据
-      analyze: true                # 夜间可以跑 AI 分析（反正不推送）
+      analyze: true                # 夜间可以跑 AI 分析（不推送）
       push: false                  # 深夜不推送，避免打扰
       # 继承 filter_method: ai + 默认 ai_interests.txt
 
-    weekday_morning:
-      name: "工作日早间"
+    pre_open:
+      name: "盘前扫描"
       start: "07:00"
-      end: "15:00"                 # 开盘前后时间段
+      end: "09:00"                 # 盘前 2 小时，重点看当天要紧的事
+      collect: true
       analyze: true
-      push: true                   # 白天推送
-      report_mode: "incremental"   # 只推新增内容（增量）
-      filter_method: "keyword"     # 白天用关键词快速过滤 A 股短线相关信息
-      # frequency_file: "a_stock_short.txt"
+      push: true                   # 盘前推送一次
+      report_mode: "incremental"   # 只推新增内容
+      filter_method: "keyword"     # 盘前用关键词，确保黑天鹅/硬利空不漏
+      once:
+        analyze: true              # 盘前时段内只分析一次
+        push: true                 # 盘前时段内只推送一次
+
+    midday_check:
+      name: "午间扫描"
+      start: "11:30"
+      end: "13:30"                 # 午盘前后 2 小时
+      collect: true
+      analyze: true
+      push: true                   # 午间推送一次
+      report_mode: "incremental"   # 只推新增内容
+      filter_method: "keyword"     # 仍用关键词，补上午新公告/异动
+      once:
+        analyze: true
+        push: true
+
+    close_check:
+      name: "收盘扫描"
+      start: "14:00"
+      end: "16:00"                 # 临近收盘 + 盘后 1 小时
+      collect: true
+      analyze: true
+      push: true                   # 收盘推送一次
+      report_mode: "incremental"   # 只推新增内容
+      filter_method: "keyword"     # 重点扫盘后公告、停复牌、减持等
+      once:
+        analyze: true
+        push: true
 
     weekend_morning:
       name: "周末早间"
       start: "10:00"
       end: "12:00"                 # 周末起床后看一眼
+      collect: true
+      analyze: true
       push: true
-      report_mode: "daily"         # 周末看全天汇总
+      report_mode: "daily"         # 周末看当天/前一天的汇总
       filter_method: "ai"          # 周末用 AI 兴趣筛选，轻松看重点
+      once:
+        analyze: true
+        push: true
 
     evening_summary:
       name: "晚间汇总"
       start: "19:00"
       end: "21:00"
+      collect: true
       analyze: true                # 晚间做 AI 分析
       ai_mode: "daily"             # AI 分析当天全部内容
       push: true                   # 晚间推送
       report_mode: "daily"         # 当日全部新闻汇总
       filter_method: "ai"          # 晚上用 AI 兴趣（短线模板）做深度筛选
-      # interests_file: "shortterm_ai.txt"
+      # interests_file: "shortterm_ai.txt"  # 如以后新建专用兴趣文件，可在此指定
+      once:
+        analyze: true              # 晚间只分析一次
+        push: true                 # 晚间只推送一次
 
   # 第 2 步：把时间段拼成日计划
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "evening_summary"]
+      periods: ["deep_quiet", "pre_open", "midday_check", "close_check", "evening_summary"]
     weekend:                       # 周末计划
       periods: ["deep_quiet", "weekend_morning", "evening_summary"]
 
@@ -469,6 +509,7 @@ custom:
     5: "workday"                   # 周五
     6: "weekend"                   # 周六 → 周末计划
     7: "weekend"                   # 周日
+
 
   # 冲突策略
   overlap:
