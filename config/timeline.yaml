@@ -428,6 +428,7 @@ custom:
       name: "工作日早间"
       start: "07:00"
       end: "15:00"                 # 开盘前后时间段
+      analyze: true
       push: true                   # 白天推送
       report_mode: "incremental"   # 只推新增内容（增量）
       filter_method: "keyword"     # 白天用关键词快速过滤 A 股短线相关信息
