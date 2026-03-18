@@ -419,35 +419,48 @@ custom:
     deep_quiet:
       name: "深夜静默"
       start: "23:00"
-      end: "05:00"                 # 23:00 → 次日 05:00（跨日时间段）
-      collect: true                # 夜间继续采集数据
-      analyze: false               # 深夜不跑 AI，只积累数据
-      push: false                  # 深夜不推送，避免打扰
-      # 继承 filter_method: ai + ai_mode: incremental（但 analyze 已关闭）
+      end: "05:00"
+      collect: true
+      analyze: false
+      push: false
 
     weekday_morning:
       name: "工作日早间"
       start: "07:00"
-      end: "09:00"                 # 盘前 2h，看隔夜+早间重点
+      end: "09:00"
       collect: true
-      analyze: true                # 早间运行 AI 分析
-      ai_mode: "incremental"       # 只分析自昨晚最后一次推送以来的新增内容
-      push: true                   # 盘前推送
-      report_mode: "incremental"   # 只推新增内容
-      filter_method: "ai"          # 盘前也用 AI 兴趣筛选，做一篇“盘前精选”
+      analyze: true
+      ai_mode: "incremental"
+      push: true
+      report_mode: "incremental"
+      filter_method: "ai"
       once:
-        analyze: true              # 该时间段内只分析一次
-        push: true                 # 该时间段内只推送一次
+        analyze: true
+        push: true
+
+    afternoon_check:
+      name: "下午扫描"
+      start: "14:00"
+      end: "15:00"                 # 大约 14 点这一小时内
+      collect: true
+      analyze: true
+      ai_mode: "incremental"       # 只看自上午以来的新内容
+      push: true                   # 下午推送一次
+      report_mode: "incremental"   # 只推新增内容
+      filter_method: "keyword"     # 用关键词快速扫黑天鹅/公告/异动
+      once:
+        analyze: true              # 这个时间段内只分析一次
+        push: true                 # 只推送一次（避免刷屏）
 
     weekend_morning:
       name: "周末早间"
       start: "10:00"
-      end: "12:00"                 # 周末起床后看一眼
+      end: "12:00"
       collect: true
       analyze: true
-      ai_mode: "daily"             # 周末直接看当天/前一天的全部
+      ai_mode: "daily"
       push: true
-      report_mode: "daily"         # 周末看全天汇总
+      report_mode: "daily"
       filter_method: "ai"
       once:
         analyze: true
@@ -458,23 +471,21 @@ custom:
       start: "19:00"
       end: "21:00"
       collect: true
-      analyze: true                # 晚间做 AI 分析
-      ai_mode: "daily"             # AI 分析当天全部内容
-      push: true                   # 晚间推送
-      report_mode: "daily"         # 当日全部新闻汇总
-      filter_method: "ai"          # 晚上用 AI 兴趣（短线模板）做深度筛选
-      # interests_file: "shortterm_ai.txt"
+      analyze: true
+      ai_mode: "daily"
+      push: true
+      report_mode: "daily"
+      filter_method: "ai"
       once:
-        analyze: true              # 晚间只分析一次
-        push: true                 # 晚间只推送一次
+        analyze: true
+        push: true
 
   # 第 2 步：把时间段拼成日计划
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "evening_summary"]
+      periods: ["deep_quiet", "weekday_morning", "afternoon_check", "evening_summary"]
     weekend:                       # 周末计划
       periods: ["deep_quiet", "weekend_morning", "evening_summary"]
-
   # 第 3 步：指定每天用哪个日计划
   week_map:
     1: "workday"                   # 周一 → 工作日计划
