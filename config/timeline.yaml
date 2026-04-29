@@ -438,6 +438,20 @@ custom:
         analyze: true
         push: true
 
+    midday_holdings_check:
+      name: "持仓午间扫描"
+      start: "12:40"
+      end: "13:00"
+      collect: true
+      analyze: true
+      ai_mode: "incremental"
+      push: true
+      report_mode: "incremental"
+      filter_method: "keyword"
+      once:
+        analyze: true
+        push: true
+    
     afternoon_check:
       name: "下午扫描"
       start: "14:00"
@@ -483,7 +497,7 @@ custom:
   # 第 2 步：把时间段拼成日计划
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "afternoon_check", "evening_summary"]
+      periods: ["deep_quiet", "weekday_morning", "midday_holdings_check", "afternoon_check", "evening_summary"]
     weekend:                       # 周末计划
       periods: ["deep_quiet", "weekend_morning", "evening_summary"]
   # 第 3 步：指定每天用哪个日计划
