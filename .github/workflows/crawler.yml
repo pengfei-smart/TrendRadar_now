@@ -149,28 +149,7 @@ jobs:
           curl -sS -X POST "$FEISHU_WEBHOOK_URL" \
             -H 'Content-Type: application/json' \
             --data-binary @payload.json
-
-      - name: Test Feishu webhook (minimal card)
-        if: success()
-        continue-on-error: true
-        env:
-          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
-        run: |
-          set -e
-          cat <<'JSON' > payload.json
-          {
-            "msg_type": "interactive",
-            "card": {
-              "config": { "wide_screen_mode": true },
-              "elements": [
-                { "tag": "div", "text": { "tag": "lark_md", "content": "**Card OK** 最小卡片测试" } }
-              ]
-            }
-          }
-          JSON
-          curl -sS -X POST "$FEISHU_WEBHOOK_URL" \
-            -H 'Content-Type: application/json' \
-            --data-binary @payload.json
+            
       - name: Run crawler
         if: success()
         env:
