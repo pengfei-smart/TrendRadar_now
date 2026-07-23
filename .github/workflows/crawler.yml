@@ -131,24 +131,6 @@ jobs:
             echo "Error: Config missing"
             exit 1
           fi
-      - name: Test Feishu webhook (text)
-        if: success()
-        continue-on-error: true
-        env:
-          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
-        run: |
-          set -e
-          cat <<'JSON' > payload.json
-          {
-            "msg_type": "text",
-            "content": {
-              "text": "TrendRadar Actions 测试：文本 OK"
-            }
-          }
-          JSON
-          curl -sS -X POST "$FEISHU_WEBHOOK_URL" \
-            -H 'Content-Type: application/json' \
-            --data-binary @payload.json
             
       - name: Run crawler
         if: success()
