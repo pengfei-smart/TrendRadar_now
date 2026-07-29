@@ -77,7 +77,10 @@ platforms:
       name: "格隆汇"
     - id: "wallstreetcn-quick"
       name: "华尔街见闻 快讯"
-
+    - id: "cls-telegraph"
+      name: "财联社 电报"
+    - id: "cls-depth"
+      name: "财联社 深度"
 
 
 # ===============================================================
