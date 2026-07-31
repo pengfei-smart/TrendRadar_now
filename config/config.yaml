@@ -471,7 +471,7 @@ ai:
 # ===============================================================
 ai_analysis:
   enabled: true
-  max_news_for_analysis: 80
+  max_news_for_analysis: 150
   include_rank_timeline: false
   include_standalone: false
                                     # 是否启用 AI 分析（总开关）
