@@ -483,7 +483,7 @@ custom:
     evening_summary:
       name: "晚间汇总"
       start: "19:00"
-      end: "21:00"
+      end: "21:50" #测试 8.1，需改回 21:00
       collect: true
       analyze: true
       ai_mode: "daily"
