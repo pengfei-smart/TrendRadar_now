@@ -499,7 +499,7 @@ custom:
     workday:                       # 工作日计划
       periods: ["deep_quiet", "weekday_morning", "midday_holdings_check", "evening_summary"]
     weekend:                       # 周末计划
-      periods: ["deep_quiet", "weekend_morning", "evening_summary"]
+      periods: ["deep_quiet", "weekend_morning", "midday_holdings_check"，"evening_summary"]
   # 第 3 步：指定每天用哪个日计划
   week_map:
     1: "workday"                   # 周一 → 工作日计划
