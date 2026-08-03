@@ -483,7 +483,7 @@ custom:
     evening_analyze:
       name: "晚间分析"
       start: "19:00"
-      end: "20:40"
+      end: "20:32"
       collect: true
       analyze: true
       ai_mode: "daily"
@@ -493,19 +493,19 @@ custom:
       once:
         analyze: false
         push: false
-    
+
     evening_push:
       name: "晚间推送"
-      start: "20:40"
+      start: "20:33"
       end: "22:00"
       collect: true
-      analyze: false
+      analyze: true
       ai_mode: "daily"
       push: true
       report_mode: "daily"
       filter_method: "ai"
       once:
-        analyze: false
+        analyze: true
         push: true
 
   # 第 2 步：把时间段拼成日计划
