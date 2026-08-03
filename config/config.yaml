@@ -123,25 +123,25 @@ rss:
     - id: "yahoo-finance"
       name: "雅虎财经"
       url: "https://finance.yahoo.com/news/rssindex"
-
+    
     - id: "rsshub-sse-inquire"
       name: "上交所-监管问询(RSSHub)"
-      url: "https://rsshub.app/sse/inquire"
+      url: "https://rsshub.rssforever.com/sse/inquire"
       max_age_days: 7
     
     - id: "rsshub-szse-inquire"
       name: "深交所-问询函件(RSSHub)"
-      url: "https://rsshub.app/szse/inquire"
+      url: "https://rsshub.rssforever.com/szse/inquire"
       max_age_days: 7
     
     - id: "rsshub-szse-notice"
       name: "深交所-上市公告-可转债(RSSHub)"
-      url: "https://rsshub.app/szse/notice"
+      url: "https://rsshub.rssforever.com/szse/notice"
       max_age_days: 7
     
     - id: "rsshub-szse-rule"
       name: "深交所-最新规则(RSSHub)"
-      url: "https://rsshub.app/szse/rule"
+      url: "https://rsshub.rssforever.com/szse/rule"
       max_age_days: 30
     
     - id: "fed-press-all"
@@ -174,9 +174,24 @@ rss:
       url: "https://www.eia.gov/petroleum/gasdiesel/includes/gas_diesel_rss.xml"
       max_age_days: 14
     
-    - id: "bls-latest"
-      name: "BLS-Latest Numbers"
-      url: "https://www.bls.gov/feed/bls_latest.rss"
+    - id: "gn-bls-employment-situation"
+      name: "BLS-Employment Situation(Google News RSS)"
+      url: "https://news.google.com/rss/search?q=site:bls.gov%20%22Employment%20Situation%22&hl=en-US&gl=US&ceid=US:en"
+      max_age_days: 14
+    
+    - id: "gn-bls-cpi"
+      name: "BLS-CPI(Google News RSS)"
+      url: "https://news.google.com/rss/search?q=site:bls.gov%20%22Consumer%20Price%20Index%22%20CPI&hl=en-US&gl=US&ceid=US:en"
+      max_age_days: 14
+    
+    - id: "gn-bls-ppi"
+      name: "BLS-PPI(Google News RSS)"
+      url: "https://news.google.com/rss/search?q=site:bls.gov%20%22Producer%20Price%20Index%22%20PPI&hl=en-US&gl=US&ceid=US:en"
+      max_age_days: 14
+    
+    - id: "gn-bls-jolts"
+      name: "BLS-JOLTS(Google News RSS)"
+      url: "https://news.google.com/rss/search?q=site:bls.gov%20JOLTS%20%22Job%20Openings%20and%20Labor%20Turnover%22&hl=en-US&gl=US&ceid=US:en"
       max_age_days: 14
     
     - id: "bea-news"
