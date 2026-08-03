@@ -480,26 +480,40 @@ custom:
         analyze: true
         push: true
 
-    evening_summary:
-      name: "晚间汇总"
+    evening_analyze:
+      name: "晚间分析"
       start: "19:00"
-      end: "21:00"
+      end: "20:40"
       collect: true
       analyze: true
+      ai_mode: "daily"
+      push: false
+      report_mode: "daily"
+      filter_method: "ai"
+      once:
+        analyze: false
+        push: false
+    
+    evening_push:
+      name: "晚间推送"
+      start: "20:40"
+      end: "22:00"
+      collect: true
+      analyze: false
       ai_mode: "daily"
       push: true
       report_mode: "daily"
       filter_method: "ai"
       once:
-        analyze: true
+        analyze: false
         push: true
 
   # 第 2 步：把时间段拼成日计划
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "midday_holdings_check", "evening_summary"]
+      periods: ["deep_quiet", "weekday_morning", "midday_holdings_check", "evening_analyze", "evening_push"]
     weekend:                       # 周末计划
-      periods: ["deep_quiet", "weekend_morning", "evening_summary"]
+      periods: ["deep_quiet", "weekend_morning", "evening_analyze", "evening_push"]
   # 第 3 步：指定每天用哪个日计划
   week_map:
     1: "workday"                   # 周一 → 工作日计划
