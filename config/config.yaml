@@ -125,9 +125,9 @@ rss:
       url: "https://finance.yahoo.com/news/rssindex"
 
     - id: "rsshub-sse-inquire"
-    name: "上交所-监管问询(RSSHub)"
-    url: "https://rsshub.app/sse/inquire"
-    max_age_days: 7
+      name: "上交所-监管问询(RSSHub)"
+      url: "https://rsshub.app/sse/inquire"
+      max_age_days: 7
     
     - id: "rsshub-szse-inquire"
       name: "深交所-问询函件(RSSHub)"
