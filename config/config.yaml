@@ -119,16 +119,70 @@ rss:
     - id: "hacker-news"
       name: "Hacker News"
       url: "https://hnrss.org/frontpage"
-
-    - id: "ruanyifeng"
-      name: "阮一峰的网络日志"
-      url: "http://www.ruanyifeng.com/blog/atom.xml"
-      enabled: false                  # 禁用
-      # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
      
     - id: "yahoo-finance"
       name: "雅虎财经"
       url: "https://finance.yahoo.com/news/rssindex"
+
+    - id: "rsshub-sse-inquire"
+    name: "上交所-监管问询(RSSHub)"
+    url: "https://rsshub.app/sse/inquire"
+    max_age_days: 7
+    
+    - id: "rsshub-szse-inquire"
+      name: "深交所-问询函件(RSSHub)"
+      url: "https://rsshub.app/szse/inquire"
+      max_age_days: 7
+    
+    - id: "rsshub-szse-notice"
+      name: "深交所-上市公告-可转债(RSSHub)"
+      url: "https://rsshub.app/szse/notice"
+      max_age_days: 7
+    
+    - id: "rsshub-szse-rule"
+      name: "深交所-最新规则(RSSHub)"
+      url: "https://rsshub.app/szse/rule"
+      max_age_days: 30
+    
+    - id: "fed-press-all"
+      name: "Fed-Press Releases(All)"
+      url: "https://www.federalreserve.gov/feeds/press_all.xml"
+      max_age_days: 7
+    
+    - id: "fed-press-monetary"
+      name: "Fed-Press Releases(Monetary Policy)"
+      url: "https://www.federalreserve.gov/feeds/press_monetary.xml"
+      max_age_days: 7
+    
+    - id: "fed-speeches"
+      name: "Fed-Speeches"
+      url: "https://www.federalreserve.gov/feeds/speeches.xml"
+      max_age_days: 7
+    
+    - id: "eia-todayinenergy"
+      name: "EIA-Today in Energy"
+      url: "https://www.eia.gov/rss/todayinenergy.xml"
+      max_age_days: 7
+    
+    - id: "eia-press"
+      name: "EIA-Press Releases"
+      url: "https://www.eia.gov/rss/press_rss.xml"
+      max_age_days: 14
+    
+    - id: "eia-gas-diesel"
+      name: "EIA-Gasoline & Diesel Update"
+      url: "https://www.eia.gov/petroleum/gasdiesel/includes/gas_diesel_rss.xml"
+      max_age_days: 14
+    
+    - id: "bls-latest"
+      name: "BLS-Latest Numbers"
+      url: "https://www.bls.gov/feed/bls_latest.rss"
+      max_age_days: 14
+    
+    - id: "bea-news"
+      name: "BEA-News Release Feed"
+      url: "https://apps.bea.gov/rss/rss.xml"
+      max_age_days: 14      
 
     # 自定义源示例
     # - id: "custom-feed"
@@ -136,6 +190,12 @@ rss:
     #   url: "https://example.com/feed.xml"
     #   enabled: false
     #   max_age_days: 0               # 示例：禁用过滤，推送所有文章
+    
+    #- id: "ruanyifeng"
+    #  name: "阮一峰的网络日志"
+    #  url: "http://www.ruanyifeng.com/blog/atom.xml"
+    #  enabled: false                  # 禁用
+      # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
 
 
 # ===============================================================
