@@ -123,7 +123,21 @@ rss:
     - id: "yahoo-finance"
       name: "雅虎财经"
       url: "https://finance.yahoo.com/news/rssindex"
+
+    - id: "fed-press-monetary"
+      name: "Fed-Press Releases(Monetary Policy)"
+      url: "https://www.federalreserve.gov/feeds/press_monetary.xml"
+      max_age_days: 7
     
+    - id: "eia-todayinenergy"
+      name: "EIA-Today in Energy"
+      url: "https://www.eia.gov/rss/todayinenergy.xml"
+      max_age_days: 7
+    
+    - id: "bea-news"
+      name: "BEA-News Release Feed"
+      url: "https://apps.bea.gov/rss/rss.xml"
+      max_age_days: 14
 
     # 自定义源示例
     # - id: "custom-feed"
