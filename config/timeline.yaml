@@ -436,7 +436,7 @@ custom:
       filter_method: "ai"
       once:
         analyze: true
-        push: true
+        push: false
 
     midday_holdings_check:
       name: "持仓午间扫描"
