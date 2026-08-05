@@ -436,7 +436,7 @@ custom:
       filter_method: "ai"
       once:
         analyze: true
-        push: false
+        push: true
 
 
     midday_holdings_check:
