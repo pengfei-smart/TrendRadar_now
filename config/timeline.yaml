@@ -487,7 +487,7 @@ custom:
       end: "20:32"
       collect: true
       analyze: true
-      ai_mode: "daily"
+      ai_mode: "incremental"
       push: false
       report_mode: "daily"
       filter_method: "ai"
@@ -501,7 +501,7 @@ custom:
       end: "22:00"
       collect: true
       analyze: true
-      ai_mode: "daily"
+      ai_mode: "incremental"
       push: true
       report_mode: "daily"
       filter_method: "ai"
