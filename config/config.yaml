@@ -520,7 +520,7 @@ ai_analysis:
                                     
   max_news_for_analysis: 100            # 参与分析的新闻数量上限（控制 token 成本的关键项）
                                         # 热榜优先占用配额，RSS 用剩余配额，独立展示区不受此限制
-                                        #8.7 先把max_news_for_analysis从150降到80-100 再把include_rank_timeline: true, 观察2-3次晚间是否还空响应; 稳定后再加回150。
+                                        #8.7 先把max_news_for_analysis从150降到80-100 再把include_rank_timeline: true, 观察2-3次晚间是否还空响应; 稳定后再加回150。若2-3次晚间都不再出现AI 返回空响应, 再把max_news_for_analysis逐步加回150。
 
   include_rss: true                     # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
   
