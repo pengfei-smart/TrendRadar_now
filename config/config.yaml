@@ -518,13 +518,14 @@ ai_analysis:
   enabled: true                         # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
                                         # 开启 schedule 后此项仍为总开关：false=永远不分析，true=由调度控制
                                     
-  max_news_for_analysis: 150            # 参与分析的新闻数量上限（控制 token 成本的关键项）
+  max_news_for_analysis: 100            # 参与分析的新闻数量上限（控制 token 成本的关键项）
                                         # 热榜优先占用配额，RSS 用剩余配额，独立展示区不受此限制
+                                        #8.7 先把max_news_for_analysis从150降到80-100 再把include_rank_timeline: true, 观察2-3次晚间是否还空响应; 稳定后再加回150。
 
   include_rss: true                     # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
   
-  include_rank_timeline: false          # 排名时间线详细程度
-                                        # true = 完整轨迹（如 1(09:30)→2(10:00)），AI 分析更准但多耗 0.5~1 倍 token
+  include_rank_timeline: true          # 排名时间线详细程度
+                                        # true = 完整轨迹（如 1(09:30)→2(10:00)），AI 分析更准但多耗 0.5~1 倍 token 
                                         # false = 简化格式（排名范围+出现次数），更省 token
                                         
   include_standalone: false             # 是否纳入独立展示区数据（true=纳入, false=不纳入）
