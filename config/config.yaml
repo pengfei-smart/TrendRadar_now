@@ -530,8 +530,9 @@ ai_analysis:
   enabled: true                         # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
                                         # 开启 schedule 后此项仍为总开关：false=永远不分析，true=由调度控制
                                     
-  max_news_for_analysis: 150            # 参与分析的新闻数量上限（控制 token 成本的关键项）
+  max_news_for_analysis: 250            # 参与分析的新闻数量上限（控制 token 成本的关键项）
                                         # 热榜优先占用配额，RSS 用剩余配额，独立展示区不受此限制
+                                        #150上调成250，上调到250后又出现空响应，第一优先不是关standalone，而是先把max_items从20降到10做降压测试
                                         
   include_rss: true                     # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
   
