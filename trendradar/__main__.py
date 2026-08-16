@@ -18,6 +18,20 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
 import requests
+import sys
+
+_RUN_COMPLETED = False  # 仅当主流程完整跑完后才允许吞掉退出异常
+
+def _safe_excepthook(exctype, value, tb):
+    global _RUN_COMPLETED
+    msg = str(value)
+    if _RUN_COMPLETED and exctype is RuntimeError and "Event loop is closed" in msg:
+        # 仅对“退出阶段”的该类错误降级，避免把 Actions 跑红
+        print("[退出降噪] 捕获到 asyncio 退出错误：Event loop is closed（已完成主流程，忽略）", file=sys.stderr)
+        sys.exit(0)
+    sys.__excepthook__(exctype, value, tb)
+
+sys.excepthook = _safe_excepthook
 
 from trendradar.context import AppContext
 from trendradar import __version__
@@ -2200,6 +2214,9 @@ def main():
         # 获取 debug 配置
         debug_mode = analyzer.ctx.config.get("DEBUG", False)
         analyzer.run()
+        
+        global _RUN_COMPLETED
+        _RUN_COMPLETED = True        
     except FileNotFoundError as e:
         print(f"❌ 配置文件错误: {e}")
         print("\n请确保以下文件存在:")
