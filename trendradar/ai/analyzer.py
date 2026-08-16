@@ -449,7 +449,7 @@ def _call_ai(self, user_prompt: str) -> str:
             print(f"[AI] 重试修复 JSON 异常: {type(e).__name__}: {e}")
             return None
 
-    def _format_time_range(self, first_time: str, last_time: str) -> str:
+        def _format_time_range(self, first_time: str, last_time: str) -> str:
         """格式化时间范围（简化显示，只保留时分）"""
         def extract_time(time_str: str) -> str:
             if not time_str:
