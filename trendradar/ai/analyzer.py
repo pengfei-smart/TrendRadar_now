@@ -378,14 +378,33 @@ class AIAnalyzer:
 
         return news_content, rss_content, hotlist_total, rss_total, total_count
 
-    def _call_ai(self, user_prompt: str) -> str:
-        """调用 AI API（使用 LiteLLM）"""
-        messages = []
-        if self.system_prompt:
-            messages.append({"role": "system", "content": self.system_prompt})
-        messages.append({"role": "user", "content": user_prompt})
+def _call_ai(self, user_prompt: str) -> str:
+    """调用 AI API（使用 LiteLLM），对“空响应”做重试兜底"""
+    messages = []
+    if self.system_prompt:
+        messages.append({"role": "system", "content": self.system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
 
-        return self.client.chat(messages)
+    # 空响应重试：总共尝试 3 次（1 + 2 次重试）
+    max_attempts = 3
+    last_content = ""
+
+    for attempt in range(1, max_attempts + 1):
+        content = self.client.chat(messages)
+        last_content = content or ""
+
+        if last_content.strip():
+            return last_content
+
+        print(f"[AI] 警告: AI 返回空响应，重试 {attempt}/{max_attempts}")
+
+        # 简单退避等待：1s, 2s（最后一次不等）
+        if attempt < max_attempts:
+            import time
+            time.sleep(attempt)
+
+    # 走到这里说明 3 次都是空
+    raise RuntimeError("AI 返回空响应（重试后仍为空）")
 
     def _retry_fix_json(self, original_response: str, error_msg: str) -> Optional[AIAnalysisResult]:
         """
