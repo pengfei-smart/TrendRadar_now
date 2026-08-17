@@ -259,6 +259,33 @@ class AIAnalyzer:
                 error=friendly_msg
             )
 
+    def _format_time_range(self, first_time: str, last_time: str) -> str:
+        """格式化时间范围（简化显示，只保留时分）"""
+
+        def extract_time(time_str: str) -> str:
+            if not time_str:
+                return "-"
+            if " " in time_str:
+                parts = time_str.split(" ")
+                if len(parts) >= 2:
+                    time_part = parts[1]
+                    if ":" in time_part:
+                        return time_part[:5]
+            elif ":" in time_str:
+                return time_str[:5]
+
+            result = time_str[:5] if len(time_str) >= 5 else time_str
+            if len(result) == 5 and result[2] == "-":
+                result = result.replace("-", ":")
+            return result
+
+        first = extract_time(first_time)
+        last = extract_time(last_time)
+
+        if first == last or last == "-":
+            return first
+        return f"{first}~{last}"
+    
     def _prepare_news_content(
         self,
         stats: List[Dict],
@@ -449,33 +476,7 @@ def _call_ai(self, user_prompt: str) -> str:
             print(f"[AI] 重试修复 JSON 异常: {type(e).__name__}: {e}")
             return None
 
-    def _format_time_range(self, first_time: str, last_time: str) -> str:
-        """格式化时间范围（简化显示，只保留时分）"""
 
-        def extract_time(time_str: str) -> str:
-            if not time_str:
-                return "-"
-            # 尝试提取 HH:MM 部分
-            if " " in time_str:
-                parts = time_str.split(" ")
-                if len(parts) >= 2:
-                    time_part = parts[1]
-                    if ":" in time_part:
-                        return time_part[:5]  # HH:MM
-            elif ":" in time_str:
-                return time_str[:5]
-            # 处理 HH-MM 格式
-            result = time_str[:5] if len(time_str) >= 5 else time_str
-            if len(result) == 5 and result[2] == "-":
-                result = result.replace("-", ":")
-            return result
-
-        first = extract_time(first_time)
-        last = extract_time(last_time)
-
-        if first == last or last == "-":
-            return first
-        return f"{first}~{last}"
 
     def _format_rank_timeline(self, rank_timeline: List[Dict]) -> str:
         """格式化排名时间线"""
