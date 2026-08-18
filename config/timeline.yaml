@@ -442,7 +442,7 @@ custom:
     midday_holdings_check:
       name: "持仓午间扫描"
       start: "12:10"
-      end: "13:00"
+      end: "13:40"
       collect: true
       analyze: true
       ai_mode: "incremental"
