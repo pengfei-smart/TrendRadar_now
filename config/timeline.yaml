@@ -512,7 +512,7 @@ custom:
   # 第 2 步：把时间段拼成日计划
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "midday_holdings_check","afternoon_check","evening_analyze", "evening_push"]
+      periods: ["deep_quiet", "weekday_morning", "midday_holdings_check","evening_analyze", "evening_push"]
     weekend:                       # 周末计划
       periods: ["deep_quiet", "weekend_morning", "evening_analyze", "evening_push"]
   # 第 3 步：指定每天用哪个日计划
