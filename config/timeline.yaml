@@ -513,8 +513,14 @@ custom:
   day_plans:
     workday:                       # 工作日计划
       periods: ["deep_quiet", "weekday_morning", "midday_holdings_check","evening_analyze", "evening_push"]
-    weekend:                       # 周末计划
-      periods: ["deep_quiet", "weekend_morning", "evening_analyze", "evening_push"]
+
+      # 周六：只收集，不推送（不包含任何 push=true 的时段）
+    saturday:
+      periods: ["deep_quiet"]
+
+    # 周日：白天只收集；仅晚间推送（20:33-22:00）
+    sunday:
+      periods: ["deep_quiet", "evening_push"]
   # 第 3 步：指定每天用哪个日计划
   week_map:
     1: "workday"                   # 周一 → 工作日计划
@@ -522,8 +528,8 @@ custom:
     3: "workday"                   # 周三
     4: "workday"                   # 周四
     5: "workday"                   # 周五
-    6: "weekend"                   # 周六 → 周末计划
-    7: "weekend"                   # 周日
+    6: "saturday"                  # 周六：只收集，不推送
+    7: "sunday"                    # 周日：白天只收集；仅晚间推送
 
   overlap:
     policy: "error_on_overlap"
