@@ -16,53 +16,71 @@ def _escape_html(text: str) -> str:
 
 
 def _format_list_content(text: str) -> str:
-    """
-    格式化列表内容，确保序号前有换行
-    例如将 "1. xxx 2. yyy" 转换为:
-    1. xxx
-    2. yyy
-    """
+    """规范化 AI 分析内容的标题、语义标签和编号列表，避免长段落挤在一起。"""
     if not text:
         return ""
-    
-    # 去除首尾空白，防止 AI 返回的内容开头就有换行导致显示空行
-    text = text.strip()
 
-    # 0. 合并序号与紧随的【标签】（防御性处理）
-    # 将 "1.\n【投资者】：" 或 "1. 【投资者】：" 合并为 "1. 投资者："
-    text = re.sub(r'(\d+\.)\s*【([^】]+)】([:：]?)', r'\1 \2：', text)
+    # 统一换行符并清理行尾空格，不对普通句号强制断行。
+    result = str(text).replace("\r\n", "\n").replace("\r", "\n")
+    result = re.sub(r"[ \t]+\n", "\n", result).strip()
 
-    # 1. 规范化：确保 "1." 后面有空格
-    result = re.sub(r'(\d+)\.([^ \d])', r'\1. \2', text)
+    # 将模型偶尔写成“核心判断：内容”的行内小标题，规范为独立结构标题。
+    # 仅匹配明确带冒号的固定标签，避免拆开普通叙述句。
+    semantic_headings = (
+        "核心判断", "国际主线", "国内主线", "宏观主线", "关键佐证",
+        "微观佐证", "短线含义", "A股短线含义", "情绪温度", "主流声音",
+        "潜在分歧", "主要分歧", "跨平台共振/温差", "轨迹突变", "弱信号捕捉",
+        "认知纠偏", "硬核增量", "数据状态", "专业增量", "A股短线影响",
+        "资产逻辑映射",
+    )
+    for label in sorted(semantic_headings, key=len, reverse=True):
+        pattern = re.compile(
+            rf"(?<!\n)(?<!【)({re.escape(label)})[ \t]*[:：][ \t]*"
+        )
+        result = pattern.sub(
+            lambda match: f"\n\n【{match.group(1)}】\n", result
+        )
 
-    # 2. 强制换行：匹配 "数字."，且前面不是换行符
-    #    (?!\d) 排除版本号/小数（如 2.0、3.5），避免将其误判为列表序号
-    result = re.sub(r'(?<=[^\n])\s+(\d+\.)(?!\d)', r'\n\1', result)
-    
-    # 3. 处理 "1.**粗体**" 这种情况（虽然 Prompt 要求不输出 Markdown，但防御性处理）
-    result = re.sub(r'(?<=[^\n])(\d+\.\*\*)', r'\n\1', result)
+    # 兼容原有规则：标题标签前留出段落间距，标签后另起一行放正文。
+    result = re.sub(r"(?<!\n)[ \t]*(【[^】\n]+】)", r"\n\n\1", result)
+    result = re.sub(r"(【[^】\n]+】)\n+([:：])", r"\1\2", result)
+    result = re.sub(r"(【[^】\n]+】[:：]?)[ \t]*(?=\S)", r"\1\n", result)
 
-    # 4. 处理中文标点后的换行（排除版本号/小数）
-    result = re.sub(r'([：:;,。；，])\s*(\d+\.)(?!\d)', r'\1\n\2', result)
+    # 天时、地利、人和及弱信号四项字段必须处于行首；值仍留在标签同一行。
+    row_labels = (
+        "天时", "地利", "人和", "风险等级", "建议总体仓位",
+        "反向利空路径", "验证点", "今日核心观察点", "盘中触发器",
+        "离场触发器", "进攻方向", "风险红线", "信号", "来源", "对A股短线",
+    )
+    for label in row_labels:
+        label_pattern = re.escape(label) + r"[ \t]*[:：]"
+        result = re.sub(
+            rf"(?<!\n)[ \t]+({label_pattern})", r"\n\1", result
+        )
+        result = re.sub(
+            rf"([。！？；，、])\s*({label_pattern})", r"\1\n\2", result
+        )
 
-    # 5. 处理 "XX方面："、"XX领域：" 等子标题换行
-    # 只有在中文标点（句号、逗号、分号等）后才触发换行，避免破坏 "1. XX领域：" 格式
-    result = re.sub(r'([。！？；，、])\s*([a-zA-Z0-9\u4e00-\u9fa5]+(方面|领域)[:：])', r'\1\n\2', result)
+    # 处理“XX方面：”“XX领域：”等子标题，保留原格式化器的兼容行为。
+    result = re.sub(
+        r"([。！？；，、])\s*([a-zA-Z0-9\u4e00-\u9fa5]+(方面|领域)[:：])",
+        r"\1\n\2",
+        result,
+    )
 
-    # 6. 处理 【标签】 格式
-    # 6a. 标签前确保空行分隔（文本开头除外）
-    result = re.sub(r'(?<=\S)\n*(【[^】]+】)', r'\n\n\1', result)
-    # 6b. 合并标签与被换行拆开的冒号：【tag】\n： → 【tag】：
-    result = re.sub(r'(【[^】]+】)\n+([:：])', r'\1\2', result)
-    # 6c. 标签后（含可选冒号），如果紧跟非空白非冒号内容则另起一行
-    # 用 (?=[^\s:：]) 避免正则回溯将冒号误判为"内容"而拆开 【tag】：
-    result = re.sub(r'(【[^】]+】[:：]?)[ \t]*(?=[^\s:：])', r'\1\n', result)
+    # 列表编号另起一行；排除 2.0、3.5 等小数或版本号。
+    result = re.sub(r"(?<=[^\n])[ \t]+(\d+\.)(?!\d)", r"\n\1", result)
+    result = re.sub(r"([：:;,。；，])\s*(\d+\.)(?!\d)", r"\1\n\2", result)
+    result = re.sub(r"(?<=[^\n])(\d+\.\*\*)", r"\n\1", result)
+    result = re.sub(r"(?m)^(\d+\.)(?=\S)", r"\1 ", result)
 
-    # 7. 在列表项之间增加视觉空行（排除版本号/小数）
-    # 排除 【标签】 行（以】结尾）和子标题行（以冒号结尾）之后的情况，避免标题与首项之间出现空行
-    result = re.sub(r'(?<![:：】])\n(\d+\.)(?!\d)', r'\n\n\1', result)
+    # 项目符号仅在明显的列表分隔符后换行，避免破坏英文连字符或普通短语。
+    result = re.sub(r"([。！？；;])\s*[-•]\s+", r"\1\n- ", result)
 
-    return result
+    # 连续列表项之间保留一个空行；不拆分普通句子。
+    result = re.sub(r"(?<![:：】])\n(\d+\.)(?!\d)", r"\n\n\1", result)
+    result = re.sub(r"\n{3,}", "\n\n", result)
+    return result.strip()
 
 
 def _format_standalone_summaries(summaries: dict) -> str:
