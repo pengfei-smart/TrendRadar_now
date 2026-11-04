@@ -85,7 +85,7 @@ class AIAnalyzer:
         )
 
     def _load_prompt_template(self, prompt_file: str) -> tuple:
-        """加载提示词模板"""
+        """加载提示词模板；仅识别独占整行的 [system] 和 [user] 标记。"""
         config_dir = Path(__file__).parent.parent.parent / "config"
         prompt_path = config_dir / prompt_file
 
@@ -93,25 +93,52 @@ class AIAnalyzer:
             print(f"[AI] 提示词文件不存在: {prompt_path}")
             return "", ""
 
+        # 统一 BOM 和换行符，避免 Windows CRLF 影响标记识别。
         content = prompt_path.read_text(encoding="utf-8")
+        content = content.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
+        lines = content.split("\n")
 
-        # 解析 [system] 和 [user] 部分
-        system_prompt = ""
-        user_prompt = ""
+        # 只有整行内容（允许行首尾空格）恰好等于标记时，才视为区块分隔符。
+        # 注释中的“# [user]”或正文中的“请遵守 [user] 区块”等不会被误识别。
+        system_positions = [
+            index for index, line in enumerate(lines)
+            if line.strip() == "[system]"
+        ]
+        user_positions = [
+            index for index, line in enumerate(lines)
+            if line.strip() == "[user]"
+        ]
 
-        if "[system]" in content and "[user]" in content:
-            parts = content.split("[user]")
-            system_part = parts[0]
-            user_part = parts[1] if len(parts) > 1 else ""
+        # 兼容没有使用区块标记的旧版提示词：整个文件作为 user prompt。
+        if not system_positions and not user_positions:
+            user_prompt = content.strip()
+            if not user_prompt:
+                raise ValueError(f"AI 提示词文件为空: {prompt_path}")
+            return "", user_prompt
 
-            # 提取 system 内容
-            if "[system]" in system_part:
-                system_prompt = system_part.split("[system]")[1].strip()
+        # 使用区块标记时，两个标记都必须且只能出现一次。
+        if len(system_positions) != 1 or len(user_positions) != 1:
+            raise ValueError(
+                "AI 提示词区块标记错误："
+                f"[system] 应出现 1 次，实际 {len(system_positions)} 次；"
+                f"[user] 应出现 1 次，实际 {len(user_positions)} 次。"
+                f"请检查文件：{prompt_path}"
+            )
 
-            user_prompt = user_part.strip()
-        else:
-            # 整个文件作为 user prompt
-            user_prompt = content
+        system_index = system_positions[0]
+        user_index = user_positions[0]
+        if system_index >= user_index:
+            raise ValueError(
+                f"AI 提示词区块顺序错误：[system] 必须位于 [user] 之前。文件：{prompt_path}"
+            )
+
+        system_prompt = "\n".join(lines[system_index + 1:user_index]).strip()
+        user_prompt = "\n".join(lines[user_index + 1:]).strip()
+
+        if not system_prompt:
+            raise ValueError(f"AI 提示词的 [system] 区块为空：{prompt_path}")
+        if not user_prompt:
+            raise ValueError(f"AI 提示词的 [user] 区块为空：{prompt_path}")
 
         return system_prompt, user_prompt
 
