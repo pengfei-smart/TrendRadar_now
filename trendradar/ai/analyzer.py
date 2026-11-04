@@ -7,6 +7,7 @@ AI 分析器模块
 """
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -440,7 +441,7 @@ class AIAnalyzer:
         return news_content, rss_content, hotlist_total, rss_total, total_count
 
     def _retry_fix_json(self, original_response: str, error_msg: str) -> Optional[AIAnalysisResult]:
-        """修复 AI 响应，并在返回前验证完整的六字段结构。"""
+        """修复 AI 响应，并验证六字段结构及超短交易作战卡格式。"""
         messages = [
             {
                 "role": "system",
@@ -452,8 +453,17 @@ class AIAnalyzer:
                     "outlook_strategy、standalone_summaries。\n"
                     "前五个字段必须是非空字符串；standalone_summaries 必须是对象，"
                     "其中 key 和 value 都必须是字符串，没有独立展示数据时使用 {}。\n"
+                    "特别注意：outlook_strategy 必须是一份多行的中国 A 股超短交易作战卡。\n"
+                    "第一项标题必须以‘1. 中国A股短线交易者：’开头。\n"
+                    "作战卡必须逐行包含以下 12 个固定标签，每个标签必须从新的一行开始，"
+                    "名称不得改写，不得将两个或多个标签合并到同一行：\n"
+                    "天时：、地利：、人和：、风险等级：、建议总体仓位：、反向利空路径：、"
+                    "验证点：、今日核心观察点：、盘中触发器：、离场触发器：、进攻方向：、风险红线：。\n"
+                    "即使缺少指数、成交额、板块行情或个股资料，也必须保留对应标签，"
+                    "并填写‘未知/无法确定’或‘需结合实时行情确认’，不得删除标签或编造数据。\n"
+                    "如果原始响应缺少标签，只能依据原始响应已有信息补全；没有依据时填写‘未知/无法确定’。\n"
                     "如果原始响应缺少字段或字段为空，只能根据原始响应已有信息补全；"
-                    "无法从原始响应确定的内容填写“未知/无法确定”，不得编造事实。\n"
+                    "无法从原始响应确定的内容填写‘未知/无法确定’，不得编造事实。\n"
                     "保留原始响应中已有的有效分析内容，不要擅自改变结论。\n"
                     "只返回完整、可解析的纯 JSON。"
                 ),
@@ -463,9 +473,11 @@ class AIAnalyzer:
                 "content": (
                     f"原始响应校验失败，错误如下：\n{error_msg}\n\n"
                     f"原始 AI 响应如下：\n{original_response}\n\n"
-                    "请修复 JSON 语法和字段结构。必须补齐全部六个字段，"
-                    "前五个字段必须是非空字符串；缺少可靠依据时填写“未知/无法确定”。"
-                    "standalone_summaries 没有数据时返回空对象 {}。"
+                    "请修复 JSON 语法、六个字段结构，以及 outlook_strategy 的作战卡结构。"
+                    "必须补齐全部六个字段；outlook_strategy 必须补齐全部 12 个标签，"
+                    "并确保每个标签各自独占一行，第一项标题以‘1. 中国A股短线交易者：’开头。"
+                    "缺少可靠依据时填写‘未知/无法确定’，需要行情确认时写‘需结合实时行情确认’。"
+                    "前五个字段必须是非空字符串；standalone_summaries 没有数据时返回空对象 {}。"
                     "不要输出任何 JSON 以外的内容。"
                 ),
             },
