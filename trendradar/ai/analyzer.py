@@ -219,20 +219,29 @@ class AIAnalyzer:
             response = self._call_ai(user_prompt)
             result = self._parse_response(response)
 
-            # JSON 解析失败时的重试兜底（仅重试一次）
-            if result.error and "JSON 解析错误" in result.error:
-                print(f"[AI] JSON 解析失败，尝试让 AI 修复...")
-                retry_result = self._retry_fix_json(response, result.error)
+            # 首次响应必须同时通过 JSON 解析和业务字段校验，否则尝试修复一次
+            if not result.success:
+                first_error = result.error or "AI 响应未通过校验"
+                print("[AI] 首次响应未通过 JSON/字段校验，尝试修复...")
+
+                retry_result = self._retry_fix_json(response, first_error)
                 if retry_result and retry_result.success and not retry_result.error:
-                    print("[AI] JSON 修复成功")
+                    print("[AI] JSON 修复及字段校验成功")
+                    # 保留首次模型响应，便于后续排查
                     retry_result.raw_response = response
                     result = retry_result
                 else:
-                    print("[AI] JSON 修复失败，使用原始文本兜底")
-
-            # 如果配置未启用 RSS 分析，强制清空 AI 返回的 RSS 洞察
-            if not self.include_rss:
-                result.rss_insights = ""
+                    retry_error = (
+                        retry_result.error
+                        if retry_result and retry_result.error
+                        else "修复请求未返回有效结果"
+                    )
+                    result.success = False
+                    result.error = (
+                        f"首次响应校验失败：{first_error}；"
+                        f"二次修复也未通过校验：{retry_error}"
+                    )
+                    print("[AI] JSON 修复未通过字段校验，按分析失败处理")
 
             # 如果配置未启用 standalone 分析，强制清空
             if not self.include_standalone:
@@ -431,44 +440,44 @@ class AIAnalyzer:
         return news_content, rss_content, hotlist_total, rss_total, total_count
 
     def _retry_fix_json(self, original_response: str, error_msg: str) -> Optional[AIAnalysisResult]:
-        """
-        JSON 解析失败时，请求 AI 修复 JSON（仅重试一次）
-
-        使用轻量 prompt，不重复原始分析的 system prompt，节省 token。
-
-        Args:
-            original_response: AI 原始响应（JSON 格式有误）
-            error_msg: JSON 解析的错误信息
-
-        Returns:
-            修复后的分析结果，失败时返回 None
-        """
+        """修复 AI 响应，并在返回前验证完整的六字段结构。"""
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "你是一个 JSON 修复助手。用户会提供一段格式有误的 JSON 和错误信息，"
-                    "你需要修复 JSON 格式错误并返回正确的 JSON。\n"
-                    "常见问题：字符串值内的双引号未转义、缺少逗号、字符串未正确闭合等。\n"
-                    "只返回纯 JSON，不要包含 markdown 代码块标记（如 ```json）或任何说明文字。"
+                    "你是一个严格的 JSON 响应修复助手。\n"
+                    "你必须返回一个合法 JSON 对象，不能返回 Markdown 代码块或解释文字。\n"
+                    "JSON 必须包含以下六个字段，字段名不得改变：\n"
+                    "core_trends、sentiment_controversy、signals、rss_insights、"
+                    "outlook_strategy、standalone_summaries。\n"
+                    "前五个字段必须是非空字符串；standalone_summaries 必须是对象，"
+                    "其中 key 和 value 都必须是字符串，没有独立展示数据时使用 {}。\n"
+                    "如果原始响应缺少字段或字段为空，只能根据原始响应已有信息补全；"
+                    "无法从原始响应确定的内容填写“未知/无法确定”，不得编造事实。\n"
+                    "保留原始响应中已有的有效分析内容，不要擅自改变结论。\n"
+                    "只返回完整、可解析的纯 JSON。"
                 ),
             },
             {
                 "role": "user",
                 "content": (
-                    f"以下 JSON 解析失败：\n\n"
-                    f"错误：{error_msg}\n\n"
-                    f"原始内容：\n{original_response}\n\n"
-                    f"请修复以上 JSON 中的格式问题（如值中的双引号改用中文引号「」或转义 \\\"、"
-                    f"缺少逗号、不完整的字符串等），保持原始内容语义不变，只修复格式。"
-                    f"直接返回修复后的纯 JSON。"
+                    f"原始响应校验失败，错误如下：\n{error_msg}\n\n"
+                    f"原始 AI 响应如下：\n{original_response}\n\n"
+                    "请修复 JSON 语法和字段结构。必须补齐全部六个字段，"
+                    "前五个字段必须是非空字符串；缺少可靠依据时填写“未知/无法确定”。"
+                    "standalone_summaries 没有数据时返回空对象 {}。"
+                    "不要输出任何 JSON 以外的内容。"
                 ),
             },
         ]
 
         try:
             response = self.client.chat(messages)
-            return self._parse_response(response)
+            repaired_result = self._parse_response(response)
+            if not repaired_result.success:
+                print(f"[AI] 修复响应仍未通过校验：{repaired_result.error}")
+                return repaired_result
+            return repaired_result
         except Exception as e:
             print(f"[AI] 重试修复 JSON 异常: {type(e).__name__}: {e}")
             return None
@@ -576,90 +585,137 @@ class AIAnalyzer:
         return "\n".join(lines)
 
     def _parse_response(self, response: str) -> AIAnalysisResult:
-        """解析 AI 响应"""
-        result = AIAnalysisResult(raw_response=response)
+        """解析并严格校验 AI 响应；任何必需字段缺失或为空都不能标记成功。"""
+        result = AIAnalysisResult(raw_response=response or "")
 
-        if not response or not response.strip():
+        if not isinstance(response, str) or not response.strip():
             result.error = "AI 返回空响应"
             return result
 
-        # 提取 JSON 文本（去掉 markdown 代码块标记）
-        json_str = response
+        response_text = response.strip().lstrip("\ufeff")
+        json_str = response_text
 
-        if "```json" in response:
-            parts = response.split("```json", 1)
-            if len(parts) > 1:
-                code_block = parts[1]
-                end_idx = code_block.find("```")
-                if end_idx != -1:
-                    json_str = code_block[:end_idx]
-                else:
-                    json_str = code_block
-        elif "```" in response:
-            parts = response.split("```", 2)
-            if len(parts) >= 2:
-                json_str = parts[1]
+        # 兼容 ```json ... ``` 或普通 Markdown 代码块
+        if "```" in response_text:
+            parts = response_text.split("```")
+            for block in parts[1::2]:
+                candidate = block.strip()
+                if candidate[:4].lower() == "json":
+                    candidate = candidate[4:].strip()
+                if candidate:
+                    json_str = candidate
+                    break
+
+        # 兼容 JSON 前后意外出现的说明文字，只截取最外层 JSON 对象
+        if not json_str.lstrip().startswith("{"):
+            left = json_str.find("{")
+            right = json_str.rfind("}")
+            if left >= 0 and right > left:
+                json_str = json_str[left:right + 1]
 
         json_str = json_str.strip()
         if not json_str:
             result.error = "提取的 JSON 内容为空"
-            result.core_trends = response[:500] + "..." if len(response) > 500 else response
-            result.success = True
             return result
 
         # 第一步：标准 JSON 解析
         data = None
         parse_error = None
-
         try:
             data = json.loads(json_str)
         except json.JSONDecodeError as e:
             parse_error = e
 
-        # 第二步：json_repair 本地修复
+        # 第二步：尝试本地 JSON 修复；本地修复后仍须通过下面的字段校验
         if data is None:
             try:
                 from json_repair import repair_json
                 repaired = repair_json(json_str, return_objects=True)
                 if isinstance(repaired, dict):
                     data = repaired
-                    print("[AI] JSON 本地修复成功（json_repair）")
-            except Exception:
-                pass
+                    print("[AI] JSON 本地语法修复成功，继续校验字段")
+            except Exception as e:
+                if self.debug:
+                    print(f"[AI] JSON 本地修复不可用或失败：{type(e).__name__}: {e}")
 
-        # 两步都失败，记录错误（后续由 analyze 方法的重试机制处理）
         if data is None:
             if parse_error:
-                error_context = json_str[max(0, parse_error.pos - 30):parse_error.pos + 30] if json_str and parse_error.pos else ""
-                result.error = f"JSON 解析错误 (位置 {parse_error.pos}): {parse_error.msg}"
+                pos = parse_error.pos
+                error_context = json_str[max(0, pos - 30):pos + 30]
+                result.error = f"JSON 解析错误 (位置 {pos}): {parse_error.msg}"
                 if error_context:
                     result.error += f"，上下文: ...{error_context}..."
             else:
-                result.error = "JSON 解析失败"
-            # 兜底：使用已提取的 json_str（不含 markdown 标记），避免推送中出现 ```json
-            result.core_trends = json_str[:500] + "..." if len(json_str) > 500 else json_str
-            result.success = True
+                result.error = "JSON 解析失败，且本地修复未能生成 JSON 对象"
             return result
 
-        # 解析成功，提取字段
-        try:
-            result.core_trends = data.get("core_trends", "")
-            result.sentiment_controversy = data.get("sentiment_controversy", "")
-            result.signals = data.get("signals", "")
-            result.rss_insights = data.get("rss_insights", "")
-            result.outlook_strategy = data.get("outlook_strategy", "")
+        # 顶层必须是 JSON 对象
+        if not isinstance(data, dict):
+            result.error = f"JSON 顶层类型错误：要求 object，实际为 {type(data).__name__}"
+            return result
 
-            # 解析独立展示区概括
-            summaries = data.get("standalone_summaries", {})
-            if isinstance(summaries, dict):
-                result.standalone_summaries = {
-                    str(k): str(v) for k, v in summaries.items()
-                }
+        # 六个字段必须全部存在
+        required_fields = [
+            "core_trends",
+            "sentiment_controversy",
+            "signals",
+            "rss_insights",
+            "outlook_strategy",
+            "standalone_summaries",
+        ]
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            result.error = "AI 响应缺少必需字段：" + ", ".join(missing_fields)
+            return result
 
-            result.success = True
-        except (KeyError, TypeError, AttributeError) as e:
-            result.error = f"字段提取错误: {type(e).__name__}: {e}"
-            result.core_trends = json_str[:500] + "..." if len(json_str) > 500 else json_str
-            result.success = True
+        # 前五个字段必须是非空字符串
+        text_fields = [
+            "core_trends",
+            "sentiment_controversy",
+            "signals",
+            "rss_insights",
+            "outlook_strategy",
+        ]
+        invalid_types = [
+            field for field in text_fields if not isinstance(data.get(field), str)
+        ]
+        if invalid_types:
+            result.error = "AI 分析字段类型错误（必须是字符串）：" + ", ".join(invalid_types)
+            return result
 
+        empty_fields = [
+            field for field in text_fields if not data[field].strip()
+        ]
+        if empty_fields:
+            result.error = "AI 分析字段为空：" + ", ".join(empty_fields)
+            return result
+
+        # 独立展示区必须是 {来源名称: 概括} 的字符串字典；无数据时允许 {}
+        summaries = data.get("standalone_summaries")
+        if not isinstance(summaries, dict):
+            result.error = "AI 响应字段 standalone_summaries 类型错误（必须是对象）"
+            return result
+
+        invalid_summary_items = [
+            str(key) for key, value in summaries.items()
+            if not isinstance(key, str) or not isinstance(value, str)
+        ]
+        if invalid_summary_items:
+            result.error = (
+                "standalone_summaries 中存在非字符串 key/value："
+                + ", ".join(invalid_summary_items[:10])
+            )
+            return result
+
+        # 所有校验通过后，才写入结果并标记成功
+        result.core_trends = data["core_trends"].strip()
+        result.sentiment_controversy = data["sentiment_controversy"].strip()
+        result.signals = data["signals"].strip()
+        result.rss_insights = data["rss_insights"].strip()
+        result.outlook_strategy = data["outlook_strategy"].strip()
+        result.standalone_summaries = {
+            key: value.strip() for key, value in summaries.items()
+        }
+        result.success = True
+        result.error = ""
         return result
