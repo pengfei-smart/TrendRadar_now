@@ -597,7 +597,7 @@ class AIAnalyzer:
         return "\n".join(lines)
 
     def _parse_response(self, response: str) -> AIAnalysisResult:
-        """解析并严格校验 AI 响应；任何必需字段缺失或为空都不能标记成功。"""
+        """解析并严格校验 JSON、业务字段及超短交易作战卡结构。"""
         result = AIAnalysisResult(raw_response=response or "")
 
         if not isinstance(response, str) or not response.strip():
@@ -702,6 +702,68 @@ class AIAnalyzer:
             result.error = "AI 分析字段为空：" + ", ".join(empty_fields)
             return result
 
+        # 第二层业务校验：outlook_strategy 必须包含完整的多行交易作战卡
+        strategy = data["outlook_strategy"].replace("\r\n", "\n").replace("\r", "\n")
+        strategy_lines = strategy.splitlines()
+
+        # 第一项标题必须明确标识为中国 A 股短线交易者
+        trader_heading = re.compile(
+            r"^[ \t]*1\.[ \t]*中国[ \t]*A[ \t]*股短线交易者[ \t]*[:：]"
+        )
+        if not any(trader_heading.match(line) for line in strategy_lines):
+            result.error = (
+                "outlook_strategy 作战卡格式错误：缺少独立标题行"
+                "‘1. 中国A股短线交易者：’"
+            )
+            return result
+
+        required_strategy_labels = [
+            "天时",
+            "地利",
+            "人和",
+            "风险等级",
+            "建议总体仓位",
+            "反向利空路径",
+            "验证点",
+            "今日核心观察点",
+            "盘中触发器",
+            "离场触发器",
+            "进攻方向",
+            "风险红线",
+        ]
+        missing_labels = []
+        merged_labels = []
+        duplicated_labels = []
+
+        for label in required_strategy_labels:
+            label_pattern = re.compile(
+                rf"^[ \t]*{re.escape(label)}[ \t]*[:：]"
+            )
+            matching_lines = [
+                line for line in strategy_lines if label_pattern.match(line)
+            ]
+
+            if not matching_lines:
+                # 标签出现在句子中间，通常表示模型把多个标签合并到了一行
+                if any(label in line for line in strategy_lines):
+                    merged_labels.append(label)
+                else:
+                    missing_labels.append(label)
+            elif len(matching_lines) > 1:
+                duplicated_labels.append(label)
+
+        validation_errors = []
+        if missing_labels:
+            validation_errors.append("缺少标签：" + "、".join(missing_labels))
+        if merged_labels:
+            validation_errors.append("标签未独占一行或与其他内容合并：" + "、".join(merged_labels))
+        if duplicated_labels:
+            validation_errors.append("标签重复出现：" + "、".join(duplicated_labels))
+
+        if validation_errors:
+            result.error = "outlook_strategy 作战卡格式校验失败；" + "；".join(validation_errors)
+            return result
+
         # 独立展示区必须是 {来源名称: 概括} 的字符串字典；无数据时允许 {}
         summaries = data.get("standalone_summaries")
         if not isinstance(summaries, dict):
@@ -724,7 +786,7 @@ class AIAnalyzer:
         result.sentiment_controversy = data["sentiment_controversy"].strip()
         result.signals = data["signals"].strip()
         result.rss_insights = data["rss_insights"].strip()
-        result.outlook_strategy = data["outlook_strategy"].strip()
+        result.outlook_strategy = strategy.strip()
         result.standalone_summaries = {
             key: value.strip() for key, value in summaries.items()
         }
