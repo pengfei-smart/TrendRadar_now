@@ -24,7 +24,7 @@ jobs:
           repository: ${{ github.repository }}
           retain_days: 0
           keep_minimum_runs: 0
-          delete_workflow_pattern: "crawler.yml"
+          delete_workflow_pattern: "Get Hot News"
           delete_workflow_by_state_pattern: "ALL"
           delete_run_by_conclusion_pattern: "ALL"
           dry_run: true
