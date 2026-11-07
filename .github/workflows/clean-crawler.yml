@@ -17,12 +17,14 @@ jobs:
       actions: write
       contents: read
     steps:
-      - name: Delete all workflow runs
+      - name: Delete Get Hot News workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
           retain_days: 0
           keep_minimum_runs: 0
+          delete_workflow_pattern: "crawler.yml"
           delete_workflow_by_state_pattern: "ALL"
           delete_run_by_conclusion_pattern: "ALL"
+          dry_run: true
