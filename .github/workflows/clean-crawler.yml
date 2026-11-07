@@ -27,4 +27,3 @@ jobs:
           delete_workflow_pattern: "Get Hot News"
           delete_workflow_by_state_pattern: "ALL"
           delete_run_by_conclusion_pattern: "ALL"
-          dry_run: true
