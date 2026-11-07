@@ -424,9 +424,9 @@ custom:
       analyze: false
       push: false
 
-    weekday_morning:
-      name: "工作日早间"
-      start: "06:30"
+    morning_decision:
+      name: "工作日早间决策窗口"
+      start: "08:00"
       end: "09:00"
       collect: true
       analyze: true
@@ -438,23 +438,8 @@ custom:
         analyze: true
         push: true
 
-
-    midday_holdings_check:
-      name: "持仓午间扫描"
-      start: "12:10"
-      end: "13:40"
-      collect: true
-      analyze: true
-      ai_mode: "incremental"
-      push: true
-      report_mode: "incremental"
-      filter_method: "keyword"
-      once:
-        analyze: true
-        push: true
-    
-    afternoon_check:
-      name: "下午扫描"
+    afternoon_decision:
+      name: "工作日下午决策窗口"
       start: "14:00"
       end: "15:00"                 # 大约 14 点这一小时内
       collect: true
@@ -467,60 +452,20 @@ custom:
         analyze: true              # 这个时间段内只分析一次
         push: true                 # 只推送一次（避免刷屏）
 
-    weekend_morning:
-      name: "周末早间"
-      start: "10:00"
-      end: "12:00"
-      collect: true
-      analyze: true
-      ai_mode: "daily"
-      push: true
-      report_mode: "daily"
-      filter_method: "ai"
-      once:
-        analyze: true
-        push: true
 
-    evening_analyze:
-      name: "晚间分析"
-      start: "19:00"
-      end: "20:32"
-      collect: true
-      analyze: true
-      ai_mode: "incremental"
-      push: false
-      report_mode: "daily"
-      filter_method: "ai"
-      once:
-        analyze: false
-        push: false
 
-    evening_push:
-      name: "晚间推送"
-      start: "20:33"
-      end: "22:00"
-      collect: true
-      analyze: true
-      ai_mode: "incremental"
-      push: true
-      report_mode: "daily"
-      filter_method: "ai"
-      once:
-        analyze: true
-        push: true
-
-  # 第 2 步：把时间段拼成日计划
+  # 第 2 步：把时间段拼成日计划：工作日使用两个决策窗口
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning","midday_holdings_check","evening_analyze", "evening_push"]
+      periods: ["deep_quiet", "morning_decision", "afternoon_decision"]
 
       # 周六：只收集，不推送（不包含任何 push=true 的时段）
     saturday:
       periods: ["deep_quiet"]
 
-    # 周日：白天只收集；仅晚间推送（20:33-22:00）
+    # 周日：只收集，不推送
     sunday:
-      periods: ["deep_quiet", "evening_push"]
+      periods: ["deep_quiet"]
   # 第 3 步：指定每天用哪个日计划
   week_map:
     1: "workday"                   # 周一 → 工作日计划
@@ -529,7 +474,7 @@ custom:
     4: "workday"                   # 周四
     5: "workday"                   # 周五
     6: "saturday"                  # 周六：只收集，不推送
-    7: "sunday"                    # 周日：白天只收集；仅晚间推送
+    7: "sunday"                    # 周日：只收集，不推送
 
   overlap:
     policy: "error_on_overlap"
