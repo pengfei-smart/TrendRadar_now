@@ -8,10 +8,10 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
 from typing import Iterable, Mapping, Protocol, Sequence
 
 import requests
+import pytz
 
 from trendradar.market_data.models import QuoteSnapshot, Security
 from trendradar.market_data.security_master import normalize_security_code
@@ -62,7 +62,7 @@ def _provider_timestamp(value: object, fallback: str) -> str:
     try:
         if parsed > 10_000_000_000:
             parsed /= 1000
-        return datetime.fromtimestamp(parsed, timezone.utc).astimezone(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
+        return datetime.fromtimestamp(parsed, timezone.utc).astimezone(pytz.timezone("Asia/Shanghai")).isoformat(timespec="seconds")
     except (OverflowError, OSError, ValueError):
         return fallback
 
