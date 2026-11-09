@@ -188,15 +188,27 @@ class QuoteFetcher:
     def fetch(self, securities: Sequence[Security]) -> tuple[list[QuoteSnapshot], str]:
         if not securities:
             return [], "empty_candidate_set"
+
+        requested_by_code: dict[str, Security] = {}
+        for security in securities:
+            code = normalize_security_code(security.code)
+            requested_by_code.setdefault(code, security)
+
+        collected: dict[str, QuoteSnapshot] = {}
+        successful_sources: list[str] = []
         errors: list[str] = []
+
         for provider in self.providers:
+            missing_codes = set(requested_by_code) - set(collected)
+            if not missing_codes:
+                break
+            missing_securities = [requested_by_code[code] for code in sorted(missing_codes)]
             try:
-                quotes = list(provider.fetch_quotes(securities))
+                quotes = list(provider.fetch_quotes(missing_securities))
                 if not quotes:
                     raise QuoteSourceError("行情源返回零条候选报价")
-                requested = {normalize_security_code(item.code) for item in securities}
-                normalized_quotes: list[QuoteSnapshot] = []
-                seen_codes: set[str] = set()
+
+                source_quotes: dict[str, QuoteSnapshot] = {}
                 for quote in quotes:
                     if not isinstance(quote, QuoteSnapshot):
                         raise QuoteSourceError("行情源返回了非QuoteSnapshot记录")
@@ -204,13 +216,27 @@ class QuoteFetcher:
                         code = normalize_security_code(quote.code)
                     except ValueError as exc:
                         raise QuoteSourceError(f"行情源返回非法证券代码: {quote.code}") from exc
-                    if code not in requested:
-                        raise QuoteSourceError(f"行情源返回非候选证券: {code}")
-                    if code in seen_codes:
+                    if code not in missing_codes:
+                        raise QuoteSourceError(f"行情源返回非本次请求候选证券: {code}")
+                    if code in source_quotes:
                         raise QuoteSourceError(f"行情源返回重复证券代码: {code}")
-                    seen_codes.add(code)
-                    normalized_quotes.append(quote if quote.code == code else replace(quote, code=code))
-                return normalized_quotes, provider.source_name
+                    source_quotes[code] = quote if quote.code == code else replace(quote, code=code)
+
+                collected.update(source_quotes)
+                if source_quotes:
+                    successful_sources.append(provider.source_name)
             except (QuoteSourceError, requests.RequestException) as exc:
                 errors.append(f"{provider.source_name}: {exc}")
-        raise QuoteSourceError("所有行情源均失败；" + " | ".join(errors))
+
+        if not collected:
+            raise QuoteSourceError("所有行情源均失败；" + " | ".join(errors))
+
+        # A partial quote set is still useful to the caller, which marks the
+        # radar run partial based on candidate coverage. Do not discard valid
+        # primary data because a fallback source failed.
+        source_label = "+".join(successful_sources) or "unknown_source"
+        if len(collected) < len(requested_by_code):
+            source_label += f":partial_{len(collected)}_of_{len(requested_by_code)}"
+            if errors:
+                source_label += ":fallback_errors"
+        return list(collected.values()), source_label
