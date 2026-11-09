@@ -28,5 +28,7 @@ jobs:
       - name: Install smoke-test dependency
         run: python -m pip install "requests>=2.32.5,<3.0.0"
       - name: Query a small quote sample
+        env:
+          SECURITY_CODES: ${{ inputs.security_codes }}
         run: |
-          python scripts/market_data/live_quote_smoke.py --codes "${{ inputs.security_codes }}"
+          python scripts/market_data/live_quote_smoke.py --codes "$SECURITY_CODES"
