@@ -8,7 +8,7 @@ import json
 import sys
 import time
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
+import pytz
 
 from trendradar.market_data.models import Security
 from trendradar.market_data.quote_fetcher import EastmoneyBatchQuoteProvider
@@ -24,8 +24,32 @@ def parse_codes(raw: str) -> list[str]:
     return codes
 
 
+def _quote_age_seconds(timestamp: str, collected_at: datetime) -> int | None:
+    """Return quote age in seconds; malformed or timezone-naive timestamps are invalid."""
+    try:
+        parsed = datetime.fromisoformat(timestamp)
+        if parsed.tzinfo is None:
+            return None
+        age = (collected_at - parsed.astimezone(timezone.utc)).total_seconds()
+        if age < -60:
+            return None
+        return max(0, int(age))
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def _freshness_status(age_seconds: int | None, max_age_seconds: int) -> str:
+    if age_seconds is None:
+        return "invalid"
+    return "fresh" if age_seconds <= max_age_seconds else "stale"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="东方财富批量行情真实接口抽样检查")
+    parser.add_argument(
+        "--max-age-seconds", type=int, default=180,
+        help="行情时间戳最大允许滞后秒数，默认180秒",
+    )
     parser.add_argument(
         "--codes",
         default="600000,000001,600519,000858,300750",
@@ -47,8 +71,12 @@ def main() -> int:
         for code in codes
     ]
 
+    if args.max_age_seconds < 0:
+        parser.error("--max-age-seconds不能小于0")
+
     started = time.monotonic()
-    collected_at = datetime.now(timezone.utc).astimezone(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
+    shanghai_tz = pytz.timezone("Asia/Shanghai")
+    collected_at = datetime.now(timezone.utc).astimezone(shanghai_tz).isoformat(timespec="seconds")
     try:
         quotes = EastmoneyBatchQuoteProvider().fetch_quotes(securities)
     except Exception as exc:
@@ -62,6 +90,8 @@ def main() -> int:
         }, ensure_ascii=False, indent=2))
         return 1
 
+    collected_dt = datetime.now(timezone.utc)
+    collected_at = collected_dt.astimezone(shanghai_tz).isoformat(timespec="seconds")
     by_code = {quote.code: quote for quote in quotes}
     missing = [code for code in codes if code not in by_code]
     rows = [
@@ -73,11 +103,28 @@ def main() -> int:
             "volume_ratio": by_code[code].volume_ratio,
             "provider_timestamp": by_code[code].timestamp,
             "delayed_or_unverified": by_code[code].delayed,
+            "quote_age_seconds": _quote_age_seconds(by_code[code].timestamp, collected_dt),
+            "freshness": _freshness_status(
+                _quote_age_seconds(by_code[code].timestamp, collected_dt), args.max_age_seconds
+            ),
         }
         for code in codes if code in by_code
     ]
+    freshness_counts = {
+        status: sum(1 for row in rows if row["freshness"] == status)
+        for status in ("fresh", "stale", "invalid")
+    }
+    freshness_status = (
+        "invalid" if freshness_counts["invalid"] else
+        "stale" if freshness_counts["stale"] else
+        "fresh" if rows and freshness_counts["fresh"] == len(rows) else "not_available"
+    )
     result = {
         "status": "passed" if not missing else "partial",
+        "connectivity_status": "passed" if rows else "failed",
+        "freshness_status": freshness_status,
+        "freshness_threshold_seconds": args.max_age_seconds,
+        "freshness_counts": freshness_counts,
         "source": "eastmoney_ulist",
         "requested_count": len(codes),
         "returned_count": len(rows),
