@@ -61,7 +61,7 @@ class MarketRadar:
         if not codes:
             return [], "empty_candidate_set", ""
 
-        fetched = self.quote_fetcher.fetch(codes)
+        fetched = self.quote_fetcher.fetch([securities[code] for code in codes if code in securities])
         # QuoteFetcher facade returns (quotes, source); accept list-only providers
         # as well for backward-compatible lightweight test doubles.
         if isinstance(fetched, tuple) and len(fetched) == 2:
