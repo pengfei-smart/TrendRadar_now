@@ -18,8 +18,8 @@ class StubQuoteFetcher:
     source_name = "stub"
     def __init__(self): self.requested = []
     def fetch(self, codes):
-        self.requested = list(codes)
-        quotes = [QuoteSnapshot(code, "2026-11-09T14:33:00+08:00", change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in codes]
+        self.requested = [item.code for item in codes]
+        quotes = [QuoteSnapshot(code, "2026-11-09T14:33:00+08:00", change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
         return quotes, "stub"
 
 
