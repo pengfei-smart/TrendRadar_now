@@ -6,7 +6,8 @@ Eastmoney public endpoints are unofficial and do not provide a contractual SLA.
 
 from __future__ import annotations
 
-from dataclasses import replace\nfrom datetime import datetime, timezone
+from dataclasses import replace
+from datetime import datetime, timezone
 from typing import Iterable, Mapping, Protocol, Sequence
 
 import requests
@@ -52,7 +53,20 @@ def _parse_number(value: object, *, allow_zero: bool = True) -> float | None:
     return parsed
 
 
-def _provider_timestamp(value: object, fallback: str) -> str:\n    \"\"\"Convert provider Unix seconds/milliseconds to local ISO timestamp.\"\"\"\n    parsed = _parse_number(value, allow_zero=False)\n    if parsed is None:\n        return fallback\n    try:\n        if parsed > 10_000_000_000:\n            parsed /= 1000\n        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec=\"seconds\")\n    except (OverflowError, OSError, ValueError):\n        return fallback\n\n\ndef _diff_records(diff: object) -> list[Mapping[str, object]]:
+def _provider_timestamp(value: object, fallback: str) -> str:
+    \"\"\"Convert provider Unix seconds/milliseconds to local ISO timestamp.\"\"\"
+    parsed = _parse_number(value, allow_zero=False)
+    if parsed is None:
+        return fallback
+    try:
+        if parsed > 10_000_000_000:
+            parsed /= 1000
+        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec=\"seconds\")
+    except (OverflowError, OSError, ValueError):
+        return fallback
+
+
+def _diff_records(diff: object) -> list[Mapping[str, object]]:
     if isinstance(diff, list):
         values = diff
     elif isinstance(diff, dict):
