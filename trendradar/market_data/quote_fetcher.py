@@ -1,4 +1,4 @@
-# 本文件负责候选A股批量行情获取、接口返回规范化、时间/延迟标记及主备行情源降级。
+# 本文件负责候选A股批量行情获取、接口返回规范化、来源时间标记及主备行情源降级。
 """Batch A-share quote providers and a failover facade.
 
 Eastmoney public endpoints are unofficial and do not provide a contractual SLA.
@@ -16,7 +16,7 @@ from trendradar.market_data.security_master import normalize_security_code
 
 
 EASTMONEY_ULIST_URL = "https://push2.eastmoney.com/api/qt/ulist.np/get"
-EASTMONEY_FIELDS = "f2,f3,f4,f5,f6,f8,f10,f12,f13,f14,f15,f16,f17,f18"
+EASTMONEY_FIELDS = "f2,f3,f4,f5,f6,f8,f10,f12,f13,f14,f15,f16,f17,f18,f124"
 
 
 class QuoteSourceError(RuntimeError):
@@ -52,7 +52,7 @@ def _parse_number(value: object, *, allow_zero: bool = True) -> float | None:
     return parsed
 
 
-def _diff_records(diff: object) -> list[Mapping[str, object]]:
+def _provider_timestamp(value: object, fallback: str) -> str:\n    \"\"\"Convert provider Unix seconds/milliseconds to local ISO timestamp.\"\"\"\n    parsed = _parse_number(value, allow_zero=False)\n    if parsed is None:\n        return fallback\n    try:\n        if parsed > 10_000_000_000:\n            parsed /= 1000\n        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec=\"seconds\")\n    except (OverflowError, OSError, ValueError):\n        return fallback\n\n\ndef _diff_records(diff: object) -> list[Mapping[str, object]]:
     if isinstance(diff, list):
         values = diff
     elif isinstance(diff, dict):
@@ -148,7 +148,7 @@ class EastmoneyBatchQuoteProvider:
                     continue
                 output.append(QuoteSnapshot(
                     code=code,
-                    timestamp=collected_at,
+                    timestamp=_provider_timestamp(record.get("f124"), collected_at),
                     price=price,
                     change_pct=change_pct,
                     turnover=turnover,
