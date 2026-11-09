@@ -1,9 +1,9 @@
 # 本文件兼容行情门面返回的(报价列表,来源名称)，并由扫描持久化流程记录实际来源及数据时间。
 """Market opportunity radar orchestration layer."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import perf_counter
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
 from trendradar.market_data.cross_market_mapper import discover_sector_evidence, resolve_trusted_relations
 from trendradar.market_data.models import Candidate, MarketEvent, Security, MappingEvidence
@@ -19,12 +19,12 @@ class MarketRadar:
 
     def __init__(self, quote_fetcher: QuoteFetcher, max_candidates: int = 100,
                  push_limit: int = 10, relation_store: CrossMarketRelationStore | None = None,
-                 result_store: RadarResultStore | None = None):
+                 result_store: RadarResultStore | None = None,\n                 max_quote_age_seconds: int = 900,\n                 clock: Callable[[], datetime] | None = None):
         self.quote_fetcher = quote_fetcher
         self.max_candidates = max(1, max_candidates)
         self.push_limit = max(1, push_limit)
         self.relation_store = relation_store
-        self.result_store = result_store
+        self.result_store = result_store\n        self.max_quote_age_seconds = max(1, max_quote_age_seconds)\n        self.clock = clock or (lambda: datetime.now().astimezone())
 
     def _scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
               trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
@@ -81,7 +81,7 @@ class MarketRadar:
                 evidence = [MappingEvidence(target_code=code, mapping_type="sector_expansion",
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
-            quote = quotes.get(code)\n            # A relation alone must never make a stock push-eligible: require a usable quote.\n            if quote is None or quote.price is None or quote.price <= 0:\n                continue\n            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:\n                continue\n            candidates.append(score_candidate(security, evidence, quote))
+            quote = quotes.get(code)\n            # A relation alone must never make a stock push-eligible: require a usable quote.\n            if quote is None or quote.price is None or quote.price <= 0:\n                continue\n            try:\n                quote_time = datetime.fromisoformat(quote.timestamp)\n                if quote_time.tzinfo is None:\n                    quote_time = quote_time.astimezone()\n                quote_age = (scan_time - quote_time).total_seconds()\n            except (TypeError, ValueError):\n                continue\n            # Reject stale snapshots and timestamps implausibly in the future.\n            if quote_age > self.max_quote_age_seconds or quote_age < -120:\n                continue\n            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:\n                continue\n            candidates.append(score_candidate(security, evidence, quote))
         return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at
 
     def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
