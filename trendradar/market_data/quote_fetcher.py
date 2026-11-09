@@ -61,7 +61,7 @@ def _provider_timestamp(value: object, fallback: str) -> str:
     try:
         if parsed > 10_000_000_000:
             parsed /= 1000
-        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec="seconds")
+        return datetime.fromtimestamp(parsed, timezone.utc).astimezone(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
     except (OverflowError, OSError, ValueError):
         return fallback
 
@@ -194,10 +194,22 @@ class QuoteFetcher:
                 if not quotes:
                     raise QuoteSourceError("行情源返回零条候选报价")
                 requested = {normalize_security_code(item.code) for item in securities}
-                unexpected = [quote.code for quote in quotes if quote.code not in requested]
-                if unexpected:
-                    raise QuoteSourceError(f"行情源返回非候选证券: {unexpected[:5]}")
-                return quotes, provider.source_name
+                normalized_quotes: list[QuoteSnapshot] = []
+                seen_codes: set[str] = set()
+                for quote in quotes:
+                    if not isinstance(quote, QuoteSnapshot):
+                        raise QuoteSourceError("行情源返回了非QuoteSnapshot记录")
+                    try:
+                        code = normalize_security_code(quote.code)
+                    except ValueError as exc:
+                        raise QuoteSourceError(f"行情源返回非法证券代码: {quote.code}") from exc
+                    if code not in requested:
+                        raise QuoteSourceError(f"行情源返回非候选证券: {code}")
+                    if code in seen_codes:
+                        raise QuoteSourceError(f"行情源返回重复证券代码: {code}")
+                    seen_codes.add(code)
+                    normalized_quotes.append(quote if quote.code == code else replace(quote, code=code))
+                return normalized_quotes, provider.source_name
             except (QuoteSourceError, requests.RequestException) as exc:
                 errors.append(f"{provider.source_name}: {exc}")
         raise QuoteSourceError("所有行情源均失败；" + " | ".join(errors))
