@@ -19,12 +19,16 @@ class MarketRadar:
 
     def __init__(self, quote_fetcher: QuoteFetcher, max_candidates: int = 100,
                  push_limit: int = 10, relation_store: CrossMarketRelationStore | None = None,
-                 result_store: RadarResultStore | None = None,\n                 max_quote_age_seconds: int = 900,\n                 clock: Callable[[], datetime] | None = None):
+                 result_store: RadarResultStore | None = None,
+                 max_quote_age_seconds: int = 900,
+                 clock: Callable[[], datetime] | None = None):
         self.quote_fetcher = quote_fetcher
         self.max_candidates = max(1, max_candidates)
         self.push_limit = max(1, push_limit)
         self.relation_store = relation_store
-        self.result_store = result_store\n        self.max_quote_age_seconds = max(1, max_quote_age_seconds)\n        self.clock = clock or (lambda: datetime.now().astimezone())
+        self.result_store = result_store
+        self.max_quote_age_seconds = max(1, max_quote_age_seconds)
+        self.clock = clock or (lambda: datetime.now().astimezone())
 
     def _scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
               trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
@@ -81,8 +85,25 @@ class MarketRadar:
                 evidence = [MappingEvidence(target_code=code, mapping_type="sector_expansion",
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
-            quote = quotes.get(code)\n            # A relation alone must never make a stock push-eligible: require a usable quote.\n            if quote is None or quote.price is None or quote.price <= 0:\n                continue\n            try:\n                quote_time = datetime.fromisoformat(quote.timestamp)\n                if quote_time.tzinfo is None:\n                    quote_time = quote_time.astimezone()\n                quote_age = (scan_time - quote_time).total_seconds()\n            except (TypeError, ValueError):\n                continue\n            # Reject stale snapshots and timestamps implausibly in the future.\n            if quote_age > self.max_quote_age_seconds or quote_age < -120:\n                continue\n            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:\n                continue\n            candidates.append(score_candidate(security, evidence, quote))
-        quality_status = "success" if len(candidates) == eligible_security_count else "partial"\n        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at, quality_status
+            quote = quotes.get(code)
+            # A relation alone must never make a stock push-eligible: require a usable quote.
+            if quote is None or quote.price is None or quote.price <= 0:
+                continue
+            try:
+                quote_time = datetime.fromisoformat(quote.timestamp)
+                if quote_time.tzinfo is None:
+                    quote_time = quote_time.astimezone()
+                quote_age = (scan_time - quote_time).total_seconds()
+            except (TypeError, ValueError):
+                continue
+            # Reject stale snapshots and timestamps implausibly in the future.
+            if quote_age > self.max_quote_age_seconds or quote_age < -120:
+                continue
+            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:
+                continue
+            candidates.append(score_candidate(security, evidence, quote))
+        quality_status = "success" if len(candidates) == eligible_security_count else "partial"
+        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at, quality_status
 
     def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
              trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
