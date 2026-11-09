@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 from trendradar.market_data.models import Security
-from trendradar.market_data.quote_fetcher import EastmoneyBatchQuoteProvider, QuoteSourceError
+from trendradar.market_data.quote_fetcher import EastmoneyBatchQuoteProvider
 
 
 def parse_codes(raw: str) -> list[str]:
@@ -51,7 +51,7 @@ def main() -> int:
     collected_at = datetime.now(timezone.utc).astimezone(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
     try:
         quotes = EastmoneyBatchQuoteProvider().fetch_quotes(securities)
-    except (QuoteSourceError, Exception) as exc:
+    except Exception as exc:
         print(json.dumps({
             "status": "failed",
             "source": "eastmoney_ulist",
