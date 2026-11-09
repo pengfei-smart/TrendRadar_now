@@ -19,6 +19,18 @@ class QuoteFetcherTests(unittest.TestCase):
         self.assertEqual(eastmoney_secid(Security("000001", "平安银行", "SZ")), "0.000001")
         self.assertEqual(eastmoney_secid(Security("830799", "北交所证券", "BJ")), "0.830799")
 
+    def test_uses_provider_timestamp_when_present(self):
+        session = Mock()
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"data": {"diff": [
+            {"f12": "600000", "f2": 10.25, "f3": 1.5, "f6": 123456.0, "f10": 1.2, "f124": 1794205980}
+        ]}}
+        session.get.return_value = response
+        provider = EastmoneyBatchQuoteProvider(session=session)
+        quote = provider.fetch_quotes([Security("600000", "浦发银行", "SH")])[0]
+        self.assertEqual(quote.timestamp, "2026-11-09T14:33:00+08:00")
+
     def test_fetches_batches_and_filters_candidates(self):
         session = Mock()
         first = Mock()
