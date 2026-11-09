@@ -121,6 +121,55 @@ class QuoteFetcherTests(unittest.TestCase):
         self.assertEqual(len(quotes), 1)
         self.assertEqual(quotes[0].code, "600000")
 
+    def test_quote_fetcher_fills_missing_quotes_from_secondary(self):
+        class PartialPrimary:
+            source_name = "primary"
+            def __init__(self):
+                self.requested = []
+            def fetch_quotes(self, securities):
+                self.requested = [item.code for item in securities]
+                return [QuoteSnapshot("600000", "2026-01-01T14:33:00+08:00",
+                                      price=10, change_pct=1, turnover=100, source="primary")]
+
+        class Secondary:
+            source_name = "secondary"
+            def __init__(self):
+                self.requested = []
+            def fetch_quotes(self, securities):
+                self.requested = [item.code for item in securities]
+                return [QuoteSnapshot("000001", "2026-01-01T14:33:00+08:00",
+                                      price=12, change_pct=2, turnover=200, source="secondary")]
+
+        primary = PartialPrimary()
+        secondary = Secondary()
+        quotes, source = QuoteFetcher([primary, secondary]).fetch([
+            Security("600000", "浦发银行", "SH"),
+            Security("000001", "平安银行", "SZ"),
+        ])
+        self.assertEqual({quote.code for quote in quotes}, {"600000", "000001"})
+        self.assertEqual(primary.requested, ["600000", "000001"])
+        self.assertEqual(secondary.requested, ["000001"])
+        self.assertEqual(source, "primary+secondary")
+
+    def test_partial_primary_quotes_are_kept_if_secondary_fails(self):
+        class PartialPrimary:
+            source_name = "primary"
+            def fetch_quotes(self, securities):
+                return [QuoteSnapshot("600000", "2026-01-01T14:33:00+08:00",
+                                      price=10, change_pct=1, turnover=100, source="primary")]
+
+        class BrokenSecondary:
+            source_name = "secondary"
+            def fetch_quotes(self, securities):
+                raise QuoteSourceError("fallback offline")
+
+        quotes, source = QuoteFetcher([PartialPrimary(), BrokenSecondary()]).fetch([
+            Security("600000", "浦发银行", "SH"),
+            Security("000001", "平安银行", "SZ"),
+        ])
+        self.assertEqual([quote.code for quote in quotes], ["600000"])
+        self.assertEqual(source, "primary:partial_1_of_2:fallback_errors")
+
     def test_quote_fetcher_fails_if_all_sources_unavailable(self):
         class Broken:
             source_name = "provider"
