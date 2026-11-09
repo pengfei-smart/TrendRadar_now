@@ -1,4 +1,4 @@
-# 本文件组装事件映射、可信关系库、候选扩展、批量行情、评分排序及扫描结果持久化流程。
+# 本文件兼容行情门面返回的(报价列表,来源名称)，并由扫描持久化流程记录实际来源及数据时间。
 """Market opportunity radar orchestration layer."""
 
 from datetime import datetime
@@ -26,11 +26,10 @@ class MarketRadar:
         self.relation_store = relation_store
         self.result_store = result_store
 
-    def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
-             trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
-             direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
-             limit_results: bool = True) -> list[Candidate]:
-        """Scan candidates; set limit_results=False to retain full ranked candidate list."""
+    def _scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
+              trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
+              direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
+              limit_results: bool = True) -> tuple[list[Candidate], str, str]:
         direct_event_evidence = direct_event_evidence or {}
         relation_map = trusted_relations
         if relation_map is None:
@@ -59,7 +58,19 @@ class MarketRadar:
 
         expanded = expand_by_sectors(direct_codes, securities, target_sectors)
         codes = list(dict.fromkeys([*sorted(direct_codes), *expanded]))[:self.max_candidates]
-        quotes = {q.code: q for q in self.quote_fetcher.fetch(codes)}
+        if not codes:
+            return [], "empty_candidate_set", ""
+
+        fetched = self.quote_fetcher.fetch(codes)
+        # QuoteFetcher facade returns (quotes, source); accept list-only providers
+        # as well for backward-compatible lightweight test doubles.
+        if isinstance(fetched, tuple) and len(fetched) == 2:
+            quote_items, quote_source = fetched
+        else:
+            quote_items, quote_source = fetched, getattr(self.quote_fetcher, "source_name", "")
+        quotes = {q.code: q for q in quote_items}
+        quote_data_at = max((q.timestamp for q in quote_items if q.timestamp), default="")
+
         candidates: list[Candidate] = []
         for code in codes:
             security = securities.get(code)
@@ -71,7 +82,15 @@ class MarketRadar:
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
             candidates.append(score_candidate(security, evidence, quotes.get(code)))
-        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit)
+        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at
+
+    def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
+             trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
+             direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
+             limit_results: bool = True) -> list[Candidate]:
+        """Return ranked candidates; set limit_results=False to retain full candidate list."""
+        candidates, _, _ = self._scan(events, securities, trusted_relations, direct_event_evidence, limit_results)
+        return candidates
 
     def scan_and_persist(self, events: Sequence[MarketEvent], securities: Mapping[str, Security], *,
                          run_at: str | None = None, run_type: str = "snapshot",
@@ -86,15 +105,18 @@ class MarketRadar:
         started = perf_counter()
         run_id = self.result_store.start_run(run_at, run_type, notes)
         try:
-            ranked = self.scan(events, securities, trusted_relations, direct_event_evidence, limit_results=False)
+            ranked, actual_source, actual_data_at = self._scan(
+                events, securities, trusted_relations, direct_event_evidence, limit_results=False)
             selected = ranked[:self.push_limit]
             self.result_store.finish_run(run_id, ranked, status="success",
-                pushed_codes=[candidate.security.code for candidate in selected], source_status=source_status,
-                quote_source=quote_source, quote_data_at=quote_data_at,
+                pushed_codes=[candidate.security.code for candidate in selected],
+                source_status=source_status or (f"quote:success:{actual_source}" if actual_source else "quote:empty"),
+                quote_source=quote_source or actual_source, quote_data_at=quote_data_at or actual_data_at,
                 duration_ms=int((perf_counter()-started)*1000), notes=notes)
             return selected
         except Exception as exc:
-            self.result_store.finish_run(run_id, [], status="failed", source_status=source_status,
+            self.result_store.finish_run(run_id, [], status="failed",
+                source_status=source_status or f"quote:failed:{type(exc).__name__}",
                 quote_source=quote_source, quote_data_at=quote_data_at,
                 duration_ms=int((perf_counter()-started)*1000),
                 notes=f"{notes} | {type(exc).__name__}: {exc}".strip(" |"))
