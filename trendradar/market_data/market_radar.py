@@ -29,7 +29,7 @@ class MarketRadar:
     def _scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
               trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
               direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
-              limit_results: bool = True) -> tuple[list[Candidate], str, str]:
+              limit_results: bool = True) -> tuple[list[Candidate], str, str, str]:
         direct_event_evidence = direct_event_evidence or {}
         relation_map = trusted_relations
         if relation_map is None:
@@ -59,7 +59,7 @@ class MarketRadar:
         expanded = expand_by_sectors(direct_codes, securities, target_sectors)
         codes = list(dict.fromkeys([*sorted(direct_codes), *expanded]))[:self.max_candidates]
         if not codes:
-            return [], "empty_candidate_set", ""
+            return [], "empty_candidate_set", "", "success"
 
         fetched = self.quote_fetcher.fetch([securities[code] for code in codes if code in securities])
         # QuoteFetcher facade returns (quotes, source); accept list-only providers
@@ -82,14 +82,14 @@ class MarketRadar:
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
             quote = quotes.get(code)\n            # A relation alone must never make a stock push-eligible: require a usable quote.\n            if quote is None or quote.price is None or quote.price <= 0:\n                continue\n            try:\n                quote_time = datetime.fromisoformat(quote.timestamp)\n                if quote_time.tzinfo is None:\n                    quote_time = quote_time.astimezone()\n                quote_age = (scan_time - quote_time).total_seconds()\n            except (TypeError, ValueError):\n                continue\n            # Reject stale snapshots and timestamps implausibly in the future.\n            if quote_age > self.max_quote_age_seconds or quote_age < -120:\n                continue\n            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:\n                continue\n            candidates.append(score_candidate(security, evidence, quote))
-        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at
+        quality_status = "success" if len(candidates) == eligible_security_count else "partial"\n        return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at, quality_status
 
     def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
              trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
              direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
              limit_results: bool = True) -> list[Candidate]:
         """Return ranked candidates; set limit_results=False to retain full candidate list."""
-        candidates, _, _ = self._scan(events, securities, trusted_relations, direct_event_evidence, limit_results)
+        candidates, _, _, _ = self._scan(events, securities, trusted_relations, direct_event_evidence, limit_results)
         return candidates
 
     def scan_and_persist(self, events: Sequence[MarketEvent], securities: Mapping[str, Security], *,
@@ -105,12 +105,12 @@ class MarketRadar:
         started = perf_counter()
         run_id = self.result_store.start_run(run_at, run_type, notes)
         try:
-            ranked, actual_source, actual_data_at = self._scan(
+            ranked, actual_source, actual_data_at, quality_status = self._scan(
                 events, securities, trusted_relations, direct_event_evidence, limit_results=False)
             selected = ranked[:self.push_limit]
-            self.result_store.finish_run(run_id, ranked, status="success",
+            self.result_store.finish_run(run_id, ranked, status=quality_status,
                 pushed_codes=[candidate.security.code for candidate in selected],
-                source_status=source_status or (f"quote:success:{actual_source}" if actual_source else "quote:empty"),
+                source_status=source_status or (f"quote:{quality_status}:{actual_source}" if actual_source else "quote:empty"),
                 quote_source=quote_source or actual_source, quote_data_at=quote_data_at or actual_data_at,
                 duration_ms=int((perf_counter()-started)*1000), notes=notes)
             return selected
