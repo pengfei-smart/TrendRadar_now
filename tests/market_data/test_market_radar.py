@@ -3,6 +3,7 @@
 
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from trendradar.market_data.models import Security, QuoteSnapshot, MappingEvidence, MarketEvent
