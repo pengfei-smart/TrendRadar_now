@@ -7,7 +7,7 @@ Eastmoney public endpoints are unofficial and do not provide a contractual SLA.
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import datetime, timezone\nfrom zoneinfo import ZoneInfo
 from typing import Iterable, Mapping, Protocol, Sequence
 
 import requests
