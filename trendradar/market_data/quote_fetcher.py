@@ -54,14 +54,14 @@ def _parse_number(value: object, *, allow_zero: bool = True) -> float | None:
 
 
 def _provider_timestamp(value: object, fallback: str) -> str:
-    \"\"\"Convert provider Unix seconds/milliseconds to local ISO timestamp.\"\"\"
+    """Convert provider Unix seconds/milliseconds to local ISO timestamp."""
     parsed = _parse_number(value, allow_zero=False)
     if parsed is None:
         return fallback
     try:
         if parsed > 10_000_000_000:
             parsed /= 1000
-        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec=\"seconds\")
+        return datetime.fromtimestamp(parsed, timezone.utc).astimezone().isoformat(timespec="seconds")
     except (OverflowError, OSError, ValueError):
         return fallback
 
