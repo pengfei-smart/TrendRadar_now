@@ -1,9 +1,10 @@
-# 本文件负责独立市场SQLite初始化、版本迁移、事务写入与行情/事件持久化，属于市场数据库详细设计阶段。
+# 本文件负责独立市场SQLite初始化、版本迁移、事务写入与行情/事件持久化。
 """Standalone SQLite storage and safe schema migration for market radar."""
 
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Iterator
 
 from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSnapshot, Security
 
@@ -18,14 +19,23 @@ class MarketStorage:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize()
 
-    def connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def connect(self) -> Iterator[sqlite3.Connection]:
+        """Yield a configured connection and always close it after the transaction."""
         connection = sqlite3.connect(str(self.db_path), timeout=20)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA foreign_keys=ON")
-        connection.execute("PRAGMA busy_timeout=20000")
-        connection.execute("PRAGMA journal_mode=WAL")
-        connection.execute("PRAGMA synchronous=FULL")
-        return connection
+        try:
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA foreign_keys=ON")
+            connection.execute("PRAGMA busy_timeout=20000")
+            connection.execute("PRAGMA journal_mode=WAL")
+            connection.execute("PRAGMA synchronous=FULL")
+            yield connection
+            connection.commit()
+        except Exception:
+            connection.rollback()
+            raise
+        finally:
+            connection.close()
 
     @staticmethod
     def _columns(connection: sqlite3.Connection, table: str) -> set[str]:
@@ -46,71 +56,56 @@ class MarketStorage:
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='security_master'"
         ).fetchone():
             cls._add_missing_columns(connection, "security_master", {
-                "name_en": "TEXT NOT NULL DEFAULT ''",
-                "board": "TEXT NOT NULL DEFAULT ''",
-                "listing_date": "TEXT NOT NULL DEFAULT ''",
-                "delisting_date": "TEXT NOT NULL DEFAULT ''",
-                "source": "TEXT NOT NULL DEFAULT ''",
-                "source_updated_at": "TEXT NOT NULL DEFAULT ''",
-                "first_seen_at": "TEXT NOT NULL DEFAULT ''",
-                "last_seen_at": "TEXT NOT NULL DEFAULT ''",
+                "name_en": "TEXT NOT NULL DEFAULT ''", "board": "TEXT NOT NULL DEFAULT ''",
+                "listing_date": "TEXT NOT NULL DEFAULT ''", "delisting_date": "TEXT NOT NULL DEFAULT ''",
+                "source": "TEXT NOT NULL DEFAULT ''", "source_updated_at": "TEXT NOT NULL DEFAULT ''",
+                "first_seen_at": "TEXT NOT NULL DEFAULT ''", "last_seen_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='sector_master'"
         ).fetchone():
             cls._add_missing_columns(connection, "sector_master", {
-                "sector_type": "TEXT NOT NULL DEFAULT 'industry'",
-                "provider": "TEXT NOT NULL DEFAULT ''",
-                "source_url": "TEXT NOT NULL DEFAULT ''",
-                "source_updated_at": "TEXT NOT NULL DEFAULT ''",
+                "sector_type": "TEXT NOT NULL DEFAULT 'industry'", "provider": "TEXT NOT NULL DEFAULT ''",
+                "source_url": "TEXT NOT NULL DEFAULT ''", "source_updated_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='sector_membership'"
         ).fetchone():
             cls._add_missing_columns(connection, "sector_membership", {
-                "source_url": "TEXT NOT NULL DEFAULT ''",
-                "updated_at": "TEXT NOT NULL DEFAULT ''",
+                "source_url": "TEXT NOT NULL DEFAULT ''", "updated_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='cross_market_map'"
         ).fetchone():
             cls._add_missing_columns(connection, "cross_market_map", {
-                "us_ticker": "TEXT NOT NULL DEFAULT ''",
-                "reviewer": "TEXT NOT NULL DEFAULT ''",
-                "valid_from": "TEXT NOT NULL DEFAULT ''",
-                "valid_to": "TEXT NOT NULL DEFAULT ''",
+                "us_ticker": "TEXT NOT NULL DEFAULT ''", "reviewer": "TEXT NOT NULL DEFAULT ''",
+                "valid_from": "TEXT NOT NULL DEFAULT ''", "valid_to": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='market_events'"
         ).fetchone():
             cls._add_missing_columns(connection, "market_events", {
-                "source_event_id": "TEXT NOT NULL DEFAULT ''",
-                "language": "TEXT NOT NULL DEFAULT ''",
-                "content_hash": "TEXT NOT NULL DEFAULT ''",
-                "updated_at": "TEXT NOT NULL DEFAULT ''",
+                "source_event_id": "TEXT NOT NULL DEFAULT ''", "language": "TEXT NOT NULL DEFAULT ''",
+                "content_hash": "TEXT NOT NULL DEFAULT ''", "updated_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='event_candidates'"
         ).fetchone():
             cls._add_missing_columns(connection, "event_candidates", {
-                "evidence_hash": "TEXT NOT NULL DEFAULT ''",
-                "updated_at": "TEXT NOT NULL DEFAULT ''",
+                "evidence_hash": "TEXT NOT NULL DEFAULT ''", "updated_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='market_snapshots'"
         ).fetchone():
             cls._add_missing_columns(connection, "market_snapshots", {
-                "trading_date": "TEXT NOT NULL DEFAULT ''",
-                "collected_at": "TEXT NOT NULL DEFAULT ''",
+                "trading_date": "TEXT NOT NULL DEFAULT ''", "collected_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='radar_runs'"
         ).fetchone():
             cls._add_missing_columns(connection, "radar_runs", {
-                "run_type": "TEXT NOT NULL DEFAULT 'snapshot'",
-                "status": "TEXT NOT NULL DEFAULT 'started'",
-                "quote_source": "TEXT NOT NULL DEFAULT ''",
-                "quote_data_at": "TEXT NOT NULL DEFAULT ''",
+                "run_type": "TEXT NOT NULL DEFAULT 'snapshot'", "status": "TEXT NOT NULL DEFAULT 'started'",
+                "quote_source": "TEXT NOT NULL DEFAULT ''", "quote_data_at": "TEXT NOT NULL DEFAULT ''",
                 "duration_ms": "INTEGER NOT NULL DEFAULT 0",
             })
 
@@ -163,6 +158,11 @@ class MarketStorage:
                 ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP""",
                 (str(self.SCHEMA_VERSION),),
             )
+
+    def count_securities(self) -> int:
+        with self.connect() as connection:
+            row = connection.execute("SELECT COUNT(*) AS count FROM security_master").fetchone()
+            return int(row["count"])
 
     def upsert_securities(self, securities: Iterable[Security]) -> int:
         rows = [(s.code, s.name, s.exchange, s.listing_status, int(s.risk_flag)) for s in securities]
