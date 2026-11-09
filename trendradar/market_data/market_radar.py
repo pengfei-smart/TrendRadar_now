@@ -81,7 +81,7 @@ class MarketRadar:
                 evidence = [MappingEvidence(target_code=code, mapping_type="sector_expansion",
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
-            candidates.append(score_candidate(security, evidence, quotes.get(code)))
+            quote = quotes.get(code)\n            # A relation alone must never make a stock push-eligible: require a usable quote.\n            if quote is None or quote.price is None or quote.price <= 0:\n                continue\n            if quote.change_pct is None or quote.turnover is None or quote.turnover < 0:\n                continue\n            candidates.append(score_candidate(security, evidence, quote))
         return rank_candidates(candidates, self.max_candidates if not limit_results else self.push_limit), quote_source, quote_data_at
 
     def scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
