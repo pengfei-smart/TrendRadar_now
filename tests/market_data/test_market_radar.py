@@ -95,6 +95,25 @@ class MarketRadarTests(unittest.TestCase):
         result = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
         self.assertEqual([item.security.code for item in result], ["600002"])
 
+    def test_persistence_marks_partial_when_quote_coverage_incomplete(self):
+        class OneQuoteFetcher:
+            source_name = "partial_provider"
+            def fetch(self, securities):
+                timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+                return ([QuoteSnapshot("600000", timestamp, price=10, change_pct=1, turnover=100, source="partial_provider")], "partial_provider")
+        with tempfile.TemporaryDirectory() as temp:
+            store = RadarResultStore(str(Path(temp) / "market.db"))
+            radar = MarketRadar(OneQuoteFetcher(), result_store=store)
+            securities = {"600000": Security("600000", "has quote"), "600001": Security("600001", "missing quote")}
+            evidence = {"e1": [MappingEvidence(code, "direct_business", .9, "event evidence", verified=True) for code in securities]}
+            selected = radar.scan_and_persist([MarketEvent("e1", "rss", "event", "now")], securities, direct_event_evidence=evidence)
+            self.assertEqual([item.security.code for item in selected], ["600000"])
+            with store.connect() as conn:
+                run = conn.execute("SELECT status,candidate_count,source_status FROM radar_runs").fetchone()
+            self.assertEqual(run["status"], "partial")
+            self.assertEqual(run["candidate_count"], 1)
+            self.assertIn("quote:partial", run["source_status"])
+
     def test_scan_and_persist_saves_all_ranked_candidates_and_push_selection(self):
         with tempfile.TemporaryDirectory() as temp:
             store = RadarResultStore(str(Path(temp) / "market.db")); fetcher = StubQuoteFetcher()
