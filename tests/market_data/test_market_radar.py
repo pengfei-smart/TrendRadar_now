@@ -67,6 +67,20 @@ class MarketRadarTests(unittest.TestCase):
             self.assertEqual(radar.scan([event], {"688012": Security("688012", "中微公司")}), [])
             self.assertEqual(fetcher.requested, [])
 
+    def test_scan_excludes_candidate_with_missing_or_invalid_quote(self):
+        class PartialQuoteFetcher:
+            source_name = "partial"
+            def fetch(self, securities):
+                return ([QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source="partial"),
+                         QuoteSnapshot("600001", "2026-11-09T14:33:00+08:00", price=None, change_pct=2, turnover=200, source="partial")], "partial")
+        radar = MarketRadar(PartialQuoteFetcher())
+        securities = {"600000": Security("600000", "有效报价"), "600001": Security("600001", "缺少价格") , "600002": Security("600002", "无报价")}
+        evidence = {"e1": [MappingEvidence("600000", "direct_business", .9, "evidence", verified=True),
+                            MappingEvidence("600001", "direct_business", .9, "evidence", verified=True),
+                            MappingEvidence("600002", "direct_business", .9, "evidence", verified=True)]}
+        results = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
+        self.assertEqual([item.security.code for item in results], ["600000"])
+
     def test_scan_and_persist_saves_all_ranked_candidates_and_push_selection(self):
         with tempfile.TemporaryDirectory() as temp:
             store = RadarResultStore(str(Path(temp) / "market.db")); fetcher = StubQuoteFetcher()
