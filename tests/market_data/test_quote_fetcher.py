@@ -147,7 +147,7 @@ class QuoteFetcherTests(unittest.TestCase):
             Security("000001", "平安银行", "SZ"),
         ])
         self.assertEqual({quote.code for quote in quotes}, {"600000", "000001"})
-        self.assertEqual(primary.requested, ["600000", "000001"])
+        self.assertEqual(primary.requested, ["000001", "600000"])  # 请求顺序按证券代码排序，保证批量调用稳定可复现。
         self.assertEqual(secondary.requested, ["000001"])
         self.assertEqual(source, "primary+secondary")
 
