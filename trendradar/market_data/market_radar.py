@@ -1,7 +1,7 @@
 # 本文件兼容行情门面返回的(报价列表,来源名称)，并由扫描持久化流程记录实际来源及数据时间。
 """Market opportunity radar orchestration layer."""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from time import perf_counter
 from typing import Callable, Mapping, Sequence
 
@@ -76,6 +76,10 @@ class MarketRadar:
         quote_data_at = max((q.timestamp for q in quote_items if q.timestamp), default="")
 
         candidates: list[Candidate] = []
+        eligible_security_count = sum(1 for code in codes if code in securities and securities[code].listing_status == "active" and not securities[code].risk_flag)
+        scan_time = self.clock()
+        if scan_time.tzinfo is None:
+            scan_time = scan_time.astimezone()
         for code in codes:
             security = securities.get(code)
             if not security or security.listing_status != "active" or security.risk_flag:
