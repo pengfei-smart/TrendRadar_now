@@ -106,6 +106,21 @@ class QuoteFetcherTests(unittest.TestCase):
         self.assertEqual(source, "secondary")
         self.assertEqual(len(quotes), 1)
 
+    def test_quote_fetcher_rejects_duplicate_codes_and_falls_back(self):
+        class DuplicateProvider:
+            source_name = "duplicate"
+            def fetch_quotes(self, securities):
+                quote = QuoteSnapshot("600000", "2026-01-01T14:33:00+08:00", price=10)
+                return [quote, quote]
+        class ValidProvider:
+            source_name = "valid"
+            def fetch_quotes(self, securities):
+                return [QuoteSnapshot("600000.SH", "2026-01-01T14:33:00+08:00", price=10)]
+        quotes, source = QuoteFetcher([DuplicateProvider(), ValidProvider()]).fetch([Security("600000", "浦发银行", "SH")])
+        self.assertEqual(source, "valid")
+        self.assertEqual(len(quotes), 1)
+        self.assertEqual(quotes[0].code, "600000")
+
     def test_quote_fetcher_fails_if_all_sources_unavailable(self):
         class Broken:
             source_name = "provider"
