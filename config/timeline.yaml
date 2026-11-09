@@ -408,7 +408,7 @@ custom:
                                    #   incremental → 自上次分析/推送以来的新增
     push: false                    # 默认不推送
     report_mode: "incremental"     # 报告模式：只推送新增内容
-    filter_method: "ai"            # 默认用 AI 兴趣筛选（晚间/周末会用到）
+    filter_method: "keyword"            # 默认用关键词筛选（决策窗口可单独覆盖）
     once:
       analyze: false               # 默认不限制（由各 period 单独控制）
       push: false
