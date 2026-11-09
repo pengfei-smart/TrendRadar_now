@@ -19,7 +19,7 @@ class StubQuoteFetcher:
     def __init__(self): self.requested = []
     def fetch(self, codes):
         self.requested = [item.code for item in codes]
-        quotes = [QuoteSnapshot(code, "2026-11-09T14:33:00+08:00", change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
+        quotes = [QuoteSnapshot(code, datetime.now().astimezone().isoformat(timespec="seconds"), change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
         return quotes, "stub"
 
 
@@ -73,13 +73,27 @@ class MarketRadarTests(unittest.TestCase):
             def fetch(self, securities):
                 return ([QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source="partial"),
                          QuoteSnapshot("600001", "2026-11-09T14:33:00+08:00", price=None, change_pct=2, turnover=200, source="partial")], "partial")
-        radar = MarketRadar(PartialQuoteFetcher())
+        radar = MarketRadar(PartialQuoteFetcher(), clock=lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00"))
         securities = {"600000": Security("600000", "有效报价"), "600001": Security("600001", "缺少价格") , "600002": Security("600002", "无报价")}
         evidence = {"e1": [MappingEvidence("600000", "direct_business", .9, "evidence", verified=True),
                             MappingEvidence("600001", "direct_business", .9, "evidence", verified=True),
                             MappingEvidence("600002", "direct_business", .9, "evidence", verified=True)]}
         results = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
         self.assertEqual([item.security.code for item in results], ["600000"])
+
+    def test_scan_excludes_stale_and_future_quotes(self):
+        class TimestampQuoteFetcher:
+            source_name = "timestamp"
+            def fetch(self, securities):
+                return ([QuoteSnapshot("600000", "2026-11-09T14:20:00+08:00", price=10, change_pct=1, turnover=100),
+                         QuoteSnapshot("600001", "2026-11-09T14:35:30+08:00", price=10, change_pct=1, turnover=100),
+                         QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100)], "timestamp")
+        fixed_clock = lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00")
+        radar = MarketRadar(TimestampQuoteFetcher(), max_quote_age_seconds=900, clock=fixed_clock)
+        securities = {code: Security(code, code) for code in ("600000", "600001", "600002")}
+        evidence = {"e1": [MappingEvidence(code, "direct_business", .9, "source", verified=True) for code in securities]}
+        result = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
+        self.assertEqual([item.security.code for item in result], ["600002"])
 
     def test_scan_and_persist_saves_all_ranked_candidates_and_push_selection(self):
         with tempfile.TemporaryDirectory() as temp:
