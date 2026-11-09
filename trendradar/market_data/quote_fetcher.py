@@ -134,7 +134,7 @@ class EastmoneyBatchQuoteProvider:
 
         secid_to_code = {eastmoney_secid(item): code for code, item in by_code.items()}
         secids = list(secid_to_code)
-        collected_at = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+        collected_at = datetime.now(timezone.utc).astimezone(pytz.timezone("Asia/Shanghai")).isoformat(timespec="seconds")
         output: list[QuoteSnapshot] = []
         seen: set[str] = set()
 
