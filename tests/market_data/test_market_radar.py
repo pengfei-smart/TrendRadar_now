@@ -20,7 +20,7 @@ class StubQuoteFetcher:
     def __init__(self): self.requested = []
     def fetch(self, codes):
         self.requested = [item.code for item in codes]
-        quotes = [QuoteSnapshot(code, datetime.now().astimezone().isoformat(timespec="seconds"), change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
+        quotes = [QuoteSnapshot(code, datetime.now().astimezone().isoformat(timespec="seconds"), price=10.0, change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
         return quotes, "stub"
 
 
@@ -86,7 +86,7 @@ class MarketRadarTests(unittest.TestCase):
         class TimestampQuoteFetcher:
             source_name = "timestamp"
             def fetch(self, securities):
-                return ([QuoteSnapshot("600000", "2026-11-09T14:20:00+08:00", price=10, change_pct=1, turnover=100),
+                return ([QuoteSnapshot("600000", "2026-11-09T14:17:00+08:00", price=10, change_pct=1, turnover=100),
                          QuoteSnapshot("600001", "2026-11-09T14:35:30+08:00", price=10, change_pct=1, turnover=100),
                          QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100)], "timestamp")
         fixed_clock = lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00")
