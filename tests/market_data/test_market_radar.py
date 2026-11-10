@@ -15,9 +15,10 @@ from trendradar.market_data.cross_market_mapper import discover_sector_evidence
 from trendradar.market_data.opportunity_ranker import score_candidate, rank_candidates
 
 
-def active_security(code, name):
+def active_security(code, name, **kwargs):
     exchange = "SZ" if code.startswith(("0", "3")) else "SH"
-    return active_security(code, name, exchange=exchange, listing_status="active")
+    kwargs.setdefault("listing_status", "active")
+    return Security(code, name, exchange=exchange, **kwargs)
 
 
 class StubQuoteFetcher:
