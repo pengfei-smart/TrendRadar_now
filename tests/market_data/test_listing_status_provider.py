@@ -30,7 +30,7 @@ class ListingStatusProviderTests(unittest.TestCase):
         self.assertEqual(snapshot.board_scope, "main_board_a")
         self.assertEqual(snapshot.active_codes, ("600000", "601000"))
         self.assertEqual(
-            session.get.call_args.kwargs["params"]["COMPANY_STATUS"], "2"
+            session.get.call_args.kwargs["params"]["COMPANY_STATUS"], "2,4,5,7,8"
         )
 
     def test_sse_provider_rejects_star_or_malformed_snapshot(self):
