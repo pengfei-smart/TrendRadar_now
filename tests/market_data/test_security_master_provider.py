@@ -74,6 +74,26 @@ class SecurityMasterProviderTests(unittest.TestCase):
         self.assertEqual([item.code for item in records], ["600000", "000001"])
         self.assertEqual(session.get.call_count, 2)
 
+    def test_paginated_provider_uses_actual_page_capacity(self):
+        session = Mock()
+        responses = []
+        total = 250
+        for page_size in (100, 100, 50):
+            response = Mock()
+            response.raise_for_status.return_value = None
+            start = len(responses) * 100
+            records = [
+                {"f12": f"{600000 + index:06d}", "f14": f"公司{index}", "f13": "1"}
+                for index in range(start, start + page_size)
+            ]
+            response.json.return_value = {"data": {"total": total, "diff": records}}
+            responses.append(response)
+        session.get.side_effect = responses
+        provider = EastmoneySecurityMasterProvider(session=session, page_size=500, max_pages=5)
+        records = provider.fetch_all()
+        self.assertEqual(len(records), total)
+        self.assertEqual(session.get.call_count, 3)
+
     def test_paginated_provider_rejects_unstable_total(self):
         session = Mock()
         responses = []
