@@ -216,7 +216,7 @@ class MarketStorage:
                     or (exchange == "SZ" and board_scope == "main_board_a"
                         and code.startswith(("000", "001", "002", "003")))
                     or (exchange == "SZ" and board_scope == "chinext"
-                        and code.startswith(("300", "301")))
+                        and code.startswith(("300", "301", "302")))
                 )
                 if not valid_board:
                     raise ValueError(f"证券代码与交易所/板块范围不匹配: {code}/{exchange}/{board_scope}")
