@@ -106,6 +106,7 @@ def main() -> int:
         all_securities = list(EastmoneySecurityMasterProvider().fetch_all())
         master_elapsed = round(time.monotonic() - master_started, 3)
         eligible = eligible_securities(all_securities)
+        exchange_excluded = sum(1 for item in all_securities if item.exchange == "BJ")
         if args.limit:
             eligible = eligible[:args.limit]
         if not eligible:
@@ -121,6 +122,8 @@ def main() -> int:
             "eligible_security_count": len(eligible),
             "risk_excluded_count": risk_excluded,
             "non_active_excluded_count": non_active_excluded,
+            "exchange_excluded_count": exchange_excluded,
+            "excluded_exchanges": ["BJ"],
             "security_listing_status_counts": status_counts,
             "security_master_elapsed_seconds": master_elapsed,
         })
@@ -216,6 +219,7 @@ def main() -> int:
             "notes": [
                 "本脚本只读取上游证券列表并请求行情，不写入market.db。",
                 "首轮基准测试不自动重试，避免掩盖上游自然失败率；失败批次会继续后续批次。",
+                "短线雷达候选池排除北交所（BJ），沪市和深市证券继续参与测试。",
                 "当前证券列表解析器未取得独立停牌状态；停牌/无有效价格可能表现为缺失报价，不能仅凭缺失确认停牌。",
                 "行情源为非官方公开接口；delayed_or_unverified仍按true处理，不代表交易所逐笔实时行情。",
             ],
