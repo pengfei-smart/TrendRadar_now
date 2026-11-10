@@ -1,4 +1,4 @@
-# 本工作流仅在市场数据相关文件的Pull Request变更时运行单元与SQLite集成测试，不触发新闻采集或定时任务。
+# 本工作流在市场数据代码、测试及压力测试脚本变更时运行单元与SQLite集成测试，不触发新闻采集或定时任务。
 name: Market Data Tests
 
 on:
@@ -8,6 +8,7 @@ on:
       - "trendradar/storage/market_schema.sql"
       - "trendradar/__init__.py"
       - "tests/market_data/**"
+      - "scripts/market_data/**"
       - ".github/workflows/market-data-tests.yml"
   workflow_dispatch:
 
@@ -26,6 +27,6 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install market-data test dependencies
-        run: python -m pip install "requests>=2.32.5,<3.0.0" "feedparser>=6.0.0,<7.0.0"
+        run: python -m pip install "requests>=2.32.5,<3.0.0" "pytz>=2025.2,<2026.0" "feedparser>=6.0.0,<7.0.0"
       - name: Run market data tests
         run: python -m unittest discover -s tests/market_data -v
