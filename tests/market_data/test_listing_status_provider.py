@@ -121,6 +121,32 @@ class ListingStatusProviderTests(unittest.TestCase):
         self.assertEqual(main.active_codes, ("000001",))
         self.assertEqual(chinext.active_codes, ("302132",))
 
+    def test_szse_provider_retries_transient_read_timeout(self):
+        import requests
+        session = Mock()
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.content = self._szse_xlsx()
+        session.get.side_effect = [requests.exceptions.ReadTimeout("temporary timeout"), response]
+        main, chinext = SZSEBoardAProvider(
+            session=session, minimum_main_count=1, minimum_chinext_count=1,
+            backoff_seconds=0,
+        ).fetch_snapshots()
+        self.assertEqual(main.active_codes, ("000001",))
+        self.assertEqual(chinext.active_codes, ("300001",))
+        self.assertEqual(session.get.call_count, 2)
+
+    def test_szse_provider_fails_after_retry_limit(self):
+        import requests
+        session = Mock()
+        session.get.side_effect = requests.exceptions.ReadTimeout("still unavailable")
+        with self.assertRaises(SecurityMasterSourceError):
+            SZSEBoardAProvider(
+                session=session, minimum_main_count=1, minimum_chinext_count=1,
+                max_attempts=2, backoff_seconds=0,
+            ).fetch_snapshots()
+        self.assertEqual(session.get.call_count, 2)
+
     def test_szse_provider_rejects_missing_board_and_duplicate_codes(self):
         workbook = Workbook()
         sheet = workbook.active
