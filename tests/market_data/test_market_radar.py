@@ -56,22 +56,22 @@ class MarketRadarTests(unittest.TestCase):
     def test_scan_uses_persisted_verified_relations(self):
         with tempfile.TemporaryDirectory() as temp:
             store = CrossMarketRelationStore(str(Path(temp) / "market.db"))
-            relation_id = store.propose(us_entity="NVIDIA", us_ticker="NVDA", cn_security_code="688012", sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=.88, evidence="reviewed supplier relation", source="filing", source_url="https://evidence.example/1")
+            relation_id = store.propose(us_entity="NVIDIA", us_ticker="NVDA", cn_security_code="300012", sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=.88, evidence="reviewed supplier relation", source="filing", source_url="https://evidence.example/1")
             store.review(relation_id, "verified", "reviewer", "source reviewed")
             fetcher = StubQuoteFetcher(); radar = MarketRadar(fetcher, relation_store=store)
             event = MarketEvent("e1", "SEC EDGAR", "NVIDIA reports GPU demand", "2026-11-09T20:00:00+08:00")
-            results = radar.scan([event], {"688012": active_security("688012", "中微公司")})
-            self.assertEqual([item.security.code for item in results], ["688012"])
+            results = radar.scan([event], {"300012": active_security("300012", "中微公司")})
+            self.assertEqual([item.security.code for item in results], ["300012"])
             self.assertEqual(results[0].tier, "B"); self.assertEqual(results[0].causal_status, "verified")
-            self.assertEqual(fetcher.requested, ["688012"])
+            self.assertEqual(fetcher.requested, ["300012"])
 
     def test_scan_does_not_use_pending_relation(self):
         with tempfile.TemporaryDirectory() as temp:
             store = CrossMarketRelationStore(str(Path(temp) / "market.db"))
-            store.propose(us_entity="NVIDIA", us_ticker="NVDA", cn_security_code="688012", sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=.88, evidence="unreviewed relation", source="filing", source_url="https://evidence.example/1")
+            store.propose(us_entity="NVIDIA", us_ticker="NVDA", cn_security_code="300012", sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=.88, evidence="unreviewed relation", source="filing", source_url="https://evidence.example/1")
             fetcher = StubQuoteFetcher(); radar = MarketRadar(fetcher, relation_store=store)
             event = MarketEvent("e1", "SEC EDGAR", "NVIDIA reports GPU demand", "2026-11-09T20:00:00+08:00")
-            self.assertEqual(radar.scan([event], {"688012": active_security("688012", "中微公司")}), [])
+            self.assertEqual(radar.scan([event], {"300012": active_security("300012", "中微公司")}), [])
             self.assertEqual(fetcher.requested, [])
 
     def test_scan_excludes_candidate_with_missing_or_invalid_quote(self):
@@ -126,8 +126,8 @@ class MarketRadarTests(unittest.TestCase):
             store = RadarResultStore(str(Path(temp) / "market.db")); fetcher = StubQuoteFetcher()
             radar = MarketRadar(fetcher, push_limit=1, result_store=store)
             event = MarketEvent("e1", "rss", "Nvidia announces GPU", "2026-11-09T14:33:00+08:00")
-            securities = {"688012": active_security("688012", "半导体A"), "688013": active_security("688013", "半导体B")}
-            direct = {"e1": [MappingEvidence("688012", "direct_business", .9, "direct evidence", verified=True), MappingEvidence("688013", "supply_chain", .7, "supplier evidence", verified=True)]}
+            securities = {"300012": active_security("300012", "半导体A"), "300013": active_security("300013", "半导体B")}
+            direct = {"e1": [MappingEvidence("300012", "direct_business", .9, "direct evidence", verified=True), MappingEvidence("300013", "supply_chain", .7, "supplier evidence", verified=True)]}
             selected = radar.scan_and_persist([event], securities, run_at="2026-11-09T14:33:00+08:00", direct_event_evidence=direct, source_status="quote:success", quote_source="stub")
             self.assertEqual(len(selected), 1)
             with store.connect() as conn:
