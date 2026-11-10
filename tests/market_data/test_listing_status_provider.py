@@ -20,7 +20,7 @@ class ListingStatusProviderTests(unittest.TestCase):
         response = Mock()
         response.raise_for_status.return_value = None
         response.json.return_value = {
-            "result": [{"SECURITY_CODE": "600000"}, {"SECURITY_CODE": "601000"}]
+            "result": [{"SECURITY_CODE": "600000"}, {"SECURITY_CODE": "601000"}], "pageHelp": {"total": 2}
         }
         session.get.return_value = response
         snapshot = SSEMainBoardAProvider(
@@ -37,7 +37,7 @@ class ListingStatusProviderTests(unittest.TestCase):
         session = Mock()
         response = Mock()
         response.raise_for_status.return_value = None
-        response.json.return_value = {"result": [{"SECURITY_CODE": "688001"}]}
+        response.json.return_value = {"result": [{"SECURITY_CODE": "688001"}], "pageHelp": {"total": 1}}
         session.get.return_value = response
         with self.assertRaises(SecurityMasterSourceError):
             SSEMainBoardAProvider(session=session, minimum_count=1).fetch_snapshot()
