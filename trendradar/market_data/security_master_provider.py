@@ -260,10 +260,11 @@ class SecurityMasterUpdater:
 
 
 def eligible_securities(securities: Iterable[Security]) -> list[Security]:
-    """Keep active, non-risk-warning SH/SZ securities; BJ is excluded from radar candidates."""
+    """Keep active, non-risk-warning main-board and ChiNext securities; exclude BJ and STAR."""
     return [
         item for item in securities
         if item.exchange in {"SH", "SZ"}
+        and not (item.exchange == "SH" and item.code.startswith(("688", "689")))
         and item.listing_status == "active"
         and not item.risk_flag
     ]
