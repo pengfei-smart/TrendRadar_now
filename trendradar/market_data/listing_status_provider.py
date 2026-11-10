@@ -194,3 +194,38 @@ class SZSEBoardAProvider:
             ListingStatusSnapshot(self.source_id, SZSE_LIST_URL, "SZ", "chinext",
                                   fetched_at, "", chinext),
         )
+
+
+class ExchangeListingStatusUpdater:
+    """Refresh verified active membership from all three exchange-board sources."""
+
+    def __init__(self, storage: object, sse_provider: SSEMainBoardAProvider | None = None,
+                 szse_provider: SZSEBoardAProvider | None = None):
+        self.storage = storage
+        self.sse_provider = sse_provider or SSEMainBoardAProvider()
+        self.szse_provider = szse_provider or SZSEBoardAProvider()
+
+    def update(self) -> dict[str, int]:
+        # Fetch and validate every required board before writing any of them.
+        snapshots = (
+            self.sse_provider.fetch_snapshot(),
+            *self.szse_provider.fetch_snapshots(),
+        )
+        expected = {("SH", "main_board_a"), ("SZ", "main_board_a"), ("SZ", "chinext")}
+        actual = {(item.exchange, item.board_scope) for item in snapshots}
+        if actual != expected:
+            raise SecurityMasterSourceError("交易所上市名单板块覆盖不完整")
+        results: dict[str, int] = {}
+        for snapshot in snapshots:
+            statuses = {code: "active" for code in snapshot.active_codes}
+            key = f"{snapshot.exchange}_{snapshot.board_scope}"
+            results[key] = self.storage.apply_listing_status_snapshot(
+                source_id=snapshot.source_id,
+                exchange=snapshot.exchange,
+                board_scope=snapshot.board_scope,
+                fetched_at=snapshot.fetched_at,
+                source_as_of=snapshot.source_as_of,
+                statuses=statuses,
+                source_url=snapshot.source_url,
+            )
+        return results
