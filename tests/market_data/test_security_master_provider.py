@@ -56,6 +56,8 @@ class SecurityMasterProviderTests(unittest.TestCase):
             Security("600000", "浦发银行", "SH"),
             Security("000001", "平安银行", "SZ"),
             Security("920305", "北交所样本", "BJ"),
+            Security("688001", "科创板样本", "SH"),
+            Security("689009", "科创板新代码样本", "SH"),
             Security("600001", "ST样本", "SH", risk_flag=True),
             Security("600002", "停牌样本", "SH", listing_status="suspended"),
         ]
