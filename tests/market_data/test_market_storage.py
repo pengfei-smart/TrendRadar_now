@@ -130,5 +130,27 @@ class MarketStorageTests(unittest.TestCase):
             self.assertEqual(sh_status, "unknown")
 
 
+    def test_absent_security_is_downgraded_to_unknown_not_delisted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.upsert_securities([
+                Security("600000", "现行上市", "SH"),
+                Security("600001", "名单缺席", "SH"),
+            ])
+            storage.apply_listing_status_snapshot(
+                source_id="sse_main_board_a", exchange="SH",
+                board_scope="main_board_a",
+                fetched_at="2026-11-10T15:00:00+08:00",
+                source_as_of="2026-11-10",
+                statuses={"600000": "active"},
+            )
+            with storage.connect() as connection:
+                rows = dict(connection.execute(
+                    "SELECT code,listing_status FROM security_master"
+                ).fetchall())
+            self.assertEqual(rows["600000"], "active")
+            self.assertEqual(rows["600001"], "unknown")
+
+
 if __name__ == "__main__":
     unittest.main()
