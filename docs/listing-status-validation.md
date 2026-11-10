@@ -72,6 +72,16 @@
 5. 用已确认退市的历史样本（包括600991、601028、601059、601198、601299、601989、603056）验证不再进入候选池。
 6. 最后再运行1000只及更大规模行情基准；不能把状态未知的证券计入合格候选池。
 
+## 适配器实现与验证边界
+
+- 已新增 `listing_status_provider.py`：上交所主板A股适配器、深交所A股XLSX适配器（拆分主板/创业板）和三板块更新协调器。
+- 上交所适配器请求官方 `query.sse.com.cn/sseQuery/commonQuery.do`，使用 `STOCK_TYPE=1`、`COMPANY_STATUS=2` 和官方 SQL 查询标识；该参数组合尚未在本项目运行环境完成真实响应验证，必须以实测响应字段和数量确认后才能投入生产。
+- 深交所适配器请求官方 `www.szse.cn/api/report/ShowReport` 的 `CATALOGID=1110` XLSX 数据；列名和板块值已做严格校验，尚未完成真实响应验证。
+- 新增 `openpyxl` 用于解析深交所 XLSX 文件。
+- `ExchangeListingStatusUpdater` 会先获取并验证三个板块，再通过单个 SQLite 事务提交全部快照；任一来源获取或校验失败时不写入任何一份。
+- 当前快照只给名单内证券提供 `active` 正向证据；名单缺席不推断 `delisted`，也不自动改变既有状态。
+- 自动化单元测试已加入，但尚未由最新 GitHub Actions 运行结果确认通过。
+
 ## 当前实现状态
 
 - 东方财富证券身份数据缺少可验证的 listing_status 时已改为 unknown。
