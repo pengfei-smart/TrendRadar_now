@@ -101,6 +101,26 @@ class ListingStatusProviderTests(unittest.TestCase):
         self.assertEqual(chinext.active_codes, ("300001",))
         self.assertEqual(chinext.board_scope, "chinext")
 
+    def test_szse_provider_accepts_302_series_chinext_code(self):
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.append(["板块", "A股代码", "A股简称"])
+        sheet.append(["主板", "000001", "平安银行"])
+        sheet.append(["创业板", "302132", "中航成飞"])
+        buffer = BytesIO()
+        workbook.save(buffer)
+        workbook.close()
+        session = Mock()
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.content = buffer.getvalue()
+        session.get.return_value = response
+        main, chinext = SZSEBoardAProvider(
+            session=session, minimum_main_count=1, minimum_chinext_count=1
+        ).fetch_snapshots()
+        self.assertEqual(main.active_codes, ("000001",))
+        self.assertEqual(chinext.active_codes, ("302132",))
+
     def test_szse_provider_rejects_missing_board_and_duplicate_codes(self):
         workbook = Workbook()
         sheet = workbook.active
