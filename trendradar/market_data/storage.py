@@ -12,7 +12,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path)
@@ -172,9 +172,64 @@ class MarketStorage:
                 VALUES(?,?,?,?,?)
                 ON CONFLICT(code) DO UPDATE SET
                 name=excluded.name,exchange=excluded.exchange,
-                listing_status=excluded.listing_status,risk_flag=excluded.risk_flag,
+                listing_status=CASE WHEN excluded.listing_status='unknown'
+                    THEN security_master.listing_status ELSE excluded.listing_status END,
+                risk_flag=excluded.risk_flag,
                 last_seen_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP""", rows)
         return len(rows)
+
+
+    def apply_listing_status_snapshot(
+        self, *, source_id: str, exchange: str, board_scope: str,
+        fetched_at: str, source_as_of: str, statuses: dict[str, str],
+        source_url: str = "", content_sha256: str = "",
+    ) -> int:
+        """Atomically persist validated statuses; absence never means delisted."""
+        allowed = {"active", "suspended", "delisted", "pending", "unknown"}
+        if not source_id or exchange not in {"SH", "SZ"} or not board_scope:
+            raise ValueError("上市状态快照必须提供来源、沪深交易所和板块范围")
+        if not fetched_at or not statuses:
+            raise ValueError("上市状态快照时间不能为空，且名单不得为空")
+        if any(len(code) != 6 or not code.isdigit() or status not in allowed
+               for code, status in statuses.items()):
+            raise ValueError("上市状态快照包含非法证券代码或状态")
+        with self.connect() as connection:
+            latest = connection.execute(
+                """SELECT fetched_at FROM listing_status_snapshots
+                WHERE source_id=? AND exchange=? AND board_scope=?
+                ORDER BY fetched_at DESC LIMIT 1""",
+                (source_id, exchange, board_scope),
+            ).fetchone()
+            if latest and fetched_at <= latest["fetched_at"]:
+                raise ValueError("拒绝使用不新于当前有效快照的状态数据")
+            cursor = connection.execute(
+                """INSERT INTO listing_status_snapshots
+                (source_id,exchange,board_scope,fetched_at,source_as_of,record_count,content_sha256)
+                VALUES(?,?,?,?,?,?,?)""",
+                (source_id, exchange, board_scope, fetched_at, source_as_of,
+                 len(statuses), content_sha256),
+            )
+            snapshot_id = cursor.lastrowid
+            for code, status in statuses.items():
+                exists = connection.execute(
+                    "SELECT 1 FROM security_master WHERE code=? AND exchange=?",
+                    (code, exchange),
+                ).fetchone()
+                if not exists:
+                    continue
+                connection.execute(
+                    """INSERT INTO listing_status_evidence
+                    (snapshot_id,code,listing_status,source_url,source_as_of)
+                    VALUES(?,?,?,?,?)""",
+                    (snapshot_id, code, status, source_url, source_as_of),
+                )
+                connection.execute(
+                    """UPDATE security_master SET listing_status=?,source=?,
+                    source_updated_at=?,updated_at=CURRENT_TIMESTAMP
+                    WHERE code=? AND exchange=?""",
+                    (status, source_id, source_as_of or fetched_at, code, exchange),
+                )
+        return len(statuses)
 
     def save_events(self, events: Iterable[MarketEvent]) -> int:
         rows = [(e.event_id, e.source, e.title, e.published_at, e.event_type,
