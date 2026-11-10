@@ -56,7 +56,7 @@ def infer_board(code: str, exchange: str) -> str:
     if exchange == "SH":
         return "科创板" if value.startswith("688") else "沪主板"
     if exchange == "SZ":
-        return "创业板" if value.startswith(("300", "301")) else "深主板"
+        return "创业板" if value.startswith(("300", "301", "302")) else "深主板"
     return "未知"
 
 
