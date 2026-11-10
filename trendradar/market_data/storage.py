@@ -160,6 +160,12 @@ class MarketStorage:
                 ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP""",
                 (str(self.SCHEMA_VERSION),),
             )
+            # Legacy active flags came from a source without lifecycle status; invalidate unverified values.
+            connection.execute(
+                """UPDATE security_master SET listing_status='unknown',
+                updated_at=CURRENT_TIMESTAMP
+                WHERE listing_status='active' AND listing_status_source=''"""
+            )
 
     def count_securities(self) -> int:
         with self.connect() as connection:
