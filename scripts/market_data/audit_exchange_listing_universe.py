@@ -86,6 +86,15 @@ def main() -> int:
             "official_not_in_master_sample": _sample(official_not_in_master),
             "master_not_in_official_count": len(master_not_in_official),
             "master_not_in_official_sample": _sample(master_not_in_official),
+            "master_not_in_official_details": [
+                {
+                    "code": code,
+                    "name": master_by_code[code].name,
+                    "listing_status_from_source": master_by_code[code].listing_status,
+                    "risk_flag": master_by_code[code].risk_flag,
+                }
+                for code in sorted(master_not_in_official)
+            ],
         }
 
     # Known delisting examples help confirm that the current list is a positive-membership source.
