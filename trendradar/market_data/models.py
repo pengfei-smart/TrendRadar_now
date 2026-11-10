@@ -23,7 +23,7 @@ class Security:
     code: str
     name: str
     exchange: str = ""
-    listing_status: str = "active"
+    listing_status: str = "unknown"
     risk_flag: bool = False
     sectors: tuple[str, ...] = ()
 
