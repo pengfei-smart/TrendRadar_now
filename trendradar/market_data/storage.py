@@ -264,6 +264,34 @@ class MarketStorage:
                         updated_at=CURRENT_TIMESTAMP WHERE code=? AND exchange=?""",
                         (status, source_id, source_as_of or fetched_at, code, exchange),
                     )
+                # A complete positive-membership snapshot can downgrade absent local records
+                # to unknown, but absence is never sufficient evidence for delisting.
+                known_rows = connection.execute(
+                    "SELECT code FROM security_master WHERE exchange=?", (exchange,)
+                ).fetchall()
+                def in_scope(code: str) -> bool:
+                    if exchange == "SH":
+                        return board_scope == "main_board_a" and code.startswith("60")
+                    if board_scope == "main_board_a":
+                        return code.startswith(("000", "001", "002", "003"))
+                    if board_scope == "chinext":
+                        return code.startswith(("300", "301"))
+                    return False
+                for row in known_rows:
+                    code = row["code"]
+                    if in_scope(code) and code not in statuses:
+                        connection.execute(
+                            """INSERT INTO listing_status_evidence
+                            (snapshot_id,code,listing_status,source_url,source_as_of)
+                            VALUES(?,?,'unknown',?,?)""",
+                            (snapshot_id, code, item.get("source_url", ""), source_as_of),
+                        )
+                        connection.execute(
+                            """UPDATE security_master SET listing_status='unknown',
+                            listing_status_source=?,listing_status_updated_at=?,
+                            updated_at=CURRENT_TIMESTAMP WHERE code=? AND exchange=?""",
+                            (source_id, source_as_of or fetched_at, code, exchange),
+                        )
                 results[f"{exchange}_{board_scope}"] = len(statuses)
         return results
 
