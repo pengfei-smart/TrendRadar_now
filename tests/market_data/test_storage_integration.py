@@ -81,7 +81,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "2")
+            self.assertEqual(version, "3")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
             )
