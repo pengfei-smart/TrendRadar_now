@@ -13,6 +13,7 @@ from trendradar.market_data.security_master_provider import (
     infer_exchange,
     is_risk_warning_name,
     normalize_eastmoney_record,
+    eligible_securities,
 )
 
 
@@ -49,6 +50,17 @@ class SecurityMasterProviderTests(unittest.TestCase):
         self.assertTrue(is_risk_warning_name("*ST某公司"))
         self.assertTrue(is_risk_warning_name("ST 某公司"))
         self.assertFalse(is_risk_warning_name("明星电力"))
+
+    def test_eligible_securities_excludes_beijing_exchange(self):
+        securities = [
+            Security("600000", "浦发银行", "SH"),
+            Security("000001", "平安银行", "SZ"),
+            Security("920305", "北交所样本", "BJ"),
+            Security("600001", "ST样本", "SH", risk_flag=True),
+            Security("600002", "停牌样本", "SH", listing_status="suspended"),
+        ]
+        eligible = eligible_securities(securities)
+        self.assertEqual([item.code for item in eligible], ["600000", "000001"])
 
     def test_eastmoney_record_normalization(self):
         security = normalize_eastmoney_record({"f12": "600000", "f14": "浦发银行", "f13": "1"})
