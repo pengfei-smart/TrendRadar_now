@@ -260,5 +260,10 @@ class SecurityMasterUpdater:
 
 
 def eligible_securities(securities: Iterable[Security]) -> list[Security]:
-    """Filter risk warnings and non-active listings; suspension is quote-layer validation."""
-    return [item for item in securities if item.listing_status == "active" and not item.risk_flag]
+    """Keep active, non-risk-warning SH/SZ securities; BJ is excluded from radar candidates."""
+    return [
+        item for item in securities
+        if item.exchange in {"SH", "SZ"}
+        and item.listing_status == "active"
+        and not item.risk_flag
+    ]
