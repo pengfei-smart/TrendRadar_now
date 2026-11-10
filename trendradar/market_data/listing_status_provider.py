@@ -215,17 +215,13 @@ class ExchangeListingStatusUpdater:
         actual = {(item.exchange, item.board_scope) for item in snapshots}
         if actual != expected:
             raise SecurityMasterSourceError("交易所上市名单板块覆盖不完整")
-        results: dict[str, int] = {}
-        for snapshot in snapshots:
-            statuses = {code: "active" for code in snapshot.active_codes}
-            key = f"{snapshot.exchange}_{snapshot.board_scope}"
-            results[key] = self.storage.apply_listing_status_snapshot(
-                source_id=snapshot.source_id,
-                exchange=snapshot.exchange,
-                board_scope=snapshot.board_scope,
-                fetched_at=snapshot.fetched_at,
-                source_as_of=snapshot.source_as_of,
-                statuses=statuses,
-                source_url=snapshot.source_url,
-            )
-        return results
+        batch = [{
+            "source_id": snapshot.source_id,
+            "exchange": snapshot.exchange,
+            "board_scope": snapshot.board_scope,
+            "fetched_at": snapshot.fetched_at,
+            "source_as_of": snapshot.source_as_of,
+            "statuses": {code: "active" for code in snapshot.active_codes},
+            "source_url": snapshot.source_url,
+        } for snapshot in snapshots]
+        return self.storage.apply_listing_status_snapshots(batch)
