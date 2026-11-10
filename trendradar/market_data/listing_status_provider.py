@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from io import BytesIO
+import time
 from typing import Mapping, Sequence
 
 import requests
@@ -58,6 +59,27 @@ def _unique_codes(values: Sequence[object], *, minimum_count: int) -> tuple[str,
     return tuple(sorted(codes))
 
 
+def _get_with_retries(session: requests.Session, url: str, *, timeout: tuple[float, float],
+                      headers: Mapping[str, str], params: Mapping[str, str],
+                      max_attempts: int, backoff_seconds: float) -> requests.Response:
+    """Retry transient exchange HTTP failures with bounded exponential backoff."""
+    last_error: requests.RequestException | None = None
+    for attempt in range(max_attempts):
+        try:
+            response = session.get(url, params=params, timeout=timeout, headers=headers)
+            response.raise_for_status()
+            # Force body consumption inside the retry boundary (SZSE returns XLSX bytes).
+            _ = response.content
+            return response
+        except requests.RequestException as exc:
+            last_error = exc
+            if attempt + 1 >= max_attempts:
+                break
+            time.sleep(backoff_seconds * (2 ** attempt))
+    assert last_error is not None
+    raise last_error
+
+
 class SSEMainBoardAProvider:
     """Fetch the SSE official Main Board A-share list (positive active membership)."""
 
@@ -66,10 +88,13 @@ class SSEMainBoardAProvider:
 
     def __init__(self, session: requests.Session | None = None,
                  timeout: tuple[float, float] = (5.0, 25.0),
-                 minimum_count: int = 800):
+                 minimum_count: int = 800, max_attempts: int = 3,
+                 backoff_seconds: float = 1.0):
         self.session = session or requests.Session()
         self.timeout = timeout
         self.minimum_count = minimum_count
+        self.max_attempts = max(1, int(max_attempts))
+        self.backoff_seconds = max(0.0, float(backoff_seconds))
 
     def fetch_snapshot(self) -> ListingStatusSnapshot:
         params = {
@@ -88,12 +113,12 @@ class SSEMainBoardAProvider:
             "pageHelp.endPage": "1",
         }
         try:
-            response = self.session.get(
-                SSE_LIST_URL, params=params, timeout=self.timeout,
+            response = _get_with_retries(
+                self.session, SSE_LIST_URL, params=params, timeout=self.timeout,
                 headers={"User-Agent": "TrendRadar-market-data/1.0",
                          "Referer": SSE_REFERER},
+                max_attempts=self.max_attempts, backoff_seconds=self.backoff_seconds,
             )
-            response.raise_for_status()
             payload = response.json()
         except (requests.RequestException, ValueError) as exc:
             raise SecurityMasterSourceError(f"上交所主板A股名单请求失败: {exc}") from exc
@@ -139,22 +164,25 @@ class SZSEBoardAProvider:
     def __init__(self, session: requests.Session | None = None,
                  timeout: tuple[float, float] = (5.0, 30.0),
                  minimum_main_count: int = 300,
-                 minimum_chinext_count: int = 500):
+                 minimum_chinext_count: int = 500, max_attempts: int = 3,
+                 backoff_seconds: float = 1.0):
         self.session = session or requests.Session()
         self.timeout = timeout
         self.minimum_main_count = minimum_main_count
         self.minimum_chinext_count = minimum_chinext_count
+        self.max_attempts = max(1, int(max_attempts))
+        self.backoff_seconds = max(0.0, float(backoff_seconds))
 
     def fetch_snapshots(self) -> tuple[ListingStatusSnapshot, ListingStatusSnapshot]:
         params = {"SHOWTYPE": "xlsx", "CATALOGID": "1110", "TABKEY": "tab1",
                   "random": "0.6935816432433362"}
         try:
-            response = self.session.get(
-                SZSE_LIST_URL, params=params, timeout=self.timeout,
+            response = _get_with_retries(
+                self.session, SZSE_LIST_URL, params=params, timeout=self.timeout,
                 headers={"User-Agent": "TrendRadar-market-data/1.0",
                          "Referer": SZSE_REFERER},
+                max_attempts=self.max_attempts, backoff_seconds=self.backoff_seconds,
             )
-            response.raise_for_status()
             raw = response.content
             workbook = load_workbook(BytesIO(raw), read_only=True, data_only=True)
         except (requests.RequestException, OSError, ValueError, KeyError) as exc:
