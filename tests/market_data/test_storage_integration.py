@@ -2,6 +2,7 @@
 """Integration tests for market storage with security-master and quote ingestion."""
 
 import sqlite3
+from contextlib import closing
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,7 +40,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
         )
         result = updater.update()
         self.assertEqual(result.updated_count, 3)
-        with sqlite3.connect(self.db_path) as connection:
+        with closing(sqlite3.connect(self.db_path)) as connection:
             rows = connection.execute(
                 "SELECT code,name,risk_flag FROM security_master ORDER BY code"
             ).fetchall()
@@ -65,7 +66,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             ),
         ]
         self.assertEqual(self.storage.save_quotes(quotes), 2)
-        with sqlite3.connect(self.db_path) as connection:
+        with closing(sqlite3.connect(self.db_path)) as connection:
             rows = connection.execute(
                 """SELECT code,price,change_pct,turnover,volume_ratio,source,delayed
                 FROM market_snapshots ORDER BY code"""
@@ -77,7 +78,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
     def test_schema_initialization_is_idempotent(self):
         MarketStorage(str(self.db_path))
         MarketStorage(str(self.db_path))
-        with sqlite3.connect(self.db_path) as connection:
+        with closing(sqlite3.connect(self.db_path)) as connection:
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
