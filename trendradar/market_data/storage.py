@@ -210,6 +210,16 @@ class MarketStorage:
             if any(len(code) != 6 or not code.isdigit() or status not in allowed
                    for code, status in statuses.items()):
                 raise ValueError("上市状态快照包含非法证券代码或状态")
+            for code in statuses:
+                valid_board = (
+                    (exchange == "SH" and board_scope == "main_board_a" and code.startswith("60"))
+                    or (exchange == "SZ" and board_scope == "main_board_a"
+                        and code.startswith(("000", "001", "002", "003")))
+                    or (exchange == "SZ" and board_scope == "chinext"
+                        and code.startswith(("300", "301")))
+                )
+                if not valid_board:
+                    raise ValueError(f"证券代码与交易所/板块范围不匹配: {code}/{exchange}/{board_scope}")
         results: dict[str, int] = {}
         with self.connect() as connection:
             for item in snapshots:
