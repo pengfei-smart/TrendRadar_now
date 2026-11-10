@@ -79,7 +79,7 @@
 - 深交所适配器请求官方 `www.szse.cn/api/report/ShowReport` 的 `CATALOGID=1110` XLSX 数据；列名和板块值已做严格校验，尚未完成真实响应验证。
 - 新增 `openpyxl` 用于解析深交所 XLSX 文件。
 - `ExchangeListingStatusUpdater` 会先获取并验证三个板块，再通过单个 SQLite 事务提交全部快照；任一来源获取或校验失败时不写入任何一份。
-- 当前快照只给名单内证券提供 `active` 正向证据；名单缺席不推断 `delisted`，也不自动改变既有状态。
+- 当前快照只给名单内证券提供 `active` 正向证据；已知证券若在完整名单中缺席，会降级为 `unknown`，绝不据此推断 `delisted`。
 - 自动化单元测试已加入，但尚未由最新 GitHub Actions 运行结果确认通过。
 
 ## 当前实现状态
