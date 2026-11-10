@@ -78,7 +78,7 @@ class SSEMainBoardAProvider:
             "CSRC_CODE": "",
             "STOCK_CODE": "",
             "sqlId": "COMMON_SSE_CP_GPJCTPZ_GPLB_GP_L",
-            "COMPANY_STATUS": "2",
+            "COMPANY_STATUS": "2,4,5,7,8",
             "type": "inParams",
             "isPagination": "true",
             "pageHelp.cacheSize": "1",
