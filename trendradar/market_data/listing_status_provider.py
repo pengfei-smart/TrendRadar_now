@@ -161,6 +161,9 @@ class SZSEBoardAProvider:
             raise SecurityMasterSourceError(f"深交所A股名单下载或解析失败: {exc}") from exc
         try:
             sheet = workbook.active
+            # 深交所官方 XLSX 的工作表尺寸元数据可能错误地标为 A1:A1。
+            # 只读模式会因此只暴露第一列，必须先重置尺寸再流式读取。
+            sheet.reset_dimensions()
             rows = sheet.iter_rows(values_only=True)
             header = next(rows, None)
             if not header:
