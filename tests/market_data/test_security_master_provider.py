@@ -53,8 +53,8 @@ class SecurityMasterProviderTests(unittest.TestCase):
 
     def test_eligible_securities_excludes_beijing_exchange(self):
         securities = [
-            Security("600000", "浦发银行", "SH"),
-            Security("000001", "平安银行", "SZ"),
+            Security("600000", "浦发银行", "SH", listing_status="active"),
+            Security("000001", "平安银行", "SZ", listing_status="active"),
             Security("920305", "北交所样本", "BJ"),
             Security("688001", "科创板样本", "SH"),
             Security("689009", "科创板新代码样本", "SH"),
