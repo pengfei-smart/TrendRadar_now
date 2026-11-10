@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS security_master (
     name_en TEXT NOT NULL DEFAULT '',
     exchange TEXT NOT NULL CHECK (exchange IN ('SH','SZ','BJ','')),
     board TEXT NOT NULL DEFAULT '',
-    listing_status TEXT NOT NULL DEFAULT 'active'
+    listing_status TEXT NOT NULL DEFAULT 'unknown'
         CHECK (listing_status IN ('active','suspended','delisted','pending','unknown')),
     risk_flag INTEGER NOT NULL DEFAULT 0 CHECK (risk_flag IN (0, 1)),
     listing_date TEXT NOT NULL DEFAULT '',
@@ -234,3 +234,33 @@ CREATE TABLE IF NOT EXISTS remote_sync_state (
     last_error TEXT NOT NULL DEFAULT '',
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Each validated source snapshot is recorded independently; failed refreshes never replace it.
+CREATE TABLE IF NOT EXISTS listing_status_snapshots (
+    snapshot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_id TEXT NOT NULL,
+    exchange TEXT NOT NULL CHECK (exchange IN ('SH','SZ')),
+    board_scope TEXT NOT NULL,
+    fetched_at TEXT NOT NULL,
+    source_as_of TEXT NOT NULL DEFAULT '',
+    record_count INTEGER NOT NULL CHECK (record_count > 0),
+    content_sha256 TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(source_id, exchange, board_scope, fetched_at)
+);
+CREATE INDEX IF NOT EXISTS idx_listing_status_snapshot_latest
+    ON listing_status_snapshots(source_id, exchange, board_scope, fetched_at DESC);
+CREATE TABLE IF NOT EXISTS listing_status_evidence (
+    evidence_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snapshot_id INTEGER NOT NULL,
+    code TEXT NOT NULL,
+    listing_status TEXT NOT NULL CHECK (listing_status IN ('active','suspended','delisted','pending','unknown')),
+    source_url TEXT NOT NULL DEFAULT '',
+    source_as_of TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(snapshot_id, code),
+    FOREIGN KEY (snapshot_id) REFERENCES listing_status_snapshots(snapshot_id) ON DELETE CASCADE,
+    FOREIGN KEY (code) REFERENCES security_master(code) ON UPDATE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_listing_status_evidence_code
+    ON listing_status_evidence(code, created_at DESC);
