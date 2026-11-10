@@ -190,7 +190,8 @@ class SZSEBoardAProvider:
                         raise SecurityMasterSourceError(f"深交所主板出现异常代码: {code}")
                     main_codes.append(code)
                 elif board == "创业板":
-                    if not code.startswith(("300", "301")):
+                    # 创业板常规号段为300/301；302132是深交所批准的代码变更特例，仍属创业板。
+                    if not code.startswith(("300", "301", "302")):
                         raise SecurityMasterSourceError(f"创业板名单出现异常代码: {code}")
                     chinext_codes.append(code)
                 else:
