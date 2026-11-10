@@ -78,14 +78,6 @@ def main() -> int:
         master_codes = master_scope[scope]
         official_not_in_master = official_codes - master_codes
         master_not_in_official = master_codes - official_codes
-        name_mismatches = []
-        for code in sorted(official_codes & master_codes):
-            official_name = ""
-            # The exchange snapshots currently expose codes only; name comparison is unavailable here.
-            if official_name:
-                master_name = master_by_code[code].name
-                if official_name != master_name:
-                    name_mismatches.append({"code": code, "master_name": master_name})
         report["scope_comparison"][scope] = {
             "official_count": len(official_codes),
             "master_count": len(master_codes),
@@ -94,8 +86,6 @@ def main() -> int:
             "official_not_in_master_sample": _sample(official_not_in_master),
             "master_not_in_official_count": len(master_not_in_official),
             "master_not_in_official_sample": _sample(master_not_in_official),
-            "name_mismatch_count": len(name_mismatches),
-            "name_mismatch_sample": name_mismatches[:100],
         }
 
     # Known delisting examples help confirm that the current list is a positive-membership source.
