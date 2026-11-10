@@ -62,7 +62,7 @@ def infer_board(code: str, exchange: str) -> str:
 
 def is_risk_warning_name(name: str) -> bool:
     """Recognize risk warning labels without filtering unrelated names like 明星电力."""
-    normalized = re.sub(r"\s+", "", str(name)).upper()
+    normalized = re.sub(r"\\s+", "", str(name)).upper()
     return normalized.startswith(("*ST", "ST", "S*ST", "SST", "退市ST", "退"))
 
 
@@ -104,13 +104,14 @@ class EastmoneySecurityMasterProvider:
         session: requests.Session | None = None,
         page_size: int = 500,
         timeout: tuple[float, float] = (5.0, 20.0),
-        max_pages: int = 20,
+        max_pages: int = 50,
     ):
         if page_size < 1 or max_pages < 1:
             raise ValueError("page_size和max_pages必须为正数")
         self.session = session or requests.Session()
         self.page_size = page_size
         self.timeout = timeout
+        # 默认50页为全市场规模增长留出余量；超过上限仍拒绝不完整快照。
         self.max_pages = max_pages
 
     def _fetch_page(self, page: int) -> tuple[int, list[Mapping[str, object]]]:
