@@ -87,6 +87,10 @@ class SecurityMasterProviderTests(unittest.TestCase):
         records = provider.fetch_all()
         self.assertEqual([item.code for item in records], ["600000", "000001"])
         self.assertEqual(session.get.call_count, 2)
+        self.assertEqual(
+            session.get.call_args_list[0].kwargs["params"]["fs"],
+            "m:1+t:2,m:1+t:23,m:0+t:6,m:0+t:80,m:0+t:81+s:2048",
+        )
 
     def test_paginated_provider_uses_actual_page_capacity(self):
         session = Mock()
