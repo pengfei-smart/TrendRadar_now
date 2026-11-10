@@ -100,6 +100,17 @@ class SSEMainBoardAProvider:
         if not isinstance(payload, dict) or not isinstance(payload.get("result"), list):
             raise SecurityMasterSourceError("上交所名单响应结构异常")
         rows = payload["result"]
+        page_help = payload.get("pageHelp")
+        if not isinstance(page_help, dict):
+            raise SecurityMasterSourceError("上交所响应缺少分页完整性信息")
+        try:
+            reported_total = int(page_help.get("total"))
+        except (TypeError, ValueError) as exc:
+            raise SecurityMasterSourceError("上交所响应缺少有效总记录数") from exc
+        if reported_total != len(rows):
+            raise SecurityMasterSourceError(
+                f"上交所名单不完整：声明{reported_total}条，实际{len(rows)}条"
+            )
         if not rows or not all(isinstance(row, Mapping) for row in rows):
             raise SecurityMasterSourceError("上交所名单为空或记录结构异常")
         codes: list[str] = []
