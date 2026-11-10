@@ -88,5 +88,47 @@ class MarketStorageTests(unittest.TestCase):
                 self.assertEqual(tuple(row), ("浦发银行股份", "active"))
 
 
+    def test_multi_board_listing_snapshot_rolls_back_as_one_transaction(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.upsert_securities([
+                Security("600000", "浦发银行", "SH"),
+                Security("000001", "平安银行", "SZ"),
+            ])
+            storage.apply_listing_status_snapshot(
+                source_id="szse_a_share_list", exchange="SZ",
+                board_scope="main_board_a",
+                fetched_at="2026-11-10T15:00:00+08:00",
+                source_as_of="2026-11-10", statuses={"000001": "active"},
+            )
+            batch = [
+                {
+                    "source_id": "sse_main_board_a", "exchange": "SH",
+                    "board_scope": "main_board_a",
+                    "fetched_at": "2026-11-10T16:00:00+08:00",
+                    "source_as_of": "2026-11-10",
+                    "statuses": {"600000": "active"},
+                },
+                {
+                    "source_id": "szse_a_share_list", "exchange": "SZ",
+                    "board_scope": "main_board_a",
+                    "fetched_at": "2026-11-10T14:00:00+08:00",
+                    "source_as_of": "2026-11-10",
+                    "statuses": {"000001": "active"},
+                },
+            ]
+            with self.assertRaises(ValueError):
+                storage.apply_listing_status_snapshots(batch)
+            with storage.connect() as connection:
+                sh_count = connection.execute(
+                    "SELECT COUNT(*) FROM listing_status_snapshots WHERE exchange='SH'"
+                ).fetchone()[0]
+                sh_status = connection.execute(
+                    "SELECT listing_status FROM security_master WHERE code='600000'"
+                ).fetchone()[0]
+            self.assertEqual(sh_count, 0)
+            self.assertEqual(sh_status, "unknown")
+
+
 if __name__ == "__main__":
     unittest.main()
