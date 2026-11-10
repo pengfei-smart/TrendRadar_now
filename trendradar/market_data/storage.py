@@ -275,7 +275,7 @@ class MarketStorage:
                     if board_scope == "main_board_a":
                         return code.startswith(("000", "001", "002", "003"))
                     if board_scope == "chinext":
-                        return code.startswith(("300", "301"))
+                        return code.startswith(("300", "301", "302"))
                     return False
                 for row in known_rows:
                     code = row["code"]
