@@ -16,7 +16,7 @@ from trendradar.market_data.security_master import normalize_security_code
 
 EASTMONEY_LIST_URL = "https://push2.eastmoney.com/api/qt/clist/get"
 EASTMONEY_FIELDS = "f12,f14,f13,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26"
-EASTMONEY_MARKET_FILTER = "m:1+t:2,m:1+t:23,m:0+t:6,m:0+t:80,m:0+t:81+s:2048"
+EASTMONEY_MARKET_FILTER = "m:1+t:2,m:0+t:6,m:0+t:80"
 
 
 class SecurityMasterSourceError(RuntimeError):
@@ -75,7 +75,7 @@ def normalize_eastmoney_record(record: Mapping[str, object]) -> Security:
     exchange = infer_exchange(code, str(record.get("f13", "")))
     if not exchange:
         raise ValueError(f"无法判定证券交易所: {code}")
-    status_raw = str(record.get("listing_status", "active")).strip().lower()
+    status_raw = str(record.get("listing_status", "unknown")).strip().lower()
     status_aliases = {
         "active": "active", "上市": "active",
         "suspended": "suspended", "停牌": "suspended",
