@@ -25,7 +25,12 @@ def validate_security_master(securities: Iterable[Security]) -> list[Security]:
         if code in seen:
             raise ValueError(f"证券主数据出现重复代码：{code}")
         seen.add(code)
-        if security.listing_status == "active" and not security.risk_flag:
+        if (
+            security.listing_status == "active"
+            and not security.risk_flag
+            and security.exchange in {"SH", "SZ"}
+            and not (security.exchange == "SH" and code.startswith(("688", "689")))
+        ):
             result.append(Security(
                 code=code,
                 name=security.name.strip(),
