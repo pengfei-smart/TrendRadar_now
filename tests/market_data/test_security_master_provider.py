@@ -69,6 +69,7 @@ class SecurityMasterProviderTests(unittest.TestCase):
         self.assertEqual(security.code, "600000")
         self.assertEqual(security.exchange, "SH")
         self.assertFalse(security.risk_flag)
+        self.assertEqual(security.listing_status, "unknown")
 
     def test_paginated_provider_assembles_all_pages(self):
         session = Mock()
@@ -89,7 +90,7 @@ class SecurityMasterProviderTests(unittest.TestCase):
         self.assertEqual(session.get.call_count, 2)
         self.assertEqual(
             session.get.call_args_list[0].kwargs["params"]["fs"],
-            "m:1+t:2,m:1+t:23,m:0+t:6,m:0+t:80,m:0+t:81+s:2048",
+            "m:1+t:2,m:0+t:6,m:0+t:80",
         )
 
     def test_paginated_provider_uses_actual_page_capacity(self):
