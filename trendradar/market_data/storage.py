@@ -59,6 +59,8 @@ class MarketStorage:
                 "name_en": "TEXT NOT NULL DEFAULT ''", "board": "TEXT NOT NULL DEFAULT ''",
                 "listing_date": "TEXT NOT NULL DEFAULT ''", "delisting_date": "TEXT NOT NULL DEFAULT ''",
                 "source": "TEXT NOT NULL DEFAULT ''", "source_updated_at": "TEXT NOT NULL DEFAULT ''",
+                "listing_status_source": "TEXT NOT NULL DEFAULT ''",
+                "listing_status_updated_at": "TEXT NOT NULL DEFAULT ''",
                 "first_seen_at": "TEXT NOT NULL DEFAULT ''", "last_seen_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
@@ -224,9 +226,9 @@ class MarketStorage:
                     (snapshot_id, code, status, source_url, source_as_of),
                 )
                 connection.execute(
-                    """UPDATE security_master SET listing_status=?,source=?,
-                    source_updated_at=?,updated_at=CURRENT_TIMESTAMP
-                    WHERE code=? AND exchange=?""",
+                    """UPDATE security_master SET listing_status=?,
+                    listing_status_source=?,listing_status_updated_at=?,
+                    updated_at=CURRENT_TIMESTAMP WHERE code=? AND exchange=?""",
                     (status, source_id, source_as_of or fetched_at, code, exchange),
                 )
         return len(statuses)
