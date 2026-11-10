@@ -62,7 +62,7 @@ def infer_board(code: str, exchange: str) -> str:
 
 def is_risk_warning_name(name: str) -> bool:
     """Recognize risk warning labels without filtering unrelated names like 明星电力."""
-    normalized = re.sub(r"\\s+", "", str(name)).upper()
+    normalized = re.sub(r"\s+", "", str(name)).upper()
     return normalized.startswith(("*ST", "ST", "S*ST", "SST", "退市ST", "退"))
 
 
