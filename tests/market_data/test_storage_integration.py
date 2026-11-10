@@ -87,6 +87,24 @@ class MarketStorageIntegrationTests(unittest.TestCase):
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
             )
 
+    def test_listing_snapshot_accepts_302_chinext_and_marks_absence_unknown(self):
+        self.storage.upsert_securities([
+            Security("302132", "创业板302样本", "SZ", listing_status="unknown"),
+            Security("302133", "创业板302缺席样本", "SZ", listing_status="unknown"),
+        ])
+        result = self.storage.apply_listing_status_snapshots([{
+            "source_id": "szse_a_share_list", "exchange": "SZ", "board_scope": "chinext",
+            "fetched_at": "2026-11-10T12:30:00+00:00", "source_as_of": "",
+            "statuses": {"302132": "active"}, "source_url": "https://www.szse.cn/",
+        }])
+        self.assertEqual(result["SZ_chinext"], 1)
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            rows = dict(connection.execute(
+                "SELECT code,listing_status FROM security_master"
+            ).fetchall())
+        self.assertEqual(rows["302132"], "active")
+        self.assertEqual(rows["302133"], "unknown")
+
     def test_quote_for_unknown_security_fails_foreign_key(self):
         with self.assertRaises(sqlite3.IntegrityError):
             self.storage.save_quotes([
