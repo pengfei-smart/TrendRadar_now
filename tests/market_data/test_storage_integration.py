@@ -90,7 +90,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
     def test_listing_snapshot_accepts_302_chinext_and_marks_absence_unknown(self):
         self.storage.upsert_securities([
             Security("302132", "创业板302样本", "SZ", listing_status="unknown"),
-            Security("302133", "创业板302缺席样本", "SZ", listing_status="unknown"),
+            Security("302133", "创业板302缺席样本", "SZ", listing_status="active"),
         ])
         result = self.storage.apply_listing_status_snapshots([{
             "source_id": "szse_a_share_list", "exchange": "SZ", "board_scope": "chinext",
