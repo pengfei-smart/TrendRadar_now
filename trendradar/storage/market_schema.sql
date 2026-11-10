@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO schema_meta(key, value) VALUES ('schema_version', '2')
+INSERT INTO schema_meta(key, value) VALUES ('schema_version', '3')
 ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP;
 
 CREATE TABLE IF NOT EXISTS data_sources (
@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS security_master (
     delisting_date TEXT NOT NULL DEFAULT '',
     source TEXT NOT NULL DEFAULT '',
     source_updated_at TEXT NOT NULL DEFAULT '',
+    listing_status_source TEXT NOT NULL DEFAULT '',
+    listing_status_updated_at TEXT NOT NULL DEFAULT '',
     first_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
