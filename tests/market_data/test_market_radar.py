@@ -15,6 +15,11 @@ from trendradar.market_data.cross_market_mapper import discover_sector_evidence
 from trendradar.market_data.opportunity_ranker import score_candidate, rank_candidates
 
 
+def active_security(code, name):
+    exchange = "SZ" if code.startswith(("0", "3")) else "SH"
+    return active_security(code, name, exchange=exchange, listing_status="active")
+
+
 class StubQuoteFetcher:
     source_name = "stub"
     def __init__(self): self.requested = []
@@ -31,7 +36,7 @@ class MarketRadarTests(unittest.TestCase):
         with self.assertRaises(ValueError): normalize_security_code("bad-code")
 
     def test_filters_risk_and_inactive(self):
-        securities = [Security("600000", "浦发银行"), Security("600001", "风险股", risk_flag=True), Security("600002", "停牌", listing_status="suspended")]
+        securities = [active_security("600000", "浦发银行"), active_security("600001", "风险股", risk_flag=True), active_security("600002", "停牌", listing_status="suspended")]
         self.assertEqual([s.code for s in validate_security_master(securities)], ["600000"])
 
     def test_event_rule_evidence(self):
@@ -40,7 +45,7 @@ class MarketRadarTests(unittest.TestCase):
         self.assertTrue(all(not e.verified for e in evidence))
 
     def test_ranking_prefers_activity_and_direct_relation(self):
-        security = Security("600000", "示例")
+        security = active_security("600000", "示例")
         direct = [MappingEvidence("600000", "direct_business", .9, "source reviewed", verified=True)]
         quote = QuoteSnapshot("600000", "2026-01-01T14:33:00+08:00", change_pct=4.2, turnover=500_000_000, volume_ratio=2.1)
         candidate = score_candidate(security, direct, quote)
@@ -54,7 +59,7 @@ class MarketRadarTests(unittest.TestCase):
             store.review(relation_id, "verified", "reviewer", "source reviewed")
             fetcher = StubQuoteFetcher(); radar = MarketRadar(fetcher, relation_store=store)
             event = MarketEvent("e1", "SEC EDGAR", "NVIDIA reports GPU demand", "2026-11-09T20:00:00+08:00")
-            results = radar.scan([event], {"688012": Security("688012", "中微公司")})
+            results = radar.scan([event], {"688012": active_security("688012", "中微公司")})
             self.assertEqual([item.security.code for item in results], ["688012"])
             self.assertEqual(results[0].tier, "B"); self.assertEqual(results[0].causal_status, "verified")
             self.assertEqual(fetcher.requested, ["688012"])
@@ -65,7 +70,7 @@ class MarketRadarTests(unittest.TestCase):
             store.propose(us_entity="NVIDIA", us_ticker="NVDA", cn_security_code="688012", sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=.88, evidence="unreviewed relation", source="filing", source_url="https://evidence.example/1")
             fetcher = StubQuoteFetcher(); radar = MarketRadar(fetcher, relation_store=store)
             event = MarketEvent("e1", "SEC EDGAR", "NVIDIA reports GPU demand", "2026-11-09T20:00:00+08:00")
-            self.assertEqual(radar.scan([event], {"688012": Security("688012", "中微公司")}), [])
+            self.assertEqual(radar.scan([event], {"688012": active_security("688012", "中微公司")}), [])
             self.assertEqual(fetcher.requested, [])
 
     def test_scan_excludes_candidate_with_missing_or_invalid_quote(self):
@@ -75,7 +80,7 @@ class MarketRadarTests(unittest.TestCase):
                 return ([QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source="partial"),
                          QuoteSnapshot("600001", "2026-11-09T14:33:00+08:00", price=None, change_pct=2, turnover=200, source="partial")], "partial")
         radar = MarketRadar(PartialQuoteFetcher(), clock=lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00"))
-        securities = {"600000": Security("600000", "有效报价"), "600001": Security("600001", "缺少价格") , "600002": Security("600002", "无报价")}
+        securities = {"600000": active_security("600000", "有效报价"), "600001": active_security("600001", "缺少价格") , "600002": active_security("600002", "无报价")}
         evidence = {"e1": [MappingEvidence("600000", "direct_business", .9, "evidence", verified=True),
                             MappingEvidence("600001", "direct_business", .9, "evidence", verified=True),
                             MappingEvidence("600002", "direct_business", .9, "evidence", verified=True)]}
@@ -91,7 +96,7 @@ class MarketRadarTests(unittest.TestCase):
                          QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100)], "timestamp")
         fixed_clock = lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00")
         radar = MarketRadar(TimestampQuoteFetcher(), max_quote_age_seconds=900, clock=fixed_clock)
-        securities = {code: Security(code, code) for code in ("600000", "600001", "600002")}
+        securities = {code: active_security(code, code) for code in ("600000", "600001", "600002")}
         evidence = {"e1": [MappingEvidence(code, "direct_business", .9, "source", verified=True) for code in securities]}
         result = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
         self.assertEqual([item.security.code for item in result], ["600002"])
@@ -105,7 +110,7 @@ class MarketRadarTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             store = RadarResultStore(str(Path(temp) / "market.db"))
             radar = MarketRadar(OneQuoteFetcher(), result_store=store)
-            securities = {"600000": Security("600000", "has quote"), "600001": Security("600001", "missing quote")}
+            securities = {"600000": active_security("600000", "has quote"), "600001": active_security("600001", "missing quote")}
             evidence = {"e1": [MappingEvidence(code, "direct_business", .9, "event evidence", verified=True) for code in securities]}
             selected = radar.scan_and_persist([MarketEvent("e1", "rss", "event", "now")], securities, direct_event_evidence=evidence)
             self.assertEqual([item.security.code for item in selected], ["600000"])
@@ -120,7 +125,7 @@ class MarketRadarTests(unittest.TestCase):
             store = RadarResultStore(str(Path(temp) / "market.db")); fetcher = StubQuoteFetcher()
             radar = MarketRadar(fetcher, push_limit=1, result_store=store)
             event = MarketEvent("e1", "rss", "Nvidia announces GPU", "2026-11-09T14:33:00+08:00")
-            securities = {"688012": Security("688012", "半导体A"), "688013": Security("688013", "半导体B")}
+            securities = {"688012": active_security("688012", "半导体A"), "688013": active_security("688013", "半导体B")}
             direct = {"e1": [MappingEvidence("688012", "direct_business", .9, "direct evidence", verified=True), MappingEvidence("688013", "supply_chain", .7, "supplier evidence", verified=True)]}
             selected = radar.scan_and_persist([event], securities, run_at="2026-11-09T14:33:00+08:00", direct_event_evidence=direct, source_status="quote:success", quote_source="stub")
             self.assertEqual(len(selected), 1)
