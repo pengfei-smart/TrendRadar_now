@@ -104,14 +104,15 @@ class EastmoneySecurityMasterProvider:
         session: requests.Session | None = None,
         page_size: int = 500,
         timeout: tuple[float, float] = (5.0, 20.0),
-        max_pages: int = 50,
+        max_pages: int = 200,
     ):
         if page_size < 1 or max_pages < 1:
             raise ValueError("page_size和max_pages必须为正数")
         self.session = session or requests.Session()
         self.page_size = page_size
         self.timeout = timeout
-        # 默认50页为全市场规模增长留出余量；超过上限仍拒绝不完整快照。
+        # 接口可能静默缩小单页返回量；页数上限按实际页容量动态计算。
+        # 200页可覆盖当前全市场规模并留有增长余量，超过上限仍拒绝不完整快照。
         self.max_pages = max_pages
 
     def _fetch_page(self, page: int) -> tuple[int, list[Mapping[str, object]]]:
@@ -146,18 +147,24 @@ class EastmoneySecurityMasterProvider:
         first_total, first_page = self._fetch_page(1)
         if first_total <= 0 or not first_page:
             raise SecurityMasterSourceError("Eastmoney返回空证券列表，拒绝更新主数据")
-        page_count = (first_total + self.page_size - 1) // self.page_size
+        # 以第一页实际返回条数作为有效页容量，兼容上游对pz参数的静默限幅。
+        effective_page_size = len(first_page)
+        page_count = (first_total + effective_page_size - 1) // effective_page_size
         if page_count > self.max_pages:
             raise SecurityMasterSourceError(
-                f"证券列表需要{page_count}页，超过max_pages={self.max_pages}，拒绝不完整快照"
+                f"证券列表按实际每页{effective_page_size}条需要{page_count}页，"
+                f"超过max_pages={self.max_pages}，拒绝不完整快照"
             )
         records: list[Mapping[str, object]] = list(first_page)
         for page in range(2, page_count + 1):
             total, page_records = self._fetch_page(page)
             if total != first_total:
                 raise SecurityMasterSourceError("分页采集中上游总数变化，快照不一致")
-            if not page_records:
-                raise SecurityMasterSourceError(f"第{page}页为空，拒绝不完整快照")
+            expected_count = min(effective_page_size, first_total - len(records))
+            if len(page_records) != expected_count:
+                raise SecurityMasterSourceError(
+                    f"第{page}页返回数量异常：预期{expected_count}条，实际{len(page_records)}条"
+                )
             records.extend(page_records)
         if len(records) < first_total:
             raise SecurityMasterSourceError(f"分页结果不完整：获取{len(records)}条，上游总数{first_total}")
