@@ -54,6 +54,39 @@ class ListingStatusProviderTests(unittest.TestCase):
         workbook.close()
         return buffer.getvalue()
 
+    def test_szse_provider_resets_incorrect_worksheet_dimension(self):
+        import zipfile
+
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.append(["板块", "A股代码", "A股简称"])
+        sheet.append(["主板", "000001", "平安银行"])
+        sheet.append(["创业板", "300001", "特锐德"])
+        original = BytesIO()
+        workbook.save(original)
+        workbook.close()
+
+        # Reproduce the official SZSE workbook's incorrect A1:A1 dimension.
+        corrupted = BytesIO()
+        with zipfile.ZipFile(BytesIO(original.getvalue()), "r") as source:
+            with zipfile.ZipFile(corrupted, "w") as target:
+                for item in source.infolist():
+                    data = source.read(item.filename)
+                    if item.filename == "xl/worksheets/sheet1.xml":
+                        data = data.replace(b'ref="A1:C3"', b'ref="A1:A1"')
+                    target.writestr(item, data)
+
+        session = Mock()
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.content = corrupted.getvalue()
+        session.get.return_value = response
+        main, chinext = SZSEBoardAProvider(
+            session=session, minimum_main_count=1, minimum_chinext_count=1
+        ).fetch_snapshots()
+        self.assertEqual(main.active_codes, ("000001",))
+        self.assertEqual(chinext.active_codes, ("300001",))
+
     def test_szse_provider_splits_main_board_and_chinext(self):
         session = Mock()
         response = Mock()
