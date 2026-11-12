@@ -38,7 +38,7 @@ class MarketStorageTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     connection.execute("SELECT value FROM schema_meta WHERE key='schema_version'").fetchone()[0],
-                    "3",
+                    "4",
                 )
                 self.assertEqual(connection.execute("PRAGMA quick_check").fetchone()[0], "ok")
 
@@ -150,6 +150,106 @@ class MarketStorageTests(unittest.TestCase):
                 ).fetchall())
             self.assertEqual(rows["600000"], "active")
             self.assertEqual(rows["600001"], "unknown")
+
+
+
+    def test_corporate_action_upsert_and_filter(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_corporate_actions([{
+                "corporate_action_id": "ca-1", "action_type": "cash_tender_offer",
+                "action_name": "现金要约", "status": "announced", "evidence_grade": "unverified",
+            }])
+            storage.save_corporate_actions([{
+                "corporate_action_id": "ca-1", "action_type": "cash_tender_offer",
+                "action_name": "现金要约（更新）", "status": "completed", "evidence_grade": "official",
+            }])
+            self.assertEqual(storage.get_corporate_action("ca-1")["status"], "completed")
+            self.assertEqual(storage.list_corporate_actions(status="completed")[0]["action_name"],
+                             "现金要约（更新）")
+            with self.assertRaises(ValueError):
+                storage.save_corporate_actions([{
+                    "corporate_action_id": "bad", "action_type": "not_an_action",
+                }])
+
+    def test_lifecycle_events_and_foreign_key_rollback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_corporate_actions([{
+                "corporate_action_id": "ca-2", "action_type": "delisted_then_relisted",
+                "evidence_grade": "official",
+            }])
+            storage.save_security_lifecycle_events([{
+                "event_id": "life-1", "security_code": "000765", "exchange": "SZ",
+                "event_type": "delisting_effective", "event_date": "2020-01-01",
+                "date_status": "confirmed", "evidence_grade": "official", "corporate_action_id": "ca-2",
+            }])
+            rows = storage.list_security_lifecycle_events(
+                security_code="000765", event_type="delisting_effective"
+            )
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["corporate_action_id"], "ca-2")
+            with self.assertRaises(Exception):
+                storage.save_security_lifecycle_events([{
+                    "event_id": "life-invalid", "security_code": "000765",
+                    "event_type": "delisting_effective", "corporate_action_id": "missing",
+                }])
+            self.assertEqual(len(storage.list_security_lifecycle_events()), 1)
+
+    def test_relationships_support_delisted_transfer_and_relisting_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_corporate_actions([{
+                "corporate_action_id": "ca-3", "action_type": "delisted_then_relisted",
+                "evidence_grade": "official",
+            }])
+            storage.save_security_relationships([
+                {
+                    "relationship_id": "rel-transfer", "corporate_action_id": "ca-3",
+                    "from_security_code": "000765", "to_security_code": "400038",
+                    "relationship_type": "delisted_transfer", "is_listed_successor": 0,
+                    "evidence_grade": "official",
+                },
+                {
+                    "relationship_id": "rel-relist", "corporate_action_id": "ca-3",
+                    "from_security_code": "000765", "to_security_code": "001267",
+                    "relationship_type": "delisted_then_relisted", "is_listed_successor": 1,
+                    "evidence_grade": "official",
+                },
+            ])
+            rows = storage.list_security_relationships(from_security_code="000765")
+            self.assertEqual(len(rows), 2)
+            flags = {row["to_security_code"]: row["is_listed_successor"] for row in rows}
+            self.assertEqual(flags, {"400038": 0, "001267": 1})
+            with self.assertRaises(ValueError):
+                storage.save_security_relationships([{
+                    "relationship_id": "self", "from_security_code": "000765",
+                    "to_security_code": "000765", "relationship_type": "other",
+                }])
+
+    def test_cash_tender_offer_does_not_implicitly_mark_successor_and_duplicate_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_corporate_actions([{
+                "corporate_action_id": "ca-cash", "action_type": "cash_tender_offer",
+                "evidence_grade": "official",
+            }])
+            storage.save_security_relationships([{
+                "relationship_id": "cash-rel", "corporate_action_id": "ca-cash",
+                "from_security_code": "000618", "to_security_code": "601857",
+                "relationship_type": "cash_tender_offer", "is_listed_successor": 0,
+                "evidence_grade": "official",
+            }])
+            self.assertEqual(storage.list_security_relationships(
+                corporate_action_id="ca-cash"
+            )[0]["is_listed_successor"], 0)
+            with self.assertRaises(Exception):
+                storage.save_security_relationships([{
+                    "relationship_id": "cash-rel-duplicate", "corporate_action_id": "ca-cash",
+                    "from_security_code": "000618", "to_security_code": "601857",
+                    "relationship_type": "cash_tender_offer",
+                }])
+            self.assertEqual(len(storage.list_security_relationships()), 1)
 
 
 if __name__ == "__main__":
