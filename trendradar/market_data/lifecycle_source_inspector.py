@@ -217,8 +217,8 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
             right = min(len(source), index + len(term) + 1050)
             context = source[left:right]
             context = re.sub(
-                r"(?i)(token|authorization|password|secret)(\\s*[:=]\\s*)[^,;&}]+",
-                r"\\1\\2[REDACTED]",
+                r"(?i)(token|authorization|password|secret)(\s*[:=]\s*)[^,;&}]+",
+                r"\1\2[REDACTED]",
                 context,
             )
             occurrences.append({"offset": index, "context": context})
