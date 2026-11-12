@@ -178,8 +178,8 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
             index = source.find(endpoint, start)
             if index < 0:
                 break
-            left = max(0, index - 500)
-            right = min(len(source), index + len(endpoint) + 700)
+            left = max(0, index - 1600)
+            right = min(len(source), index + len(endpoint) + 2200)
             context = source[left:right]
             context = re.sub(
                 r"(?i)(token|authorization|password|secret)(\s*[:=]\s*)[^,;&}]+",
@@ -196,6 +196,39 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
             "occurrence_count": source.count(endpoint),
             "occurrences": occurrences,
         })
+
+    # 提取查询参数、分页和响应处理相关标识符的上下文，追踪其赋值来源。
+    contract_terms = (
+        "noticeType", "disclosureType", "disclosureSubtype", "companyCd",
+        "companyCode", "startTime", "endTime", "keyword", "xxfcbj",
+        "hyType", "needFields", "siteId", "pageId", "pageNum",
+        "totalElements", "listInfo", "defaultParams", "pagination",
+        "ajax", "exchangeData",
+    )
+    term_contexts = []
+    for term in contract_terms:
+        occurrences = []
+        start = 0
+        while len(occurrences) < 5:
+            index = source.find(term, start)
+            if index < 0:
+                break
+            left = max(0, index - 650)
+            right = min(len(source), index + len(term) + 1050)
+            context = source[left:right]
+            context = re.sub(
+                r"(?i)(token|authorization|password|secret)(\\s*[:=]\\s*)[^,;&}]+",
+                r"\\1\\2[REDACTED]",
+                context,
+            )
+            occurrences.append({"offset": index, "context": context})
+            start = index + len(term)
+        if occurrences:
+            term_contexts.append({
+                "term": term,
+                "occurrence_count": source.count(term),
+                "occurrences": occurrences,
+            })
     return {
         "source_id": source_id,
         "script_url": url,
@@ -205,6 +238,7 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
         "content_sha256": document.content_sha256,
         "endpoint_candidates": candidates[:200],
         "endpoint_contexts": endpoint_contexts,
+        "term_contexts": term_contexts,
         "candidate_count": len(candidates),
     }
 
