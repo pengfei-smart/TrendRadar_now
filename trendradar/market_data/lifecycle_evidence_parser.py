@@ -6,7 +6,6 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass
 from datetime import date
-from typing import Iterable
 
 
 CODE_RE = re.compile(r"(?<!\d)(\d{6})(?!\d)")
@@ -85,7 +84,7 @@ def _date_context(text: str, start: int, end: int) -> str:
 
 
 def parse_lifecycle_announcement(text: str) -> ParsedLifecycleEvidence:
-    """Extract explicit textual clues only; never infer an unmentioned legal date."""
+    """Extract textual clues only; extracted dates remain unverified legal evidence."""
     if not isinstance(text, str):
         raise TypeError("公告文本必须是字符串")
     if not text.strip():
@@ -116,7 +115,7 @@ def parse_lifecycle_announcement(text: str) -> ParsedLifecycleEvidence:
             date_items.append(DateEvidence(
                 value=value,
                 date_type=date_type,
-                date_status="confirmed",
+                date_status="unknown",
                 context=context.strip(),
             ))
 
