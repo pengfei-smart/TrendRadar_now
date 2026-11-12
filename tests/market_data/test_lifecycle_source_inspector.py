@@ -4,7 +4,6 @@
 import hashlib
 import unittest
 
-from trendradar.market_data.lifecycle_document_text import extract_lifecycle_document_text
 from trendradar.market_data.lifecycle_evidence_fetcher import FetchedDocument
 from trendradar.market_data.lifecycle_source_inspector import (
     SOURCE_PAGES,
