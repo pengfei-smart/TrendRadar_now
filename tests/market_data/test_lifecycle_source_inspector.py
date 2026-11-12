@@ -122,6 +122,9 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         self.assertIn("/api/disclosure/search.json", result["endpoint_candidates"])
         self.assertIn("/disclosure/announcement/detail.shtml", result["endpoint_candidates"])
         self.assertEqual(result["content_length"], len(source))
+        contexts = {item["endpoint"]: item for item in result["endpoint_contexts"]}
+        self.assertEqual(contexts["/api/disclosure/search.json"]["occurrence_count"], 1)
+        self.assertIn('const endpoint', contexts["/api/disclosure/search.json"]["occurrences"][0]["context"])
 
     def test_rejects_external_script_asset_before_fetch(self):
         class NeverFetcher:
