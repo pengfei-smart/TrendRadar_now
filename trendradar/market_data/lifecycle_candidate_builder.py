@@ -130,31 +130,34 @@ def build_lifecycle_evidence_candidates(
             "evidence_grade": "official",
         })
 
-    date_evidence = parsed.date_evidence or ()
-    dates = date_evidence or (None,)
+    # 解析器尚未建立事件与日期之间的句法依存关系；仅在事件和日期都唯一时关联，
+    # 否则把日期证据保留在 payload 中，不冒险把公告日/最后交易日错配到事件。
+    associated_date = (
+        parsed.date_evidence[0]
+        if len(parsed.event_types) == 1 and len(parsed.date_evidence) == 1
+        else None
+    )
     for code in parsed.security_codes:
         for event_type in parsed.event_types:
             if event_type in CORPORATE_ACTION_TYPES:
-                for date_item in dates:
-                    append_candidate(
-                        candidate_kind="corporate_action",
-                        security_code=code,
-                        event_type=event_type,
-                        action_type=CORPORATE_ACTION_TYPES[event_type],
-                        event_date=date_item.value if date_item else "",
-                        date_status=date_item.date_status if date_item else "unknown",
-                        context=date_item.context if date_item else "",
-                    )
+                append_candidate(
+                    candidate_kind="corporate_action",
+                    security_code=code,
+                    event_type=event_type,
+                    action_type=CORPORATE_ACTION_TYPES[event_type],
+                    event_date=associated_date.value if associated_date else "",
+                    date_status=associated_date.date_status if associated_date else "unknown",
+                    context=associated_date.context if associated_date else "",
+                )
             else:
-                for date_item in dates:
-                    append_candidate(
-                        candidate_kind="event",
-                        security_code=code,
-                        event_type=event_type,
-                        event_date=date_item.value if date_item else "",
-                        date_status=date_item.date_status if date_item else "unknown",
-                        context=date_item.context if date_item else "",
-                    )
+                append_candidate(
+                    candidate_kind="event",
+                    security_code=code,
+                    event_type=event_type,
+                    event_date=associated_date.value if associated_date else "",
+                    date_status=associated_date.date_status if associated_date else "unknown",
+                    context=associated_date.context if associated_date else "",
+                )
 
     for hint in relationship_hints:
         if not isinstance(hint, dict):
