@@ -12,7 +12,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 4
+    SCHEMA_VERSION = 5
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path)
@@ -596,6 +596,128 @@ class MarketStorage:
                 (*params, limit),
             ).fetchall()
             return [dict(row) for row in rows]
+
+    def save_lifecycle_evidence_candidates(self, candidates: Iterable[dict]) -> int:
+        """保存待核验线索；采集行为绝不自动写入正式生命周期事实表。"""
+        kinds = {"event", "corporate_action", "relationship"}
+        date_statuses = {"confirmed", "approximate", "pending", "unknown"}
+        evidence_grades = {"official", "reliable_secondary", "unverified", "unknown"}
+        rows = []
+        for item in candidates:
+            candidate_id = str(item.get("candidate_id") or "").strip()
+            source_name = str(item.get("source_name") or "").strip()
+            source_title = str(item.get("source_title") or "").strip()
+            source_url = str(item.get("source_url") or "").strip()
+            retrieved_at = str(item.get("retrieved_at") or "").strip()
+            content_sha256 = str(item.get("content_sha256") or "").lower().strip()
+            if not all((candidate_id, source_name, source_title, source_url, retrieved_at)):
+                raise ValueError("candidate_id、来源名称、标题、URL和采集时间不能为空")
+            if len(content_sha256) != 64 or any(ch not in "0123456789abcdef" for ch in content_sha256):
+                raise ValueError("content_sha256 必须是64位十六进制SHA-256")
+            self._validate_enum(item.get("candidate_kind"), kinds, "candidate_kind")
+            self._validate_enum(item.get("date_status", "unknown"), date_statuses, "date_status")
+            self._validate_enum(item.get("evidence_grade", "unknown"), evidence_grades, "evidence_grade")
+            payload = item.get("payload_json", "{}")
+            if isinstance(payload, (dict, list)):
+                payload = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+            try:
+                json.loads(payload)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("payload_json 必须是有效JSON") from exc
+            rows.append((
+                candidate_id, item["candidate_kind"], item.get("security_code", ""),
+                item.get("related_security_code", ""), item.get("exchange", ""),
+                item.get("event_type", ""), item.get("action_type", ""),
+                item.get("relationship_type", ""), item.get("event_date", ""),
+                item.get("date_status", "unknown"), source_name, source_title, source_url,
+                item.get("source_published_at", ""), retrieved_at, content_sha256,
+                item.get("evidence_excerpt", ""), payload, item.get("evidence_grade", "unknown"),
+            ))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO lifecycle_evidence_candidates
+                (candidate_id,candidate_kind,security_code,related_security_code,exchange,
+                 event_type,action_type,relationship_type,event_date,date_status,source_name,
+                 source_title,source_url,source_published_at,retrieved_at,content_sha256,
+                 evidence_excerpt,payload_json,evidence_grade)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(candidate_id) DO UPDATE SET
+                candidate_kind=excluded.candidate_kind,security_code=excluded.security_code,
+                related_security_code=excluded.related_security_code,exchange=excluded.exchange,
+                event_type=excluded.event_type,action_type=excluded.action_type,
+                relationship_type=excluded.relationship_type,event_date=excluded.event_date,
+                date_status=excluded.date_status,source_name=excluded.source_name,
+                source_title=excluded.source_title,source_url=excluded.source_url,
+                source_published_at=excluded.source_published_at,retrieved_at=excluded.retrieved_at,
+                evidence_excerpt=excluded.evidence_excerpt,payload_json=excluded.payload_json,
+                evidence_grade=excluded.evidence_grade,
+                review_status=CASE WHEN lifecycle_evidence_candidates.content_sha256
+                    <> excluded.content_sha256 THEN 'pending'
+                    ELSE lifecycle_evidence_candidates.review_status END,
+                reviewer=CASE WHEN lifecycle_evidence_candidates.content_sha256
+                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.reviewer END,
+                reviewed_at=CASE WHEN lifecycle_evidence_candidates.content_sha256
+                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.reviewed_at END,
+                review_notes=CASE WHEN lifecycle_evidence_candidates.content_sha256
+                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.review_notes END,
+                content_sha256=excluded.content_sha256,updated_at=CURRENT_TIMESTAMP""",
+                rows,
+            )
+        return len(rows)
+
+    def list_lifecycle_evidence_candidates(
+        self, *, review_status: str | None = None, candidate_kind: str | None = None,
+        security_code: str | None = None, evidence_grade: str | None = None,
+        limit: int = 500,
+    ) -> list[dict]:
+        """按审核状态、类型、证券代码筛选候选线索。"""
+        if not 1 <= limit <= 5000:
+            raise ValueError("limit 必须在1到5000之间")
+        clauses, params = [], []
+        for field, value, allowed in (
+            ("review_status", review_status,
+             {"pending", "verified", "rejected", "needs_more_evidence"}),
+            ("candidate_kind", candidate_kind, {"event", "corporate_action", "relationship"}),
+            ("evidence_grade", evidence_grade,
+             {"official", "reliable_secondary", "unverified", "unknown"}),
+        ):
+            if value is not None:
+                self._validate_enum(value, allowed, field)
+                clauses.append(f"{field}=?")
+                params.append(value)
+        if security_code is not None:
+            clauses.append("security_code=?")
+            params.append(security_code)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM lifecycle_evidence_candidates" + where +
+                " ORDER BY CASE review_status WHEN 'pending' THEN 0 "
+                "WHEN 'needs_more_evidence' THEN 1 ELSE 2 END, retrieved_at DESC, candidate_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
+    def review_lifecycle_evidence_candidate(
+        self, candidate_id: str, *, review_status: str, reviewer: str,
+        reviewed_at: str, review_notes: str = "",
+    ) -> None:
+        """只更新候选线索审核结果；verified 不等于自动晋升为正式事实。"""
+        self._validate_enum(
+            review_status, {"pending", "verified", "rejected", "needs_more_evidence"},
+            "review_status",
+        )
+        if not candidate_id or not reviewer.strip() or not reviewed_at.strip():
+            raise ValueError("candidate_id、审核人和审核时间不能为空")
+        with self.connect() as connection:
+            cursor = connection.execute(
+                """UPDATE lifecycle_evidence_candidates SET review_status=?,reviewer=?,
+                reviewed_at=?,review_notes=?,updated_at=CURRENT_TIMESTAMP
+                WHERE candidate_id=?""",
+                (review_status, reviewer.strip(), reviewed_at.strip(), review_notes, candidate_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError(f"生命周期证据候选不存在: {candidate_id}")
 
     def save_radar_run(self, run_at: str, candidate_count: int, pushed_count: int,
                        source_status: str, notes: str = "") -> None:
