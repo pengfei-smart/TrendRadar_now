@@ -98,6 +98,12 @@ class LifecycleDocumentTextTests(unittest.TestCase):
             text = extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
         self.assertIn("000765", text)
         self.assertIn("2020年12月31日", text)
+        from trendradar.market_data.lifecycle_evidence_parser import parse_lifecycle_announcement
+        parsed = parse_lifecycle_announcement(text)
+        self.assertEqual(parsed.security_codes, ("000765",))
+        self.assertIn("suspension", parsed.event_types)
+        self.assertEqual(parsed.date_evidence[0].date_type, "last_trading_date")
+        self.assertEqual(parsed.date_evidence[0].date_status, "unknown")
 
     def test_rejects_scanned_pdf_without_text_layer(self):
         fake = types.SimpleNamespace(
