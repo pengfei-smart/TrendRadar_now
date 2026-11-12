@@ -12,7 +12,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 3
+    SCHEMA_VERSION = 4
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path)
@@ -149,12 +149,32 @@ class MarketStorage:
         connection.execute("CREATE INDEX idx_market_snapshot_code_time ON market_snapshots(code, timestamp DESC)")
         connection.execute("CREATE INDEX idx_market_snapshot_trading_date ON market_snapshots(trading_date, code)")
 
+    def _ensure_lifecycle_columns(self, connection: sqlite3.Connection) -> None:
+        # 为旧数据库补齐 v4 可空生命周期字段。
+        tables = {row[0] for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'"
+        )}
+        if "security_master" not in tables:
+            return
+        existing = self._columns(connection, "security_master")
+        for column in (
+            "last_trading_date", "decision_issued_date", "decision_received_date",
+            "delisting_effective_date", "transfer_market_code",
+            "transfer_market_start_date", "successor_security_code",
+            "delisting_method", "lifecycle_notes",
+        ):
+            if column not in existing:
+                connection.execute(
+                    f"ALTER TABLE security_master ADD COLUMN {column} TEXT"
+                )
+
     def _initialize(self) -> None:
         schema_path = Path(__file__).resolve().parent.parent / "storage" / "market_schema.sql"
         with self.connect() as connection:
             self._preflight_legacy_schema(connection)
             self._migrate_snapshot_uniqueness(connection)
             connection.executescript(schema_path.read_text(encoding="utf-8"))
+            self._ensure_lifecycle_columns(connection)
             connection.execute(
                 """INSERT INTO schema_meta(key,value) VALUES('schema_version',?)
                 ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP""",
