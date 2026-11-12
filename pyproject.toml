@@ -17,7 +17,10 @@ dependencies = [
     "tenacity==8.5.0"
 ]
 
-[project.optional-dependencies]\npdf = ["pypdf>=7.0.1,<8.0.0"]\n\n[project.scripts]
+[project.optional-dependencies]
+pdf = ["pypdf>=7.0.1,<8.0.0"]
+
+[project.scripts]
 trendradar = "trendradar.__main__:main"
 trendradar-mcp = "mcp_server.server:run_server"
 
