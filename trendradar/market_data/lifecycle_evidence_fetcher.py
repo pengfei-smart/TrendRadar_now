@@ -6,7 +6,6 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from trendradar.market_data.lifecycle_source_registry import get_source, is_allowed_url
@@ -72,7 +71,7 @@ class LifecycleEvidenceFetcher:
                 final_url = response.geturl()
                 if not is_allowed_url(source_id, final_url):
                     raise ValueError("最终响应 URL 不在官方来源白名单内")
-                status_code = getattr(response, "status", response.getcode())
+                status_code = response.status if hasattr(response, "status") else response.getcode()
                 if status_code != 200:
                     raise RuntimeError(f"官方资料请求返回 HTTP {status_code}")
                 content_type = response.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
