@@ -55,9 +55,9 @@ class LifecycleDocumentTextTests(unittest.TestCase):
 
     def test_extracts_plain_text_and_normalizes_whitespace(self):
         text = extract_lifecycle_document_text(
-            document("证券代码000765\\r\\n\\r\\n  暂停上市。".encode(), "text/plain")
+            document("证券代码000765\r\n\r\n  暂停上市。".encode(), "text/plain")
         )
-        self.assertEqual(text, "证券代码000765\\n\\n暂停上市。")
+        self.assertEqual(text, "证券代码000765\n\n暂停上市。")
 
     def test_extracts_xml_text(self):
         text = extract_lifecycle_document_text(
