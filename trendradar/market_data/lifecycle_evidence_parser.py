@@ -74,17 +74,42 @@ def _normalize_date(match: re.Match) -> str | None:
 
 def _date_type(context: str) -> str:
     before, separator, after = context.partition("⟦DATE⟧")
-    # 日期前的标签与该日期关联更直接，避免相邻日期的后续标签造成误判。
-    for section in (before, after if separator else ""):
+    # 只取当前日期之前最近出现的标签，不能让更早日期的标签跨日期继承。
+    preceding = []
+    for date_type, terms in DATE_LABEL_RULES:
+        for term in terms:
+            position = before.rfind(term)
+            if position >= 0:
+                preceding.append((position, len(term), date_type))
+    if preceding:
+        return max(preceding)[2]
+
+    # 仅当前文没有标签时才使用日期后的标签作为弱回退。
+    following = []
+    if separator:
         for date_type, terms in DATE_LABEL_RULES:
-            if any(term in section for term in terms):
-                return date_type
+            for term in terms:
+                position = after.find(term)
+                if position >= 0:
+                    following.append((position, -len(term), date_type))
+    if following:
+        return min(following)[2]
     return "unspecified"
 
 
 def _date_context(text: str, start: int, end: int) -> str:
-    before = text[max(0, start - 32):start]
-    after = text[end:min(len(text), end + 24)]
+    # 日期上下文必须限制在相邻日期之间，防止前一日期的标签污染后一日期。
+    all_matches = [
+        match
+        for pattern in DATE_PATTERNS
+        for match in pattern.finditer(text)
+    ]
+    previous_ends = [match.end() for match in all_matches if match.end() <= start]
+    next_starts = [match.start() for match in all_matches if match.start() >= end]
+    before_start = max(max(previous_ends, default=0), start - 32)
+    after_end = min(min(next_starts, default=len(text)), end + 24)
+    before = text[before_start:start]
+    after = text[end:after_end]
     return f"{before}⟦DATE⟧{after}"
 
 
