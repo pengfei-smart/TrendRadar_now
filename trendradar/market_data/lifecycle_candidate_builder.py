@@ -33,7 +33,6 @@ def _candidate_id(
     event_type: str,
     action_type: str,
     relationship_type: str,
-    event_date: str,
 ) -> str:
     identity = "|".join((
         source_id, source_url, candidate_kind,
@@ -111,7 +110,7 @@ def build_lifecycle_evidence_candidates(
                 document.source_id, document.final_url,
                 candidate_kind, security_code, related_security_code,
                 event_type, action_type,
-                relationship_type, event_date,
+                relationship_type,
             ),
             "candidate_kind": candidate_kind,
             "security_code": security_code,
