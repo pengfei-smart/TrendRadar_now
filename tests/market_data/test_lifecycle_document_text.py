@@ -57,6 +57,21 @@ class LifecycleDocumentTextTests(unittest.TestCase):
         self.assertIn("000765", text)
         self.assertNotIn("['证券代码", text)
 
+
+    def test_extracted_html_can_feed_lifecycle_parser(self):
+        from trendradar.market_data.lifecycle_evidence_parser import parse_lifecycle_announcement
+
+        html = (
+            "<html><body><h1>证券代码000765暂停上市公告</h1>"
+            "<p>最后交易日为2020年12月31日。</p></body></html>"
+        ).encode()
+        extracted = extract_lifecycle_document_text(document(html, "text/html"))
+        parsed = parse_lifecycle_announcement(extracted)
+        self.assertEqual(parsed.security_codes, ("000765",))
+        self.assertIn("suspension", parsed.event_types)
+        self.assertEqual(parsed.date_evidence[0].date_type, "last_trading_date")
+        self.assertEqual(parsed.date_evidence[0].date_status, "unknown")
+
     def test_rejects_pdf_until_a_real_pdf_text_extractor_is_added(self):
         with self.assertRaisesRegex(ValueError, "暂不支持"):
             extract_lifecycle_document_text(document(b"%PDF-1.7 binary", "application/pdf"))
