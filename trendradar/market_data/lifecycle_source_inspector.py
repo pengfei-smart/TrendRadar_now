@@ -15,7 +15,6 @@ from trendradar.market_data.lifecycle_source_registry import is_allowed_url
 SOURCE_PAGES = {
     "sse": (
         "https://www.sse.com.cn/home/search/",
-        "https://star.sse.com.cn/disclosure/listedinfo/announcement/",
     ),
     "szse": (
         "https://www.szse.cn/disclosure/notice/company/index.html",
