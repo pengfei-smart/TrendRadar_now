@@ -41,6 +41,8 @@ class LifecycleCandidateBuilderTests(unittest.TestCase):
         self.assertEqual(row["source_url"], document.final_url)
         self.assertEqual(row["content_sha256"], document.content_sha256)
         self.assertEqual(row["date_status"], "unknown")
+        # 多个日期无法安全对应单一事件时，不把公告日或最后交易日误填为事件日期。
+        self.assertEqual(row["event_date"], "")
         self.assertEqual(row["evidence_grade"], "official")
         self.assertIn("parsed_evidence", row["payload_json"])
 
