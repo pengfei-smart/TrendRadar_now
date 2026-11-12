@@ -1,6 +1,7 @@
 # 本文件负责独立市场SQLite初始化、版本迁移、事务写入与行情/事件持久化。
 """Standalone SQLite storage and safe schema migration for market radar."""
 
+import json
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
