@@ -8,6 +8,7 @@ from trendradar.market_data.lifecycle_evidence_fetcher import FetchedDocument
 from trendradar.market_data.lifecycle_source_inspector import (
     SOURCE_PAGES,
     inspect_announcement_page,
+    inspect_script_asset,
 )
 
 
@@ -92,6 +93,44 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
                 "neeq",
                 "https://www.neeq.com.cn/disclosure/announcement.html",
                 fetcher=FakeFetcher(b"%PDF", content_type="application/pdf"),
+            )
+
+
+    def test_extracts_endpoint_like_literals_from_allowlisted_javascript(self):
+        source = b"""
+        const endpoint = "/api/disclosure/search.json";
+        const detail = "/disclosure/announcement/detail.shtml";
+        const label = "search";
+        """
+        class ScriptFetcher:
+            def fetch(self, source_id, url):
+                return FetchedDocument(
+                    source_id=source_id,
+                    requested_url=url,
+                    final_url=url,
+                    status_code=200,
+                    content_type="application/javascript",
+                    body=source,
+                    content_sha256=hashlib.sha256(source).hexdigest(),
+                )
+
+        result = inspect_script_asset(
+            "neeq",
+            "https://www.neeq.com.cn/assets/disclosure.js",
+            fetcher=ScriptFetcher(),
+        )
+        self.assertIn("/api/disclosure/search.json", result["endpoint_candidates"])
+        self.assertIn("/disclosure/announcement/detail.shtml", result["endpoint_candidates"])
+        self.assertEqual(result["content_length"], len(source))
+
+    def test_rejects_external_script_asset_before_fetch(self):
+        class NeverFetcher:
+            def fetch(self, *args):
+                raise AssertionError("must not fetch")
+
+        with self.assertRaises(ValueError):
+            inspect_script_asset(
+                "neeq", "https://outside.example/search.js", fetcher=NeverFetcher()
             )
 
 
