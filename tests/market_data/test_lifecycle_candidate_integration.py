@@ -109,7 +109,7 @@ class LifecycleCandidateIntegrationTests(unittest.TestCase):
         self.assert_formal_lifecycle_tables_empty()
 
     def test_verified_candidates_never_auto_promote_any_candidate_kind(self):
-        text = "证券代码000765与001267涉及破产重整及现金要约收购。"
+        text = "证券代码000765与001267涉及破产重整及现金要约收购，000765股票暂停上市。"
         rows = build_lifecycle_evidence_candidates(
             self.make_document(text),
             parse_lifecycle_announcement(text),
