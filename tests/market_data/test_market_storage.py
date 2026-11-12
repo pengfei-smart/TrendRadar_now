@@ -10,6 +10,75 @@ from trendradar.market_data.models import MarketEvent, Security, QuoteSnapshot
 
 
 class MarketStorageTests(unittest.TestCase):
+    def test_lifecycle_evidence_candidates_require_review_and_never_auto_promote(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            candidate = {
+                "candidate_id": "cand-000765-delisting",
+                "candidate_kind": "event",
+                "security_code": "000765",
+                "exchange": "SZ",
+                "event_type": "delisting_effective",
+                "event_date": "2001-09-28",
+                "date_status": "unknown",
+                "source_name": "exchange_archive",
+                "source_title": "历史终止上市线索",
+                "source_url": "https://example.org/notice/000765",
+                "retrieved_at": "2026-11-12T21:00:00+08:00",
+                "content_sha256": "a" * 64,
+                "evidence_excerpt": "仅用于候选线索测试",
+                "payload_json": {"raw_date_text": "2001年9月"},
+                "evidence_grade": "unverified",
+            }
+            self.assertEqual(storage.save_lifecycle_evidence_candidates([candidate]), 1)
+            row = storage.list_lifecycle_evidence_candidates(
+                review_status="pending", security_code="000765"
+            )[0]
+            self.assertEqual(row["review_status"], "pending")
+            self.assertEqual(row["payload_json"], '{"raw_date_text": "2001年9月"}')
+            with storage.connect() as connection:
+                self.assertEqual(connection.execute(
+                    "SELECT COUNT(*) FROM security_lifecycle_events"
+                ).fetchone()[0], 0)
+            storage.review_lifecycle_evidence_candidate(
+                candidate["candidate_id"], review_status="verified",
+                reviewer="tester", reviewed_at="2026-11-12T21:10:00+08:00",
+                review_notes="测试审核通过，但不自动入正式表",
+            )
+            self.assertEqual(storage.list_lifecycle_evidence_candidates(
+                review_status="verified"
+            )[0]["candidate_id"], candidate["candidate_id"])
+            changed = dict(candidate, content_sha256="b" * 64)
+            storage.save_lifecycle_evidence_candidates([changed])
+            refreshed = storage.list_lifecycle_evidence_candidates()[0]
+            self.assertEqual(refreshed["review_status"], "pending")
+            self.assertEqual(refreshed["reviewer"], "")
+            with storage.connect() as connection:
+                self.assertEqual(connection.execute(
+                    "SELECT COUNT(*) FROM security_lifecycle_events"
+                ).fetchone()[0], 0)
+
+    def test_lifecycle_candidate_rejects_bad_hash_json_and_missing_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            base = {
+                "candidate_id": "bad-candidate", "candidate_kind": "event",
+                "source_name": "test", "source_title": "test",
+                "source_url": "https://example.org", "retrieved_at": "2026-11-12T00:00:00+08:00",
+                "content_sha256": "not-a-hash",
+            }
+            with self.assertRaises(ValueError):
+                storage.save_lifecycle_evidence_candidates([base])
+            base["content_sha256"] = "c" * 64
+            base["payload_json"] = "{invalid"
+            with self.assertRaises(ValueError):
+                storage.save_lifecycle_evidence_candidates([base])
+            with self.assertRaises(ValueError):
+                storage.review_lifecycle_evidence_candidate(
+                    "missing", review_status="verified", reviewer="tester",
+                    reviewed_at="2026-11-12T21:00:00+08:00",
+                )
+
     def test_event_security_and_multi_source_quote_persistence(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
