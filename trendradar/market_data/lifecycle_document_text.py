@@ -1,11 +1,12 @@
-# 本文件将官方生命周期公告的HTML、XML、JSON和纯文本原文安全转换为可解析文本。
-"""Extract readable text from fetched lifecycle evidence documents using the standard library."""
+# 本文件将官方生命周期公告的HTML、XML、JSON、纯文本和可提取文本层的PDF安全转换为可解析文本。
+"""Extract readable text from fetched lifecycle evidence documents."""
 
 from __future__ import annotations
 
 import json
 import re
 from html.parser import HTMLParser
+from io import BytesIO
 
 from trendradar.market_data.lifecycle_evidence_fetcher import FetchedDocument
 
@@ -17,6 +18,7 @@ _BLOCK_TAGS = {
     "section", "table", "tbody", "td", "th", "thead", "tr", "ul",
 }
 _IGNORED_TAGS = {"script", "style", "noscript", "svg"}
+_MAX_PDF_PAGES = 500
 
 
 class _ReadableHTMLParser(HTMLParser):
@@ -30,14 +32,14 @@ class _ReadableHTMLParser(HTMLParser):
         if tag in _IGNORED_TAGS:
             self._ignored_depth += 1
         elif not self._ignored_depth and tag in _BLOCK_TAGS:
-            self.parts.append("\n")
+            self.parts.append("\\n")
 
     def handle_endtag(self, tag):
         tag = tag.lower()
         if tag in _IGNORED_TAGS and self._ignored_depth:
             self._ignored_depth -= 1
         elif not self._ignored_depth and tag in _BLOCK_TAGS:
-            self.parts.append("\n")
+            self.parts.append("\\n")
 
     def handle_data(self, data):
         if not self._ignored_depth and data:
@@ -61,16 +63,48 @@ def _json_text(value) -> list[str]:
     return []
 
 
+def _extract_pdf_text(body: bytes) -> str:
+    """Extract a bounded number of text-layer pages; OCR is intentionally not attempted."""
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise ValueError(
+            "提取 PDF 需要可选依赖 pypdf，请安装项目的 pdf extra"
+        ) from exc
+
+    try:
+        reader = PdfReader(BytesIO(body), strict=False)
+        if reader.is_encrypted:
+            raise ValueError("暂不处理加密 PDF，需先由人工解密")
+        page_count = len(reader.pages)
+        if page_count > _MAX_PDF_PAGES:
+            raise ValueError(f"PDF 页数超过安全上限 {_MAX_PDF_PAGES}")
+        parts = []
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                parts.append(page_text)
+    except ValueError:
+        raise
+    except Exception as exc:
+        raise ValueError("PDF 无法解析或文本提取失败") from exc
+
+    text = "\\n".join(parts)
+    if not text.strip():
+        raise ValueError("PDF 未提取到文本层，可能是扫描版 PDF；当前不执行 OCR")
+    return text
+
+
 def _normalize_text(value: str) -> str:
-    value = value.replace("\r\n", "\n").replace("\r", "\n").replace("\u00a0", " ")
-    value = re.sub(r"[\t\f\v ]+", " ", value)
-    value = re.sub(r" *\n *", "\n", value)
-    value = re.sub(r"\n{3,}", "\n\n", value)
+    value = value.replace("\\r\\n", "\\n").replace("\\r", "\\n").replace("\\u00a0", " ")
+    value = re.sub(r"[\\t\\f\\v ]+", " ", value)
+    value = re.sub(r" *\\n *", "\\n", value)
+    value = re.sub(r"\\n{3,}", "\\n\\n", value)
     return value.strip()
 
 
 def extract_lifecycle_document_text(document: FetchedDocument) -> str:
-    """Extract visible text; unsupported binary formats fail closed, never decode as noise."""
+    """Extract readable text; unsupported or image-only formats fail closed."""
     if not isinstance(document, FetchedDocument):
         raise TypeError("document 必须是 FetchedDocument")
     if document.status_code != 200:
@@ -91,7 +125,9 @@ def extract_lifecycle_document_text(document: FetchedDocument) -> str:
             payload = json.loads(document.body.decode("utf-8-sig"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise ValueError("官方 JSON 文档无法按 UTF-8/JSON 解析") from exc
-        text = "\n".join(_json_text(payload))
+        text = "\\n".join(_json_text(payload))
+    elif content_type == "application/pdf":
+        text = _extract_pdf_text(document.body)
     else:
         raise ValueError(f"暂不支持从该内容类型提取文本: {content_type or 'unknown'}")
 
