@@ -100,6 +100,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         source = b"""
         const endpoint = "/api/disclosure/search.json";
         const detail = "/disclosure/announcement/detail.shtml";
+        const companyCd = "123456";
         const label = "search";
         """
         class ScriptFetcher:
