@@ -35,6 +35,7 @@ class LifecycleEvidenceParserTests(unittest.TestCase):
         self.assertEqual(by_type["announcement_date"], "2024-03-01")
         self.assertEqual(by_type["last_trading_date"], "2024-03-08")
         self.assertEqual(by_type["delisting_date"], "2024-03-15")
+        self.assertTrue(all(item.date_status == "unknown" for item in parsed.date_evidence))
 
     def test_invalid_calendar_dates_are_ignored(self):
         parsed = parse_lifecycle_announcement("公告日期：2024年2月30日。")
