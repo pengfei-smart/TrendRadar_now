@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO schema_meta(key, value) VALUES ('schema_version', '4')
+INSERT INTO schema_meta(key, value) VALUES ('schema_version', '5')
 ON CONFLICT(key) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS data_sources (
@@ -350,3 +350,44 @@ CREATE INDEX IF NOT EXISTS idx_security_relationships_to
     ON security_relationships(to_security_code);
 CREATE INDEX IF NOT EXISTS idx_security_relationships_action
     ON security_relationships(corporate_action_id);
+
+
+-- v5 生命周期证据候选池：仅保存采集线索和审核状态，不自动写入正式生命周期表。
+CREATE TABLE IF NOT EXISTS lifecycle_evidence_candidates (
+    candidate_id TEXT PRIMARY KEY,
+    candidate_kind TEXT NOT NULL CHECK (candidate_kind IN ('event','corporate_action','relationship')),
+    security_code TEXT NOT NULL DEFAULT '',
+    related_security_code TEXT NOT NULL DEFAULT '',
+    exchange TEXT NOT NULL DEFAULT '',
+    event_type TEXT NOT NULL DEFAULT '',
+    action_type TEXT NOT NULL DEFAULT '',
+    relationship_type TEXT NOT NULL DEFAULT '',
+    event_date TEXT NOT NULL DEFAULT '',
+    date_status TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (date_status IN ('confirmed','approximate','pending','unknown')),
+    source_name TEXT NOT NULL,
+    source_title TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    source_published_at TEXT NOT NULL DEFAULT '',
+    retrieved_at TEXT NOT NULL,
+    content_sha256 TEXT NOT NULL CHECK (length(content_sha256) = 64),
+    evidence_excerpt TEXT NOT NULL DEFAULT '',
+    payload_json TEXT NOT NULL DEFAULT '{}',
+    evidence_grade TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (evidence_grade IN ('official','reliable_secondary','unverified','unknown')),
+    review_status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (review_status IN ('pending','verified','rejected','needs_more_evidence')),
+    reviewer TEXT NOT NULL DEFAULT '',
+    reviewed_at TEXT NOT NULL DEFAULT '',
+    review_notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_review
+    ON lifecycle_evidence_candidates(review_status, candidate_kind, retrieved_at DESC);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_security
+    ON lifecycle_evidence_candidates(security_code, event_date);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_hash
+    ON lifecycle_evidence_candidates(content_sha256);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_source
+    ON lifecycle_evidence_candidates(source_name, source_published_at DESC);
