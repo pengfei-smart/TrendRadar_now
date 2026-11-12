@@ -32,14 +32,14 @@ class _ReadableHTMLParser(HTMLParser):
         if tag in _IGNORED_TAGS:
             self._ignored_depth += 1
         elif not self._ignored_depth and tag in _BLOCK_TAGS:
-            self.parts.append("\\n")
+            self.parts.append("\n")
 
     def handle_endtag(self, tag):
         tag = tag.lower()
         if tag in _IGNORED_TAGS and self._ignored_depth:
             self._ignored_depth -= 1
         elif not self._ignored_depth and tag in _BLOCK_TAGS:
-            self.parts.append("\\n")
+            self.parts.append("\n")
 
     def handle_data(self, data):
         if not self._ignored_depth and data:
@@ -89,17 +89,17 @@ def _extract_pdf_text(body: bytes) -> str:
     except Exception as exc:
         raise ValueError("PDF 无法解析或文本提取失败") from exc
 
-    text = "\\n".join(parts)
+    text = "\n".join(parts)
     if not text.strip():
         raise ValueError("PDF 未提取到文本层，可能是扫描版 PDF；当前不执行 OCR")
     return text
 
 
 def _normalize_text(value: str) -> str:
-    value = value.replace("\\r\\n", "\\n").replace("\\r", "\\n").replace("\\u00a0", " ")
-    value = re.sub(r"[\\t\\f\\v ]+", " ", value)
-    value = re.sub(r" *\\n *", "\\n", value)
-    value = re.sub(r"\\n{3,}", "\\n\\n", value)
+    value = value.replace("\r\n", "\n").replace("\r", "\n").replace("\u00a0", " ")
+    value = re.sub(r"[\t\f\v ]+", " ", value)
+    value = re.sub(r" *\n *", "\n", value)
+    value = re.sub(r"\n{3,}", "\n\n", value)
     return value.strip()
 
 
@@ -125,7 +125,7 @@ def extract_lifecycle_document_text(document: FetchedDocument) -> str:
             payload = json.loads(document.body.decode("utf-8-sig"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise ValueError("官方 JSON 文档无法按 UTF-8/JSON 解析") from exc
-        text = "\\n".join(_json_text(payload))
+        text = "\n".join(_json_text(payload))
     elif content_type == "application/pdf":
         text = _extract_pdf_text(document.body)
     else:
