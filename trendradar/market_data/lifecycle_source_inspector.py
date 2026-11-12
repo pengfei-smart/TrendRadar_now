@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
@@ -135,6 +136,75 @@ def inspect_announcement_page(source_id: str, url: str, fetcher=None) -> dict:
     return result
 
 
+def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
+    """Fetch one allowlisted JavaScript asset and extract endpoint-like literals."""
+    if not is_allowed_url(source_id, url):
+        raise ValueError("脚本 URL 不在该官方来源白名单内")
+    fetcher = fetcher or LifecycleEvidenceFetcher()
+    document = fetcher.fetch(source_id, url)
+    if document.content_type not in {
+        "application/javascript", "text/javascript", "application/x-javascript",
+        "text/plain", "application/octet-stream",
+    }:
+        raise ValueError(f"不是可识别的 JavaScript 内容: {document.content_type}")
+    source = document.body.decode("utf-8-sig", errors="replace")
+    literal_pattern = re.compile(r"""["'`]([^"'\`\\]{1,500})["'`]""")
+    keywords = re.compile(
+        r"(?:api|search|disclosure|announcement|notice|query|list|page|json|info|ajax)",
+        re.IGNORECASE,
+    )
+    candidates = []
+    seen = set()
+    for match in literal_pattern.finditer(source):
+        value = match.group(1).strip()
+        if not value or value in seen or not keywords.search(value):
+            continue
+        if not (
+            value.startswith(("/", "http://", "https://", "./", "../"))
+            or ".json" in value.lower()
+            or ".shtml" in value.lower()
+            or ".html" in value.lower()
+        ):
+            continue
+        seen.add(value)
+        candidates.append(value)
+    return {
+        "source_id": source_id,
+        "script_url": url,
+        "status_code": document.status_code,
+        "content_type": document.content_type,
+        "content_length": len(document.body),
+        "content_sha256": document.content_sha256,
+        "endpoint_candidates": candidates[:200],
+        "candidate_count": len(candidates),
+    }
+
+
+def inspect_source_assets(source_id: str, fetcher=None) -> dict:
+    """Inspect registered script assets referenced by the configured source pages."""
+    if source_id not in SOURCE_PAGES:
+        raise ValueError(f"未知公告来源: {source_id}")
+    fetcher = fetcher or LifecycleEvidenceFetcher()
+    assets = {}
+    pages = []
+    for page_url in SOURCE_PAGES[source_id]:
+        try:
+            page = inspect_announcement_page(source_id, page_url, fetcher=fetcher)
+            pages.append({"page_url": page_url, "status": "ok"})
+            for script in page["scripts"]:
+                if script["allowed_by_source_registry"]:
+                    assets[script["url"]] = None
+        except Exception as exc:
+            pages.append({"page_url": page_url, "error": f"{type(exc).__name__}: {exc}"})
+    results = []
+    for url in sorted(assets):
+        try:
+            results.append(inspect_script_asset(source_id, url, fetcher=fetcher))
+        except Exception as exc:
+            results.append({"script_url": url, "error": f"{type(exc).__name__}: {exc}"})
+    return {"source_id": source_id, "pages": pages, "assets": results}
+
+
 def inspect_source(source_id: str, fetcher=None) -> dict:
     if source_id not in SOURCE_PAGES:
         raise ValueError(f"未知公告来源: {source_id}")
@@ -150,10 +220,12 @@ def inspect_source(source_id: str, fetcher=None) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="检查官方公告检索页面结构，不提交检索表单")
     parser.add_argument("--source", choices=tuple(SOURCE_PAGES), help="仅检查指定官方来源")
+    parser.add_argument("--inspect-scripts", action="store_true", help="额外获取同域脚本并提取疑似接口路径")
     args = parser.parse_args()
     source_ids = (args.source,) if args.source else tuple(SOURCE_PAGES)
+    inspector = inspect_source_assets if args.inspect_scripts else inspect_source
     for source_id in source_ids:
-        print(json.dumps(inspect_source(source_id), ensure_ascii=False, indent=2))
+        print(json.dumps(inspector(source_id), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
