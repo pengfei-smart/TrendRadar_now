@@ -3820,3 +3820,2841 @@ GPL-3.0 License
 [🔝 回到顶部](#trendradar)
 
 </div>
+
+
+
+
+
+
+
+{
+  "source_id": "sse",
+  "pages": [
+    {
+      "page_url": "https://www.sse.com.cn/home/search/",
+      "title": "上证搜索  | 上海证券交易所",
+      "forms": [],
+      "iframes": [],
+      "scripts": [
+        {
+          "url": "https://www.sse.com.cn/js/lib/gdp-full.js?v=20250916",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn"
+        },
+        {
+          "url": "https://www.sse.com.cn/xhtml/js/sse_full.js?v=3.8.3_20261030",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn"
+        },
+        {
+          "url": "https://www.sse.com.cn/xhtml/js/app/sse_menufun_2021.js",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn"
+        },
+        {
+          "url": "https://www.sse.com.cn/xhtml/js/lib/require.js",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://www.sse.com.cn/home/app/update2026/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "APP下载"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/weixin/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "微博微信"
+        },
+        {
+          "url": "http://english.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "english.sse.com.cn",
+          "text": "English"
+        },
+        {
+          "url": "http://big5.sse.com.cn/site/cht/www.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "big5.sse.com.cn",
+          "text": "繁"
+        },
+        {
+          "url": "https://one.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "一网通办"
+        },
+        {
+          "url": "https://www.sse.com.cn/transparency/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "“三开门”专栏"
+        },
+        {
+          "url": "https://english.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "english.sse.com.cn",
+          "text": "简中EN"
+        },
+        {
+          "url": "https://www.sse.com.cn/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": ""
+        },
+        {
+          "url": "https://one.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "一网通办"
+        },
+        {
+          "url": "https://www.sse.com.cn/transparency/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "“三开门”专栏"
+        },
+        {
+          "url": "https://one.sse.com.cn/investor/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "投资者"
+        },
+        {
+          "url": "https://one.sse.com.cn/member/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "会员机构"
+        },
+        {
+          "url": "https://one.sse.com.cn/to-be-listed/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "拟上市公司"
+        },
+        {
+          "url": "https://one.sse.com.cn/bond/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "债券机构"
+        },
+        {
+          "url": "https://one.sse.com.cn/list/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "上市公司"
+        },
+        {
+          "url": "https://one.sse.com.cn/fund/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "基金公司"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/gptz/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "股票投资一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/zqfx/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "债券发行上市一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/qqtz/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "期权投资一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/reits/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "REITs发行上市一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/qyss/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "企业上市一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/fwyy/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "服务预约一件事"
+        },
+        {
+          "url": "https://one.sse.com.cn/onething/xxpl/",
+          "allowed_by_source_registry": false,
+          "host": "one.sse.com.cn",
+          "text": "信息披露一件事"
+        },
+        {
+          "url": "javascript:void(0);",
+          "allowed_by_source_registry": false,
+          "host": "",
+          "text": "搜标题"
+        },
+        {
+          "url": "javascript:void(0);",
+          "allowed_by_source_registry": false,
+          "host": "",
+          "text": "搜标题和正文"
+        },
+        {
+          "url": "javascript:void(0);",
+          "allowed_by_source_registry": false,
+          "host": "",
+          "text": "试试选择精确搜索、缩小日期范围"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/search/#collapseExample",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "筛选工具"
+        },
+        {
+          "url": "javascript:void(0);",
+          "allowed_by_source_registry": false,
+          "host": "",
+          "text": "试试选择精确搜索、缩小日期范围"
+        },
+        {
+          "url": "javascript:void(0);",
+          "allowed_by_source_registry": false,
+          "host": "",
+          "text": "试试选择精确搜索、缩小日期范围"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/contactus/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "联系我们"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/map/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "网站地图"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/links/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "相关链接"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/legal/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "法律声明"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/sseintroduction/trademark/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "注册商标"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/grxxbhs/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "个人信息保护告知书"
+        },
+        {
+          "url": "https://www.sse.com.cn/cpc/news/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "党建动态"
+        },
+        {
+          "url": "https://www.sse.com.cn/cpc/study/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "学习园地"
+        },
+        {
+          "url": "https://www.sse.com.cn/cpc/pic/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "图文播报"
+        },
+        {
+          "url": "https://www.sse.com.cn/listing/announcement/notification/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "审核公告通知"
+        },
+        {
+          "url": "https://www.sse.com.cn/listing/disclosure/ipo/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "审核信息披露"
+        },
+        {
+          "url": "https://www.sse.com.cn/listing/renewal/ipo/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "审核项目动态"
+        },
+        {
+          "url": "https://www.sse.com.cn/listing/aboutus/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "关于上市审核中心"
+        },
+        {
+          "url": "https://www.sse.com.cn/listing/strategy/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "科创战略"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/dealinstruc/suspension/stock/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "交易提示"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/announcement/general/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "上交所公告"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "上市公司信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/magin/announcement/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "融资融券信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/fund/announcement/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "基金信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/reits/announcements/info/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "公募REITs信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/diclosure/public/dailydata/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "交易信息披露"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/bond/announcement/bookentry/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "债券信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/disclosure/optioninfo/update/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "股票期权信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/supervision/dynamic/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "上市公司监管"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/listing/measures/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "发行上市审核监管"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/bonds/jgdt/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "债券监管"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/trading/dynamic/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "交易监管"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/members/measures/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "会员及其他交易参与人监管"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/review/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "自律管理复核"
+        },
+        {
+          "url": "https://www.sse.com.cn/regulation/ma/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "自律监管与市场服务事项"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/sqslzxnew/sqslzxnewsy/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "诉求受理中心"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/stockdata/statistic/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "股票数据"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/bonddata/overview/day/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "债券数据"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/funddata/overview/day/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "基金数据"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/reits/overview/day/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "公募REITs数据"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/othersdata/margin/sum/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "其他数据"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/price/trends/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "行情信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/market/sseindex/overview/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "上证系列指数"
+        },
+        {
+          "url": "http://www.csindex.com.cn/zh-CN/indices/index",
+          "allowed_by_source_registry": false,
+          "host": "www.csindex.com.cn",
+          "text": "中证系列指数"
+        },
+        {
+          "url": "https://www.cesc.com/sc/index.html",
+          "allowed_by_source_registry": false,
+          "host": "www.cesc.com",
+          "text": "中华系列指数"
+        },
+        {
+          "url": "https://www.sse.com.cn/assortment/stock/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "股票与存托凭证"
+        },
+        {
+          "url": "https://www.sse.com.cn/assortment/fund/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "基金"
+        },
+        {
+          "url": "https://www.sse.com.cn/assortment/bonds/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "债券"
+        },
+        {
+          "url": "https://www.sse.com.cn/options/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "股票期权"
+        },
+        {
+          "url": "https://www.sse.com.cn/reits/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "公募REITs"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/listingwithsse/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "企业上市服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/ipo/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "IPO业务专栏"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/hkexsc/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "沪港通"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/greensecurities/home/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "绿色证券专栏"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/tradingservice/process/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "交易服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/tradingtech/notice/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "交易技术支持专区"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/tradingservice/charge/ssecharge/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "收费及代收税费"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/investors/designatedtxn/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "投资者服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/listing/xyzr/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "上市公司服务"
+        },
+        {
+          "url": "https://roadshow.sseinfo.com/",
+          "allowed_by_source_registry": false,
+          "host": "roadshow.sseinfo.com",
+          "text": "路演服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/home/biz/cnsca/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "技术服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/information/delisting/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "信息服务"
+        },
+        {
+          "url": "https://pujiang.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "pujiang.sse.com.cn",
+          "text": "培训服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/services/judicia/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "司法服务"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/rules/law/securities/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "法律法规"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/regulations/csrcorder/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "部门规章"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/sselawsrules2025/overview/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "本所业务规则"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/guide2025/latest/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "本所业务指南与流程"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/publicadvice/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "公开征求意见"
+        },
+        {
+          "url": "https://www.sse.com.cn/lawandrules/assemble/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "制度规则汇编"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/sseintroduction/introduction/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "本所介绍"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/mediacenter/hotandd/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "媒体中心"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/cooperation/siccce/info/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "国际交流与合作"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/recruitment/sse/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "招聘信息"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/contactus/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "联系我们"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/research/latest/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "研究"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/socialresponsibility/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "社会责任"
+        },
+        {
+          "url": "https://foundation.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "foundation.sse.com.cn",
+          "text": "公益慈善"
+        },
+        {
+          "url": "https://csm.sse.com.cn/",
+          "allowed_by_source_registry": false,
+          "host": "csm.sse.com.cn",
+          "text": "中国证券博物馆"
+        },
+        {
+          "url": "https://www.sse.com.cn/aboutus/publication/monthly/overview/",
+          "allowed_by_source_registry": true,
+          "host": "www.sse.com.cn",
+          "text": "刊物"
+        },
+        {
+          "url": "https://beian.miit.gov.cn/",
+          "allowed_by_source_registry": false,
+          "host": "beian.miit.gov.cn",
+          "text": "沪ICP备05004045号-2"
+        },
+        {
+          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011502016333",
+          "allowed_by_source_registry": false,
+          "host": "www.beian.gov.cn",
+          "text": "沪公网安备 31011502016333号"
+        },
+        {
+          "url": "https://bszs.conac.cn/sitename?method=show&id=273B49C66A3F20DDE06310291AACA667",
+          "allowed_by_source_registry": false,
+          "host": "bszs.conac.cn",
+          "text": ""
+        }
+      ],
+      "source_id": "sse",
+      "status_code": 200,
+      "content_sha256": "a6708d8cc6b0ca25a95f997cc01f75c313750e41ba1d24bffa4e9fdd55f11ae4"
+    }
+  ]
+}
+{
+  "source_id": "szse",
+  "pages": [
+    {
+      "page_url": "https://www.szse.cn/disclosure/notice/company/index.html",
+      "title": "",
+      "forms": [],
+      "iframes": [],
+      "scripts": [],
+      "links": [
+        {
+          "url": "https://www.szse.cn/disclosure/",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "本所公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/company/",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/memo/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易备忘"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/general/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "通知公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/temp/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "停复牌"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/company/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/bond/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "固收产品"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/fund/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/public/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "竞价交易公开信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/equity/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权益类证券大宗交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/reits/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金大宗交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/reitsReal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金大宗交易（实时）"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/inquiry/reitsReal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金询价交易（逐笔）"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/inquiry/reits/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金询价交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/mb/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "匹配成交交易公开信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbap/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "协商成交及盘后定价成交交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbd/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "协商成交申报信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/dx/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司向特定对象发行的可转债信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/holder/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权证持有人信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/qfii/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "境外投资者持股信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/offer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "要约收购"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/transfer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "非流通股转让"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/prefer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "优先股信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/business/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/object/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "标的证券信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/securites/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "可充抵保证金证券"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/margin/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "融资融券交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/ratio/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "单一股票担保物比例"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/lended/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "证券出借"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/restrict/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "战略配售股份信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/dynamic/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管动态"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/measure/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管措施"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/pushish/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/decision/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "复核决定"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/bonds/measures/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管措施"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/bonds/disposition/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/transaction/restrict/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "限制交易与纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/transaction/case/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管案例"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/members/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "会员及其他交易参与人监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/supervise/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "中介机构监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/issue/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "发行承销监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/inquire/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "问询函件"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/progress/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务办理进度"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/check/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "信息披露考评"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/promise/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "承诺事项及履行情况"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/change/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "董监高人员股份变动"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/remarket/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "重新上市申请审核进度"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/quality/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "质量回报双提升"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/fixed/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "定期报告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/summary/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "当日公告摘要"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/warn/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "风险警示板"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/director/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "独立董事信息库"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/secretary/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "董事会秘书信息库"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/reduction/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "限售股份解限与减持"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/credit/record/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "处罚与处分记录"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/credit/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "中介机构处罚与处分信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/suggestion/finance/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "财务顾问持续督导意见"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/suggestion/sponsor/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "保荐机构持续督导意见"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/etf/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "ETF公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/open/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "开放式基金净值"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/currency/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "申购赎回清单"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/list/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "产品列表"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/offer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "报价转让"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/deal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "成交概况"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/market/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "做市商信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/sales/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金销售机构信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/bond/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "债券公告"
+        },
+        {
+          "url": "http://www.chinaclear.cn/zdjs/zshenzhen/center_clist.shtml",
+          "allowed_by_source_registry": false,
+          "host": "www.chinaclear.cn",
+          "text": "通用质押式回购质押券折算率"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/bond/inquire/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "问询函"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/warrant/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权证信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/product/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "产品信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/deal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "成交信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/stock/rate/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "平均质押率"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/stock/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/promise/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/price/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "http://bond.szse.cn",
+          "allowed_by_source_registry": false,
+          "host": "bond.szse.cn",
+          "text": "固定收益产品"
+        },
+        {
+          "url": "http://bond.szse.cn/bayarea/index/index.html",
+          "allowed_by_source_registry": false,
+          "host": "bond.szse.cn",
+          "text": "大湾区债券平台"
+        }
+      ],
+      "source_id": "szse",
+      "status_code": 200,
+      "content_sha256": "3d719294eb8a16634806607993e160774b1c3b2fb593779a94557bdf3e32032a"
+    },
+    {
+      "page_url": "https://www.szse.cn/disclosure/notice/",
+      "title": "",
+      "forms": [],
+      "iframes": [],
+      "scripts": [],
+      "links": [
+        {
+          "url": "https://www.szse.cn/disclosure/",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "本所公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/memo/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易备忘"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/general/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "通知公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/temp/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "停复牌"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/company/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/bond/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "固收产品"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/notice/fund/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/public/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "竞价交易公开信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/equity/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权益类证券大宗交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/reits/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金大宗交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/block/reitsReal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金大宗交易（实时）"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/inquiry/reitsReal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金询价交易（逐笔）"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/inquiry/reits/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "不动产基金询价交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/mb/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "匹配成交交易公开信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbap/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "协商成交及盘后定价成交交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbd/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "协商成交申报信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/conv/dx/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司向特定对象发行的可转债信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/holder/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权证持有人信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/qfii/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "境外投资者持股信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/offer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "要约收购"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/transfer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "非流通股转让"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/deal/prefer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "优先股信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/business/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/object/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "标的证券信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/securites/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "可充抵保证金证券"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/margin/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "融资融券交易"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/ratio/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "单一股票担保物比例"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/lended/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "证券出借"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/margin/restrict/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "战略配售股份信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/dynamic/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管动态"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/measure/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管措施"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/pushish/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/measure/decision/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "复核决定"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/bonds/measures/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管措施"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/bonds/disposition/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/transaction/restrict/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "限制交易与纪律处分"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/transaction/case/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "监管案例"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/members/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "会员及其他交易参与人监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/supervise/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "中介机构监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/issue/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "发行承销监管"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/inquire/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "问询函件"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/progress/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务办理进度"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/check/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "信息披露考评"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/promise/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "承诺事项及履行情况"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/change/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "董监高人员股份变动"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/supervision/remarket/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "重新上市申请审核进度"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "上市公司公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/quality/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "质量回报双提升"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/fixed/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "定期报告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/summary/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "当日公告摘要"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/warn/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "风险警示板"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/director/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "独立董事信息库"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/secretary/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "董事会秘书信息库"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/reduction/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "限售股份解限与减持"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/credit/record/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "处罚与处分记录"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/credit/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "中介机构处罚与处分信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/suggestion/finance/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "财务顾问持续督导意见"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/listed/suggestion/sponsor/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "保荐机构持续督导意见"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/etf/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "ETF公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/open/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "开放式基金净值"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/currency/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "申购赎回清单"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/list/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "产品列表"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/offer/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "报价转让"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/deal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "成交概况"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/market/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "做市商信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/sales/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "基金销售机构信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/bond/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "债券公告"
+        },
+        {
+          "url": "http://www.chinaclear.cn/zdjs/zshenzhen/center_clist.shtml",
+          "allowed_by_source_registry": false,
+          "host": "www.chinaclear.cn",
+          "text": "通用质押式回购质押券折算率"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/bond/inquire/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "问询函"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/warrant/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "权证信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/product/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "产品信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/notice/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "业务公告"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/asset/deal/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "成交信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/stock/rate/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "平均质押率"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/stock/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/promise/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.szse.cn/disclosure/innovate/price/message/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.szse.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "http://bond.szse.cn",
+          "allowed_by_source_registry": false,
+          "host": "bond.szse.cn",
+          "text": "固定收益产品"
+        },
+        {
+          "url": "http://bond.szse.cn/bayarea/index/index.html",
+          "allowed_by_source_registry": false,
+          "host": "bond.szse.cn",
+          "text": "大湾区债券平台"
+        }
+      ],
+      "source_id": "szse",
+      "status_code": 200,
+      "content_sha256": "da3e3cb5c179defe4ac083f001725fdfd6d8216aefc0395e2252ea3509ad968a"
+    }
+  ]
+}
+{
+  "source_id": "csrc",
+  "pages": [
+    {
+      "page_url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+      "title": "行政处罚决定",
+      "forms": [
+        {
+          "action": {
+            "url": "https://www.csrc.gov.cn/guestweb4/s",
+            "allowed_by_source_registry": true,
+            "host": "www.csrc.gov.cn"
+          },
+          "method": "post",
+          "fields": [
+            {
+              "tag": "input",
+              "name": "searchWord",
+              "type": "text",
+              "id": "searchWord",
+              "placeholder": "请输入关键字"
+            },
+            {
+              "tag": "input",
+              "name": "uc",
+              "type": "hidden",
+              "id": "uc",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "siteCode",
+              "type": "hidden",
+              "id": "siteCode",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "column",
+              "type": "hidden",
+              "id": "siteCode",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "button",
+              "type": "submit",
+              "id": "button",
+              "placeholder": ""
+            }
+          ]
+        }
+      ],
+      "iframes": [],
+      "scripts": [
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/public.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.SuperSlide.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/head.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://zfwzgl.www.gov.cn/exposure/jiucuo.js",
+          "allowed_by_source_registry": false,
+          "host": "zfwzgl.www.gov.cn"
+        },
+        {
+          "url": "https://fxsjcj.kaipuyun.cn/count/10008998/10008998.js",
+          "allowed_by_source_registry": false,
+          "host": "fxsjcj.kaipuyun.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/foot.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/more_page.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/common_list.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://www.csrc.gov.cn/csrc_en/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "English"
+        },
+        {
+          "url": "https://weibo.com/csrcfabu",
+          "allowed_by_source_registry": false,
+          "host": "weibo.com",
+          "text": "微博"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/wza",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "无障碍"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/jggk/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "机构概况"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xwfb/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "新闻发布"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政务信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/bsfw/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "办事服务"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/hdjl/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "互动交流"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/tjsj/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "统计信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/ztzl/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "专题专栏"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政务信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100032/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政府信息公开"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100035/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "主动公开目录"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101951/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "按体裁文种查看"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101953/common_list.shtml?channelid=cd11df89f5894c1eac37ae37cc11e369",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "证监会令"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml?channelid=625a2f95cc104c1d8b646f98d9f87470",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "证监会公告"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101955/common_list.shtml?channelid=768f924c237f41b5921f6d0e4db0e8b5",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政许可批复"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政处罚决定"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101972/common_list.shtml?channelid=3795869930ca4b70bf55469270a6e641",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "市场禁入决定"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101973/common_list.shtml?channelid=77f99322f83040edb548974091db3f8b",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政复议"
+        },
+        {
+          "url": "http://www.gov.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.gov.cn",
+          "text": "中国政府网"
+        },
+        {
+          "url": "http://www.investor.org.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.investor.org.cn",
+          "text": "中国投资者网"
+        },
+        {
+          "url": "http://www.csisc.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.csisc.cn",
+          "text": "中国资本市场标准网"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c105799/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政府网站年度报表"
+        },
+        {
+          "url": "https://beian.miit.gov.cn",
+          "allowed_by_source_registry": false,
+          "host": "beian.miit.gov.cn",
+          "text": "京ICP备 05035542号"
+        },
+        {
+          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11040102700080",
+          "allowed_by_source_registry": false,
+          "host": "www.beian.gov.cn",
+          "text": "京公网安备 11040102700080号"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100025/c1003151/content.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "联系我们"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100227/c1362477/content.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "法律声明"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c105974/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "归档数据"
+        }
+      ],
+      "source_id": "csrc",
+      "status_code": 200,
+      "content_sha256": "3d069c409664d05ae58b043be36e94dfd8315e8d8efb774bff49e10a078f01ed"
+    },
+    {
+      "page_url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
+      "title": "证监会公告",
+      "forms": [
+        {
+          "action": {
+            "url": "https://www.csrc.gov.cn/guestweb4/s",
+            "allowed_by_source_registry": true,
+            "host": "www.csrc.gov.cn"
+          },
+          "method": "post",
+          "fields": [
+            {
+              "tag": "input",
+              "name": "searchWord",
+              "type": "text",
+              "id": "searchWord",
+              "placeholder": "请输入关键字"
+            },
+            {
+              "tag": "input",
+              "name": "uc",
+              "type": "hidden",
+              "id": "uc",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "siteCode",
+              "type": "hidden",
+              "id": "siteCode",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "column",
+              "type": "hidden",
+              "id": "siteCode",
+              "placeholder": ""
+            },
+            {
+              "tag": "input",
+              "name": "button",
+              "type": "submit",
+              "id": "button",
+              "placeholder": ""
+            }
+          ]
+        }
+      ],
+      "iframes": [],
+      "scripts": [
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/public.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.SuperSlide.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/head.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://zfwzgl.www.gov.cn/exposure/jiucuo.js",
+          "allowed_by_source_registry": false,
+          "host": "zfwzgl.www.gov.cn"
+        },
+        {
+          "url": "https://fxsjcj.kaipuyun.cn/count/10008998/10008998.js",
+          "allowed_by_source_registry": false,
+          "host": "fxsjcj.kaipuyun.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/foot.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/more_page.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/common_list.js",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://www.csrc.gov.cn/csrc_en/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "English"
+        },
+        {
+          "url": "https://weibo.com/csrcfabu",
+          "allowed_by_source_registry": false,
+          "host": "weibo.com",
+          "text": "微博"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/wza",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "无障碍"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": ""
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/jggk/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "机构概况"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/xwfb/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "新闻发布"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政务信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/bsfw/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "办事服务"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/hdjl/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "互动交流"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/tjsj/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "统计信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/ztzl/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "专题专栏"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政务信息"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100032/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政府信息公开"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100035/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "主动公开目录"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101951/zwxx.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "按体裁文种查看"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101953/common_list.shtml?channelid=cd11df89f5894c1eac37ae37cc11e369",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "证监会令"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml?channelid=625a2f95cc104c1d8b646f98d9f87470",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "证监会公告"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101955/common_list.shtml?channelid=768f924c237f41b5921f6d0e4db0e8b5",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政许可批复"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政处罚决定"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101972/common_list.shtml?channelid=3795869930ca4b70bf55469270a6e641",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "市场禁入决定"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c101973/common_list.shtml?channelid=77f99322f83040edb548974091db3f8b",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "行政复议"
+        },
+        {
+          "url": "http://www.gov.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.gov.cn",
+          "text": "中国政府网"
+        },
+        {
+          "url": "http://www.investor.org.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.investor.org.cn",
+          "text": "中国投资者网"
+        },
+        {
+          "url": "http://www.csisc.cn/",
+          "allowed_by_source_registry": false,
+          "host": "www.csisc.cn",
+          "text": "中国资本市场标准网"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c105799/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "政府网站年度报表"
+        },
+        {
+          "url": "https://beian.miit.gov.cn",
+          "allowed_by_source_registry": false,
+          "host": "beian.miit.gov.cn",
+          "text": "京ICP备 05035542号"
+        },
+        {
+          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11040102700080",
+          "allowed_by_source_registry": false,
+          "host": "www.beian.gov.cn",
+          "text": "京公网安备 11040102700080号"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100025/c1003151/content.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "联系我们"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c100227/c1362477/content.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "法律声明"
+        },
+        {
+          "url": "https://www.csrc.gov.cn/csrc/c105974/common_list.shtml",
+          "allowed_by_source_registry": true,
+          "host": "www.csrc.gov.cn",
+          "text": "归档数据"
+        }
+      ],
+      "source_id": "csrc",
+      "status_code": 200,
+      "content_sha256": "5a8c4acb8415f0fc940764f0b50dd28c54b585a96c40b12d6d57f915f8321937"
+    }
+  ]
+}
+{
+  "source_id": "neeq",
+  "pages": [
+    {
+      "page_url": "https://www.neeq.com.cn/disclosure/announcement.html",
+      "title": "挂牌公司公告 - 全国中小企业股份转让系统",
+      "forms": [],
+      "iframes": [
+        {
+          "url": "https://www.neeq.com.cn/myhead.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/myfoot.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        }
+      ],
+      "scripts": [
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/plugins/requireJS/require.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/main.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/_ws_sbu/sbu_hc.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/list_company_2.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://www.neeq.com.cn/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/vocational.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "股转公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/announcement.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌公司公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "两网及退市公司公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/transfer_market_maker.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "做市商间转让公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/agreement_transfer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "大宗交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/specific_items_transfer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "特定事项协议转让公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/prefer_stock_notice.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "优先股公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_tradeinfo.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "可转债交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/qfii.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "QFII/RQFII持股公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tender_offer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "要约收购/回购"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "监管公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "监管动态"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/enquiry_letter.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "问询函"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "自律监管措施"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/disciplinary_aciton.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/trade_supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/securities_trader_supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "主办券商及其他交易参与人监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/intermediary_organ.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "中介机构监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/reviewapplication.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "复核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/termination_listing.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "强制终止挂牌"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/commitments.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "承诺事项及履行情况"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "审核公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_gpgs_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌公示审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_dxfx_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌同时发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_issue_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "股票定向发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_prefer_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "优先股发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/major_asset_restructuring.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "重大资产重组审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_info.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "可转债定向发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/t_delisted_project_list.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "两网及退市公司审核"
+        }
+      ],
+      "source_id": "neeq",
+      "status_code": 200,
+      "content_sha256": "306cbe76bff0cc71c3c0f3edc2c1bbde74e625aceb2e413b38b241405ef59a01"
+    },
+    {
+      "page_url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html?PC=PC",
+      "title": "两网及退市公司公告 - 全国中小企业股份转让系统",
+      "forms": [],
+      "iframes": [
+        {
+          "url": "https://www.neeq.com.cn/myhead.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/myfoot.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        }
+      ],
+      "scripts": [
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/plugins/requireJS/require.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/main.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/_ws_sbu/sbu_hc.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        },
+        {
+          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/disclosure.min.js",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://www.neeq.com.cn/index.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "首页"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "信息披露"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/vocational.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "股转公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/announcement.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌公司公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "两网及退市公司公告"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/transfer_market_maker.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "做市商间转让公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/agreement_transfer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "大宗交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/specific_items_transfer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "特定事项协议转让公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/prefer_stock_notice.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "优先股公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_tradeinfo.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "可转债交易公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/qfii.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "QFII/RQFII持股公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/tender_offer.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "要约收购/回购"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "监管公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "监管动态"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/enquiry_letter.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "问询函"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "自律监管措施"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/disciplinary_aciton.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "纪律处分"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/trade_supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "交易监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/securities_trader_supervise.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "主办券商及其他交易参与人监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/intermediary_organ.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "中介机构监管"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/reviewapplication.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "复核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/termination_listing.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "强制终止挂牌"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/commitments.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "承诺事项及履行情况"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "审核公开信息"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_gpgs_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌公示审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/listing_dxfx_review_gp.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "挂牌同时发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_issue_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "股票定向发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_prefer_review.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "优先股发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/major_asset_restructuring.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "重大资产重组审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_info.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "可转债定向发行审核"
+        },
+        {
+          "url": "https://www.neeq.com.cn/disclosure/t_delisted_project_list.html",
+          "allowed_by_source_registry": true,
+          "host": "www.neeq.com.cn",
+          "text": "两网及退市公司审核"
+        }
+      ],
+      "source_id": "neeq",
+      "status_code": 200,
+      "content_sha256": "4a1d29724f41d072667131ef19d13fd5b560f867acdcd0779ff557bf79ad1c0c"
+    }
+  ]
+}
