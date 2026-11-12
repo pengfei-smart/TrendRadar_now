@@ -78,6 +78,7 @@ class LifecycleEvidenceFetcher:
                 allowed_types = {
                     "text/html", "application/pdf", "application/xml", "text/xml",
                     "application/json", "text/plain", "application/octet-stream",
+                    "application/javascript", "text/javascript", "application/x-javascript",
                 }
                 if content_type not in allowed_types:
                     raise ValueError(f"不支持的公告内容类型: {content_type or 'unknown'}")
