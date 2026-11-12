@@ -73,28 +73,15 @@ def _normalize_date(match: re.Match) -> str | None:
 
 
 def _date_type(context: str) -> str:
-    before, separator, after = context.partition("⟦DATE⟧")
-    # 只取当前日期之前最近出现的标签，不能让更早日期的标签跨日期继承。
+    before, _, _ = context.partition("⟦DATE⟧")
+    # 日期语义只由当前日期之前、且位于前一日期之后的最近标签决定。
     preceding = []
     for date_type, terms in DATE_LABEL_RULES:
         for term in terms:
             position = before.rfind(term)
             if position >= 0:
                 preceding.append((position, len(term), date_type))
-    if preceding:
-        return max(preceding)[2]
-
-    # 仅当前文没有标签时才使用日期后的标签作为弱回退。
-    following = []
-    if separator:
-        for date_type, terms in DATE_LABEL_RULES:
-            for term in terms:
-                position = after.find(term)
-                if position >= 0:
-                    following.append((position, -len(term), date_type))
-    if following:
-        return min(following)[2]
-    return "unspecified"
+    return max(preceding)[2] if preceding else "unspecified"
 
 
 def _date_context(text: str, start: int, end: int) -> str:
