@@ -372,6 +372,231 @@ class MarketStorage:
                 delayed=excluded.delayed,collected_at=CURRENT_TIMESTAMP""", rows)
         return len(rows)
 
+
+    @staticmethod
+    def _validate_enum(value: str, allowed: set[str], field: str) -> None:
+        if value not in allowed:
+            raise ValueError(f"{field} 不合法: {value!r}")
+
+    def save_corporate_actions(self, actions: Iterable[dict]) -> int:
+        """保存公司行动；以 corporate_action_id 幂等更新，证据等级保留审核状态。"""
+        allowed_types = {"share_swap_merger", "cash_tender_offer", "asset_restructuring",
+                         "delisted_then_relisted", "code_change", "spin_off", "other"}
+        allowed_status = {"announced", "in_progress", "completed", "cancelled", "unknown"}
+        allowed_evidence = {"official", "reliable_secondary", "unverified", "unknown"}
+        rows = []
+        for item in actions:
+            action_id = item.get("corporate_action_id")
+            action_type = item.get("action_type")
+            if not action_id:
+                raise ValueError("corporate_action_id 不能为空")
+            self._validate_enum(action_type, allowed_types, "action_type")
+            self._validate_enum(item.get("status", "unknown"), allowed_status, "status")
+            self._validate_enum(item.get("evidence_grade", "unknown"), allowed_evidence, "evidence_grade")
+            rows.append((
+                action_id, action_type, item.get("action_name", ""),
+                item.get("announced_date"), item.get("effective_date"),
+                item.get("status", "unknown"), item.get("evidence_grade", "unknown"),
+                item.get("source_title", ""), item.get("source_url", ""), item.get("notes", ""),
+            ))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO corporate_actions
+                (corporate_action_id,action_type,action_name,announced_date,effective_date,
+                 status,evidence_grade,source_title,source_url,notes)
+                VALUES(?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(corporate_action_id) DO UPDATE SET
+                action_type=excluded.action_type,action_name=excluded.action_name,
+                announced_date=excluded.announced_date,effective_date=excluded.effective_date,
+                status=excluded.status,evidence_grade=excluded.evidence_grade,
+                source_title=excluded.source_title,source_url=excluded.source_url,
+                notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def get_corporate_action(self, corporate_action_id: str) -> dict | None:
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM corporate_actions WHERE corporate_action_id=?",
+                (corporate_action_id,),
+            ).fetchone()
+            return dict(row) if row else None
+
+    def list_corporate_actions(self, *, action_type: str | None = None,
+                               status: str | None = None,
+                               evidence_grade: str | None = None,
+                               limit: int = 500) -> list[dict]:
+        if limit < 1:
+            raise ValueError("limit 必须大于 0")
+        clauses, params = [], []
+        for field, value, allowed in (
+            ("action_type", action_type, {"share_swap_merger", "cash_tender_offer",
+             "asset_restructuring", "delisted_then_relisted", "code_change", "spin_off", "other"}),
+            ("status", status, {"announced", "in_progress", "completed", "cancelled", "unknown"}),
+            ("evidence_grade", evidence_grade, {"official", "reliable_secondary", "unverified", "unknown"}),
+        ):
+            if value is not None:
+                self._validate_enum(value, allowed, field)
+                clauses.append(f"{field}=?")
+                params.append(value)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM corporate_actions" + where +
+                " ORDER BY COALESCE(announced_date,'') DESC, corporate_action_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
+    def save_security_lifecycle_events(self, events: Iterable[dict]) -> int:
+        """保存证券生命周期事件；外键和 CHECK 约束由 SQLite 最终兜底。"""
+        event_types = {"listing", "trading_suspension", "trading_resumption",
+                       "delisting_decision", "last_trading_day", "delisting_effective",
+                       "transfer_market_entry", "relisting", "code_change", "status_correction", "other"}
+        date_statuses = {"confirmed", "approximate", "pending", "unknown"}
+        evidence_grades = {"official", "reliable_secondary", "unverified", "unknown"}
+        rows = []
+        for item in events:
+            event_id, code, event_type = item.get("event_id"), item.get("security_code"), item.get("event_type")
+            if not event_id or not code:
+                raise ValueError("event_id 和 security_code 不能为空")
+            self._validate_enum(event_type, event_types, "event_type")
+            self._validate_enum(item.get("date_status", "unknown"), date_statuses, "date_status")
+            self._validate_enum(item.get("evidence_grade", "unknown"), evidence_grades, "evidence_grade")
+            rows.append((
+                event_id, code, item.get("exchange", ""), event_type, item.get("event_date"),
+                item.get("decision_issued_date"), item.get("decision_received_date"),
+                item.get("last_trading_date"), item.get("delisting_effective_date"),
+                item.get("transfer_market_code"), item.get("transfer_market_start_date"),
+                item.get("date_status", "unknown"), item.get("evidence_grade", "unknown"),
+                item.get("source_title", ""), item.get("source_url", ""),
+                item.get("corporate_action_id"), item.get("notes", ""),
+            ))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO security_lifecycle_events
+                (event_id,security_code,exchange,event_type,event_date,decision_issued_date,
+                 decision_received_date,last_trading_date,delisting_effective_date,
+                 transfer_market_code,transfer_market_start_date,date_status,evidence_grade,
+                 source_title,source_url,corporate_action_id,notes)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(event_id) DO UPDATE SET
+                security_code=excluded.security_code,exchange=excluded.exchange,
+                event_type=excluded.event_type,event_date=excluded.event_date,
+                decision_issued_date=excluded.decision_issued_date,
+                decision_received_date=excluded.decision_received_date,
+                last_trading_date=excluded.last_trading_date,
+                delisting_effective_date=excluded.delisting_effective_date,
+                transfer_market_code=excluded.transfer_market_code,
+                transfer_market_start_date=excluded.transfer_market_start_date,
+                date_status=excluded.date_status,evidence_grade=excluded.evidence_grade,
+                source_title=excluded.source_title,source_url=excluded.source_url,
+                corporate_action_id=excluded.corporate_action_id,notes=excluded.notes,
+                updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def list_security_lifecycle_events(self, *, security_code: str | None = None,
+                                       event_type: str | None = None,
+                                       corporate_action_id: str | None = None,
+                                       limit: int = 1000) -> list[dict]:
+        if limit < 1:
+            raise ValueError("limit 必须大于 0")
+        clauses, params = [], []
+        if security_code is not None:
+            clauses.append("security_code=?")
+            params.append(security_code)
+        if event_type is not None:
+            self._validate_enum(event_type, {"listing", "trading_suspension", "trading_resumption",
+                "delisting_decision", "last_trading_day", "delisting_effective",
+                "transfer_market_entry", "relisting", "code_change", "status_correction", "other"}, "event_type")
+            clauses.append("event_type=?")
+            params.append(event_type)
+        if corporate_action_id is not None:
+            clauses.append("corporate_action_id=?")
+            params.append(corporate_action_id)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM security_lifecycle_events" + where +
+                " ORDER BY COALESCE(event_date,'') DESC,event_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
+    def save_security_relationships(self, relationships: Iterable[dict]) -> int:
+        """保存证券关系；重复自然键不会覆盖其他 relationship_id。"""
+        relationship_types = {"share_swap_merger", "cash_tender_offer", "same_entity_code_change",
+                              "delisted_transfer", "delisted_then_relisted", "spin_off",
+                              "merger_into", "restructuring_successor", "other"}
+        evidence_grades = {"official", "reliable_secondary", "unverified", "unknown"}
+        rows = []
+        for item in relationships:
+            rid = item.get("relationship_id")
+            source, target, rel_type = (item.get("from_security_code"),
+                                        item.get("to_security_code"), item.get("relationship_type"))
+            if not rid or not source or not target:
+                raise ValueError("relationship_id、from_security_code、to_security_code 不能为空")
+            if source == target:
+                raise ValueError("证券关系的起点和终点不能相同")
+            self._validate_enum(rel_type, relationship_types, "relationship_type")
+            self._validate_enum(item.get("evidence_grade", "unknown"), evidence_grades, "evidence_grade")
+            successor = item.get("is_listed_successor", 0)
+            if successor not in (0, 1, False, True):
+                raise ValueError("is_listed_successor 必须为 0 或 1")
+            rows.append((
+                rid, item.get("corporate_action_id"), source, target, rel_type,
+                item.get("effective_date"), item.get("ratio_from"), item.get("ratio_to"),
+                int(successor), item.get("evidence_grade", "unknown"),
+                item.get("source_title", ""), item.get("source_url", ""), item.get("notes", ""),
+            ))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO security_relationships
+                (relationship_id,corporate_action_id,from_security_code,to_security_code,
+                 relationship_type,effective_date,ratio_from,ratio_to,is_listed_successor,
+                 evidence_grade,source_title,source_url,notes)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(relationship_id) DO UPDATE SET
+                corporate_action_id=excluded.corporate_action_id,
+                from_security_code=excluded.from_security_code,to_security_code=excluded.to_security_code,
+                relationship_type=excluded.relationship_type,effective_date=excluded.effective_date,
+                ratio_from=excluded.ratio_from,ratio_to=excluded.ratio_to,
+                is_listed_successor=excluded.is_listed_successor,evidence_grade=excluded.evidence_grade,
+                source_title=excluded.source_title,source_url=excluded.source_url,
+                notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def list_security_relationships(self, *, from_security_code: str | None = None,
+                                    to_security_code: str | None = None,
+                                    corporate_action_id: str | None = None,
+                                    relationship_type: str | None = None,
+                                    limit: int = 1000) -> list[dict]:
+        if limit < 1:
+            raise ValueError("limit 必须大于 0")
+        clauses, params = [], []
+        if from_security_code is not None:
+            clauses.append("from_security_code=?")
+            params.append(from_security_code)
+        if to_security_code is not None:
+            clauses.append("to_security_code=?")
+            params.append(to_security_code)
+        if corporate_action_id is not None:
+            clauses.append("corporate_action_id=?")
+            params.append(corporate_action_id)
+        if relationship_type is not None:
+            self._validate_enum(relationship_type, {"share_swap_merger", "cash_tender_offer",
+                "same_entity_code_change", "delisted_transfer", "delisted_then_relisted",
+                "spin_off", "merger_into", "restructuring_successor", "other"}, "relationship_type")
+            clauses.append("relationship_type=?")
+            params.append(relationship_type)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM security_relationships" + where +
+                " ORDER BY COALESCE(effective_date,'') DESC,relationship_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
     def save_radar_run(self, run_at: str, candidate_count: int, pushed_count: int,
                        source_status: str, notes: str = "") -> None:
         with self.connect() as connection:
