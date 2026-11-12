@@ -25,7 +25,6 @@ RELATIONSHIP_TYPES = {
 
 
 def _candidate_id(
-    content_sha256: str,
     source_id: str,
     source_url: str,
     candidate_kind: str,
@@ -37,9 +36,9 @@ def _candidate_id(
     event_date: str,
 ) -> str:
     identity = "|".join((
-        content_sha256, source_id, source_url, candidate_kind,
+        source_id, source_url, candidate_kind,
         security_code, related_security_code,
-        event_type, action_type, relationship_type, event_date,
+        event_type, action_type, relationship_type,
     ))
     digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:32]
     return f"life-{digest}"
@@ -109,7 +108,7 @@ def build_lifecycle_evidence_candidates(
             payload.update(extra_payload)
         candidates.append({
             "candidate_id": _candidate_id(
-                document.content_sha256, document.source_id, document.final_url,
+                document.source_id, document.final_url,
                 candidate_kind, security_code, related_security_code,
                 event_type, action_type,
                 relationship_type, event_date,
