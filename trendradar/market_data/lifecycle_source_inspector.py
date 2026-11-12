@@ -168,6 +168,34 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
             continue
         seen.add(value)
         candidates.append(value)
+
+    # 保留接口字符串附近的有限代码上下文，便于人工确认请求方法和参数。
+    endpoint_contexts = []
+    for endpoint in candidates[:200]:
+        occurrences = []
+        start = 0
+        while len(occurrences) < 10:
+            index = source.find(endpoint, start)
+            if index < 0:
+                break
+            left = max(0, index - 500)
+            right = min(len(source), index + len(endpoint) + 700)
+            context = source[left:right]
+            context = re.sub(
+                r"(?i)(token|authorization|password|secret)(\\s*[:=]\\s*)[^,;&}]+",
+                r"\\1\\2[REDACTED]",
+                context,
+            )
+            occurrences.append({
+                "offset": index,
+                "context": context,
+            })
+            start = index + len(endpoint)
+        endpoint_contexts.append({
+            "endpoint": endpoint,
+            "occurrence_count": source.count(endpoint),
+            "occurrences": occurrences,
+        })
     return {
         "source_id": source_id,
         "script_url": url,
@@ -176,6 +204,7 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
         "content_length": len(document.body),
         "content_sha256": document.content_sha256,
         "endpoint_candidates": candidates[:200],
+        "endpoint_contexts": endpoint_contexts,
         "candidate_count": len(candidates),
     }
 
