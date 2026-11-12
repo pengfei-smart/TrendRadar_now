@@ -73,14 +73,19 @@ def _normalize_date(match: re.Match) -> str | None:
 
 
 def _date_type(context: str) -> str:
-    for date_type, terms in DATE_LABEL_RULES:
-        if any(term in context for term in terms):
-            return date_type
+    before, separator, after = context.partition("⟦DATE⟧")
+    # 日期前的标签与该日期关联更直接，避免相邻日期的后续标签造成误判。
+    for section in (before, after if separator else ""):
+        for date_type, terms in DATE_LABEL_RULES:
+            if any(term in section for term in terms):
+                return date_type
     return "unspecified"
 
 
 def _date_context(text: str, start: int, end: int) -> str:
-    return text[max(0, start - 32):min(len(text), end + 24)]
+    before = text[max(0, start - 32):start]
+    after = text[end:min(len(text), end + 24)]
+    return f"{before}⟦DATE⟧{after}"
 
 
 def parse_lifecycle_announcement(text: str) -> ParsedLifecycleEvidence:
