@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS schema_meta (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO schema_meta(key, value) VALUES ('schema_version', '3')
-ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP;
+INSERT INTO schema_meta(key, value) VALUES ('schema_version', '4')
+ON CONFLICT(key) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS data_sources (
     source_id TEXT PRIMARY KEY,
@@ -266,3 +266,87 @@ CREATE TABLE IF NOT EXISTS listing_status_evidence (
 );
 CREATE INDEX IF NOT EXISTS idx_listing_status_evidence_code
     ON listing_status_evidence(code, created_at DESC);
+
+
+-- v4 证券生命周期与公司行动模型
+CREATE TABLE IF NOT EXISTS corporate_actions (
+    corporate_action_id TEXT PRIMARY KEY,
+    action_type TEXT NOT NULL CHECK (action_type IN (
+        'share_swap_merger','cash_tender_offer','asset_restructuring',
+        'delisted_then_relisted','code_change','spin_off','other')),
+    action_name TEXT NOT NULL DEFAULT '',
+    announced_date TEXT,
+    effective_date TEXT,
+    status TEXT NOT NULL DEFAULT 'unknown' CHECK (
+        status IN ('announced','in_progress','completed','cancelled','unknown')),
+    evidence_grade TEXT NOT NULL DEFAULT 'unknown' CHECK (
+        evidence_grade IN ('official','reliable_secondary','unverified','unknown')),
+    source_title TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS security_lifecycle_events (
+    event_id TEXT PRIMARY KEY,
+    security_code TEXT NOT NULL,
+    exchange TEXT NOT NULL DEFAULT '',
+    event_type TEXT NOT NULL CHECK (event_type IN (
+        'listing','trading_suspension','trading_resumption','delisting_decision',
+        'last_trading_day','delisting_effective','transfer_market_entry',
+        'relisting','code_change','status_correction','other')),
+    event_date TEXT,
+    decision_issued_date TEXT,
+    decision_received_date TEXT,
+    last_trading_date TEXT,
+    delisting_effective_date TEXT,
+    transfer_market_code TEXT,
+    transfer_market_start_date TEXT,
+    date_status TEXT NOT NULL DEFAULT 'unknown' CHECK (
+        date_status IN ('confirmed','approximate','pending','unknown')),
+    evidence_grade TEXT NOT NULL DEFAULT 'unknown' CHECK (
+        evidence_grade IN ('official','reliable_secondary','unverified','unknown')),
+    source_title TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL DEFAULT '',
+    corporate_action_id TEXT REFERENCES corporate_actions(corporate_action_id),
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS security_relationships (
+    relationship_id TEXT PRIMARY KEY,
+    corporate_action_id TEXT REFERENCES corporate_actions(corporate_action_id),
+    from_security_code TEXT NOT NULL,
+    to_security_code TEXT NOT NULL,
+    relationship_type TEXT NOT NULL CHECK (relationship_type IN (
+        'share_swap_merger','cash_tender_offer','same_entity_code_change',
+        'delisted_transfer','delisted_then_relisted','spin_off',
+        'merger_into','restructuring_successor','other')),
+    effective_date TEXT,
+    ratio_from REAL,
+    ratio_to REAL,
+    is_listed_successor INTEGER NOT NULL DEFAULT 0 CHECK (is_listed_successor IN (0,1)),
+    evidence_grade TEXT NOT NULL DEFAULT 'unknown' CHECK (
+        evidence_grade IN ('official','reliable_secondary','unverified','unknown')),
+    source_title TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (from_security_code <> to_security_code),
+    UNIQUE (corporate_action_id,from_security_code,to_security_code,relationship_type)
+);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_events_security_date
+    ON security_lifecycle_events(security_code,event_date);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_events_type_date
+    ON security_lifecycle_events(event_type,event_date);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_events_action
+    ON security_lifecycle_events(corporate_action_id);
+CREATE INDEX IF NOT EXISTS idx_security_relationships_from
+    ON security_relationships(from_security_code);
+CREATE INDEX IF NOT EXISTS idx_security_relationships_to
+    ON security_relationships(to_security_code);
+CREATE INDEX IF NOT EXISTS idx_security_relationships_action
+    ON security_relationships(corporate_action_id);
