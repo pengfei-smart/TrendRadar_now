@@ -2,7 +2,10 @@
 """Tests for safe text extraction from fetched lifecycle documents."""
 
 import hashlib
+import sys
+import types
 import unittest
+from unittest.mock import patch
 
 from trendradar.market_data.lifecycle_document_text import extract_lifecycle_document_text
 from trendradar.market_data.lifecycle_evidence_fetcher import FetchedDocument
@@ -18,6 +21,20 @@ def document(body, content_type):
         body=body,
         content_sha256=hashlib.sha256(body).hexdigest(),
     )
+
+
+class _FakePage:
+    def __init__(self, text):
+        self.text = text
+
+    def extract_text(self):
+        return self.text
+
+
+class _FakeReader:
+    def __init__(self, stream, strict=False, *, pages=None, encrypted=False):
+        self.pages = pages or []
+        self.is_encrypted = encrypted
 
 
 class LifecycleDocumentTextTests(unittest.TestCase):
@@ -38,9 +55,9 @@ class LifecycleDocumentTextTests(unittest.TestCase):
 
     def test_extracts_plain_text_and_normalizes_whitespace(self):
         text = extract_lifecycle_document_text(
-            document("证券代码000765\r\n\r\n  暂停上市。".encode(), "text/plain")
+            document("证券代码000765\\r\\n\\r\\n  暂停上市。".encode(), "text/plain")
         )
-        self.assertEqual(text, "证券代码000765\n\n暂停上市。")
+        self.assertEqual(text, "证券代码000765\\n\\n暂停上市。")
 
     def test_extracts_xml_text(self):
         text = extract_lifecycle_document_text(
@@ -57,7 +74,6 @@ class LifecycleDocumentTextTests(unittest.TestCase):
         self.assertIn("000765", text)
         self.assertNotIn("['证券代码", text)
 
-
     def test_extracted_html_can_feed_lifecycle_parser(self):
         from trendradar.market_data.lifecycle_evidence_parser import parse_lifecycle_announcement
 
@@ -72,9 +88,49 @@ class LifecycleDocumentTextTests(unittest.TestCase):
         self.assertEqual(parsed.date_evidence[0].date_type, "last_trading_date")
         self.assertEqual(parsed.date_evidence[0].date_status, "unknown")
 
-    def test_rejects_pdf_until_a_real_pdf_text_extractor_is_added(self):
-        with self.assertRaisesRegex(ValueError, "暂不支持"):
-            extract_lifecycle_document_text(document(b"%PDF-1.7 binary", "application/pdf"))
+    def test_extracts_pdf_text_layer(self):
+        fake = types.SimpleNamespace(
+            PdfReader=lambda stream, strict=False: _FakeReader(
+                stream, strict=strict, pages=[_FakePage("证券代码000765暂停上市公告"), _FakePage("最后交易日2020年12月31日")]
+            )
+        )
+        with patch.dict(sys.modules, {"pypdf": fake}):
+            text = extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+        self.assertIn("000765", text)
+        self.assertIn("2020年12月31日", text)
+
+    def test_rejects_scanned_pdf_without_text_layer(self):
+        fake = types.SimpleNamespace(
+            PdfReader=lambda stream, strict=False: _FakeReader(
+                stream, strict=strict, pages=[_FakePage(""), _FakePage(None)]
+            )
+        )
+        with patch.dict(sys.modules, {"pypdf": fake}):
+            with self.assertRaisesRegex(ValueError, "扫描版 PDF.*不执行 OCR"):
+                extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+
+    def test_rejects_encrypted_or_oversized_pdf(self):
+        encrypted = types.SimpleNamespace(
+            PdfReader=lambda stream, strict=False: _FakeReader(stream, encrypted=True)
+        )
+        with patch.dict(sys.modules, {"pypdf": encrypted}):
+            with self.assertRaisesRegex(ValueError, "加密 PDF"):
+                extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+
+        class ManyPagesReader(_FakeReader):
+            def __init__(self, stream, strict=False):
+                self.pages = [_FakePage("x")] * 501
+                self.is_encrypted = False
+
+        too_many = types.SimpleNamespace(PdfReader=ManyPagesReader)
+        with patch.dict(sys.modules, {"pypdf": too_many}):
+            with self.assertRaisesRegex(ValueError, "页数超过安全上限"):
+                extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+
+    def test_rejects_missing_pdf_optional_dependency(self):
+        with patch.dict(sys.modules, {"pypdf": None}):
+            with self.assertRaisesRegex(ValueError, "可选依赖 pypdf"):
+                extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
     def test_rejects_invalid_json_and_empty_extraction(self):
         with self.assertRaisesRegex(ValueError, "JSON"):
