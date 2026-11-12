@@ -91,7 +91,7 @@ class LifecycleDocumentTextTests(unittest.TestCase):
     def test_extracts_pdf_text_layer(self):
         fake = types.SimpleNamespace(
             PdfReader=lambda stream, strict=False: _FakeReader(
-                stream, strict=strict, pages=[_FakePage("证券代码000765暂停上市公告"), _FakePage("最后交易日2020年12月31日")]
+                stream, strict=strict, pages=[_FakePage("证券代码000765暂停上市公告"), _FakePage("最后交易日为2020年12月31日")]
             )
         )
         with patch.dict(sys.modules, {"pypdf": fake}):
