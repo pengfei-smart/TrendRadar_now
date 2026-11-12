@@ -37,6 +37,15 @@ class LifecycleEvidenceParserTests(unittest.TestCase):
         self.assertEqual(by_type["delisting_date"], "2024-03-15")
         self.assertTrue(all(item.date_status == "unknown" for item in parsed.date_evidence))
 
+    def test_unlabeled_date_does_not_inherit_previous_date_label(self):
+        parsed = parse_lifecycle_announcement(
+            "公告日期：2024年3月1日。相关日期为2024-03-08，终止上市日：2024/03/15。"
+        )
+        by_value = {item.value: item.date_type for item in parsed.date_evidence}
+        self.assertEqual(by_value["2024-03-01"], "announcement_date")
+        self.assertEqual(by_value["2024-03-08"], "unspecified")
+        self.assertEqual(by_value["2024-03-15"], "delisting_date")
+
     def test_invalid_calendar_dates_are_ignored(self):
         parsed = parse_lifecycle_announcement("公告日期：2024年2月30日。")
         self.assertEqual(parsed.date_evidence, ())
