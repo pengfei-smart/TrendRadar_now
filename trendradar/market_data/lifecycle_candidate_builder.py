@@ -7,6 +7,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from typing import Iterable
+from urllib.parse import urljoin, urlsplit
 
 from trendradar.market_data.lifecycle_evidence_fetcher import FetchedDocument
 from trendradar.market_data.lifecycle_evidence_parser import ParsedLifecycleEvidence
@@ -51,6 +52,7 @@ def build_lifecycle_evidence_candidates(
     source_published_at: str = "",
     retrieved_at: str | None = None,
     relationship_hints: Iterable[dict] = (),
+    announcement_metadata: dict | None = None,
 ) -> list[dict]:
     """Build pending review rows; relationship direction must be supplied explicitly.
 
@@ -78,6 +80,49 @@ def build_lifecycle_evidence_candidates(
         raise ValueError("FetchedDocument 的 content_sha256 与原文不一致")
 
     retrieved = retrieved_at or datetime.now(timezone.utc).isoformat()
+    issuer_identity_hint = None
+    if announcement_metadata is not None:
+        if document.source_id != "neeq" or not isinstance(announcement_metadata, dict):
+            raise ValueError("announcement_metadata 仅允许用于 NEEQ 公告，且必须是 dict")
+        record = announcement_metadata.get("record")
+        if not isinstance(record, dict):
+            raise ValueError("announcement_metadata.record 必须是公告列表原始记录")
+        company_code = str(record.get("companyCd") or "").strip()
+        company_name = str(record.get("companyName") or "").strip()
+        attachment_path = str(record.get("destFilePath") or "").strip()
+        metadata_source_url = str(announcement_metadata.get("source_url") or "").strip()
+        metadata_hash = str(announcement_metadata.get("response_sha256") or "").lower().strip()
+        metadata_retrieved_at = str(announcement_metadata.get("retrieved_at") or "").strip()
+        if not (len(company_code) == 6 and company_code.isdigit() and company_name and attachment_path):
+            raise ValueError("NEEQ 公告元数据缺少有效 companyCd、companyName 或 destFilePath")
+        attachment_url = urljoin("https://www.neeq.com.cn/", attachment_path)
+        if (
+            not is_allowed_url("neeq", attachment_url)
+            or urlsplit(attachment_url).path != urlsplit(document.final_url).path
+        ):
+            raise ValueError("NEEQ 公告元数据附件路径与当前 PDF 不一致")
+        if parsed.security_codes and company_code not in parsed.security_codes:
+            raise ValueError("NEEQ 公告元数据 companyCd 与正文证券代码不一致")
+        if not is_allowed_url("neeq", metadata_source_url):
+            raise ValueError("NEEQ 公告列表元数据来源 URL 不在官方白名单内")
+        if len(metadata_hash) != 64 or any(ch not in "0123456789abcdef" for ch in metadata_hash):
+            raise ValueError("NEEQ 公告列表响应必须提供有效 SHA-256")
+        if not metadata_retrieved_at:
+            raise ValueError("NEEQ 公告列表元数据必须提供采集时间")
+        issuer_identity_hint = {
+            "exchange": "NEEQ",
+            "issuer_code": company_code,
+            "issuer_name": company_name,
+            "identity_resolution_status": "metadata_linked_pending_review",
+            "match_method": "exact_attachment_path",
+            "announcement_title": str(record.get("disclosureTitle") or ""),
+            "publish_date": str(record.get("publishDate") or ""),
+            "attachment_url": attachment_url,
+            "metadata_source_url": metadata_source_url,
+            "metadata_response_sha256": metadata_hash,
+            "metadata_retrieved_at": metadata_retrieved_at,
+            "review_required": True,
+        }
     exchange = EXCHANGE_BY_SOURCE.get(document.source_id, "")
     decoded_text = document.body.decode("utf-8", errors="replace")
     candidates: list[dict] = []
@@ -105,6 +150,8 @@ def build_lifecycle_evidence_candidates(
         }
         if extra_payload:
             payload.update(extra_payload)
+        if issuer_identity_hint:
+            payload["issuer_identity_hint"] = issuer_identity_hint
         candidates.append({
             "candidate_id": _candidate_id(
                 document.source_id, document.final_url,
@@ -171,8 +218,13 @@ def build_lifecycle_evidence_candidates(
                     event_type=event_type,
                     action_type=CORPORATE_ACTION_TYPES[event_type],
                     extra_payload={
-                        "identity_resolution_status": "unresolved",
-                        "identity_resolution_reason": "security_code_not_found_in_document",
+                        "identity_resolution_status": (
+                            "metadata_linked_pending_review" if issuer_identity_hint else "unresolved"
+                        ),
+                        "identity_resolution_reason": (
+                            "official_announcement_metadata_linked_by_attachment_path"
+                            if issuer_identity_hint else "security_code_not_found_in_document"
+                        ),
                     },
                 )
             else:
