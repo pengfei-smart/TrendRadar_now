@@ -99,6 +99,8 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertEqual(result["page_size"], 20)
         self.assertEqual(result["total_elements"], 4052450)
         self.assertEqual(result["returned_count"], 2)
+        self.assertEqual(len(result["records"]), 2)
+        self.assertEqual(result["records"][1]["companyCd"], "654321")
         self.assertEqual(result["lifecycle_candidate_count"], 1)
         self.assertFalse(result["classification_filter_verified"])
         self.assertFalse(result["lifecycle_only_query"])
