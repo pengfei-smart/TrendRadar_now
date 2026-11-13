@@ -162,6 +162,7 @@ def probe_neeq_announcement_list(
         "returned_count": len(records),
         "total_elements": normalized["total_elements"],
         "lifecycle_candidate_count": len(lifecycle_candidates),
+        "records": [dict(record) for record in records if isinstance(record, dict)],
         "lifecycle_candidates": lifecycle_candidates,
         "runtime_verified": True,
         "classification_filter_verified": False,
@@ -171,5 +172,6 @@ def probe_neeq_announcement_list(
             "当前公告列表可能是混合公告；标题命中仅为人工审核候选，不是退市事实。",
             "只返回公告元数据，不下载 PDF，不写入正式证券生命周期表。",
             "noticeType、disclosureType、disclosureSubtype 的业务字典含义尚未全部核验；默认不设置。",
+            "companyCd 与 keyword 参数尚未通过正常挂牌证券阳性对照；不得将其零结果解释为无公告或已终止挂牌。",
         ],
     }
