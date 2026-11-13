@@ -13,7 +13,7 @@ from trendradar.market_data.lifecycle_evidence_parser import ParsedLifecycleEvid
 from trendradar.market_data.lifecycle_source_registry import get_source, is_allowed_url
 
 
-EXCHANGE_BY_SOURCE = {"sse": "SSE", "szse": "SZSE"}
+EXCHANGE_BY_SOURCE = {"sse": "SSE", "szse": "SZSE", "neeq": "NEEQ"}
 CORPORATE_ACTION_TYPES = {
     "cash_tender_offer": "cash_tender_offer",
     "reorganization": "reorganization",
