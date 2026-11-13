@@ -174,9 +174,17 @@ def normalize_neeq_announcement_response(payload: Any) -> dict:
         raise ValueError("公告响应 listInfo.content 不是数组")
     if isinstance(total, bool) or not isinstance(total, int) or total < 0:
         raise ValueError("公告响应 listInfo.totalElements 无效")
+    number = list_info.get("number")
+    size = list_info.get("size")
+    if isinstance(number, bool) or not isinstance(number, int) or number < 0:
+        raise ValueError("公告响应 listInfo.number 无效")
+    if isinstance(size, bool) or not isinstance(size, int) or size < 0:
+        raise ValueError("公告响应 listInfo.size 无效")
     return {
         "records": records,
         "total_elements": total,
+        "page_number": number,
+        "page_size": size,
         "response_shape": "array[0].listInfo",
         "runtime_verified": False,
     }
