@@ -133,6 +133,8 @@ def build_neeq_announcement_search_plan(
         "page": page,
         "companyCd": company_code,
         "isNewThree": 1,
+        "startTime": start,
+        "endTime": end,
         "keyword": keyword.strip(),
         "xxfcbj[]": [market_layer],
         "hyType[]": [industry_type] if industry_type else [],
