@@ -157,13 +157,15 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
     seen = set()
     for match in literal_pattern.finditer(source):
         value = match.group(1).strip()
-        if not value or value in seen or not keywords.search(value):
+        is_controller_path = value.lower().split("?", 1)[0].endswith(".do")
+        if not value or value in seen or not (keywords.search(value) or is_controller_path):
             continue
         if not (
             value.startswith(("/", "http://", "https://", "./", "../"))
             or ".json" in value.lower()
             or ".shtml" in value.lower()
             or ".html" in value.lower()
+            or is_controller_path
         ):
             continue
         seen.add(value)
