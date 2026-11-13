@@ -103,6 +103,8 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertFalse(result["classification_filter_verified"])
         self.assertFalse(result["lifecycle_only_query"])
         self.assertEqual(result["lifecycle_candidates"][0]["company_code"], "123456")
+        self.assertIn(CALLBACK + "(", result["response_preview"])
+        self.assertLessEqual(len(result["response_preview"]), 1000)
         self.assertNotIn("body", result)
         self.assertNotIn("pdf_content", result)
 
