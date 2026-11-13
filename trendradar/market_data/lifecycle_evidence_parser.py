@@ -88,6 +88,10 @@ def _date_type(context: str) -> str:
     # 避免前文“收到终止挂牌决定”污染这条日期。
     if any(term in after for term in ("指定信息披露平台公布", "指定信息披露平台发布", "公告发布")):
         return "announcement_date"
+    # NEEQ 券商风险提示常写作“某日系摘牌整理期最后一个交易日”，
+    # 该日期不能被前面的“股票将于”误判为正式终止挂牌日期。
+    if any(term in after for term in ("最后交易日", "最后一个交易日", "最后交易日为")):
+        return "last_trading_date"
     if after.startswith(("终止挂牌", "终止上市")):
         return "delisting_date"
     if any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
