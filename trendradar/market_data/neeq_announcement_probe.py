@@ -44,6 +44,7 @@ def probe_neeq_announcement_list(
     max_bytes: int = MAX_RESPONSE_BYTES,
     opener=None,
     callback: str = "TrendRadarAnnouncementProbe",
+    omit_date_filter: bool = False,
 ) -> dict:
     """Send exactly one allowlisted POST; return metadata only, never fetch PDF attachments."""
     if not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", callback):
@@ -71,6 +72,9 @@ def probe_neeq_announcement_list(
         raise ValueError("公告列表接口不在 NEEQ 官方 HTTPS 白名单内")
 
     params = dict(plan["params"])
+    if omit_date_filter:
+        params.pop("startTime", None)
+        params.pop("endTime", None)
     params["sortfield"] = "xxssdq"
     params["sorttype"] = "asc"
     url = endpoint + "?" + urlencode({"callback": callback})
@@ -147,6 +151,7 @@ def probe_neeq_announcement_list(
         "request_count": 1,
         "request_page": page,
         "request_params": params,
+        "date_filter_omitted": omit_date_filter,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "response_bytes": len(raw),
         "response_preview": raw.decode("utf-8-sig", errors="replace")[:1000],
