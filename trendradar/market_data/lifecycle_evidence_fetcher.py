@@ -1,4 +1,4 @@
-# 本文件负责从登记的官方域名安全获取生命周期公告原文并计算内容哈希。
+# 本文件负责从登记的官方域名安全获取生命周期公告原文，并按来源设置必要请求头及计算内容哈希。
 """Bounded, allowlisted HTTP retrieval for lifecycle evidence documents."""
 
 from __future__ import annotations
@@ -53,17 +53,30 @@ class LifecycleEvidenceFetcher:
         self.user_agent = user_agent
         self._opener = opener
 
+    def _request_headers(self, source_id: str) -> dict[str, str]:
+        headers = {
+            "User-Agent": self.user_agent,
+            "Accept": "text/html,application/pdf,application/xml,text/xml,application/json,*/*;q=0.5",
+        }
+        if source_id == "neeq":
+            # NEEQ 附件实测要求浏览器风格请求头；列表接口与附件接口均位于官方站点。
+            headers.update({
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/131.0.0.0 Safari/537.36"
+                ),
+                "Accept": "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
+                "Referer": "https://www.neeq.com.cn/disclosure/announcement.html",
+                "Origin": "https://www.neeq.com.cn",
+            })
+        return headers
+
     def fetch(self, source_id: str, url: str) -> FetchedDocument:
         source = get_source(source_id)
         if not is_allowed_url(source_id, url):
             raise ValueError(f"URL 不属于 {source.name} 的 HTTPS 白名单")
-        request = Request(
-            url,
-            headers={
-                "User-Agent": self.user_agent,
-                "Accept": "text/html,application/pdf,application/xml,text/xml,application/json,*/*;q=0.5",
-            },
-        )
+        request = Request(url, headers=self._request_headers(source_id))
         opener = self._opener or build_opener(_SameSourceRedirectHandler(source_id))
         try:
             response = opener.open(request, timeout=self.timeout_seconds)
