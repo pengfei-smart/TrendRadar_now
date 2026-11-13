@@ -45,12 +45,15 @@ class NEEQLifecycleIngestionCLITests(unittest.TestCase):
                 "ingest_neeq_lifecycle.py",
                 "--start-date", "2026-11-01", "--end-date", "2026-11-13",
                 "--page", "280", "--max-announcements", "5",
+                "--notice-type", "5", "--disclosure-type", "5",
             ]), contextlib.redirect_stdout(stdout):
                 self.assertEqual(cli.main(), 0)
 
         probe.assert_called_once()
         self.assertEqual(probe.call_args.kwargs["start_date"], "2026-11-01")
         self.assertEqual(probe.call_args.kwargs["page"], 280)
+        self.assertEqual(probe.call_args.kwargs["notice_type"], "5")
+        self.assertEqual(probe.call_args.kwargs["disclosure_type"], "5")
         fetcher_type.assert_called_once()
         ingest.assert_called_once()
         self.assertEqual(ingest.call_args.kwargs["max_announcements"], 5)
