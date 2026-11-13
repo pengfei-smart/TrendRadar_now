@@ -89,6 +89,7 @@ def ingest_neeq_lifecycle_probe_result(
                 source_title=title,
                 source_published_at=publish_date,
                 retrieved_at=collected_at,
+                source_text=text,
                 announcement_metadata={
                     "record": record,
                     "source_url": probe_result["metadata_source_url"],
