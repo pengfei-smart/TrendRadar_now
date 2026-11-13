@@ -53,6 +53,7 @@ def build_lifecycle_evidence_candidates(
     retrieved_at: str | None = None,
     relationship_hints: Iterable[dict] = (),
     announcement_metadata: dict | None = None,
+    source_text: str | None = None,
 ) -> list[dict]:
     """Build pending review rows; relationship direction must be supplied explicitly.
 
@@ -124,7 +125,10 @@ def build_lifecycle_evidence_candidates(
             "review_required": True,
         }
     exchange = EXCHANGE_BY_SOURCE.get(document.source_id, "")
-    decoded_text = document.body.decode("utf-8", errors="replace")
+    if source_text is not None and not isinstance(source_text, str):
+        raise TypeError("source_text 必须是字符串或 None")
+    # PDF/HTML 等必须使用已提取的可读正文；原始 document.body 仅作兼容性回退。
+    decoded_text = source_text if source_text is not None else document.body.decode("utf-8", errors="replace")
     candidates: list[dict] = []
 
     def append_candidate(
