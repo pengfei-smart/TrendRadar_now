@@ -32,6 +32,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--company-code", default="", help="可选六位NEEQ公司代码")
     parser.add_argument("--market-layer", choices=("0", "1", "3"), default="3",
                         help="官方页面市场层级参数，默认3（全部）")
+    parser.add_argument("--notice-type", default="",
+                        help="公告类型筛选值；此前实测组合为5，默认不筛选")
+    parser.add_argument("--disclosure-type", default="",
+                        help="披露类型筛选值；此前实测组合为5，默认不筛选")
     parser.add_argument("--omit-date-filter", action="store_true",
                         help="实验选项：不向接口提交日期筛选")
     parser.add_argument("--db", default="output/market/market.db",
@@ -53,6 +57,8 @@ def main() -> int:
         market_layer=args.market_layer,
         page=args.page,
         company_code=args.company_code,
+        notice_type=args.notice_type,
+        disclosure_type=args.disclosure_type,
         omit_date_filter=args.omit_date_filter,
     )
     storage = MarketStorage(args.db)
