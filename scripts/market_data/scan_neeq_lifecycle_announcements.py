@@ -131,7 +131,7 @@ def main() -> int:
             stop_reason = "max_announcements_reached"
             break
         if probe["returned_count"] == 0:
-            stop_reason = "empty_page"
+            stop_reason = "empty_response_unverified"
             break
         if page_size and (page + 1) * page_size >= total_elements:
             stop_reason = "all_pages_scanned"
@@ -143,7 +143,7 @@ def main() -> int:
             time.sleep(args.pause_seconds)
 
     coverage = page_coverage(total_elements, page_size, len(page_audits))
-    if stop_reason not in {"all_pages_scanned", "empty_page", "short_page"} and coverage["coverage_status"] != "complete":
+    if stop_reason not in {"all_pages_scanned", "short_page"} and coverage["coverage_status"] != "complete":
         coverage["coverage_status"] = "partial"
     output = {
         "source_id": "neeq",
