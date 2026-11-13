@@ -81,12 +81,20 @@ def page_coverage(total_elements: int, page_size: int, pages_scanned: int) -> di
     if total_elements < 0 or page_size < 0 or pages_scanned < 0:
         raise ValueError("分页覆盖参数不得为负数")
     total_pages = math.ceil(total_elements / page_size) if page_size else 0
-    complete = total_elements == 0 or (page_size > 0 and pages_scanned >= total_pages)
+    if total_elements == 0:
+        coverage_status = "empty_response_unverified"
+        coverage_ratio = None
+    elif page_size > 0 and pages_scanned >= total_pages:
+        coverage_status = "complete"
+        coverage_ratio = 1.0
+    else:
+        coverage_status = "partial"
+        coverage_ratio = min(1.0, pages_scanned / total_pages) if total_pages else 0.0
     return {
         "total_elements": total_elements,
         "page_size": page_size,
         "total_pages": total_pages,
         "pages_scanned": pages_scanned,
-        "coverage_ratio": (1.0 if total_elements == 0 else (min(1.0, pages_scanned / total_pages) if total_pages else 0.0)),
-        "coverage_status": "complete" if complete else "partial",
+        "coverage_ratio": coverage_ratio,
+        "coverage_status": coverage_status,
     }
