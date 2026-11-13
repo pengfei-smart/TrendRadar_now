@@ -36,7 +36,7 @@ DATE_LABEL_RULES = (
     ("transfer_start_date", ("开始转让日", "转让起始日", "挂牌转让日")),
     ("announcement_date", ("公告日期", "公告日", "发布日期", "发布于")),
     ("decision_date", ("收到终止挂牌决定", "收到终止上市决定")),
-    ("review_result_date", ("未提出复核申请", "未提交复核申请")),
+    ("review_result_date", ("未提出复核申请", "未提交复核申请", "复核申请")),
     ("arrangement_start_date", ("进入摘牌整理期", "进入退市整理期")),
     ("delisting_date", ("终止挂牌", "终止上市", "将于")),
 )
@@ -99,7 +99,7 @@ def _date_type(context: str) -> str:
             return date_type
     if "复牌" in after or "恢复交易" in after:
         return "resumption_date"
-    if "收到" in after and ("决定" in after or "通知书" in after):
+    if ("决定" in after and ("终止" in after or "挂牌" in after)) or ("收到" in after and "通知书" in after):
         return "decision_date"
     return "unspecified"
 
