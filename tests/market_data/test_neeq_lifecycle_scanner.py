@@ -69,6 +69,11 @@ class NEEQLifecycleScannerTests(unittest.TestCase):
         self.assertEqual(complete["coverage_ratio"], 1.0)
         self.assertEqual(complete["coverage_status"], "complete")
 
+    def test_empty_response_is_unverified_not_complete(self):
+        result = page_coverage(0, 20, 1)
+        self.assertEqual(result["coverage_status"], "empty_response_unverified")
+        self.assertIsNone(result["coverage_ratio"])
+
     def test_unknown_page_size_is_not_reported_as_complete(self):
         result = page_coverage(100, 0, 1)
         self.assertEqual(result["coverage_status"], "partial")
