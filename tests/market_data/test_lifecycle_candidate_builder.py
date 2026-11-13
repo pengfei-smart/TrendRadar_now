@@ -105,6 +105,26 @@ class LifecycleCandidateBuilderTests(unittest.TestCase):
         self.assertEqual(rows[0]["exchange"], "NEEQ")
         self.assertEqual(rows[0]["source_name"], "全国中小企业股份转让系统")
 
+    def test_preserves_lifecycle_candidates_when_security_code_is_missing(self):
+        text = "北京华创搜了科技股份有限公司股票进入摘牌整理期，预计终止挂牌。"
+        url = "https://www.neeq.com.cn/disclosure/notice/without-code"
+        document = self.make_document(text, source_id="neeq", url=url)
+        parsed = parse_lifecycle_announcement(text)
+        rows = build_lifecycle_evidence_candidates(
+            document, parsed, source_title="券商风险提示公告",
+        )
+        self.assertTrue(rows)
+        self.assertTrue(all(row["security_code"] == "" for row in rows))
+        self.assertTrue(all(
+            row["payload_json"]["identity_resolution_status"] == "unresolved"
+            for row in rows
+        ))
+        self.assertTrue(all(
+            row["payload_json"]["identity_resolution_reason"]
+            == "security_code_not_found_in_document"
+            for row in rows
+        ))
+
     def test_unrecognized_text_does_not_create_candidates(self):
         text = "这是一段没有证券代码和生命周期事件的普通文字。"
         rows = build_lifecycle_evidence_candidates(
