@@ -161,6 +161,31 @@ def build_lifecycle_evidence_candidates(
                     context=associated_date.context if associated_date else "",
                 )
 
+    # 公告正文未出现六位代码时，仍保留事件线索；证券身份留待后续人工匹配。
+    if not parsed.security_codes:
+        for event_type in parsed.event_types:
+            if event_type in CORPORATE_ACTION_TYPES:
+                append_candidate(
+                    candidate_kind="corporate_action",
+                    security_code="",
+                    event_type=event_type,
+                    action_type=CORPORATE_ACTION_TYPES[event_type],
+                    extra_payload={
+                        "identity_resolution_status": "unresolved",
+                        "identity_resolution_reason": "security_code_not_found_in_document",
+                    },
+                )
+            else:
+                append_candidate(
+                    candidate_kind="event",
+                    security_code="",
+                    event_type=event_type,
+                    extra_payload={
+                        "identity_resolution_status": "unresolved",
+                        "identity_resolution_reason": "security_code_not_found_in_document",
+                    },
+                )
+
     for hint in relationship_hints:
         if not isinstance(hint, dict):
             raise TypeError("relationship_hints 的每项必须是 dict")
