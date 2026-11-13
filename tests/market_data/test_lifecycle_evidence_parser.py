@@ -69,6 +69,20 @@ class LifecycleEvidenceParserTests(unittest.TestCase):
         self.assertEqual(by_value["2026-11-04"], "delisting_date")
         self.assertTrue(all(item.date_status == "unknown" for item in parsed.date_evidence))
 
+    def test_extracts_dates_with_pdf_inserted_whitespace(self):
+        text = (
+            "公司于2026 年 9 月 29 日收到终止挂牌决定。"
+            "截至2026 年10 月 13 日，公司未提出复核申请。"
+            "公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，"
+            "将于2026 年 11 月 4 日终止挂牌。"
+        )
+        parsed = parse_lifecycle_announcement(text)
+        by_value = {item.value: item.date_type for item in parsed.date_evidence}
+        self.assertEqual(by_value["2026-09-29"], "decision_date")
+        self.assertEqual(by_value["2026-10-13"], "review_result_date")
+        self.assertEqual(by_value["2026-10-21"], "arrangement_start_date")
+        self.assertEqual(by_value["2026-11-04"], "delisting_date")
+
     def test_invalid_calendar_dates_are_ignored(self):
         parsed = parse_lifecycle_announcement("公告日期：2024年2月30日。")
         self.assertEqual(parsed.date_evidence, ())
