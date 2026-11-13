@@ -391,3 +391,75 @@ CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_hash
     ON lifecycle_evidence_candidates(content_sha256);
 CREATE INDEX IF NOT EXISTS idx_lifecycle_candidates_source
     ON lifecycle_evidence_candidates(source_name, source_published_at DESC);
+
+
+-- v6 NEEQ发行人身份档案：与A股security_master隔离；公告元数据先进入候选池，审核后才建立主档。
+CREATE TABLE IF NOT EXISTS neeq_issuer_identity_candidates (
+    identity_candidate_id TEXT PRIMARY KEY,
+    company_code TEXT NOT NULL CHECK (length(company_code) = 6 AND company_code NOT GLOB '*[^0-9]*'),
+    company_name TEXT NOT NULL DEFAULT '',
+    disclosure_title TEXT NOT NULL DEFAULT '',
+    publish_date TEXT NOT NULL DEFAULT '',
+    attachment_url TEXT NOT NULL,
+    metadata_source_url TEXT NOT NULL,
+    metadata_response_sha256 TEXT NOT NULL CHECK (length(metadata_response_sha256) = 64),
+    retrieved_at TEXT NOT NULL,
+    raw_record_json TEXT NOT NULL DEFAULT '{}',
+    review_status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (review_status IN ('pending','verified','rejected','needs_more_evidence')),
+    reviewer TEXT NOT NULL DEFAULT '',
+    reviewed_at TEXT NOT NULL DEFAULT '',
+    review_notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(company_code, attachment_url, metadata_response_sha256)
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_identity_candidates_review
+    ON neeq_issuer_identity_candidates(review_status, retrieved_at DESC);
+CREATE INDEX IF NOT EXISTS idx_neeq_identity_candidates_company
+    ON neeq_issuer_identity_candidates(company_code, publish_date DESC);
+
+CREATE TABLE IF NOT EXISTS neeq_issuer_master (
+    company_code TEXT PRIMARY KEY CHECK (length(company_code) = 6 AND company_code NOT GLOB '*[^0-9]*'),
+    current_name TEXT NOT NULL,
+    full_name TEXT NOT NULL DEFAULT '',
+    market_layer TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (market_layer IN ('base','innovation','unknown')),
+    issuer_status TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (issuer_status IN ('active','delisting_arrangement','terminated','unknown')),
+    identity_status TEXT NOT NULL DEFAULT 'verified'
+        CHECK (identity_status IN ('verified','needs_review')),
+    source_name TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    source_sha256 TEXT NOT NULL CHECK (length(source_sha256) = 64),
+    source_retrieved_at TEXT NOT NULL,
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_issuer_name ON neeq_issuer_master(current_name);
+CREATE INDEX IF NOT EXISTS idx_neeq_issuer_status ON neeq_issuer_master(issuer_status, market_layer);
+
+CREATE TABLE IF NOT EXISTS neeq_issuer_aliases (
+    alias_id TEXT PRIMARY KEY,
+    company_code TEXT NOT NULL,
+    alias_name TEXT NOT NULL,
+    alias_type TEXT NOT NULL DEFAULT 'historical_name'
+        CHECK (alias_type IN ('historical_name','short_name','full_name','other')),
+    valid_from TEXT NOT NULL DEFAULT '',
+    valid_to TEXT NOT NULL DEFAULT '',
+    review_status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (review_status IN ('pending','verified','rejected')),
+    source_name TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL DEFAULT '',
+    source_sha256 TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_code) REFERENCES neeq_issuer_master(company_code) ON UPDATE CASCADE,
+    UNIQUE(company_code, alias_name, valid_from)
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_issuer_alias_name
+    ON neeq_issuer_aliases(alias_name, review_status);
+CREATE INDEX IF NOT EXISTS idx_neeq_issuer_alias_company_period
+    ON neeq_issuer_aliases(company_code, valid_from, valid_to);
