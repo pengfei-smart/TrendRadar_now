@@ -9,9 +9,10 @@ from datetime import date
 
 
 CODE_RE = re.compile(r"(?<!\d)(\d{6})(?!\d)")
+# PDF 文本层常在数字与年月日单位之间插入空格，日期正则需兼容该格式。
 DATE_PATTERNS = (
-    re.compile(r"(?P<year>20\d{2})年(?P<month>\d{1,2})月(?P<day>\d{1,2})日?"),
-    re.compile(r"(?P<year>20\d{2})[-/.](?P<month>\d{1,2})[-/.](?P<day>\d{1,2})"),
+    re.compile(r"(?P<year>20\d{2})\s*年\s*(?P<month>\d{1,2})\s*月\s*(?P<day>\d{1,2})\s*日?"),
+    re.compile(r"(?P<year>20\d{2})\s*[-/.]\s*(?P<month>\d{1,2})\s*[-/.]\s*(?P<day>\d{1,2})"),
 )
 
 EVENT_RULES = (
