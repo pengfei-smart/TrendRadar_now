@@ -720,6 +720,155 @@ class MarketStorage:
             if cursor.rowcount != 1:
                 raise ValueError(f"生命周期证据候选不存在: {candidate_id}")
 
+    def save_neeq_issuer_identity_candidates(self, candidates: Iterable[dict]) -> int:
+        """保存NEEQ公告元数据身份候选；即使审核为verified也不自动创建发行人主档。"""
+        import hashlib
+
+        rows = []
+        for item in candidates:
+            candidate_id = str(item.get("identity_candidate_id") or "").strip()
+            company_code = str(item.get("company_code") or "").strip()
+            company_name = str(item.get("company_name") or "").strip()
+            attachment_url = str(item.get("attachment_url") or "").strip()
+            metadata_source_url = str(item.get("metadata_source_url") or "").strip()
+            response_hash = str(item.get("metadata_response_sha256") or "").lower().strip()
+            retrieved_at = str(item.get("retrieved_at") or "").strip()
+            if not candidate_id or len(company_code) != 6 or not company_code.isdigit():
+                raise ValueError("身份候选必须提供候选ID和六位数字company_code")
+            if not company_name or not attachment_url.startswith("https://") or not metadata_source_url.startswith("https://"):
+                raise ValueError("身份候选必须提供企业名称和HTTPS附件/元数据来源URL")
+            if len(response_hash) != 64 or any(ch not in "0123456789abcdef" for ch in response_hash):
+                raise ValueError("metadata_response_sha256 必须是64位十六进制SHA-256")
+            if not retrieved_at:
+                raise ValueError("retrieved_at 不能为空")
+            raw_record = item.get("raw_record", {})
+            if not isinstance(raw_record, dict):
+                raise ValueError("raw_record 必须是对象")
+            rows.append((
+                candidate_id, company_code, company_name,
+                str(item.get("disclosure_title") or ""),
+                str(item.get("publish_date") or ""), attachment_url,
+                metadata_source_url, response_hash, retrieved_at,
+                json.dumps(raw_record, ensure_ascii=False, sort_keys=True),
+            ))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO neeq_issuer_identity_candidates
+                (identity_candidate_id,company_code,company_name,disclosure_title,publish_date,
+                 attachment_url,metadata_source_url,metadata_response_sha256,retrieved_at,raw_record_json)
+                VALUES(?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(identity_candidate_id) DO UPDATE SET
+                company_code=excluded.company_code,company_name=excluded.company_name,
+                disclosure_title=excluded.disclosure_title,publish_date=excluded.publish_date,
+                attachment_url=excluded.attachment_url,metadata_source_url=excluded.metadata_source_url,
+                metadata_response_sha256=excluded.metadata_response_sha256,
+                retrieved_at=excluded.retrieved_at,raw_record_json=excluded.raw_record_json,
+                review_status=CASE WHEN neeq_issuer_identity_candidates.metadata_response_sha256
+                    <> excluded.metadata_response_sha256 THEN 'pending'
+                    ELSE neeq_issuer_identity_candidates.review_status END,
+                reviewer=CASE WHEN neeq_issuer_identity_candidates.metadata_response_sha256
+                    <> excluded.metadata_response_sha256 THEN '' ELSE neeq_issuer_identity_candidates.reviewer END,
+                reviewed_at=CASE WHEN neeq_issuer_identity_candidates.metadata_response_sha256
+                    <> excluded.metadata_response_sha256 THEN '' ELSE neeq_issuer_identity_candidates.reviewed_at END,
+                review_notes=CASE WHEN neeq_issuer_identity_candidates.metadata_response_sha256
+                    <> excluded.metadata_response_sha256 THEN '' ELSE neeq_issuer_identity_candidates.review_notes END,
+                updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def list_neeq_issuer_identity_candidates(
+        self, *, review_status: str | None = None, company_code: str | None = None,
+        limit: int = 500,
+    ) -> list[dict]:
+        if not 1 <= limit <= 5000:
+            raise ValueError("limit 必须在1到5000之间")
+        clauses, params = [], []
+        if review_status is not None:
+            self._validate_enum(review_status, {"pending", "verified", "rejected", "needs_more_evidence"}, "review_status")
+            clauses.append("review_status=?")
+            params.append(review_status)
+        if company_code is not None:
+            if len(company_code) != 6 or not company_code.isdigit():
+                raise ValueError("company_code 必须是六位数字")
+            clauses.append("company_code=?")
+            params.append(company_code)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM neeq_issuer_identity_candidates" + where +
+                " ORDER BY CASE review_status WHEN 'pending' THEN 0 "
+                "WHEN 'needs_more_evidence' THEN 1 ELSE 2 END,retrieved_at DESC LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            result = [dict(row) for row in rows]
+            for item in result:
+                item["raw_record"] = json.loads(item.pop("raw_record_json"))
+            return result
+
+    def review_neeq_issuer_identity_candidate(
+        self, identity_candidate_id: str, *, review_status: str,
+        reviewer: str, reviewed_at: str, review_notes: str = "",
+    ) -> None:
+        """审核身份候选；verified仅表示候选证据通过审核，不自动晋升主档。"""
+        self._validate_enum(
+            review_status, {"pending", "verified", "rejected", "needs_more_evidence"},
+            "review_status",
+        )
+        if not identity_candidate_id or not reviewer.strip() or not reviewed_at.strip():
+            raise ValueError("候选ID、审核人和审核时间不能为空")
+        with self.connect() as connection:
+            cursor = connection.execute(
+                """UPDATE neeq_issuer_identity_candidates SET review_status=?,reviewer=?,
+                reviewed_at=?,review_notes=?,updated_at=CURRENT_TIMESTAMP
+                WHERE identity_candidate_id=?""",
+                (review_status, reviewer.strip(), reviewed_at.strip(), review_notes, identity_candidate_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError(f"NEEQ身份候选不存在: {identity_candidate_id}")
+
+    def upsert_neeq_issuer_master(self, issuers: Iterable[dict]) -> int:
+        """显式写入已核验的NEEQ发行人主档；不接受A股security_master外键或自动提升。"""
+        rows = []
+        for item in issuers:
+            code = str(item.get("company_code") or "").strip()
+            name = str(item.get("current_name") or "").strip()
+            source_name = str(item.get("source_name") or "").strip()
+            source_url = str(item.get("source_url") or "").strip()
+            source_hash = str(item.get("source_sha256") or "").lower().strip()
+            retrieved_at = str(item.get("source_retrieved_at") or "").strip()
+            if len(code) != 6 or not code.isdigit() or not name:
+                raise ValueError("NEEQ发行人主档必须提供六位company_code和current_name")
+            if not source_name or not source_url.startswith("https://") or not retrieved_at:
+                raise ValueError("NEEQ发行人主档必须提供官方来源名称、HTTPS URL和采集时间")
+            if len(source_hash) != 64 or any(ch not in "0123456789abcdef" for ch in source_hash):
+                raise ValueError("source_sha256 必须是64位十六进制SHA-256")
+            self._validate_enum(item.get("market_layer", "unknown"), {"base", "innovation", "unknown"}, "market_layer")
+            self._validate_enum(item.get("issuer_status", "unknown"), {"active", "delisting_arrangement", "terminated", "unknown"}, "issuer_status")
+            rows.append((code, name, str(item.get("full_name") or ""),
+                item.get("market_layer", "unknown"), item.get("issuer_status", "unknown"),
+                source_name, source_url, source_hash, retrieved_at, str(item.get("notes") or "")))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO neeq_issuer_master
+                (company_code,current_name,full_name,market_layer,issuer_status,source_name,
+                 source_url,source_sha256,source_retrieved_at,notes)
+                VALUES(?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(company_code) DO UPDATE SET
+                current_name=excluded.current_name,full_name=excluded.full_name,
+                market_layer=excluded.market_layer,issuer_status=excluded.issuer_status,
+                source_name=excluded.source_name,source_url=excluded.source_url,
+                source_sha256=excluded.source_sha256,source_retrieved_at=excluded.source_retrieved_at,
+                notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def get_neeq_issuer(self, company_code: str) -> dict | None:
+        if len(company_code) != 6 or not company_code.isdigit():
+            raise ValueError("company_code 必须是六位数字")
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM neeq_issuer_master WHERE company_code=?", (company_code,)
+            ).fetchone()
+            return dict(row) if row else None
+
     def save_radar_run(self, run_at: str, candidate_count: int, pushed_count: int,
                        source_status: str, notes: str = "") -> None:
         with self.connect() as connection:
