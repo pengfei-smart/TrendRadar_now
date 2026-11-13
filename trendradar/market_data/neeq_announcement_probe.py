@@ -124,6 +124,16 @@ def probe_neeq_announcement_list(
     payload = parse_neeq_jsonp(raw, callback)
     normalized = normalize_neeq_announcement_response(payload)
     records = normalized["records"]
+    requested_company_code = str(params.get("companyCd") or "").strip()
+    company_code_filter_verified = bool(
+        requested_company_code
+        and records
+        and all(
+            isinstance(record, dict)
+            and str(record.get("companyCd") or "").strip() == requested_company_code
+            for record in records
+        )
+    )
     title_field = "disclosureTitle"
     lifecycle_candidates = [
         {
@@ -166,12 +176,22 @@ def probe_neeq_announcement_list(
         "lifecycle_candidates": lifecycle_candidates,
         "runtime_verified": True,
         "classification_filter_verified": False,
+        "company_code_filter_verified": company_code_filter_verified,
         "lifecycle_only_query": False,
         "warnings": [
             "本探测只验证公告列表请求、响应包装及分页元数据，不证明高级筛选分类参数已生效。",
             "当前公告列表可能是混合公告；标题命中仅为人工审核候选，不是退市事实。",
             "只返回公告元数据，不下载 PDF，不写入正式证券生命周期表。",
-            "noticeType、disclosureType、disclosureSubtype 的业务字典含义尚未全部核验；默认不设置。",
-            "companyCd 与 keyword 参数尚未通过正常挂牌证券阳性对照；不得将其零结果解释为无公告或已终止挂牌。",
+            "noticeType、disclosureType、disclosureSubtype 的业务字典含义尚未全部核验；不要据此推断分类语义。",
+            (
+                "companyCd 参数已通过本次非空返回记录逐条匹配验证；keyword 参数仍未完成阳性对照。"
+                if company_code_filter_verified
+                else (
+                    "本次未逐条验证 companyCd 返回记录；keyword 参数也未完成阳性对照。"
+                    if requested_company_code
+                    else "本次未指定 companyCd；keyword 参数尚未完成阳性对照。"
+                )
+            ),
+            "即使筛选结果为零，也不得单凭零结果认定证券无公告或已经终止挂牌。",
         ],
     }
