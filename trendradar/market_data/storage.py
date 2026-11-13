@@ -722,8 +722,6 @@ class MarketStorage:
 
     def save_neeq_issuer_identity_candidates(self, candidates: Iterable[dict]) -> int:
         """保存NEEQ公告元数据身份候选；即使审核为verified也不自动创建发行人主档。"""
-        import hashlib
-
         rows = []
         for item in candidates:
             candidate_id = str(item.get("identity_candidate_id") or "").strip()
@@ -859,6 +857,61 @@ class MarketStorage:
                 source_sha256=excluded.source_sha256,source_retrieved_at=excluded.source_retrieved_at,
                 notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
         return len(rows)
+
+    def save_neeq_issuer_aliases(self, aliases: Iterable[dict]) -> int:
+        """保存NEEQ发行人名称别名；默认pending，只有人工核验后才可用于名称匹配。"""
+        rows = []
+        for item in aliases:
+            alias_id = str(item.get("alias_id") or "").strip()
+            code = str(item.get("company_code") or "").strip()
+            name = str(item.get("alias_name") or "").strip()
+            alias_type = item.get("alias_type", "historical_name")
+            if not alias_id or len(code) != 6 or not code.isdigit() or not name:
+                raise ValueError("别名必须提供alias_id、六位company_code和alias_name")
+            self._validate_enum(alias_type, {"historical_name", "short_name", "full_name", "other"}, "alias_type")
+            self._validate_enum(item.get("review_status", "pending"), {"pending", "verified", "rejected"}, "review_status")
+            rows.append((alias_id, code, name, alias_type, str(item.get("valid_from") or ""),
+                str(item.get("valid_to") or ""), item.get("review_status", "pending"),
+                str(item.get("source_name") or ""), str(item.get("source_url") or ""),
+                str(item.get("source_sha256") or ""), str(item.get("notes") or "")))
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT INTO neeq_issuer_aliases
+                (alias_id,company_code,alias_name,alias_type,valid_from,valid_to,review_status,
+                 source_name,source_url,source_sha256,notes)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(alias_id) DO UPDATE SET
+                alias_name=excluded.alias_name,alias_type=excluded.alias_type,
+                valid_from=excluded.valid_from,valid_to=excluded.valid_to,
+                review_status=excluded.review_status,source_name=excluded.source_name,
+                source_url=excluded.source_url,source_sha256=excluded.source_sha256,
+                notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
+        return len(rows)
+
+    def list_neeq_issuer_aliases(
+        self, *, company_code: str | None = None, alias_name: str | None = None,
+        review_status: str | None = None, limit: int = 1000,
+    ) -> list[dict]:
+        if not 1 <= limit <= 5000:
+            raise ValueError("limit 必须在1到5000之间")
+        clauses, params = [], []
+        if company_code is not None:
+            clauses.append("company_code=?")
+            params.append(company_code)
+        if alias_name is not None:
+            clauses.append("alias_name=?")
+            params.append(alias_name)
+        if review_status is not None:
+            self._validate_enum(review_status, {"pending", "verified", "rejected"}, "review_status")
+            clauses.append("review_status=?")
+            params.append(review_status)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM neeq_issuer_aliases" + where +
+                " ORDER BY valid_from DESC,alias_id LIMIT ?", (*params, limit)
+            ).fetchall()
+            return [dict(row) for row in rows]
 
     def get_neeq_issuer(self, company_code: str) -> dict | None:
         if len(company_code) != 6 or not company_code.isdigit():
