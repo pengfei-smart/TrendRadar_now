@@ -49,6 +49,8 @@ def main() -> int:
         "source_id": result["source_id"],
         "http_method": result["http_method"],
         "status_code": result["status_code"],
+        "content_type": result["content_type"],
+        "content_type_warning": result["content_type_warning"],
         "runtime_verified": result["runtime_verified"],
         "request_count": result["request_count"],
         "content_sha256": result["content_sha256"],
