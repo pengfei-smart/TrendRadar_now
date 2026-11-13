@@ -93,6 +93,18 @@ class LifecycleCandidateBuilderTests(unittest.TestCase):
                 outside, parse_lifecycle_announcement(text), source_title="公告"
             )
 
+    def test_neeq_candidates_use_neeq_exchange_identifier(self):
+        text = "证券代码400001，关于终止挂牌的公告。"
+        url = "https://www.neeq.com.cn/disclosure/notice/1"
+        document = self.make_document(text, source_id="neeq", url=url)
+        rows = build_lifecycle_evidence_candidates(
+            document, parse_lifecycle_announcement(text),
+            source_title="终止挂牌公告",
+        )
+        self.assertTrue(rows)
+        self.assertEqual(rows[0]["exchange"], "NEEQ")
+        self.assertEqual(rows[0]["source_name"], "全国中小企业股份转让系统")
+
     def test_unrecognized_text_does_not_create_candidates(self):
         text = "这是一段没有证券代码和生命周期事件的普通文字。"
         rows = build_lifecycle_evidence_candidates(
