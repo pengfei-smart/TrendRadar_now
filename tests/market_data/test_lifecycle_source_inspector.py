@@ -100,6 +100,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         source = b"""
         const endpoint = "/api/disclosure/search.json";
         const detail = "/disclosure/announcement/detail.shtml";
+        const controller = "/screening/advanced.do";
         const companyCd = "123456";
         const distype = ["A", "B"];
         const hyType = "industry";
@@ -125,6 +126,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         )
         self.assertIn("/api/disclosure/search.json", result["endpoint_candidates"])
         self.assertIn("/disclosure/announcement/detail.shtml", result["endpoint_candidates"])
+        self.assertIn("/screening/advanced.do", result["endpoint_candidates"])
         self.assertEqual(result["content_length"], len(source))
         contexts = {item["endpoint"]: item for item in result["endpoint_contexts"]}
         self.assertEqual(contexts["/api/disclosure/search.json"]["occurrence_count"], 1)
