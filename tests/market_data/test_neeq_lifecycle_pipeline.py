@@ -77,6 +77,8 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
             self.assertEqual(identity[0]["raw_record"]["companyCd"], "870099")
             lifecycle = storage.list_lifecycle_evidence_candidates()
             self.assertTrue(any(row["exchange"] == "NEEQ" and row["security_code"] == "" for row in lifecycle))
+            self.assertTrue(any("北京华创搜了科技股份有限公司" in row["evidence_excerpt"] for row in lifecycle))
+            self.assertTrue(all(not row["evidence_excerpt"].startswith("%PDF-") for row in lifecycle))
             with storage.connect() as connection:
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0)
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
