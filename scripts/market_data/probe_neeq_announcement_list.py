@@ -17,6 +17,7 @@ def main() -> int:
     parser.add_argument("--keyword", default="", help="可选关键词")
     parser.add_argument("--page", type=int, default=0, help="零起始页码，默认 0")
     parser.add_argument("--market-layer", choices=("0", "1", "3"), default="3")
+    parser.add_argument("--omit-date-filter", action="store_true", help="对照实验：不向接口发送 startTime/endTime")
     args = parser.parse_args()
 
     try:
@@ -26,6 +27,7 @@ def main() -> int:
             keyword=args.keyword,
             page=args.page,
             market_layer=args.market_layer,
+            omit_date_filter=args.omit_date_filter,
         )
     except Exception as exc:
         print(json.dumps({
@@ -50,6 +52,7 @@ def main() -> int:
         "content_type": result["content_type"],
         "request_count": result["request_count"],
         "request_page": result["request_page"],
+        "date_filter_omitted": result["date_filter_omitted"],
         "page_number": result["page_number"],
         "page_size": result["page_size"],
         "returned_count": result["returned_count"],
