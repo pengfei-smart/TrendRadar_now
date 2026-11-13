@@ -144,7 +144,9 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertEqual(result["returned_count"], 2)
 
     def test_verifies_company_code_filter_only_when_all_returned_rows_match(self):
-        opener = FakeOpener(FakeResponse(self._payload()))
+        matching_payload = self._payload()
+        matching_payload[0]["listInfo"]["content"] = matching_payload[0]["listInfo"]["content"][:1]
+        opener = FakeOpener(FakeResponse(matching_payload))
         result = probe_neeq_announcement_list(
             start_date="2026-11-01",
             end_date="2026-11-13",
