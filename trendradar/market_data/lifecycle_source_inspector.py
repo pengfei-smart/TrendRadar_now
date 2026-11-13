@@ -203,13 +203,14 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
         "companyCode", "startTime", "endTime", "keyword", "xxfcbj",
         "hyType", "needFields", "siteId", "pageId", "pageNum",
         "totalElements", "listInfo", "defaultParams", "pagination",
-        "ajax", "exchangeData",
+        "ajax", "exchangeData", "distype", "pageNumId",
+        "defaultPaginationParams", "initDisclosureList", "xxzrlx",
     )
     term_contexts = []
     for term in contract_terms:
         occurrences = []
         start = 0
-        while len(occurrences) < 5:
+        while len(occurrences) < 8:
             index = source.find(term, start)
             if index < 0:
                 break
