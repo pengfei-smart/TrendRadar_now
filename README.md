@@ -3828,2833 +3828,888 @@ GPL-3.0 License
 
 
 {
-  "source_id": "sse",
-  "pages": [
-    {
-      "page_url": "https://www.sse.com.cn/home/search/",
-      "title": "上证搜索  | 上海证券交易所",
-      "forms": [],
-      "iframes": [],
-      "scripts": [
-        {
-          "url": "https://www.sse.com.cn/js/lib/gdp-full.js?v=20250916",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn"
-        },
-        {
-          "url": "https://www.sse.com.cn/xhtml/js/sse_full.js?v=3.8.3_20261030",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn"
-        },
-        {
-          "url": "https://www.sse.com.cn/xhtml/js/app/sse_menufun_2021.js",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn"
-        },
-        {
-          "url": "https://www.sse.com.cn/xhtml/js/lib/require.js",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://www.sse.com.cn/home/app/update2026/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "APP下载"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/weixin/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "微博微信"
-        },
-        {
-          "url": "http://english.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "english.sse.com.cn",
-          "text": "English"
-        },
-        {
-          "url": "http://big5.sse.com.cn/site/cht/www.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "big5.sse.com.cn",
-          "text": "繁"
-        },
-        {
-          "url": "https://one.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "一网通办"
-        },
-        {
-          "url": "https://www.sse.com.cn/transparency/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "“三开门”专栏"
-        },
-        {
-          "url": "https://english.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "english.sse.com.cn",
-          "text": "简中EN"
-        },
-        {
-          "url": "https://www.sse.com.cn/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": ""
-        },
-        {
-          "url": "https://one.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "一网通办"
-        },
-        {
-          "url": "https://www.sse.com.cn/transparency/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "“三开门”专栏"
-        },
-        {
-          "url": "https://one.sse.com.cn/investor/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "投资者"
-        },
-        {
-          "url": "https://one.sse.com.cn/member/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "会员机构"
-        },
-        {
-          "url": "https://one.sse.com.cn/to-be-listed/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "拟上市公司"
-        },
-        {
-          "url": "https://one.sse.com.cn/bond/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "债券机构"
-        },
-        {
-          "url": "https://one.sse.com.cn/list/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "上市公司"
-        },
-        {
-          "url": "https://one.sse.com.cn/fund/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "基金公司"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/gptz/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "股票投资一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/zqfx/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "债券发行上市一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/qqtz/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "期权投资一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/reits/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "REITs发行上市一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/qyss/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "企业上市一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/fwyy/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "服务预约一件事"
-        },
-        {
-          "url": "https://one.sse.com.cn/onething/xxpl/",
-          "allowed_by_source_registry": false,
-          "host": "one.sse.com.cn",
-          "text": "信息披露一件事"
-        },
-        {
-          "url": "javascript:void(0);",
-          "allowed_by_source_registry": false,
-          "host": "",
-          "text": "搜标题"
-        },
-        {
-          "url": "javascript:void(0);",
-          "allowed_by_source_registry": false,
-          "host": "",
-          "text": "搜标题和正文"
-        },
-        {
-          "url": "javascript:void(0);",
-          "allowed_by_source_registry": false,
-          "host": "",
-          "text": "试试选择精确搜索、缩小日期范围"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/search/#collapseExample",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "筛选工具"
-        },
-        {
-          "url": "javascript:void(0);",
-          "allowed_by_source_registry": false,
-          "host": "",
-          "text": "试试选择精确搜索、缩小日期范围"
-        },
-        {
-          "url": "javascript:void(0);",
-          "allowed_by_source_registry": false,
-          "host": "",
-          "text": "试试选择精确搜索、缩小日期范围"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/contactus/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "联系我们"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/map/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "网站地图"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/links/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "相关链接"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/legal/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "法律声明"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/sseintroduction/trademark/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "注册商标"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/grxxbhs/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "个人信息保护告知书"
-        },
-        {
-          "url": "https://www.sse.com.cn/cpc/news/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "党建动态"
-        },
-        {
-          "url": "https://www.sse.com.cn/cpc/study/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "学习园地"
-        },
-        {
-          "url": "https://www.sse.com.cn/cpc/pic/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "图文播报"
-        },
-        {
-          "url": "https://www.sse.com.cn/listing/announcement/notification/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "审核公告通知"
-        },
-        {
-          "url": "https://www.sse.com.cn/listing/disclosure/ipo/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "审核信息披露"
-        },
-        {
-          "url": "https://www.sse.com.cn/listing/renewal/ipo/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "审核项目动态"
-        },
-        {
-          "url": "https://www.sse.com.cn/listing/aboutus/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "关于上市审核中心"
-        },
-        {
-          "url": "https://www.sse.com.cn/listing/strategy/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "科创战略"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/dealinstruc/suspension/stock/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "交易提示"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/announcement/general/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "上交所公告"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "上市公司信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/magin/announcement/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "融资融券信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/fund/announcement/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "基金信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/reits/announcements/info/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "公募REITs信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/diclosure/public/dailydata/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "交易信息披露"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/bond/announcement/bookentry/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "债券信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/disclosure/optioninfo/update/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "股票期权信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/supervision/dynamic/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "上市公司监管"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/listing/measures/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "发行上市审核监管"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/bonds/jgdt/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "债券监管"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/trading/dynamic/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "交易监管"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/members/measures/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "会员及其他交易参与人监管"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/review/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "自律管理复核"
-        },
-        {
-          "url": "https://www.sse.com.cn/regulation/ma/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "自律监管与市场服务事项"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/sqslzxnew/sqslzxnewsy/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "诉求受理中心"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/stockdata/statistic/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "股票数据"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/bonddata/overview/day/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "债券数据"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/funddata/overview/day/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "基金数据"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/reits/overview/day/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "公募REITs数据"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/othersdata/margin/sum/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "其他数据"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/price/trends/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "行情信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/market/sseindex/overview/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "上证系列指数"
-        },
-        {
-          "url": "http://www.csindex.com.cn/zh-CN/indices/index",
-          "allowed_by_source_registry": false,
-          "host": "www.csindex.com.cn",
-          "text": "中证系列指数"
-        },
-        {
-          "url": "https://www.cesc.com/sc/index.html",
-          "allowed_by_source_registry": false,
-          "host": "www.cesc.com",
-          "text": "中华系列指数"
-        },
-        {
-          "url": "https://www.sse.com.cn/assortment/stock/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "股票与存托凭证"
-        },
-        {
-          "url": "https://www.sse.com.cn/assortment/fund/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "基金"
-        },
-        {
-          "url": "https://www.sse.com.cn/assortment/bonds/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "债券"
-        },
-        {
-          "url": "https://www.sse.com.cn/options/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "股票期权"
-        },
-        {
-          "url": "https://www.sse.com.cn/reits/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "公募REITs"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/listingwithsse/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "企业上市服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/ipo/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "IPO业务专栏"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/hkexsc/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "沪港通"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/greensecurities/home/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "绿色证券专栏"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/tradingservice/process/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "交易服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/tradingtech/notice/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "交易技术支持专区"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/tradingservice/charge/ssecharge/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "收费及代收税费"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/investors/designatedtxn/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "投资者服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/listing/xyzr/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "上市公司服务"
-        },
-        {
-          "url": "https://roadshow.sseinfo.com/",
-          "allowed_by_source_registry": false,
-          "host": "roadshow.sseinfo.com",
-          "text": "路演服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/home/biz/cnsca/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "技术服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/information/delisting/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "信息服务"
-        },
-        {
-          "url": "https://pujiang.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "pujiang.sse.com.cn",
-          "text": "培训服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/services/judicia/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "司法服务"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/rules/law/securities/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "法律法规"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/regulations/csrcorder/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "部门规章"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/sselawsrules2025/overview/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "本所业务规则"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/guide2025/latest/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "本所业务指南与流程"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/publicadvice/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "公开征求意见"
-        },
-        {
-          "url": "https://www.sse.com.cn/lawandrules/assemble/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "制度规则汇编"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/sseintroduction/introduction/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "本所介绍"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/mediacenter/hotandd/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "媒体中心"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/cooperation/siccce/info/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "国际交流与合作"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/recruitment/sse/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "招聘信息"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/contactus/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "联系我们"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/research/latest/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "研究"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/socialresponsibility/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "社会责任"
-        },
-        {
-          "url": "https://foundation.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "foundation.sse.com.cn",
-          "text": "公益慈善"
-        },
-        {
-          "url": "https://csm.sse.com.cn/",
-          "allowed_by_source_registry": false,
-          "host": "csm.sse.com.cn",
-          "text": "中国证券博物馆"
-        },
-        {
-          "url": "https://www.sse.com.cn/aboutus/publication/monthly/overview/",
-          "allowed_by_source_registry": true,
-          "host": "www.sse.com.cn",
-          "text": "刊物"
-        },
-        {
-          "url": "https://beian.miit.gov.cn/",
-          "allowed_by_source_registry": false,
-          "host": "beian.miit.gov.cn",
-          "text": "沪ICP备05004045号-2"
-        },
-        {
-          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011502016333",
-          "allowed_by_source_registry": false,
-          "host": "www.beian.gov.cn",
-          "text": "沪公网安备 31011502016333号"
-        },
-        {
-          "url": "https://bszs.conac.cn/sitename?method=show&id=273B49C66A3F20DDE06310291AACA667",
-          "allowed_by_source_registry": false,
-          "host": "bszs.conac.cn",
-          "text": ""
-        }
-      ],
-      "source_id": "sse",
-      "status_code": 200,
-      "content_sha256": "a6708d8cc6b0ca25a95f997cc01f75c313750e41ba1d24bffa4e9fdd55f11ae4"
-    }
-  ]
-}
-{
-  "source_id": "szse",
-  "pages": [
-    {
-      "page_url": "https://www.szse.cn/disclosure/notice/company/index.html",
-      "title": "",
-      "forms": [],
-      "iframes": [],
-      "scripts": [],
-      "links": [
-        {
-          "url": "https://www.szse.cn/disclosure/",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "本所公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/company/",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/memo/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易备忘"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/general/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "通知公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/temp/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "停复牌"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/company/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/bond/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "固收产品"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/fund/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/public/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "竞价交易公开信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/equity/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权益类证券大宗交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/reits/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金大宗交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/reitsReal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金大宗交易（实时）"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/inquiry/reitsReal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金询价交易（逐笔）"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/inquiry/reits/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金询价交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/mb/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "匹配成交交易公开信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbap/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "协商成交及盘后定价成交交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbd/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "协商成交申报信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/dx/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司向特定对象发行的可转债信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/holder/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权证持有人信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/qfii/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "境外投资者持股信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/offer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "要约收购"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/transfer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "非流通股转让"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/prefer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "优先股信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/business/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/object/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "标的证券信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/securites/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "可充抵保证金证券"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/margin/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "融资融券交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/ratio/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "单一股票担保物比例"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/lended/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "证券出借"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/restrict/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "战略配售股份信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/dynamic/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管动态"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/measure/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管措施"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/pushish/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/decision/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "复核决定"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/bonds/measures/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管措施"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/bonds/disposition/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/transaction/restrict/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "限制交易与纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/transaction/case/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管案例"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/members/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "会员及其他交易参与人监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/supervise/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "中介机构监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/issue/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "发行承销监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/inquire/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "问询函件"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/progress/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务办理进度"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/check/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "信息披露考评"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/promise/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "承诺事项及履行情况"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/change/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "董监高人员股份变动"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/remarket/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "重新上市申请审核进度"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/quality/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "质量回报双提升"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/fixed/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "定期报告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/summary/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "当日公告摘要"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/warn/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "风险警示板"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/director/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "独立董事信息库"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/secretary/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "董事会秘书信息库"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/reduction/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "限售股份解限与减持"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/credit/record/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "处罚与处分记录"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/credit/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "中介机构处罚与处分信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/suggestion/finance/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "财务顾问持续督导意见"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/suggestion/sponsor/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "保荐机构持续督导意见"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/etf/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "ETF公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/open/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "开放式基金净值"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/currency/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "申购赎回清单"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/list/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "产品列表"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/offer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "报价转让"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/deal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "成交概况"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/market/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "做市商信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/sales/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金销售机构信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/bond/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "债券公告"
-        },
-        {
-          "url": "http://www.chinaclear.cn/zdjs/zshenzhen/center_clist.shtml",
-          "allowed_by_source_registry": false,
-          "host": "www.chinaclear.cn",
-          "text": "通用质押式回购质押券折算率"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/bond/inquire/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "问询函"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/warrant/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权证信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/product/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "产品信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/deal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "成交信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/stock/rate/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "平均质押率"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/stock/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/promise/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/price/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "http://bond.szse.cn",
-          "allowed_by_source_registry": false,
-          "host": "bond.szse.cn",
-          "text": "固定收益产品"
-        },
-        {
-          "url": "http://bond.szse.cn/bayarea/index/index.html",
-          "allowed_by_source_registry": false,
-          "host": "bond.szse.cn",
-          "text": "大湾区债券平台"
-        }
-      ],
-      "source_id": "szse",
-      "status_code": 200,
-      "content_sha256": "3d719294eb8a16634806607993e160774b1c3b2fb593779a94557bdf3e32032a"
-    },
-    {
-      "page_url": "https://www.szse.cn/disclosure/notice/",
-      "title": "",
-      "forms": [],
-      "iframes": [],
-      "scripts": [],
-      "links": [
-        {
-          "url": "https://www.szse.cn/disclosure/",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "本所公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/memo/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易备忘"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/general/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "通知公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/temp/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "停复牌"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/company/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/bond/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "固收产品"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/notice/fund/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/public/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "竞价交易公开信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/equity/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权益类证券大宗交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/reits/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金大宗交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/block/reitsReal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金大宗交易（实时）"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/inquiry/reitsReal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金询价交易（逐笔）"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/inquiry/reits/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "不动产基金询价交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/mb/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "匹配成交交易公开信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbap/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "协商成交及盘后定价成交交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/nd/nbd/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "协商成交申报信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/conv/dx/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司向特定对象发行的可转债信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/holder/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权证持有人信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/qfii/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "境外投资者持股信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/offer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "要约收购"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/transfer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "非流通股转让"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/deal/prefer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "优先股信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/business/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/object/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "标的证券信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/securites/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "可充抵保证金证券"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/margin/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "融资融券交易"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/ratio/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "单一股票担保物比例"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/lended/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "证券出借"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/margin/restrict/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "战略配售股份信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/dynamic/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管动态"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/measure/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管措施"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/pushish/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/measure/decision/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "复核决定"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/bonds/measures/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管措施"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/bonds/disposition/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/transaction/restrict/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "限制交易与纪律处分"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/transaction/case/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "监管案例"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/members/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "会员及其他交易参与人监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/supervise/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "中介机构监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/issue/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "发行承销监管"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/inquire/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "问询函件"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/progress/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务办理进度"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/check/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "信息披露考评"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/promise/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "承诺事项及履行情况"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/change/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "董监高人员股份变动"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/supervision/remarket/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "重新上市申请审核进度"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "上市公司公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/quality/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "质量回报双提升"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/fixed/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "定期报告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/summary/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "当日公告摘要"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/warn/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "风险警示板"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/director/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "独立董事信息库"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/secretary/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "董事会秘书信息库"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/reduction/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "限售股份解限与减持"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/credit/record/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "处罚与处分记录"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/credit/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "中介机构处罚与处分信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/suggestion/finance/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "财务顾问持续督导意见"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/listed/suggestion/sponsor/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "保荐机构持续督导意见"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/etf/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "ETF公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/open/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "开放式基金净值"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/currency/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "申购赎回清单"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/list/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "产品列表"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/offer/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "报价转让"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/transfer/deal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "成交概况"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/market/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "做市商信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/fund/jjt/organ/sales/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "基金销售机构信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/bond/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "债券公告"
-        },
-        {
-          "url": "http://www.chinaclear.cn/zdjs/zshenzhen/center_clist.shtml",
-          "allowed_by_source_registry": false,
-          "host": "www.chinaclear.cn",
-          "text": "通用质押式回购质押券折算率"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/bond/inquire/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "问询函"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/warrant/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "权证信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/product/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "产品信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/notice/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "业务公告"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/asset/deal/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "成交信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/stock/rate/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "平均质押率"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/stock/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/promise/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.szse.cn/disclosure/innovate/price/message/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.szse.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "http://bond.szse.cn",
-          "allowed_by_source_registry": false,
-          "host": "bond.szse.cn",
-          "text": "固定收益产品"
-        },
-        {
-          "url": "http://bond.szse.cn/bayarea/index/index.html",
-          "allowed_by_source_registry": false,
-          "host": "bond.szse.cn",
-          "text": "大湾区债券平台"
-        }
-      ],
-      "source_id": "szse",
-      "status_code": 200,
-      "content_sha256": "da3e3cb5c179defe4ac083f001725fdfd6d8216aefc0395e2252ea3509ad968a"
-    }
-  ]
-}
-{
-  "source_id": "csrc",
-  "pages": [
-    {
-      "page_url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
-      "title": "行政处罚决定",
-      "forms": [
-        {
-          "action": {
-            "url": "https://www.csrc.gov.cn/guestweb4/s",
-            "allowed_by_source_registry": true,
-            "host": "www.csrc.gov.cn"
-          },
-          "method": "post",
-          "fields": [
-            {
-              "tag": "input",
-              "name": "searchWord",
-              "type": "text",
-              "id": "searchWord",
-              "placeholder": "请输入关键字"
-            },
-            {
-              "tag": "input",
-              "name": "uc",
-              "type": "hidden",
-              "id": "uc",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "siteCode",
-              "type": "hidden",
-              "id": "siteCode",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "column",
-              "type": "hidden",
-              "id": "siteCode",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "button",
-              "type": "submit",
-              "id": "button",
-              "placeholder": ""
-            }
-          ]
-        }
-      ],
-      "iframes": [],
-      "scripts": [
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/public.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.SuperSlide.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/head.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://zfwzgl.www.gov.cn/exposure/jiucuo.js",
-          "allowed_by_source_registry": false,
-          "host": "zfwzgl.www.gov.cn"
-        },
-        {
-          "url": "https://fxsjcj.kaipuyun.cn/count/10008998/10008998.js",
-          "allowed_by_source_registry": false,
-          "host": "fxsjcj.kaipuyun.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/foot.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/more_page.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/common_list.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://www.csrc.gov.cn/csrc_en/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "English"
-        },
-        {
-          "url": "https://weibo.com/csrcfabu",
-          "allowed_by_source_registry": false,
-          "host": "weibo.com",
-          "text": "微博"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/wza",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "无障碍"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/jggk/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "机构概况"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xwfb/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "新闻发布"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政务信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/bsfw/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "办事服务"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/hdjl/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "互动交流"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/tjsj/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "统计信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/ztzl/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "专题专栏"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政务信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100032/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政府信息公开"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100035/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "主动公开目录"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101951/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "按体裁文种查看"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101953/common_list.shtml?channelid=cd11df89f5894c1eac37ae37cc11e369",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "证监会令"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml?channelid=625a2f95cc104c1d8b646f98d9f87470",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "证监会公告"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101955/common_list.shtml?channelid=768f924c237f41b5921f6d0e4db0e8b5",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政许可批复"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政处罚决定"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101972/common_list.shtml?channelid=3795869930ca4b70bf55469270a6e641",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "市场禁入决定"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101973/common_list.shtml?channelid=77f99322f83040edb548974091db3f8b",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政复议"
-        },
-        {
-          "url": "http://www.gov.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.gov.cn",
-          "text": "中国政府网"
-        },
-        {
-          "url": "http://www.investor.org.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.investor.org.cn",
-          "text": "中国投资者网"
-        },
-        {
-          "url": "http://www.csisc.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.csisc.cn",
-          "text": "中国资本市场标准网"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c105799/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政府网站年度报表"
-        },
-        {
-          "url": "https://beian.miit.gov.cn",
-          "allowed_by_source_registry": false,
-          "host": "beian.miit.gov.cn",
-          "text": "京ICP备 05035542号"
-        },
-        {
-          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11040102700080",
-          "allowed_by_source_registry": false,
-          "host": "www.beian.gov.cn",
-          "text": "京公网安备 11040102700080号"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100025/c1003151/content.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "联系我们"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100227/c1362477/content.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "法律声明"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c105974/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "归档数据"
-        }
-      ],
-      "source_id": "csrc",
-      "status_code": 200,
-      "content_sha256": "3d069c409664d05ae58b043be36e94dfd8315e8d8efb774bff49e10a078f01ed"
-    },
-    {
-      "page_url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
-      "title": "证监会公告",
-      "forms": [
-        {
-          "action": {
-            "url": "https://www.csrc.gov.cn/guestweb4/s",
-            "allowed_by_source_registry": true,
-            "host": "www.csrc.gov.cn"
-          },
-          "method": "post",
-          "fields": [
-            {
-              "tag": "input",
-              "name": "searchWord",
-              "type": "text",
-              "id": "searchWord",
-              "placeholder": "请输入关键字"
-            },
-            {
-              "tag": "input",
-              "name": "uc",
-              "type": "hidden",
-              "id": "uc",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "siteCode",
-              "type": "hidden",
-              "id": "siteCode",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "column",
-              "type": "hidden",
-              "id": "siteCode",
-              "placeholder": ""
-            },
-            {
-              "tag": "input",
-              "name": "button",
-              "type": "submit",
-              "id": "button",
-              "placeholder": ""
-            }
-          ]
-        }
-      ],
-      "iframes": [],
-      "scripts": [
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/public.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/jquery.SuperSlide.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/head.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://zfwzgl.www.gov.cn/exposure/jiucuo.js",
-          "allowed_by_source_registry": false,
-          "host": "zfwzgl.www.gov.cn"
-        },
-        {
-          "url": "https://fxsjcj.kaipuyun.cn/count/10008998/10008998.js",
-          "allowed_by_source_registry": false,
-          "host": "fxsjcj.kaipuyun.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/foot.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/more_page.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xhtml/js/common_list.js",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://www.csrc.gov.cn/csrc_en/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "English"
-        },
-        {
-          "url": "https://weibo.com/csrcfabu",
-          "allowed_by_source_registry": false,
-          "host": "weibo.com",
-          "text": "微博"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/wza",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "无障碍"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": ""
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/jggk/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "机构概况"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/xwfb/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "新闻发布"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政务信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/bsfw/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "办事服务"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/hdjl/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "互动交流"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/tjsj/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "统计信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/ztzl/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "专题专栏"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/zwxx/index.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政务信息"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100032/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政府信息公开"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100035/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "主动公开目录"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101951/zwxx.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "按体裁文种查看"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101953/common_list.shtml?channelid=cd11df89f5894c1eac37ae37cc11e369",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "证监会令"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101954/common_list.shtml?channelid=625a2f95cc104c1d8b646f98d9f87470",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "证监会公告"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101955/common_list.shtml?channelid=768f924c237f41b5921f6d0e4db0e8b5",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政许可批复"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101971/common_list.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政处罚决定"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101972/common_list.shtml?channelid=3795869930ca4b70bf55469270a6e641",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "市场禁入决定"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c101973/common_list.shtml?channelid=77f99322f83040edb548974091db3f8b",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "行政复议"
-        },
-        {
-          "url": "http://www.gov.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.gov.cn",
-          "text": "中国政府网"
-        },
-        {
-          "url": "http://www.investor.org.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.investor.org.cn",
-          "text": "中国投资者网"
-        },
-        {
-          "url": "http://www.csisc.cn/",
-          "allowed_by_source_registry": false,
-          "host": "www.csisc.cn",
-          "text": "中国资本市场标准网"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c105799/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "政府网站年度报表"
-        },
-        {
-          "url": "https://beian.miit.gov.cn",
-          "allowed_by_source_registry": false,
-          "host": "beian.miit.gov.cn",
-          "text": "京ICP备 05035542号"
-        },
-        {
-          "url": "http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11040102700080",
-          "allowed_by_source_registry": false,
-          "host": "www.beian.gov.cn",
-          "text": "京公网安备 11040102700080号"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100025/c1003151/content.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "联系我们"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c100227/c1362477/content.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "法律声明"
-        },
-        {
-          "url": "https://www.csrc.gov.cn/csrc/c105974/common_list.shtml",
-          "allowed_by_source_registry": true,
-          "host": "www.csrc.gov.cn",
-          "text": "归档数据"
-        }
-      ],
-      "source_id": "csrc",
-      "status_code": 200,
-      "content_sha256": "5a8c4acb8415f0fc940764f0b50dd28c54b585a96c40b12d6d57f915f8321937"
-    }
-  ]
-}
-{
   "source_id": "neeq",
   "pages": [
     {
       "page_url": "https://www.neeq.com.cn/disclosure/announcement.html",
-      "title": "挂牌公司公告 - 全国中小企业股份转让系统",
-      "forms": [],
-      "iframes": [
-        {
-          "url": "https://www.neeq.com.cn/myhead.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/myfoot.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        }
-      ],
-      "scripts": [
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/plugins/requireJS/require.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/main.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/_ws_sbu/sbu_hc.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/list_company_2.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://www.neeq.com.cn/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/vocational.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "股转公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/announcement.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌公司公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "两网及退市公司公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/transfer_market_maker.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "做市商间转让公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/agreement_transfer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "大宗交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/specific_items_transfer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "特定事项协议转让公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/prefer_stock_notice.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "优先股公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_tradeinfo.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "可转债交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/qfii.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "QFII/RQFII持股公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tender_offer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "要约收购/回购"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "监管公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "监管动态"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/enquiry_letter.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "问询函"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "自律监管措施"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/disciplinary_aciton.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/trade_supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/securities_trader_supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "主办券商及其他交易参与人监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/intermediary_organ.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "中介机构监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/reviewapplication.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "复核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/termination_listing.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "强制终止挂牌"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/commitments.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "承诺事项及履行情况"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "审核公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_gpgs_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌公示审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_dxfx_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌同时发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_issue_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "股票定向发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_prefer_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "优先股发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/major_asset_restructuring.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "重大资产重组审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_info.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "可转债定向发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/t_delisted_project_list.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "两网及退市公司审核"
-        }
-      ],
-      "source_id": "neeq",
-      "status_code": 200,
-      "content_sha256": "306cbe76bff0cc71c3c0f3edc2c1bbde74e625aceb2e413b38b241405ef59a01"
+      "status": "ok"
     },
     {
       "page_url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html?PC=PC",
-      "title": "两网及退市公司公告 - 全国中小企业股份转让系统",
-      "forms": [],
-      "iframes": [
-        {
-          "url": "https://www.neeq.com.cn/myhead.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/myfoot.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        }
-      ],
-      "scripts": [
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/plugins/requireJS/require.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/main.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/_ws_sbu/sbu_hc.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        },
-        {
-          "url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/disclosure.min.js",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://www.neeq.com.cn/index.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "首页"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/overview_information.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "信息披露"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/vocational.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "股转公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/announcement.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌公司公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/snadc_announcement.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "两网及退市公司公告"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tradepublic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/transfer_market_maker.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "做市商间转让公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/agreement_transfer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "大宗交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/specific_items_transfer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "特定事项协议转让公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/prefer_stock_notice.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "优先股公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_tradeinfo.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "可转债交易公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/qfii.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "QFII/RQFII持股公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/tender_offer.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "要约收购/回购"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "监管公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise_dynamic.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "监管动态"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/enquiry_letter.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "问询函"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "自律监管措施"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/disciplinary_aciton.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "纪律处分"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/trade_supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "交易监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/securities_trader_supervise.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "主办券商及其他交易参与人监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/intermediary_organ.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "中介机构监管"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/reviewapplication.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "复核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/termination_listing.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "强制终止挂牌"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/commitments.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "承诺事项及履行情况"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "审核公开信息"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_gpgs_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌公示审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/listing_dxfx_review_gp.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "挂牌同时发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_issue_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "股票定向发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/review_open_information/stock_prefer_review.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "优先股发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/major_asset_restructuring.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "重大资产重组审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/convertible_bond_info.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "可转债定向发行审核"
-        },
-        {
-          "url": "https://www.neeq.com.cn/disclosure/t_delisted_project_list.html",
-          "allowed_by_source_registry": true,
-          "host": "www.neeq.com.cn",
-          "text": "两网及退市公司审核"
-        }
-      ],
-      "source_id": "neeq",
-      "status_code": 200,
-      "content_sha256": "4a1d29724f41d072667131ef19d13fd5b560f867acdcd0779ff557bf79ad1c0c"
+      "status": "ok"
     }
+  ],
+  "assets": [
+    {
+      "source_id": "neeq",
+      "script_url": "https://www.neeq.com.cn/_ws_sbu/sbu_hc.js",
+      "status_code": 200,
+      "content_type": "text/javascript",
+      "content_length": 32672,
+      "content_sha256": "88d9cf06b1684597ed7f2d8d402b72b7366ac628ecc4dfb56a5a965f1e511630",
+      "endpoint_candidates": [],
+      "endpoint_contexts": [],
+      "term_contexts": [],
+      "candidate_count": 0
+    },
+    {
+      "source_id": "neeq",
+      "script_url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/disclosure.min.js",
+      "status_code": 200,
+      "content_type": "application/javascript",
+      "content_length": 6245,
+      "content_sha256": "57c94c7f87bd1bf54c14a65316012b34eeda401fa05b00004ab1f78f94531005",
+      "endpoint_candidates": [
+        "/disclosureInfoController/infoResult_en.do"
+      ],
+      "endpoint_contexts": [
+        {
+          "endpoint": "/disclosureInfoController/infoResult_en.do",
+          "occurrence_count": 1,
+          "occurrences": [
+            {
+              "offset": 4703,
+              "context": "owDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(A){var B=A.destFilePath;var C=A.disclosureTitle+A.disclosurePostTitle;C=C.replace(/\\\\n/g,\"\");return'<a target=\"_blank\" style=\"color:#666!important\" href =\"'+B+'\">'+C+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(A){var B=A.destFilePath;var D=A.disclosureTitle+A.disclosurePostTitle;var C=A.fileExt;return'<a target=\"_blank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        }
+      ],
+      "term_contexts": [
+        {
+          "term": "disclosureType",
+          "occurrence_count": 4,
+          "occurrences": [
+            {
+              "offset": 2357,
+              "context": "turn true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLin"
+            },
+            {
+              "offset": 2966,
+              "context": "hDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(A){var B=A.destFilePath;var C=A.disclosureTitle+A.disclosurePostTitle;C=C.replace(/\\\\n/g,\"\");return'<a target=\"_blank\" style=\"color:#666!important"
+            },
+            {
+              "offset": 4786,
+              "context": "s:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(A){var B=A.destFilePath;var D=A.disclosureTitle+A.disclosurePostTitle;var C=A.fileExt;return'<a target=\"_blank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.is"
+            },
+            {
+              "offset": 5397,
+              "context": "dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "companyCd",
+          "occurrence_count": 11,
+          "occurrences": [
+            {
+              "offset": 2018,
+              "context": "mon/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z="
+            },
+            {
+              "offset": 2229,
+              "context": "ch(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#b"
+            },
+            {
+              "offset": 2392,
+              "context": "arkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyC"
+            },
+            {
+              "offset": 2404,
+              "context": "click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeq"
+            },
+            {
+              "offset": 2983,
+              "context": ";t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(A){var B=A.destFilePath;var C=A.disclosureTitle+A.disclosurePostTitle;C=C.replace(/\\\\n/g,\"\");return'<a target=\"_blank\" style=\"color:#666!important\" href =\"'+B"
+            }
+          ]
+        },
+        {
+          "term": "companyCode",
+          "occurrence_count": 8,
+          "occurrences": [
+            {
+              "offset": 1781,
+              "context": "x\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(q==\"ppt\"||q==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,compan"
+            },
+            {
+              "offset": 1827,
+              "context": "2.png\"}else{if(q==\"ppt\"||q==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",so"
+            },
+            {
+              "offset": 2032,
+              "context": "}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\")"
+            },
+            {
+              "offset": 2557,
+              "context": "eyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">"
+            },
+            {
+              "offset": 2573,
+              "context": ";return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{"
+            }
+          ]
+        },
+        {
+          "term": "startTime",
+          "occurrence_count": 8,
+          "occurrences": [
+            {
+              "offset": 2054,
+              "context": "#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown"
+            },
+            {
+              "offset": 2094,
+              "context": "y\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24"
+            },
+            {
+              "offset": 2427,
+              "context": "l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){re"
+            },
+            {
+              "offset": 2439,
+              "context": "ode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href"
+            },
+            {
+              "offset": 4853,
+              "context": "k:function(A){var B=A.destFilePath;var D=A.disclosureTitle+A.disclosurePostTitle;var C=A.fileExt;return'<a target=\"_blank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new"
+            }
+          ]
+        },
+        {
+          "term": "endTime",
+          "occurrence_count": 9,
+          "occurrences": [
+            {
+              "offset": 2108,
+              "context": "nction d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,ti"
+            },
+            {
+              "offset": 2146,
+              "context": "+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){"
+            },
+            {
+              "offset": 2449,
+              "context": ");if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?"
+            },
+            {
+              "offset": 2459,
+              "context": "){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCod"
+            },
+            {
+              "offset": 3008,
+              "context": "isclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(A){var B=A.destFilePath;var C=A.disclosureTitle+A.disclosurePostTitle;C=C.replace(/\\\\n/g,\"\");return'<a target=\"_blank\" style=\"color:#666!important\" href =\"'+B+'\">'+C+\"</a>\"}}},{titl"
+            }
+          ]
+        },
+        {
+          "term": "keyword",
+          "occurrence_count": 13,
+          "occurrences": [
+            {
+              "offset": 1858,
+              "context": "tx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\""
+            },
+            {
+              "offset": 1878,
+              "context": "bj.baseUrl+\"img/common/wpic3.png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",cod"
+            },
+            {
+              "offset": 1906,
+              "context": ".png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:"
+            },
+            {
+              "offset": 1941,
+              "context": "ingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function j(q){l(\"#myModal\").modal(\"toggle\");l(\".modal-body\").html(q)}function d(q){var s=new RegExp(\"(^|&)\"+q+\"=([^&]*)(&|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sa"
+            },
+            {
+              "offset": 2158,
+              "context": "|$)\",\"i\");var u=decodeURI(window.location.search);var t=u.substr(1).match(s);if(t!=null){return unescape(t[2])}return null}function o(q){if(typeof q==\"undefined\"||q==null||q==\"\"){return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"i"
+            }
+          ]
+        },
+        {
+          "term": "needFields",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 2485,
+              "context": "ode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_"
+            },
+            {
+              "offset": 4971,
+              "context": "ank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B in"
+            }
+          ]
+        },
+        {
+          "term": "pageId",
+          "occurrence_count": 7,
+          "occurrences": [
+            {
+              "offset": 2534,
+              "context": "dReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?"
+            },
+            {
+              "offset": 2806,
+              "context": "r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0p"
+            },
+            {
+              "offset": 4821,
+              "context": "vertical-align: middle;\",bodyLink:function(A){var B=A.destFilePath;var D=A.disclosureTitle+A.disclosurePostTitle;var C=A.fileExt;return'<a target=\"_blank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.t"
+            },
+            {
+              "offset": 4996,
+              "context": "c = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hi"
+            },
+            {
+              "offset": 5432,
+              "context": "1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "pageNum",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 2815,
+              "context": "=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{bodyLink:function(A){var B=A.companyCd;if(!f.neeqStartsWith(B,\"404\")){return'<a href=\"'+x+\"?companyCode=\"+B+'&typename=L\" target=\"_blank\">'+B+\"</a>\"}else{return'<a href=\"'+q+\"?Code=\"+B+'\" target=\"_blank\">'+B+\"</a>\"}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLi"
+            },
+            {
+              "offset": 5005,
+              "context": "C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};"
+            }
+          ]
+        },
+        {
+          "term": "totalElements",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 5876,
+              "context": ".makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5970,
+              "context": "\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "listInfo",
+          "occurrence_count": 5,
+          "occurrences": [
+            {
+              "offset": 5676,
+              "context": "companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5729,
+              "context": "\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5867,
+              "context": "\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5933,
+              "context": "\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5961,
+              "context": "ype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "defaultParams",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 5370,
+              "context": "ntroller/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5760,
+              "context": "l:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "pagination",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 258,
+              "context": "requirejs([\"jquery\",\"neeqDT\",\"util\",\"neeqTag\",\"picker\",\"bootstrap\",\"suggest\",\"neeqSD\",\"placeholder\",\"css!\"+settingObj.baseUrl+\"css/components/common/common\"+(!_compress?\"\":\".min\"),\"css!\"+settingObj.baseUrl+\"css/disclosure/disclosure\"+(!_compress?\"\":\".min\"),\"pagination\"],function(l,c,f,i){var g=\"Records within one year can be queried only\";var a=d(\"isDelist\");n();function m(){var r=new Date();var q=\"-\";var t=r.getFullYear();var v=r.getMonth()+1;var u=r.getDate();if(v>=1&&v<=9){v=\"0\"+v}if(u>=0&&u<=9){u=\"0\"+u}var s=t+q+v+q+u;return s}function p(r){var x=new Date();var s=new Date(x);s.setDate(x.getDate()-r);var q=\"-\";var t=s.getFullYear();var w=s.getMonth()+1;var v=s.getDate();if(w>=1&&w<=9){w=\"0\"+w}if(v>=0&&v<=9){v=\"0\"+v}var u=t+q+w+q+v;return u}function h(t,v){var u=\"-\";var s;var r;var x;t=t==null?\"\":t;v=v==null?\"\":v;s=t.split(u);r=v.split(u);var w=new Date(s[0],s[1],s[2]);var q=new Date(r[0],r[1],r[2]);x=parseInt(Math.abs(w-q)/1000/60/60/24);return x}function k(q){if(q==undefined){return\"\"}else{return q}}function b(q){if(q==\"doc\"||q==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(q==\"xls\"||q==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(q==\"ppt\"||q==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(q==\"pdf\"){return settingObj.baseUrl+\"img/common/"
+            },
+            {
+              "offset": 5945,
+              "context": "w.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "ajax",
+          "occurrence_count": 4,
+          "occurrences": [
+            {
+              "offset": 2336,
+              "context": "{return false}else{return true}}function e(){l(\"#searchMarkerInfo\").click(function(){var u=l(\"#companyCode\").val();if(u!=\"\"){u=l.trim(u);l(\"#companyCode\").val(u)}var s=l(\"#keyword\").val();s=f.keywordReg(s);if(s==-1){l(\"#keyword\").val(\"\");return}if(s){l(\"#keyword\").val(s)}var v=i.getValue();var r=l(\"body\").data(\"currentPageObj\");r.companyCd=l(\"#companyCode\").val();r.startTime=l(\"input[name='date']\").data(\"startTime\");r.endTime=l(\"input[name='date']\").data(\"endTime\");r.keyword=s;l(\"#tips\").html(\"\");var t=l(\"#table\").data(\"params\");var q=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];t.ajax[\"data\"]={flag:1,disclosureType:v[0].distype,page:0,companyCd:r.companyCd,isNewThree:0,startTime:r.startTime,endTime:r.endTime,keyword:r.keyword,needFields:q};t.cacheObj.lastPageId=0;t.cacheObj.pageId=0;c.init(t)});f.companyCode(l(\"#companyCode\"),function(q){if(q.keyCode==13){l(\".go\").trigger(\"click\")}});l(\"#keyword\").keydown(function(q){if(q.keyCode==13){l(\".go\").click()}})}function n(){l(\"#tips\").html(a==\"1\"?\"\":\"默认展示最近一年的公告。\");l(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:5,companyCd:\"\",sartTime:\"\",endTime:\"\",keyword:\"\"});var y=l(\"body\").data(\"currentPageObj\");var z=d(\"companyCode\");var v={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!z){}f.picker(\"input[name='date']\",v);var x=l(\"#general_information_2\").val();var q=l(\"#bond_information_delist_url\").val();var r=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;w"
+            },
+            {
+              "offset": 4680,
+              "context": "\" href =\"'+B+'\">'+C+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(A){var B=A.destFilePath;var D=A.disclosureTitle+A.disclosurePostTitle;var C=A.fileExt;return'<a target=\"_blank\" href=\"'+B+'\"><img src = \"'+b(C)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var t=i.getValue();var w=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"fileExt\"];var u={container:l(\"#table\"),headerColumns:r,paging:{show_first_end:false,show_go_to:false},data:[],ajax:{type:\"post\",url:\"/disclosureInfoController/infoResult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listI"
+            },
+            {
+              "offset": 5386,
+              "context": "ult_en.do\",dataType:\"jsonp\",data:{flag:a==\"1\"?1:0,disclosureType:t[0].distype,page:y.pageId,companyCd:z,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            },
+            {
+              "offset": 5774,
+              "context": "abel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        },
+        {
+          "term": "exchangeData",
+          "occurrence_count": 1,
+          "occurrences": [
+            {
+              "offset": 5604,
+              "context": "eyword:y.keyword,needFields:w}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function s(B){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=B;var A=window.neeqDT.defaultParams;A.ajax.data={disclosureType:t[0].distype,page:y.pageId,companyCd:y.companyCd,isNewThree:0,startTime:l(\"input[name='date']\").data(\"startTime\"),endTime:l(\"input[name='date']\").data(\"endTime\"),keyword:y.keyword};c.init(A)},exchangeData:function(E,C,F,B){var G=window.makerObj.pageId;E.data=C[0].listInfo.content;window.makerObj.pageId=G;var D=C[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=G;var A=F(D,r,E);l(\"#table\").empty().append(A);if(E.paging.isPagination&&C[0].listInfo.totalElements>20){B.show();var H=new Array();H.push(C[0].listInfo);B.pagination(C[0].listInfo.totalElements,window.defaultPaginationParams(H))}else{if(B instanceof jQuery){B.hide()}}}}};c.init(u);l(\"#table\").data(\"params\",u);e();if(z!=\"\"&&z!=undefined&&z!=\"undefined\"){l(\"#companyCode\").val(z);l(\"#searchMarkerInfo\").click()}}});"
+            }
+          ]
+        }
+      ],
+      "candidate_count": 1
+    },
+    {
+      "source_id": "neeq",
+      "script_url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/list_company_2.min.js",
+      "status_code": 200,
+      "content_type": "application/javascript",
+      "content_length": 18658,
+      "content_sha256": "978d2e21d52ae2610324a230192c229deea93d56312ec6b1d3b665e8df86fe06",
+      "endpoint_candidates": [
+        "/disclosureInfoController/companyAnnouncement.do"
+      ],
+      "endpoint_contexts": [
+        {
+          "endpoint": "/disclosureInfoController/companyAnnouncement.do",
+          "occurrence_count": 1,
+          "occurrences": [
+            {
+              "offset": 11657,
+              "context": "'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+e+\"?companyCode=\"+R+\"&typename=\"+Q+\"&xxfcbj=\"+O+'\" target=\"_blank\">'+R+\"</a>\"}else{if(O==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy."
+            }
+          ]
+        }
+      ],
+      "term_contexts": [
+        {
+          "term": "noticeType",
+          "occurrence_count": 1,
+          "occurrences": [
+            {
+              "offset": 11345,
+              "context": "ilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}fu"
+            }
+          ]
+        },
+        {
+          "term": "disclosureType",
+          "occurrence_count": 4,
+          "occurrences": [
+            {
+              "offset": 11358,
+              "context": "e=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for"
+            },
+            {
+              "offset": 12823,
+              "context": "nstanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+e+\"?companyCode=\"+R+\"&typename=\"+Q+\"&xxfcbj=\"+O+'\" target=\"_blank\">'+R+\"</a>\"}else{if(O==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/list"
+            },
+            {
+              "offset": 15898,
+              "context": "dle;vertical-align: top;padding-top:15px;\",bodyLink:function(P){var Q=\"\";var O=P.publishDate;return'<div style=\"margin-bottom: 15px\">'+O+\"</div>\"}}}];var I=c.getValue();var L=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}"
+            },
+            {
+              "offset": 16562,
+              "context": ":I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.pu"
+            }
+          ]
+        },
+        {
+          "term": "disclosureSubtype",
+          "occurrence_count": 4,
+          "occurrences": [
+            {
+              "offset": 11375,
+              "context": "tle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;"
+            },
+            {
+              "offset": 12841,
+              "context": "ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+e+\"?companyCode=\"+R+\"&typename=\"+Q+\"&xxfcbj=\"+O+'\" target=\"_blank\">'+R+\"</a>\"}else{if(O==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png"
+            },
+            {
+              "offset": 15926,
+              "context": "ing-top:15px;\",bodyLink:function(P){var Q=\"\";var O=P.publishDate;return'<div style=\"margin-bottom: 15px\">'+O+\"</div>\"}}}];var I=c.getValue();var L=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerOb"
+            },
+            {
+              "offset": 16590,
+              "context": "ype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U."
+            }
+          ]
+        },
+        {
+          "term": "companyCd",
+          "occurrence_count": 16,
+          "occurrences": [
+            {
+              "offset": 8208,
+              "context": "ngObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J|"
+            },
+            {
+              "offset": 9342,
+              "context": "se{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_b"
+            },
+            {
+              "offset": 9599,
+              "context": "it(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\","
+            },
+            {
+              "offset": 9739,
+              "context": "var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+"
+            },
+            {
+              "offset": 11431,
+              "context": "f =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.sp"
+            }
+          ]
+        },
+        {
+          "term": "companyCode",
+          "occurrence_count": 13,
+          "occurrences": [
+            {
+              "offset": 8081,
+              "context": "ate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I."
+            },
+            {
+              "offset": 8127,
+              "context": "\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K"
+            },
+            {
+              "offset": 8222,
+              "context": "\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,"
+            },
+            {
+              "offset": 10010,
+              "context": "yName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a targe"
+            },
+            {
+              "offset": 10197,
+              "context": "eral_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<"
+            }
+          ]
+        },
+        {
+          "term": "startTime",
+          "occurrence_count": 12,
+          "occurrences": [
+            {
+              "offset": 6467,
+              "context": "fancytree-Cb3-\"});(function(){var e={level1:[],level2:[]};d(\"#tree\").fancytree(\"getTree\").visit(function(G){var H=G.getLevel();e[\"level\"+H].push(G)});d(\"#tree\").data(\"nodeMap\",e);d(\"#tree > ul > li > span .fancytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e"
+            },
+            {
+              "offset": 6612,
+              "context": "G)});d(\"#tree\").data(\"nodeMap\",e);d(\"#tree > ul > li > span .fancytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png"
+            },
+            {
+              "offset": 6637,
+              "context": "eMap\",e);d(\"#tree > ul > li > span .fancytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"p"
+            },
+            {
+              "offset": 8244,
+              "context": "}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj"
+            },
+            {
+              "offset": 8284,
+              "context": "tingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"c"
+            }
+          ]
+        },
+        {
+          "term": "endTime",
+          "occurrence_count": 13,
+          "occurrences": [
+            {
+              "offset": 6543,
+              "context": "ee(\"getTree\").visit(function(G){var H=G.getLevel();e[\"level\"+H].push(G)});d(\"#tree\").data(\"nodeMap\",e);d(\"#tree > ul > li > span .fancytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{"
+            },
+            {
+              "offset": 6652,
+              "context": "ee > ul > li > span .fancytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return "
+            },
+            {
+              "offset": 6675,
+              "context": "ncytree-title\").trigger(\"click\");d(\".fancytree-active\").removeClass(\"fancytree-active\");d(\".fancytree-focused\").removeClass(\"fancytree-focused\")})()}function i(e){var G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img"
+            },
+            {
+              "offset": 6840,
+              "context": "r G=new RegExp(\"(^|&)\"+e+\"=([^&]*)(&|$)\",\"i\");var I=decodeURI(window.location.search);var H=I.substr(1).match(G);if(H!=null){return unescape(H[2])}return null}function C(e){return e<10?\"0\"+e:e}function t(){var I=new Date();var e=new Date(I.getTime()-24*60*60*1000*30);makerObj.startTime=e.getFullYear()+\"-\"+C(e.getMonth()+1)+\"-\"+C(e.getDate());makerObj.endTime=I.getFullYear()+\"-\"+C(I.getMonth()+1)+\"-\"+C(I.getDate());d(\"#startTime\").val(makerObj.startTime);d(\"#endTime\").val(makerObj.endTime);var H=new Date(I.getTime()-24*60*60*1000*365);var G=H.getFullYear()+\"-\"+C(H.getMonth()+1)+\"-\"+C(H.getDate());d(\"#twoStartDate\").val(G);d(\"#twoEndDate\").val(endTime)}function s(I,K){var J=\"-\";var H;var G;var M;I=I==null?\"\":I;K=K==null?\"\":K;H=I.split(J);G=K.split(J);var L=new Date(H[0],H[1]-1,H[2]);var e=new Date(G[0],G[1]-1,G[2]);M=parseInt(Math.abs(L-e)/1000/60/60/24);return M}function h(e){if(e==undefined){return\"\"}else{return e}}function g(){var G=new Date();var e=\"-\";var I=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var H=I+e+K+e+J;return H}function o(){var L=new Date();var G=new Date(L);G.setDate(L.getDate()-182);var e=\"-\";var H=G.getFullYear();var K=G.getMonth()+1;var J=G.getDate();if(K>=1&&K<=9){K=\"0\"+K}if(J>=0&&J<=9){J=\"0\"+J}var I=H+e+K+e+J;return I}function a(e){if(e==\"doc\"||e==\"docx\"){return settingObj.baseUrl+\"img/common/wpic4.png\"}else{if(e==\"xls\"||e==\"xlsx\"){return settingObj.baseUrl+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myM"
+            },
+            {
+              "offset": 8298,
+              "context": "l+\"img/common/wpic2.png\"}else{if(e==\"ppt\"||e==\"pptx\"){return settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"c"
+            }
+          ]
+        },
+        {
+          "term": "keyword",
+          "occurrence_count": 13,
+          "occurrences": [
+            {
+              "offset": 8357,
+              "context": "n settingObj.baseUrl+\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFi"
+            },
+            {
+              "offset": 8378,
+              "context": "\"img/common/wpic3.png\"}else{if(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\""
+            },
+            {
+              "offset": 8408,
+              "context": "(e==\"pdf\"){return settingObj.baseUrl+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"file"
+            },
+            {
+              "offset": 8444,
+              "context": "+\"img/common/wpic1.png\"}else{return settingObj.baseUrl+\"img/common/wpic5.png\"}}}}}function D(e){d(\"#myModal\").modal(\"toggle\");d(\".modal-body\").html(e)}function A(e){if(typeof e==\"undefined\"||e==null||e==\"\"){return false}else{return true}}function z(){d(\".go\").click(function(){var e=d(\"#companyCode\").val();if(e!=\"\"){e=d.trim(e);d(\"#companyCode\").val(e)}var Q=c.getValue();var O=d(\"body\").data(\"currentPageObj\");O.companyCd=d(\"#companyCode\").val();O.startTime=d(\"input[name='date']\").data(\"startTime\");O.endTime=d(\"input[name='date']\").data(\"endTime\");var ab=d(\"#keyword\").val();ab=l.keywordReg(ab);if(ab==-1){d(\"#keyword\").val(\"\");return}if(ab){d(\"#keyword\").val(ab)}var X=false;var J=[];var K=[];var W=d(\".select_conditions:eq(1) > span\");var N=Q[0].distype;if(N!=null&&N.length>0){for(var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").dat"
+            },
+            {
+              "offset": 9232,
+              "context": "var U=0;U<N.length;U++){var V=N[U]+\"\";if(V.indexOf(\"0:\")==0){var R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2"
+            }
+          ]
+        },
+        {
+          "term": "xxfcbj",
+          "occurrence_count": 18,
+          "occurrences": [
+            {
+              "offset": 444,
+              "context": "requirejs([\"jquery\",\"neeqDT\",\"util\",\"neeqTag\",\"fancytree\",\"picker\",\"bootstrap\",\"suggest\",\"neeqSD\",,\"css!\"+settingObj.baseUrl+\"css/components/common/common\"+(!_compress?\"\":\".min\"),\"css!\"+settingObj.baseUrl+\"css/disclosure/disclosure\"+(!_compress?\"\":\".min\"),,\"css!\"+settingObj.baseUrl+\"css/disclosure/list_company_2\"+(!_compress?\"\":\".min\"),\"pagination\"],function(d,w,l,c,f){var F=null;var x=[];var q=[];B();function p(){var e=[{name:\"市场分层\",code:\"xxfcbj\",values:[{name:\"全部\",isAll:true,dvalue:\"3\"},{name:\"创新层\",dvalue:\"1\",isAll:false},{name:\"基础层\",dvalue:\"0\",isAll:false}]}];return e}function u(){var e=[{name:\"公告类型\",code:\"gglx\",values:[{name:\"全部\",isAll:true,dvalue:\"\"}]}];return e}function k(){console.log(\"树形结构初始化\");d.ajax({url:\"/screening/advanced.do\",type:\"post\",dataType:\"jsonp\",asyn:false,success:function(U){var N=U[0].list;F=N;for(var H=0;H<N.length;H++){var O=H+1;var M,L;if(O>=10){M=parseInt(O)}else{M=\"0\"+parseInt(O)}var I={};var J=[];var T=N[H].title;var G=N[H].datebaseNumber;var S=N[H].businessNumber;var P=N[H].title;x.push(T);I.title=S+x[H];I.key=0+\":\"+G;I.expanded=false;I.unselectable=false;var e=N[H].sonList;for(n=0;n<e.length;n++){var R={};var Q=e[n].datebaseNumber;R.title=e[n].businessNumber+\" \"+e[n].title;R.unselectable=false;R.key=1+\":\"+Q;J.push(R)}I.children=J;q.push(I)}j()},error:function(e){console.log(\"查询公告分类出错！\")}})}function b(){d.ajax({url:\"/disclosureInfoController/disclosure_hy.do\",data:{type:1,neeqhyfl:\"1\"},dataType:\"jsonp\",asyn:false,success:function(e){v(e);data=e}"
+            },
+            {
+              "offset": 9297,
+              "context": "R=V.split(\":\")[1].split(\"*\");J=J.concat(R)}else{if(V.indexOf(\"1:\")==0){var aa=V.split(\":\")[1].split(\"*\");K=K.concat(aa)}else{if(V==\"5\"){J.push(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode="
+            },
+            {
+              "offset": 9437,
+              "context": "sh(V)}}}}}if(J==null||J.length==0){var T=d(\"#tree\").data(\"select0Values\");if(T!=null&&T.length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:1"
+            },
+            {
+              "offset": 9722,
+              "context": "ll||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" "
+            },
+            {
+              "offset": 10045,
+              "context": "ePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"text-align:left;padding-top: 0px;\",bodyLink:function(ac){var ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img "
+            }
+          ]
+        },
+        {
+          "term": "hyType",
+          "occurrence_count": 5,
+          "occurrences": [
+            {
+              "offset": 11533,
+              "context": "fs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}funct"
+            },
+            {
+              "offset": 11545,
+              "context": ":\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#"
+            },
+            {
+              "offset": 12920,
+              "context": "),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+e+\"?companyCode=\"+R+\"&typename=\"+Q+\"&xxfcbj=\"+O+'\" target=\"_blank\">'+R+\"</a>\"}else{if(O==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+e+\"?companyCode=\"+R+\"&typename=\"+Q+\"&xxfcbj=\"+O+"
+            },
+            {
+              "offset": 16104,
+              "context": "closureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W."
+            },
+            {
+              "offset": 16116,
+              "context": "\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalEl"
+            }
+          ]
+        },
+        {
+          "term": "needFields",
+          "occurrence_count": 3,
+          "occurrences": [
+            {
+              "offset": 11552,
+              "context": "adLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html"
+            },
+            {
+              "offset": 16136,
+              "context": "le\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var "
+            },
+            {
+              "offset": 16737,
+              "context": "eyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K"
+            }
+          ]
+        },
+        {
+          "term": "siteId",
+          "occurrence_count": 1,
+          "occurrences": [
+            {
+              "offset": 11565,
+              "context": "le:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一"
+            }
+          ]
+        },
+        {
+          "term": "pageId",
+          "occurrence_count": 10,
+          "occurrences": [
+            {
+              "offset": 9524,
+              "context": ".length>0){X=true;for(var U=0;U<T.length;U++){J.push(T[U].split(\":\")[1].split(\"_\")[0])}}}if(d(\".select_conditions:eq(1) > span\").hasClass(\"span_choose\")){d(\"#tree\").data(\"select1Values\",\"\")}if(K==null||K.length==0){var I=d(\"#tree\").data(\"select1Values\");if(I!=null&&I.length>0){X=true;for(var U=0;U<I.length;U++){K.push(I[U].split(\":\")[1].split(\"_\")[0])}}}O.keyword=ab;d(\"#tips\").html(\"\");J=J||[];K=K||[];r(J,K);var Z=Q[0].xxfcbj;var G=[\"3\"];if(Z[0]===\"\"){Z=G}var H=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var P=d(\"#table\").data(\"params\");P.cacheObj.pageId=\"\";var L=d(\"#general_information_1\").val();var S=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",bodyLink:function(ad){var ac=ad.xxfcbj;var af=ad.companyCd;var ae=\"J\";console.log(ad.xxzrlx);if(ad.xxzrlx&&ad.xxzrlx==\"C\"){ae=\"J\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"M\"){ae=\"Z\"}else{if(ad.xxzrlx&&ad.xxzrlx==\"B\"){ae=\"C\"}}}if(ac==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"1\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-cy.png\" alt=\"\"><a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}else{if(ac==\"2\"){return\"<a>\"+af+\"</a>\"}else{return'<a href=\"'+L+\"?companyCode=\"+af+\"&typename=\"+ae+\"&xxfcbj=\"+ac+'\" target=\"_blank\">'+af+\"</a>\"}}}}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:15%\">',},{title:\"标题\",data:\"disclosureTitle\",diyTh:'<th style=\"height:50px;width:52%\">',c"
+            },
+            {
+              "offset": 11424,
+              "context": "nk\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push("
+            },
+            {
+              "offset": 11779,
+              "context": ",{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureTy"
+            },
+            {
+              "offset": 11833,
+              "context": "ht:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",e"
+            },
+            {
+              "offset": 12663,
+              "context": "talElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico"
+            }
+          ]
+        },
+        {
+          "term": "pageNum",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 12672,
+              "context": "ts>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};if(!N){}l.picker(\"input[name='date']\",K);k();b();var e=d(\"#general_information_1\").val();var G=[{title:\"代码\",data:\"companyCd\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: top;padding-top:15px;\",bodyLink:function(P){var O=\"\";var R=P.companyCd;var Q=\"J\";console.log(P.xxzrlx);if(P.xxzrlx&&P.xxzrlx==\"C\"){Q=\"J\"}else{if(P.xxzrlx&&P.xxzrlx==\"M\"){Q=\"Z\"}else{if(P.xxzrlx&&P.xxzrlx==\"B\"){Q=\"C\"}}}if(P.xxfcbj){O=P.xxfcbj;if(O==\"0\"){return'<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-jj.png\" a"
+            },
+            {
+              "offset": 16170,
+              "context": "xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P."
+            }
+          ]
+        },
+        {
+          "term": "totalElements",
+          "occurrence_count": 6,
+          "occurrences": [
+            {
+              "offset": 12011,
+              "context": "closureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click("
+            },
+            {
+              "offset": 12111,
+              "context": "ee:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"cente"
+            },
+            {
+              "offset": 15764,
+              "context": "tle:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;vertical-align: top;padding-top:15px;\",bodyLink:function(P){var Q=\"\";var O=P.publishDate;return'<div style=\"margin-bottom: 15px\">'+O+\"</div>\"}}}];var I=c.getValue();var L=[\"companyCd\",\"companyName\",\"disclosureTitle\",\"disclosurePostTitle\",\"destFilePath\",\"publishDate\",\"xxfcbj\",\"destFilePath\",\"fileExt\",\"xxzrlx\"];var J={container:d(\"#table\"),headerColumns:G,data:[],paging:{show_first_end:false,show_go_to:false,custom_total_tips:function(){var P=d(\"#table\").data(\"resultData\")||{content:[{}]};var O=P.content[0][\"totalElements\"]||0;return\"查询到\"+O+\"条\"}},ajax:{type:\"post\",url:\"/disclosureInfoController/initDisclosureList.do\",dataType:\"jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U"
+            },
+            {
+              "offset": 16943,
+              "context": ":\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K];var H=I.companyCd+I.publishDate;var M=G[H];if(!M&&M!==0){M=J.length;J.push([]);G[H]=M}var N=J[M];N.push(I)}J.sort(function(R,Q){return e(R,Q)});for(var P in J){var N=J[P];if(N!=null&&N.length>0){O=O.concat(N"
+            },
+            {
+              "offset": 17165,
+              "context": "var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K];var H=I.companyCd+I.publishDate;var M=G[H];if(!M&&M!==0){M=J.length;J.push([]);G[H]=M}var N=J[M];N.push(I)}J.sort(function(R,Q){return e(R,Q)});for(var P in J){var N=J[P];if(N!=null&&N.length>0){O=O.concat(N)}}return O}d(document).on(\"click\",\".select_conditions[code='distype']>span\",function(){d(\".numb\").text(\"高级筛选(0)\");d(\"#tree\").data(\"select0Values\",[]);d(\"#tree\").data(\"select1Values\",[]);d(\"#tree\").data(\"select2Values\",[])"
+            }
+          ]
+        },
+        {
+          "term": "listInfo",
+          "occurrence_count": 5,
+          "occurrences": [
+            {
+              "offset": 11800,
+              "context": "blishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype"
+            },
+            {
+              "offset": 11856,
+              "context": "var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfc"
+            },
+            {
+              "offset": 12002,
+              "context": "ype:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d"
+            },
+            {
+              "offset": 12072,
+              "context": "O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePic"
+            },
+            {
+              "offset": 12102,
+              "context": ",isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:fals"
+            }
+          ]
+        },
+        {
+          "term": "defaultParams",
+          "occurrence_count": 3,
+          "occurrences": [
+            {
+              "offset": 11887,
+              "context": "type\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").da"
+            },
+            {
+              "offset": 16535,
+              "context": "jsonp\",data:{disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:N,isNewThree:1,startTime:d(\"input[name='date']\").data(\"startTime\"),endTime:d(\"input[name='date']\").data(\"endTime\"),keyword:M.keyword,hyType:I[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}"
+            },
+            {
+              "offset": 17056,
+              "context": "ype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K];var H=I.companyCd+I.publishDate;var M=G[H];if(!M&&M!==0){M=J.length;J.push([]);G[H]=M}var N=J[M];N.push(I)}J.sort(function(R,Q){return e(R,Q)});for(var P in J){var N=J[P];if(N!=null&&N.length>0){O=O.concat(N)}}return O}d(document).on(\"click\",\".select_conditions[code='distype']>span\",function(){d(\".numb\").text(\"高级筛选(0)\""
+            }
+          ]
+        },
+        {
+          "term": "pagination",
+          "occurrence_count": 3,
+          "occurrences": [
+            {
+              "offset": 339,
+              "context": "requirejs([\"jquery\",\"neeqDT\",\"util\",\"neeqTag\",\"fancytree\",\"picker\",\"bootstrap\",\"suggest\",\"neeqSD\",,\"css!\"+settingObj.baseUrl+\"css/components/common/common\"+(!_compress?\"\":\".min\"),\"css!\"+settingObj.baseUrl+\"css/disclosure/disclosure\"+(!_compress?\"\":\".min\"),,\"css!\"+settingObj.baseUrl+\"css/disclosure/list_company_2\"+(!_compress?\"\":\".min\"),\"pagination\"],function(d,w,l,c,f){var F=null;var x=[];var q=[];B();function p(){var e=[{name:\"市场分层\",code:\"xxfcbj\",values:[{name:\"全部\",isAll:true,dvalue:\"3\"},{name:\"创新层\",dvalue:\"1\",isAll:false},{name:\"基础层\",dvalue:\"0\",isAll:false}]}];return e}function u(){var e=[{name:\"公告类型\",code:\"gglx\",values:[{name:\"全部\",isAll:true,dvalue:\"\"}]}];return e}function k(){console.log(\"树形结构初始化\");d.ajax({url:\"/screening/advanced.do\",type:\"post\",dataType:\"jsonp\",asyn:false,success:function(U){var N=U[0].list;F=N;for(var H=0;H<N.length;H++){var O=H+1;var M,L;if(O>=10){M=parseInt(O)}else{M=\"0\"+parseInt(O)}var I={};var J=[];var T=N[H].title;var G=N[H].datebaseNumber;var S=N[H].businessNumber;var P=N[H].title;x.push(T);I.title=S+x[H];I.key=0+\":\"+G;I.expanded=false;I.unselectable=false;var e=N[H].sonList;for(n=0;n<e.length;n++){var R={};var Q=e[n].datebaseNumber;R.title=e[n].businessNumber+\" \"+e[n].title;R.unselectable=false;R.key=1+\":\"+Q;J.push(R)}I.children=J;q.push(I)}j()},error:function(e){console.log(\"查询公告分类出错！\")}})}function b(){d.ajax({url:\"/disclosureInfoController/disc"
+            },
+            {
+              "offset": 12085,
+              "context": "anyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\",disclosureType:\"\",disclosureSubtype:\"\",companyCd:\"\",startTime:\"\",endTime:\"\",keyword:\"\",xxfcbj:\"\",hyType:\"\"});var M=d(\"body\").data(\"currentPageObj\");var N=i(\"companyCode\");if(N!=\"\"&&N!=undefined&&N!=\"undefined\"){d(\"#companyCode\").val(N);d(\".go\").click()}var K={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,"
+            },
+            {
+              "offset": 17227,
+              "context": "I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K];var H=I.companyCd+I.publishDate;var M=G[H];if(!M&&M!==0){M=J.length;J.push([]);G[H]=M}var N=J[M];N.push(I)}J.sort(function(R,Q){return e(R,Q)});for(var P in J){var N=J[P];if(N!=null&&N.length>0){O=O.concat(N)}}return O}d(document).on(\"click\",\".select_conditions[code='distype']>span\",function(){d(\".numb\").text(\"高级筛选(0)\");d(\"#tree\").data(\"select0Values\",[]);d(\"#tree\").data(\"select1Values\",[]);d(\"#tree\").data(\"select2Values\",[]);d(\"#tree\").fancytree(\"getTree\").visit(function(e){e.setSel"
+            }
+          ]
+        },
+        {
+          "term": "ajax",
+          "occurrence_count": 9,
+          "occurrences": [
+            {
+              "offset": 714,
+              "context": "r\",\"bootstrap\",\"suggest\",\"neeqSD\",,\"css!\"+settingObj.baseUrl+\"css/components/common/common\"+(!_compress?\"\":\".min\"),\"css!\"+settingObj.baseUrl+\"css/disclosure/disclosure\"+(!_compress?\"\":\".min\"),,\"css!\"+settingObj.baseUrl+\"css/disclosure/list_company_2\"+(!_compress?\"\":\".min\"),\"pagination\"],function(d,w,l,c,f){var F=null;var x=[];var q=[];B();function p(){var e=[{name:\"市场分层\",code:\"xxfcbj\",values:[{name:\"全部\",isAll:true,dvalue:\"3\"},{name:\"创新层\",dvalue:\"1\",isAll:false},{name:\"基础层\",dvalue:\"0\",isAll:false}]}];return e}function u(){var e=[{name:\"公告类型\",code:\"gglx\",values:[{name:\"全部\",isAll:true,dvalue:\"\"}]}];return e}function k(){console.log(\"树形结构初始化\");d.ajax({url:\"/screening/advanced.do\",type:\"post\",dataType:\"jsonp\",asyn:false,success:function(U){var N=U[0].list;F=N;for(var H=0;H<N.length;H++){var O=H+1;var M,L;if(O>=10){M=parseInt(O)}else{M=\"0\"+parseInt(O)}var I={};var J=[];var T=N[H].title;var G=N[H].datebaseNumber;var S=N[H].businessNumber;var P=N[H].title;x.push(T);I.title=S+x[H];I.key=0+\":\"+G;I.expanded=false;I.unselectable=false;var e=N[H].sonList;for(n=0;n<e.length;n++){var R={};var Q=e[n].datebaseNumber;R.title=e[n].businessNumber+\" \"+e[n].title;R.unselectable=false;R.key=1+\":\"+Q;J.push(R)}I.children=J;q.push(I)}j()},error:function(e){console.log(\"查询公告分类出错！\")}})}function b(){d.ajax({url:\"/disclosureInfoController/disclosure_hy.do\",data:{type:1,neeqhyfl:\"1\"},dataType:\"jsonp\",asyn:false,success:function(e){v(e);data=e}})}var y=null;try{y=l.scroll(\".modal-header >.modal-selected\")}catch(E){}function v(e){d.ajax({url:\"/disclosureInfoController/disclosure_type.do\",data:{type:1},dataType:\"jsonp\",asyn:false,success:function(G){for(var I=0;I<G[0].values.length;I++){if(G[0].values[I].dval"
+            },
+            {
+              "offset": 1358,
+              "context": "化\");d.ajax({url:\"/screening/advanced.do\",type:\"post\",dataType:\"jsonp\",asyn:false,success:function(U){var N=U[0].list;F=N;for(var H=0;H<N.length;H++){var O=H+1;var M,L;if(O>=10){M=parseInt(O)}else{M=\"0\"+parseInt(O)}var I={};var J=[];var T=N[H].title;var G=N[H].datebaseNumber;var S=N[H].businessNumber;var P=N[H].title;x.push(T);I.title=S+x[H];I.key=0+\":\"+G;I.expanded=false;I.unselectable=false;var e=N[H].sonList;for(n=0;n<e.length;n++){var R={};var Q=e[n].datebaseNumber;R.title=e[n].businessNumber+\" \"+e[n].title;R.unselectable=false;R.key=1+\":\"+Q;J.push(R)}I.children=J;q.push(I)}j()},error:function(e){console.log(\"查询公告分类出错！\")}})}function b(){d.ajax({url:\"/disclosureInfoController/disclosure_hy.do\",data:{type:1,neeqhyfl:\"1\"},dataType:\"jsonp\",asyn:false,success:function(e){v(e);data=e}})}var y=null;try{y=l.scroll(\".modal-header >.modal-selected\")}catch(E){}function v(e){d.ajax({url:\"/disclosureInfoController/disclosure_type.do\",data:{type:1},dataType:\"jsonp\",asyn:false,success:function(G){for(var I=0;I<G[0].values.length;I++){if(G[0].values[I].dvalue==\"10\"){G[0].values.splice(I,1)}}G[0][\"bilingualType\"]=\"AnnType\";G[0][\"events\"]={};var J=p();var H=\"<div class='gjsx'><a class='numb'>高级筛选(0)</a></div>\";e[0][\"bilingualType\"]=\"hy\";e[0][\"showSearch\"]=true;e[0][\"showAll\"]=false;e[0][\"defaultSelectIndex\"]=0;J=J.concat(G).concat(e);c.init(J);d(\".select_conditions:eq(1)\").append(H);d(\".gjsx\").css({display:\"inline-block\",position:\"absolute\",top:\"12px\",right:\"35px\",cursor:\"pointer\",color:\"red\"});d(\".allbtn\").click(function(){d(\"#tree\").fancytree(\"getTree\").visit(function(K){K.setSelected(false)});return false});j();d(\".clbtn\").on(\"click\",function(){d(\".modalFirst\").removeClass(\"in\");d(\".moda"
+            },
+            {
+              "offset": 1589,
+              "context": ";var T=N[H].title;var G=N[H].datebaseNumber;var S=N[H].businessNumber;var P=N[H].title;x.push(T);I.title=S+x[H];I.key=0+\":\"+G;I.expanded=false;I.unselectable=false;var e=N[H].sonList;for(n=0;n<e.length;n++){var R={};var Q=e[n].datebaseNumber;R.title=e[n].businessNumber+\" \"+e[n].title;R.unselectable=false;R.key=1+\":\"+Q;J.push(R)}I.children=J;q.push(I)}j()},error:function(e){console.log(\"查询公告分类出错！\")}})}function b(){d.ajax({url:\"/disclosureInfoController/disclosure_hy.do\",data:{type:1,neeqhyfl:\"1\"},dataType:\"jsonp\",asyn:false,success:function(e){v(e);data=e}})}var y=null;try{y=l.scroll(\".modal-header >.modal-selected\")}catch(E){}function v(e){d.ajax({url:\"/disclosureInfoController/disclosure_type.do\",data:{type:1},dataType:\"jsonp\",asyn:false,success:function(G){for(var I=0;I<G[0].values.length;I++){if(G[0].values[I].dvalue==\"10\"){G[0].values.splice(I,1)}}G[0][\"bilingualType\"]=\"AnnType\";G[0][\"events\"]={};var J=p();var H=\"<div class='gjsx'><a class='numb'>高级筛选(0)</a></div>\";e[0][\"bilingualType\"]=\"hy\";e[0][\"showSearch\"]=true;e[0][\"showAll\"]=false;e[0][\"defaultSelectIndex\"]=0;J=J.concat(G).concat(e);c.init(J);d(\".select_conditions:eq(1)\").append(H);d(\".gjsx\").css({display:\"inline-block\",position:\"absolute\",top:\"12px\",right:\"35px\",cursor:\"pointer\",color:\"red\"});d(\".allbtn\").click(function(){d(\"#tree\").fancytree(\"getTree\").visit(function(K){K.setSelected(false)});return false});j();d(\".clbtn\").on(\"click\",function(){d(\".modalFirst\").removeClass(\"in\");d(\".modalFirst\").css(\"display\",\"none\");setTimeout(function(){d(\"#tree\").fancytree(\"getTree\").selectAll(false);var M=d(\"#tree\").data(\"select2Values\")||[];var L=d(\"#tree\").data(\"select1Values\")||[];var O=d(\"#tree\").data(\"nodeMap\");if(M.lengt"
+            },
+            {
+              "offset": 11331,
+              "context": "ar ad=ac.destFilePath;var ae=ac.disclosureTitle+ac.disclosurePostTitle;return'<a target=\"_blank\" href =\"'+ad+'\">'+ae+\"</a>\"}}},{title:\"\",data:\"fileExt\",diyTh:'<th style=\"height:50px;width:8%\">',columnDefs:{sortable:\"\",theadLink:\"\",style:\"vertical-align: middle;\",bodyLink:function(ac){var ad=ac.destFilePath;var af=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d("
+            },
+            {
+              "offset": 11644,
+              "context": "f=ac.disclosureTitle+ac.disclosurePostTitle;var ae=ac.fileExt;return'<a target=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,compa"
+            }
+          ]
+        },
+        {
+          "term": "exchangeData",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 11719,
+              "context": "get=\"_blank\" href=\"'+ad+'\"><img src = \"'+a(ae)+'\" /></a>'}}},{title:\"日期\",data:\"publishDate\",diyTh:'<th style=\"height:50px;width:15%\">'}];var Y=[];if(!X){var M=Q[0][\"distype\"];for(var U=0;U<M.length;U++){Y.push((M[U]+\"\").replace(/\\*/g,\",\"))}}else{Y=J.concat(K)}P.ajax[\"data\"]={noticeType:Y,disclosureType:J,disclosureSubtype:K.toString().split(\",\"),page:O.pageId,companyCd:O.companyCd,isNewThree:1,startTime:O.startTime,endTime:O.endTime,keyword:O.keyword,xxfcbj:Z,hyType:Q[0].hyType,needFields:H,siteId:1};P.paging={show_first_end:false,show_go_to:false};P.headerColumns=S;P.ajax[\"url\"]=\"/disclosureInfoController/companyAnnouncement.do\";P.callback[\"exchangeData\"]=function(ag,ae,ah,ad){var ai=window.makerObj.pageId;ag.data=ae[0].listInfo.content;window.makerObj.pageId=ai;var af=ae[0].listInfo.content;window.neeqDT.defaultParams.ajax.data.page=ai;var ac=ah(af,S,ag);d(\"#table\").empty().append(ac);if(ag.paging.isPagination&&ae[0].listInfo.totalElements>20){ad.show();var aj=new Array();aj.push(ae[0].listInfo);ad.pagination(ae[0].listInfo.totalElements,window.defaultPaginationParams(aj))}else{if(ad instanceof jQuery){ad.hide()}}};P.cacheObj.lastPageId=0;w.init(P)});l.companyCode(d(\"#companyCode\"),function(G){if(G.keyCode==13){d(\".go\").trigger(\"click\")}});d(\"#keyword\").keydown(function(G){if(G.keyCode==13){d(\".go\").click()}})}function r(e,H){for(var G=0;G<e.length;G++){if(e[G].indexOf(\"-\")!=-1){H.push(e[G]);e.splice(G,1)}}for(var G=0;G<H.length;G++){if(H[G].indexOf(\"-\")==-1){e.push(H[G]);H.splice(G,1)}}}function B(){d(\"#tips\").html(\"默认展示最近一个月的公告。\");d(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"publish_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",lxsortL"
+            },
+            {
+              "offset": 16762,
+              "context": "[0].hyType,xxfcbj:[\"3\"],needFields:L}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"xxssdq\",sortInfo:\"\",sorttype:\"asc\",dmsortLabel:\"\",lxsortLabel:\"\",codesortLabel:\"\",makesortLabel:\"\"},callback:{sortable:function H(P){if(window.makerObj.sorttype==\"desc\"||window.makerObj.sorttype==\"DESC\"){window.makerObj.sorttype=\"asc\"}else{window.makerObj.sorttype=\"desc\"}window.makerObj.sortfield=P;var O=window.neeqDT.defaultParams;O.ajax.data={disclosureType:I[0].distype,disclosureSubtype:[],page:M.pageId,companyCd:M.companyCd,isNewThree:1,startTime:M.startTime,endTime:M.endTime,keyword:M.keyword,xxfcbj:I[0].xxfcbj,needFields:L};w.init(O)},exchangeData:function(O,W,V,P){var R=window.makerObj.pageId;var U=0;var S=[];if(W.data.content&&W.data.content.length>0){S=W.data.content[0][\"disclosures\"]||[];U=W.data.content[0][\"totalElements\"]||0}S=m(S);O.data=\"\";window.makerObj.pageId=R;d(\"#table\").data(\"resultData\",W.data);window.neeqDT.defaultParams.ajax.data.page=R;var T=V(S,G,O);d(\"#table\").empty().append(T);if(O.paging.isPagination&&W.data.totalElements>20){P.show();var Q=new Array();Q.push(W.data);P.pagination(W.data.totalElements,window.defaultPaginationParams(Q))}else{if(P instanceof jQuery){P.hide()}}}}};d(\"#table\").data(\"params\",J);w.init(J);z()}function m(L){function e(V,T){function Q(X,W,Y){if(X<W){return Y?1:-1}else{if(X>W){return Y?-1:1}else{return 0}}}var U=V[0];var S=T[0];if(U==null&&S==null){return 0}else{if(U==null){return -1}else{if(S==null){return 1}}}var R=Q(U.publishDate,S.publishDate,true);if(R==0){R=Q(U.upDate,S.upDate,true);if(R==0){R=Q(U.companyCd,S.companyCd,false)}}return R}var O=[];var J=[];var G={};for(var K=0;K<L.length;K++){var I=L[K];var H=I.companyCd+I.publi"
+            }
+          ]
+        }
+      ],
+      "candidate_count": 1
+    },
+    {
+      "source_id": "neeq",
+      "script_url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/main.min.js",
+      "status_code": 200,
+      "content_type": "application/javascript",
+      "content_length": 6738,
+      "content_sha256": "c85b559d1d9fc8fa63dd23ab32b3c28edf0ecdc751da2d03a36bd4e84816dd0d",
+      "endpoint_candidates": [],
+      "endpoint_contexts": [],
+      "term_contexts": [
+        {
+          "term": "pagination",
+          "occurrence_count": 8,
+          "occurrences": [
+            {
+              "offset": 1835,
+              "context": "ess?\"\":\".min\"),ztree_exedit:\"js/plugins/ztree/jquery.ztree.exedit\"+(!_compress?\"\":\".min\"),ztree_exhide:\"js/plugins/ztree/jquery.ztree.exhide\"+(!_compress?\"\":\".min\"),editor:\"js/plugins/kindeditor/kindeditor-all-min\"+(!_compress?\"\":\".min\"),\"datatables.net\":\"js/plugins/datatables/DataTables-1.10.18/js/jquery.dataTables\"+(!_compress?\"\":\".min\"),\"datatables.net-autofill\":\"js/plugins/datatables/AutoFill-2.3.0/js/dataTables.autoFill\"+(!_compress?\"\":\".min\"),select2:\"js/plugins/select/js/i18n/zh-CN\"+(!_compress?\"\":\".min\"),select2Language:\"js/plugins/select/js/select2.full\"+(!_compress?\"\":\".min\"),toastr:\"js/plugins/toastr/toastr\"+(!_compress?\"\":\".min\"),pagination:\"js/plugins/pagination/pagination\"+(!_compress?\"\":\".min\"),d3:\"js/plugins/d3/d3_v3\"+(!_compress?\"\":\".min\"),swiper:\"js/plugins/swiper/swiper\"+(!_compress?\"\":\".min\"),h2c:\"js/plugins/print/html2canvas\"+(!_compress?\"\":\".min\"),print:\"js/plugins/print/jQuery.print\"+(!_compress?\"\":\".min\"),fullcalendar:\"js/plugins/fullcalendar/fullcalendar\"+(!_compress?\"\":\".min\"),calendar:\"js/plugins/fullcalendar/locale-all\"+(!_compress?\"\":\".min\"),slider:\"js/plugins/slider/bootstrap-slider\"+(!_compress?\"\":\".min\"),modernizr:\"js/plugins/slider/modernizr\"+(!_compress?\"\":\".min\"),table:\"js/components/common/table\"+(!_compress?\"\":\".min\"),decimal:\"js/plugins/decimal/decimal\"+(!_compress?\"\":\".min\"),util:\"js/components/common/util\"+(!_compress?\"\":\".min\"),suggest:\"js/plugins/suggest/suggest\"+(!_compress?\"\":\".min\"),neeqDT:\"js/components/common/neeqDT\"+(!_compress?\"\":\".min\"),neeqZT:\"js/components/common/z-tree\"+(!_compress?\"\":\".min\"),neeqSD:\"js/components/common/side_bar_menu\"+(!_compress?\"\":\".min\"),neeqTag:\"js/components/common/neeqTag\"+(!_compress?\"\":\".min\"),fontsize:\""
+            },
+            {
+              "offset": 1858,
+              "context": "edit:\"js/plugins/ztree/jquery.ztree.exedit\"+(!_compress?\"\":\".min\"),ztree_exhide:\"js/plugins/ztree/jquery.ztree.exhide\"+(!_compress?\"\":\".min\"),editor:\"js/plugins/kindeditor/kindeditor-all-min\"+(!_compress?\"\":\".min\"),\"datatables.net\":\"js/plugins/datatables/DataTables-1.10.18/js/jquery.dataTables\"+(!_compress?\"\":\".min\"),\"datatables.net-autofill\":\"js/plugins/datatables/AutoFill-2.3.0/js/dataTables.autoFill\"+(!_compress?\"\":\".min\"),select2:\"js/plugins/select/js/i18n/zh-CN\"+(!_compress?\"\":\".min\"),select2Language:\"js/plugins/select/js/select2.full\"+(!_compress?\"\":\".min\"),toastr:\"js/plugins/toastr/toastr\"+(!_compress?\"\":\".min\"),pagination:\"js/plugins/pagination/pagination\"+(!_compress?\"\":\".min\"),d3:\"js/plugins/d3/d3_v3\"+(!_compress?\"\":\".min\"),swiper:\"js/plugins/swiper/swiper\"+(!_compress?\"\":\".min\"),h2c:\"js/plugins/print/html2canvas\"+(!_compress?\"\":\".min\"),print:\"js/plugins/print/jQuery.print\"+(!_compress?\"\":\".min\"),fullcalendar:\"js/plugins/fullcalendar/fullcalendar\"+(!_compress?\"\":\".min\"),calendar:\"js/plugins/fullcalendar/locale-all\"+(!_compress?\"\":\".min\"),slider:\"js/plugins/slider/bootstrap-slider\"+(!_compress?\"\":\".min\"),modernizr:\"js/plugins/slider/modernizr\"+(!_compress?\"\":\".min\"),table:\"js/components/common/table\"+(!_compress?\"\":\".min\"),decimal:\"js/plugins/decimal/decimal\"+(!_compress?\"\":\".min\"),util:\"js/components/common/util\"+(!_compress?\"\":\".min\"),suggest:\"js/plugins/suggest/suggest\"+(!_compress?\"\":\".min\"),neeqDT:\"js/components/common/neeqDT\"+(!_compress?\"\":\".min\"),neeqZT:\"js/components/common/z-tree\"+(!_compress?\"\":\".min\"),neeqSD:\"js/components/common/side_bar_menu\"+(!_compress?\"\":\".min\"),neeqTag:\"js/components/common/neeqTag\"+(!_compress?\"\":\".min\"),fontsize:\"js/components/common/fo"
+            },
+            {
+              "offset": 1869,
+              "context": "ugins/ztree/jquery.ztree.exedit\"+(!_compress?\"\":\".min\"),ztree_exhide:\"js/plugins/ztree/jquery.ztree.exhide\"+(!_compress?\"\":\".min\"),editor:\"js/plugins/kindeditor/kindeditor-all-min\"+(!_compress?\"\":\".min\"),\"datatables.net\":\"js/plugins/datatables/DataTables-1.10.18/js/jquery.dataTables\"+(!_compress?\"\":\".min\"),\"datatables.net-autofill\":\"js/plugins/datatables/AutoFill-2.3.0/js/dataTables.autoFill\"+(!_compress?\"\":\".min\"),select2:\"js/plugins/select/js/i18n/zh-CN\"+(!_compress?\"\":\".min\"),select2Language:\"js/plugins/select/js/select2.full\"+(!_compress?\"\":\".min\"),toastr:\"js/plugins/toastr/toastr\"+(!_compress?\"\":\".min\"),pagination:\"js/plugins/pagination/pagination\"+(!_compress?\"\":\".min\"),d3:\"js/plugins/d3/d3_v3\"+(!_compress?\"\":\".min\"),swiper:\"js/plugins/swiper/swiper\"+(!_compress?\"\":\".min\"),h2c:\"js/plugins/print/html2canvas\"+(!_compress?\"\":\".min\"),print:\"js/plugins/print/jQuery.print\"+(!_compress?\"\":\".min\"),fullcalendar:\"js/plugins/fullcalendar/fullcalendar\"+(!_compress?\"\":\".min\"),calendar:\"js/plugins/fullcalendar/locale-all\"+(!_compress?\"\":\".min\"),slider:\"js/plugins/slider/bootstrap-slider\"+(!_compress?\"\":\".min\"),modernizr:\"js/plugins/slider/modernizr\"+(!_compress?\"\":\".min\"),table:\"js/components/common/table\"+(!_compress?\"\":\".min\"),decimal:\"js/plugins/decimal/decimal\"+(!_compress?\"\":\".min\"),util:\"js/components/common/util\"+(!_compress?\"\":\".min\"),suggest:\"js/plugins/suggest/suggest\"+(!_compress?\"\":\".min\"),neeqDT:\"js/components/common/neeqDT\"+(!_compress?\"\":\".min\"),neeqZT:\"js/components/common/z-tree\"+(!_compress?\"\":\".min\"),neeqSD:\"js/components/common/side_bar_menu\"+(!_compress?\"\":\".min\"),neeqTag:\"js/components/common/neeqTag\"+(!_compress?\"\":\".min\"),fontsize:\"js/components/common/fontsize\"+(!_"
+            },
+            {
+              "offset": 5536,
+              "context": "+(!_compress?\"\":\".min\")]},select2:{deps:[\"jquery\",\"select2Language\",],exports:\"select2\"},toastr:{deps:[\"jquery\",\"css!js/plugins/toastr/toastr\"+(!_compress?\"\":\".min\")],exports:\"toastr\"},d3:{exports:\"d3\"},swiper:{deps:[\"css!js/plugins/swiper/swiper\"+(!_compress?\"\":\".min\")],exports:\"swiper\"},fullcalendar:{deps:[\"jquery\",\"moment\",\"css!js/plugins/fullcalendar/fullcalendar.min\"]},calendar:{deps:[\"fullcalendar\"]},slider:{deps:[\"jquery\",\"modernizr\",\"css!js/plugins/bootstrap/css/bootstrap.min\",\"css!js/plugins/slider/css/bootstrap-slider.min\"]},print:{deps:[\"jquery\"]},decimal:{exports:\"decimal\"},util:{deps:[\"jquery\",\"decimal\"]},neeqDT:{deps:[\"jquery\",\"pagination\",\"css!\"+_base+\"/css/components/table/table\"+(!_compress?\"\":\".min\")]},suggest:{deps:[\"jquery\",\"css!\"+_base+\"/css/components/common/fuzzy_query\"+(!_compress?\"\":\".min\")],exports:\"suggest\"},neeqZT:{exports:\"neeqZT\"},neeqSD:{deps:[\"css!\"+_base+\"/css/components/common/side_bar_menu\"+(!_compress?\"\":\".min\"),\"css!\"+_base+\"/css/font-awesome/css/font-awesome\"+(!_compress?\"\":\".min\")],exports:\"neeqSD\"},suggest:{deps:[\"jquery\",\"css!\"+_base+\"/css/components/common/fuzzy_query\"],exports:\"suggest\"},pagination:{deps:[\"jquery\",\"css!\"+_base+\"/js/plugins/pagination/pagination\"+(!_compress?\"\":\".min\")],exports:\"pagination\"},neeqTag:{deps:[\"jquery\",\"js/plugins/select/js/pinyin\",\"css!\"+_base+\"/css/components/common/neeqTag\"+(!_compress?\"\":\".min\"),\"bootstrap\"],exports:\"neeqTag\"},placeholder:{exports:\"placeholder\"},ellipsis:{deps:[\"jquery\"]},fancytree:{deps:[\"jquery\",\"css!\"+_base+\"/js/plugins/fancytree/src/skin-win7/ui.fancytree\"+(!_compress?\"\":\".min\")],exports:\"fancytree\"}}};if(window.navigator.userAgent.indexOf(\"MSIE\")>-1){settingObj.urlArgs=(new Date()).get"
+            },
+            {
+              "offset": 6034,
+              "context": "plugins/slider/css/bootstrap-slider.min\"]},print:{deps:[\"jquery\"]},decimal:{exports:\"decimal\"},util:{deps:[\"jquery\",\"decimal\"]},neeqDT:{deps:[\"jquery\",\"pagination\",\"css!\"+_base+\"/css/components/table/table\"+(!_compress?\"\":\".min\")]},suggest:{deps:[\"jquery\",\"css!\"+_base+\"/css/components/common/fuzzy_query\"+(!_compress?\"\":\".min\")],exports:\"suggest\"},neeqZT:{exports:\"neeqZT\"},neeqSD:{deps:[\"css!\"+_base+\"/css/components/common/side_bar_menu\"+(!_compress?\"\":\".min\"),\"css!\"+_base+\"/css/font-awesome/css/font-awesome\"+(!_compress?\"\":\".min\")],exports:\"neeqSD\"},suggest:{deps:[\"jquery\",\"css!\"+_base+\"/css/components/common/fuzzy_query\"],exports:\"suggest\"},pagination:{deps:[\"jquery\",\"css!\"+_base+\"/js/plugins/pagination/pagination\"+(!_compress?\"\":\".min\")],exports:\"pagination\"},neeqTag:{deps:[\"jquery\",\"js/plugins/select/js/pinyin\",\"css!\"+_base+\"/css/components/common/neeqTag\"+(!_compress?\"\":\".min\"),\"bootstrap\"],exports:\"neeqTag\"},placeholder:{exports:\"placeholder\"},ellipsis:{deps:[\"jquery\"]},fancytree:{deps:[\"jquery\",\"css!\"+_base+\"/js/plugins/fancytree/src/skin-win7/ui.fancytree\"+(!_compress?\"\":\".min\")],exports:\"fancytree\"}}};if(window.navigator.userAgent.indexOf(\"MSIE\")>-1){settingObj.urlArgs=(new Date()).getTime()+\"\"}require.config(settingObj);document.onkeydown=function(a){a=a||window.event;if(a.keyCode==116){location.reload(true);return false}};"
+            }
+          ]
+        }
+      ],
+      "candidate_count": 0
+    },
+    {
+      "source_id": "neeq",
+      "script_url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/plugins/requireJS/require.min.js",
+      "status_code": 200,
+      "content_type": "application/javascript",
+      "content_length": 17531,
+      "content_sha256": "88a9f84355808a868e5df2ce70f3b7635e3dd67ff63fb74d3c66ef319ed2b605",
+      "endpoint_candidates": [],
+      "endpoint_contexts": [],
+      "term_contexts": [
+        {
+          "term": "startTime",
+          "occurrence_count": 2,
+          "occurrences": [
+            {
+              "offset": 3720,
+              "context": ":\"defined\"===t&&i(O[r])}function u(e,t){var i=e.requireModules,r=!1;t?t(e):(each(i,function(t){var i=getOwn(y,t);i&&(i.error=e,i.events.error&&(r=!0,i.emit(\"error\",e)))}),r||req.onError(e))}function c(){globalDefQueue.length&&(each(globalDefQueue,function(e){var t=e[0];\"string\"==typeof t&&(b.defQueueMap[t]=!0),M.push(e)}),globalDefQueue=[])}function d(e){delete y[e],delete S[e]}function p(e,t,i){var r=e.map.id;e.error?e.emit(\"error\",e.error):(t[r]=!0,each(e.depMaps,function(r,n){var o=r.id,a=getOwn(y,o);!a||e.depMatched[n]||i[o]||(getOwn(t,o)?(e.defineDep(n,O[o]),e.check()):p(a,t,i))}),i[r]=!0)}function f(){var e,t,n=1e3*w.waitSeconds,o=n&&b.startTime+n<(new Date).getTime(),a=[],s=[],c=!1,d=!0;if(!v){if(v=!0,eachProp(S,function(e){var n=e.map,u=n.id;if(e.enabled&&(n.isDefine||s.push(e),!e.error))if(!e.inited&&o)r(u)?(t=!0,c=!0):(a.push(u),i(u));else if(!e.inited&&e.fetched&&n.isDefine&&(c=!0,!n.prefix))return d=!1}),o&&a.length)return e=makeError(\"timeout\",\"Load timeout for modules: \"+a,null,a),e.contextName=b.contextName,u(e);d&&each(s,function(e){p(e,{},{})}),o&&!t||!c||!isBrowser&&!isWebWorker||E||(E=setTimeout(function(){E=0,f()},50)),v=!1}}function l(e){hasProp(O,e[0])||a(o(e[0],null,!0)).init(e[1],e[2])}function h(e,t,i,r){e.detachEvent&&!isOpera?r&&e.detachEvent(r,t):e.removeEventListener(i,t,!1)}function m(e){var t=e.currentTarget||e.srcElement;return h(t,b.onScriptLoad,\"load\",\"onreadystatechange\"),h(t,b.onScriptError,\"error\"),{node:t,id:t&&t.getAttribute(\"data-requiremodule\")}}function g(){var e;for(c();M.length;){if(null===(e=M.shift())[0])return u(makeError(\"mismatch\",\"Mismatched anonymous define() module: \"+e[e.length-1]));l(e)}b.defQueueMap={}}var v,x,b,q,E,w={waitSec"
+            },
+            {
+              "offset": 5901,
+              "context": "s||(e.exports={})}}},x=function(e){this.events=getOwn(k,e.id)||{},this.map=e,this.shim=getOwn(w.shim,e.id),this.depExports=[],this.depMaps=[],this.depMatched=[],this.pluginMaps={},this.depCount=0},x.prototype={init:function(e,t,i,r){r=r||{},this.inited||(this.factory=t,i?this.on(\"error\",i):this.events.error&&(i=bind(this,function(e){this.emit(\"error\",e)})),this.depMaps=e&&e.slice(0),this.errback=i,this.inited=!0,this.ignore=r.ignore,r.enabled||this.enabled?this.enable():this.check())},defineDep:function(e,t){this.depMatched[e]||(this.depMatched[e]=!0,this.depCount-=1,this.depExports[e]=t)},fetch:function(){if(!this.fetched){this.fetched=!0,b.startTime=(new Date).getTime();var e=this.map;if(!this.shim)return e.prefix?this.callPlugin():this.load();b.makeRequire(this.map,{enableBuildCallback:!0})(this.shim.deps||[],bind(this,function(){return e.prefix?this.callPlugin():this.load()}))}},load:function(){var e=this.map.url;j[e]||(j[e]=!0,b.load(this.map.id,e))},check:function(){if(this.enabled&&!this.enabling){var e,t,i=this.map.id,r=this.depExports,n=this.exports,o=this.factory;if(this.inited){if(this.error)this.emit(\"error\",this.error);else if(!this.defining){if(this.defining=!0,this.depCount<1&&!this.defined){if(isFunction(o)){if(this.events.error&&this.map.isDefine||req.onError!==defaultOnError)try{n=b.execCb(i,o,r,n)}catch(t){e=t}else n=b.execCb(i,o,r,n);if(this.map.isDefine&&void 0===n&&((t=this.module)?n=t.exports:this.usingExports&&(n=this.exports)),e)return e.requireMap=this.map,e.requireModules=this.map.isDefine?[this.map.id]:null,e.requireType=this.map.isDefine?\"define\":\"require\",u(this.error=e)}else n=o;if(this.exports=n,this.map.isDefine&&!this.ignore&&(O[i]=n,req.onResourc"
+            }
+          ]
+        }
+      ],
+      "candidate_count": 0
+    }
+  ]
+}
+
   ]
 }
