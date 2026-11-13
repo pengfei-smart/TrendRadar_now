@@ -25,6 +25,12 @@ class LifecycleEvidenceParserTests(unittest.TestCase):
             {"suspension", "resumption", "delisting"},
         )
 
+    def test_recognizes_neeq_termination_of_listing_as_delisting_candidate(self):
+        parsed = parse_lifecycle_announcement("证券代码400001，关于终止挂牌的公告。")
+        self.assertEqual(parsed.security_codes, ("400001",))
+        self.assertIn("delisting", parsed.event_types)
+        self.assertIn("终止挂牌", parsed.matched_terms)
+
     def test_preserves_distinct_date_semantics(self):
         text = (
             "公告日期：2024年3月1日。最后交易日为2024-03-08，"
