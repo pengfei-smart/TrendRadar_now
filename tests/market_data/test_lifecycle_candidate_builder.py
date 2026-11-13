@@ -125,6 +125,60 @@ class LifecycleCandidateBuilderTests(unittest.TestCase):
             for row in rows
         ))
 
+    def test_links_no_code_pdf_to_official_neeq_list_metadata_without_auto_resolving(self):
+        text = "北京华创搜了科技股份有限公司股票进入摘牌整理期，预计终止挂牌。"
+        url = "https://www.neeq.com.cn/disclosure/2026/notice.pdf"
+        document = self.make_document(text, source_id="neeq", url=url)
+        metadata = {
+            "record": {
+                "companyCd": "870099",
+                "companyName": "华搜股份",
+                "disclosureTitle": "华搜股份股票进入摘牌整理期风险提示公告",
+                "publishDate": "2026-11-02",
+                "destFilePath": "/disclosure/2026/notice.pdf",
+            },
+            "source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do",
+            "response_sha256": "a" * 64,
+            "retrieved_at": "2026-11-13T10:00:00+08:00",
+        }
+        rows = build_lifecycle_evidence_candidates(
+            document, parse_lifecycle_announcement(text),
+            source_title="券商风险提示公告",
+            announcement_metadata=metadata,
+        )
+        self.assertTrue(rows)
+        for row in rows:
+            self.assertEqual(row["security_code"], "")
+            self.assertEqual(row["payload_json"]["identity_resolution_status"],
+                             "metadata_linked_pending_review")
+            hint = row["payload_json"]["issuer_identity_hint"]
+            self.assertEqual(hint["issuer_code"], "870099")
+            self.assertEqual(hint["issuer_name"], "华搜股份")
+            self.assertEqual(hint["match_method"], "exact_attachment_path")
+            self.assertTrue(hint["review_required"])
+
+    def test_rejects_neeq_metadata_when_attachment_path_does_not_match_pdf(self):
+        text = "华搜股份股票进入摘牌整理期。"
+        document = self.make_document(
+            text, source_id="neeq",
+            url="https://www.neeq.com.cn/disclosure/2026/actual.pdf",
+        )
+        metadata = {
+            "record": {
+                "companyCd": "870099", "companyName": "华搜股份",
+                "destFilePath": "/disclosure/2026/other.pdf",
+            },
+            "source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do",
+            "response_sha256": "b" * 64,
+            "retrieved_at": "2026-11-13T10:00:00+08:00",
+        }
+        with self.assertRaises(ValueError):
+            build_lifecycle_evidence_candidates(
+                document, parse_lifecycle_announcement(text),
+                source_title="券商风险提示公告",
+                announcement_metadata=metadata,
+            )
+
     def test_unrecognized_text_does_not_create_candidates(self):
         text = "这是一段没有证券代码和生命周期事件的普通文字。"
         rows = build_lifecycle_evidence_candidates(
