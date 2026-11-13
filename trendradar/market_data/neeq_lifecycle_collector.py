@@ -101,7 +101,7 @@ def build_neeq_announcement_search_plan(
     end_date: str,
     keyword: str = "",
     market_layer: str = "3",
-    page: int = 1,
+    page: int = 0,
     company_code: str = "",
     notice_type: str = "",
     disclosure_type: str = "",
@@ -117,8 +117,8 @@ def build_neeq_announcement_search_plan(
         raise ValueError("必须提供有效日期范围，且 start_date 不得晚于 end_date")
     if market_layer not in NEEQ_MARKET_LAYER_VALUES:
         raise ValueError("market_layer 仅允许已确认的 0、1、3；不接受未核实的值")
-    if isinstance(page, bool) or not isinstance(page, int) or page < 1:
-        raise ValueError("page 必须是大于等于 1 的整数")
+    if isinstance(page, bool) or not isinstance(page, int) or page < 0:
+        raise ValueError("page 必须是大于等于 0 的整数（接口分页从 0 开始）")
     if company_code and (len(company_code) != 6 or not company_code.isdigit()):
         raise ValueError("company_code 必须是六位数字证券代码")
     if any(not isinstance(value, str) or not value.strip() for value in need_fields):
@@ -144,15 +144,17 @@ def build_neeq_announcement_search_plan(
         "source_id": "neeq",
         "endpoint": endpoint,
         "endpoint_allowed": is_allowed_url("neeq", endpoint),
-        "http_method": "unverified",
-        "request_encoding": "JSONP",
+        "http_method": "POST",
+        "request_encoding": "application/x-www-form-urlencoded + JSONP callback",
         "params": params,
-        "evidence_level": "static_contract_plan",
+        "evidence_level": "partially_runtime_verified_contract",
         "runtime_verified": False,
         "warnings": [
             "当前仅生成检索计划，尚未发送请求。",
             "公告类型、行业类型及分类 ID 必须来自实时官方字典/分类响应。",
-            "companyAnnouncement.do 的 HTTP method 尚未由静态证据确认。",
+            "POST、JSONP 响应包装、listInfo 响应结构和零起始分页已由浏览器运行时样本确认。",
+            "高级筛选分类与请求参数的映射尚未确认；不得将 businessNumber 或 datebaseNumber 猜测填入 disclosureSubtype。",
+            "分类筛选生效前，不能将当前普通公告列表请求视为终止挂牌专用查询。",
             "检索结果必须保存原始公告元数据和原文哈希，并进入人工审核。",
         ],
     }
