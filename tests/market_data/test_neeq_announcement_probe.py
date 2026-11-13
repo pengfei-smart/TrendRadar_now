@@ -143,6 +143,27 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertNotIn("endTime", form)
         self.assertEqual(result["returned_count"], 2)
 
+    def test_verifies_company_code_filter_only_when_all_returned_rows_match(self):
+        opener = FakeOpener(FakeResponse(self._payload()))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01",
+            end_date="2026-11-13",
+            company_code="123456",
+            opener=opener,
+        )
+        self.assertTrue(result["company_code_filter_verified"])
+        self.assertTrue(any("逐条匹配验证" in warning for warning in result["warnings"]))
+
+        mismatch_payload = self._payload()
+        opener = FakeOpener(FakeResponse(mismatch_payload))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01",
+            end_date="2026-11-13",
+            company_code="999999",
+            opener=opener,
+        )
+        self.assertFalse(result["company_code_filter_verified"])
+
     def test_does_not_claim_lifecycle_category_filter_is_verified(self):
         opener = FakeOpener(FakeResponse(self._payload(), "text/html; charset=utf-8"))
         result = probe_neeq_announcement_list(
