@@ -72,9 +72,10 @@ def probe_neeq_category_tree(
         method="POST",
         headers={
             "User-Agent": "TrendRadar-LifecycleEvidence/1.0",
-            "Accept": "application/javascript,application/json,text/plain,*/*;q=0.5",
+            "Accept": "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01",
+            "Origin": "https://www.neeq.com.cn",
             "Referer": "https://www.neeq.com.cn/disclosure/announcement.html",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest",
         },
     )
     client = opener or build_opener(_SameSourceRedirectHandler("neeq"))
