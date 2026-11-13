@@ -136,6 +136,100 @@ def inspect_announcement_page(source_id: str, url: str, fetcher=None) -> dict:
     return result
 
 
+
+def _extract_neeq_endpoint_contracts(source: str) -> list[dict]:
+    """从已抓取脚本中归纳新三板公告接口契约；仅记录静态证据，不发起请求。"""
+    definitions = (
+        {
+            "endpoint": "/disclosureInfoController/companyAnnouncement.do",
+            "role": "announcement_list",
+            "request_method": "not_explicit_in_inspected_context",
+            "request_encoding": "JSONP",
+            "request_params": [
+                "noticeType", "disclosureType", "disclosureSubtype", "page",
+                "companyCd", "isNewThree", "startTime", "endTime", "keyword",
+                "xxfcbj", "hyType", "needFields", "siteId",
+            ],
+            "response_paths": ["[0].listInfo.content", "[0].listInfo.totalElements"],
+            "notes": [
+                "脚本明确配置 dataType=jsonp；当前截取上下文未能可靠确认该接口的 HTTP method。",
+                "分页判断和列表读取均使用响应数组首项的 listInfo。",
+            ],
+        },
+        {
+            "endpoint": "/disclosureInfoController/initDisclosureList.do",
+            "role": "announcement_list_initialization",
+            "request_method": "POST",
+            "request_encoding": "JSONP",
+            "request_params": [
+                "disclosureType", "disclosureSubtype", "page", "companyCd",
+                "isNewThree", "startTime", "endTime", "keyword", "hyType",
+                "xxfcbj", "needFields",
+            ],
+            "response_paths": ["data.content[0].disclosures", "data.content[0].totalElements"],
+            "notes": [
+                "脚本同时在分页处读取 data.totalElements，与 content[0].totalElements 不一致；需用真实响应样本核验。",
+            ],
+        },
+        {
+            "endpoint": "/disclosureInfoController/infoResult_en.do",
+            "role": "basic_announcement_list",
+            "request_method": "POST",
+            "request_encoding": "JSONP",
+            "request_params": [
+                "flag", "disclosureType", "page", "companyCd", "isNewThree",
+                "startTime", "endTime", "keyword", "needFields",
+            ],
+            "response_paths": ["[0].listInfo.content", "[0].listInfo.totalElements"],
+            "notes": ["基础公告列表脚本明确使用响应数组首项的 listInfo。"],
+        },
+        {
+            "endpoint": "/screening/advanced.do",
+            "role": "announcement_category_tree",
+            "request_method": "POST",
+            "request_encoding": "JSONP",
+            "request_params": [],
+            "response_paths": ["[0].list"],
+            "record_fields": ["title", "datebaseNumber", "businessNumber", "sonList"],
+            "child_fields": ["datebaseNumber", "businessNumber", "title"],
+            "notes": [
+                "分类父子节点及 datebaseNumber 均由接口动态返回；不得将分类 ID 固定写入代码。",
+                "页面将父节点 key 编码为 0:<id>，子节点 key 编码为 1:<id>。",
+            ],
+        },
+        {
+            "endpoint": "/disclosureInfoController/disclosure_hy.do",
+            "role": "industry_tree",
+            "request_method": "not_explicit_in_inspected_context",
+            "request_encoding": "JSONP",
+            "request_params": ["type", "neeqhyfl"],
+            "observed_request_values": {"type": "1", "neeqhyfl": "1"},
+            "response_paths": ["response passed to industry callback v(e)"],
+            "notes": ["行业响应的具体字段结构尚未由当前脚本上下文确认。"],
+        },
+        {
+            "endpoint": "/disclosureInfoController/disclosure_type.do",
+            "role": "announcement_type_dictionary",
+            "request_method": "not_explicit_in_inspected_context",
+            "request_encoding": "JSONP",
+            "request_params": ["type"],
+            "observed_request_values": {"type": "1"},
+            "response_paths": ["[0].values"],
+            "notes": ["脚本读取 values 并按 dvalue 处理公告类型；完整业务含义仍需官方响应样本确认。"],
+        },
+    )
+    contracts = []
+    for definition in definitions:
+        if definition["endpoint"] not in source:
+            continue
+        contracts.append({
+            **definition,
+            "evidence_level": "static_javascript_inspection",
+            "runtime_verified": False,
+        })
+    return contracts
+
+
 def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
     """Fetch one allowlisted JavaScript asset and extract endpoint-like literals."""
     if not is_allowed_url(source_id, url):
@@ -243,6 +337,7 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
         "content_sha256": document.content_sha256,
         "endpoint_candidates": candidates[:200],
         "endpoint_contexts": endpoint_contexts,
+        "endpoint_contracts": _extract_neeq_endpoint_contracts(source) if source_id == "neeq" else [],
         "term_contexts": term_contexts,
         "candidate_count": len(candidates),
     }
