@@ -150,6 +150,64 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         self.assertIn("isAll", terms)
         self.assertIn("dvalue", terms)
 
+    def test_extracts_structured_neeq_endpoint_contracts(self):
+        source = """
+        /disclosureInfoController/companyAnnouncement.do
+        /disclosureInfoController/initDisclosureList.do
+        /disclosureInfoController/infoResult_en.do
+        /screening/advanced.do
+        /disclosureInfoController/disclosure_hy.do
+        /disclosureInfoController/disclosure_type.do
+        """
+        class ScriptFetcher:
+            def fetch(self, source_id, url):
+                body = source.encode("utf-8")
+                return FetchedDocument(
+                    source_id=source_id,
+                    requested_url=url,
+                    final_url=url,
+                    status_code=200,
+                    content_type="application/javascript",
+                    body=body,
+                    content_sha256=hashlib.sha256(body).hexdigest(),
+                )
+
+        result = inspect_script_asset(
+            "neeq",
+            "https://www.neeq.com.cn/assets/disclosure.js",
+            fetcher=ScriptFetcher(),
+        )
+        contracts = {item["role"]: item for item in result["endpoint_contracts"]}
+        self.assertEqual(
+            set(contracts),
+            {
+                "announcement_list",
+                "announcement_list_initialization",
+                "basic_announcement_list",
+                "announcement_category_tree",
+                "industry_tree",
+                "announcement_type_dictionary",
+            },
+        )
+        self.assertIn("noticeType", contracts["announcement_list"]["request_params"])
+        self.assertIn(
+            "data.content[0].disclosures",
+            contracts["announcement_list_initialization"]["response_paths"],
+        )
+        self.assertEqual(
+            contracts["announcement_category_tree"]["response_paths"],
+            ["[0].list"],
+        )
+        self.assertIn(
+            "datebaseNumber",
+            contracts["announcement_category_tree"]["record_fields"],
+        )
+        self.assertFalse(contracts["industry_tree"]["runtime_verified"])
+        self.assertEqual(
+            contracts["industry_tree"]["request_method"],
+            "not_explicit_in_inspected_context",
+        )
+
     def test_rejects_external_script_asset_before_fetch(self):
         class NeverFetcher:
             def fetch(self, *args):
