@@ -23,6 +23,8 @@ _ALLOWED_CONTENT_TYPES = {
     "application/x-javascript",
     "application/json",
     "text/plain",
+    # NEEQ 实际响应头可能错误标记为 text/html；正文仍必须通过严格 JSONP 校验。
+    "text/html",
 }
 
 
@@ -107,6 +109,10 @@ def probe_neeq_category_tree(
         "request_encoding": "JSONP",
         "status_code": status,
         "content_type": content_type,
+        "content_type_warning": (
+            "服务端响应头为 text/html，但正文通过严格 JSONP 与分类结构校验"
+            if content_type == "text/html" else None
+        ),
         "final_url": final_url,
         "content_length": len(raw),
         "content_sha256": hashlib.sha256(raw).hexdigest(),
