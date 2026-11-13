@@ -96,11 +96,18 @@ def review_candidate(storage: MarketStorage, *, target: str, candidate_id: str,
         raise ValueError("candidate_id 和 reviewer 不能为空")
     timestamp = reviewed_at or datetime.now().astimezone().isoformat(timespec="seconds")
     if target == "identity":
+        existing = storage.list_neeq_issuer_identity_candidates(limit=5000)
+        if not any(row.get("identity_candidate_id") == candidate_id for row in existing):
+            raise ValueError(f"NEEQ身份候选不存在: {candidate_id}")
         storage.review_neeq_issuer_identity_candidate(
             candidate_id, review_status=review_status, reviewer=reviewer,
             reviewed_at=timestamp, review_notes=review_notes,
         )
     else:
+        existing = storage.list_lifecycle_evidence_candidates(limit=5000)
+        if not any(row.get("candidate_id") == candidate_id and row.get("exchange") == "NEEQ"
+                   for row in existing):
+            raise ValueError(f"NEEQ生命周期候选不存在: {candidate_id}")
         storage.review_lifecycle_evidence_candidate(
             candidate_id, review_status=review_status, reviewer=reviewer,
             reviewed_at=timestamp, review_notes=review_notes,
