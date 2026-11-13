@@ -44,7 +44,7 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
         self.assertEqual(extract_neeq_categories({"data": []}), [])
         self.assertEqual(extract_neeq_categories(None), [])
 
-    def test_builds_allowlisted_query_plan_without_guessing_method_or_dictionaries(self):
+    def test_builds_allowlisted_query_plan_from_partially_verified_contract(self):
         plan = build_neeq_announcement_search_plan(
             start_date="2020-01-01",
             end_date="2026-11-13",
@@ -59,7 +59,8 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
         self.assertEqual(plan["params"]["page"], 0)
         self.assertFalse(plan["runtime_verified"])
         self.assertEqual(plan["params"]["isNewThree"], 1)
-        self.assertEqual(plan["params"]["xxfcbj"], "3")
+        self.assertNotIn("xxfcbj", plan["params"])
+        self.assertEqual(plan["params"]["xxfcbj[]"], ["3"])
         self.assertEqual(plan["params"]["needFields[]"][0], "companyCd")
         self.assertEqual(plan["params"]["noticeType[]"], [])
         self.assertEqual(plan["params"]["disclosureType[]"], [])
