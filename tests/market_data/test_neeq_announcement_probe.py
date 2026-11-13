@@ -108,6 +108,20 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertNotIn("body", result)
         self.assertNotIn("pdf_content", result)
 
+    def test_can_omit_date_filter_for_control_experiment(self):
+        opener = FakeOpener(FakeResponse(self._payload()))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01",
+            end_date="2026-11-13",
+            opener=opener,
+            omit_date_filter=True,
+        )
+        form = parse_qs(opener.request.data.decode("utf-8"))
+        self.assertNotIn("startTime", form)
+        self.assertNotIn("endTime", form)
+        self.assertTrue(result["date_filter_omitted"])
+        self.assertEqual(result["request_count"], 1)
+
     def test_does_not_claim_lifecycle_category_filter_is_verified(self):
         opener = FakeOpener(FakeResponse(self._payload(), "text/html; charset=utf-8"))
         result = probe_neeq_announcement_list(
