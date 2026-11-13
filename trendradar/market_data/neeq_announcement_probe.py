@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, build_opener
@@ -45,6 +46,8 @@ def probe_neeq_announcement_list(
     callback: str = "TrendRadarAnnouncementProbe",
 ) -> dict:
     """Send exactly one allowlisted POST; return metadata only, never fetch PDF attachments."""
+    if not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", callback):
+        raise ValueError("callback 名称格式无效")
     if timeout_seconds <= 0:
         raise ValueError("timeout_seconds 必须大于 0")
     if isinstance(max_bytes, bool) or not isinstance(max_bytes, int) or not 1 <= max_bytes <= MAX_RESPONSE_BYTES:
