@@ -133,6 +133,7 @@ def probe_neeq_announcement_list(
             "publish_date": str(record.get("publishDate") or ""),
             "file_path": str(record.get("destFilePath") or ""),
             "file_extension": str(record.get("fileExt") or ""),
+            "record": dict(record),
         }
         for record in records
         if isinstance(record, dict) and is_lifecycle_announcement_title(str(record.get(title_field) or ""))
@@ -148,6 +149,7 @@ def probe_neeq_announcement_list(
             if content_type == "text/html" else None
         ),
         "final_url": final_url,
+        "metadata_source_url": final_url,
         "request_count": 1,
         "request_page": page,
         "request_params": params,
