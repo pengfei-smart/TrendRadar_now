@@ -115,13 +115,13 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
 
     def test_normalizes_only_observed_list_info_response_shape(self):
         result = normalize_neeq_announcement_response([{
-            "listInfo": {"content": [{"companyCd": "123456"}], "totalElements": 1}
+            "listInfo": {"content": [{"companyCd": "123456"}], "totalElements": 1, "number": 0, "size": 20}
         }])
         self.assertEqual(result["total_elements"], 1)
         self.assertEqual(result["records"][0]["companyCd"], "123456")
         self.assertFalse(result["runtime_verified"])
         with self.assertRaises(ValueError):
-            normalize_neeq_announcement_response({"listInfo": {"content": [], "totalElements": 0}})
+            normalize_neeq_announcement_response({"listInfo": {"content": [], "totalElements": 0, "number": 0, "size": 20}})
 
     def test_title_filter_only_flags_candidates(self):
         self.assertTrue(is_lifecycle_announcement_title("关于公司股票终止挂牌的公告"))
