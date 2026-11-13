@@ -114,6 +114,15 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertIsNotNone(result["content_type_warning"])
         self.assertFalse(result["classification_filter_verified"])
 
+    def test_rejects_invalid_callback_before_network_request(self):
+        opener = FakeOpener(FakeResponse(self._payload()))
+        with self.assertRaises(ValueError):
+            probe_neeq_announcement_list(
+                start_date="2026-11-01", end_date="2026-11-13",
+                opener=opener, callback="bad();callback",
+            )
+        self.assertIsNone(opener.request)
+
     def test_rejects_external_final_url(self):
         opener = FakeOpener(FakeResponse(
             self._payload(), final_url="https://example.com/redirected",
