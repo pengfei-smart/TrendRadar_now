@@ -60,8 +60,12 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
         self.assertFalse(plan["runtime_verified"])
         self.assertEqual(plan["params"]["isNewThree"], 1)
         self.assertEqual(plan["params"]["xxfcbj"], "3")
-        self.assertEqual(plan["params"]["needFields"][0], "companyCd")
-        self.assertEqual(plan["params"]["noticeType"], "")
+        self.assertEqual(plan["params"]["needFields[]"][0], "companyCd")
+        self.assertEqual(plan["params"]["noticeType[]"], [])
+        self.assertEqual(plan["params"]["disclosureType[]"], [])
+        self.assertEqual(plan["params"]["disclosureSubtype[]"], [])
+        self.assertEqual(plan["params"]["xxfcbj[]"], ["3"])
+        self.assertEqual(plan["params"]["hyType[]"], [])
 
     def test_rejects_unconfirmed_market_layer_and_invalid_query_values(self):
         for layer in ("2", "4", ""):
@@ -82,6 +86,25 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
             build_neeq_announcement_search_plan(
                 start_date="2020-01-01", end_date="2026-01-01", company_code="123",
             )
+
+    def test_uses_repeated_form_keys_for_observed_multi_select_fields(self):
+        plan = build_neeq_announcement_search_plan(
+            start_date="2026-01-01",
+            end_date="2026-11-13",
+            notice_type="5",
+            disclosure_type="5",
+            disclosure_subtype="candidate",
+            market_layer="3",
+            industry_type="A01",
+            need_fields=("companyCd", "companyName"),
+        )
+        params = plan["params"]
+        self.assertEqual(params["noticeType[]"], ["5"])
+        self.assertEqual(params["disclosureType[]"], ["5"])
+        self.assertEqual(params["disclosureSubtype[]"], ["candidate"])
+        self.assertEqual(params["xxfcbj[]"], ["3"])
+        self.assertEqual(params["hyType[]"], ["A01"])
+        self.assertEqual(params["needFields[]"], ["companyCd", "companyName"])
 
     def test_accepts_zero_based_first_page(self):
         plan = build_neeq_announcement_search_plan(
