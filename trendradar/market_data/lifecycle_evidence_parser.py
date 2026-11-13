@@ -98,7 +98,7 @@ def _date_type(context: str) -> str:
         return "delisting_date"
     if after.startswith(("日起复牌", "起复牌")) and any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
         return "arrangement_start_date"
-    if after.startswith(("未提出复核申请", "未提交复核申请")):
+    if "未提出复核申请" in after or "未提交复核申请" in after or "提出复核申请" in after:
         return "review_result_date"
     if "复牌" in after or "恢复交易" in after:
         return "resumption_date"
