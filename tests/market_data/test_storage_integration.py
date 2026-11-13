@@ -82,10 +82,39 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "5")
+            self.assertEqual(version, "6")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
             )
+
+    def test_neeq_identity_candidates_do_not_auto_create_issuer_master(self):
+        self.storage.save_neeq_issuer_identity_candidates([{
+            "identity_candidate_id": "neeq-pdf-832480-001",
+            "company_code": "832480",
+            "company_name": "摘牌商网",
+            "disclosure_title": "股票进入摘牌整理期风险提示公告",
+            "publish_date": "2026-11-02",
+            "attachment_url": "https://www.neeq.com.cn/disclosure/sample.pdf",
+            "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do",
+            "metadata_response_sha256": "a" * 64,
+            "retrieved_at": "2026-11-13T10:00:00+08:00",
+            "raw_record": {"companyCd": "832480", "companyName": "摘牌商网"},
+        }])
+        candidate = self.storage.list_neeq_issuer_identity_candidates(company_code="832480")[0]
+        self.assertEqual(candidate["review_status"], "pending")
+        self.assertEqual(candidate["raw_record"]["companyCd"], "832480")
+        self.assertIsNone(self.storage.get_neeq_issuer("832480"))
+
+    def test_neeq_issuer_master_is_separate_from_a_share_security_master(self):
+        self.storage.upsert_neeq_issuer_master([{
+            "company_code": "832480", "current_name": "摘牌商网",
+            "market_layer": "base", "issuer_status": "delisting_arrangement",
+            "source_name": "NEEQ", "source_url": "https://www.neeq.com.cn/disclosure/sample.pdf",
+            "source_sha256": "b" * 64, "source_retrieved_at": "2026-11-13T10:00:00+08:00",
+        }])
+        self.assertEqual(self.storage.get_neeq_issuer("832480")["current_name"], "摘牌商网")
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0)
 
     def test_listing_snapshot_accepts_302_chinext_and_marks_absence_unknown(self):
         self.storage.upsert_securities([
