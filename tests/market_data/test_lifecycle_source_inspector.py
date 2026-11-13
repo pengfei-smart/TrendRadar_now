@@ -101,6 +101,9 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         const endpoint = "/api/disclosure/search.json";
         const detail = "/disclosure/announcement/detail.shtml";
         const companyCd = "123456";
+        const distype = ["A", "B"];
+        const hyType = "industry";
+        const pageNumId = 0;
         const label = "search";
         """
         class ScriptFetcher:
@@ -129,6 +132,9 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         terms = {item["term"]: item for item in result["term_contexts"]}
         self.assertIn("companyCd", terms)
         self.assertIn("companyCd", terms["companyCd"]["occurrences"][0]["context"])
+        self.assertIn("distype", terms)
+        self.assertIn("hyType", terms)
+        self.assertIn("pageNumId", terms)
 
     def test_rejects_external_script_asset_before_fetch(self):
         class NeverFetcher:
