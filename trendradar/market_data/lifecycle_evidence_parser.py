@@ -16,7 +16,7 @@ DATE_PATTERNS = (
 
 EVENT_RULES = (
     ("delisting", ("终止上市", "终止挂牌", "摘牌", "退市")),
-    ("delisting_decision", ("终止挂牌的决定", "终止上市的决定", "决定终止挂牌", "决定终止上市")),
+    ("delisting_decision", ("终止挂牌决定", "终止上市决定", "终止挂牌的决定", "终止上市的决定", "决定终止挂牌", "决定终止上市")),
     ("delisting_arrangement_period", ("摘牌整理期", "退市整理期")),
     ("suspension", ("暂停上市", "停牌", "暂停交易")),
     ("resumption", ("恢复上市", "恢复交易", "复牌")),
@@ -94,9 +94,12 @@ def _date_type(context: str) -> str:
         ("arrangement_start_date", ("进入摘牌整理期", "进入退市整理期")),
         ("review_result_date", ("未提出复核申请", "未提交复核申请")),
     )
-    for date_type, terms in suffix_rules:
-        if any(term in after for term in terms):
-            return date_type
+    if after.startswith(("终止挂牌", "终止上市")):
+        return "delisting_date"
+    if after.startswith(("日起复牌", "起复牌")) and any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
+        return "arrangement_start_date"
+    if after.startswith(("未提出复核申请", "未提交复核申请")):
+        return "review_result_date"
     if "复牌" in after or "恢复交易" in after:
         return "resumption_date"
     if ("决定" in after and ("终止" in after or "挂牌" in after)) or ("收到" in after and "通知书" in after):
