@@ -84,6 +84,10 @@ def _date_type(context: str) -> str:
     # 优先使用当前日期之后的直接语义，避免前文其他日期的标签抢占判断。
     if "未提出复核申请" in after or "未提交复核申请" in after or "提出复核申请" in after:
         return "review_result_date"
+    # 日期后紧接指定信息披露平台的公布语义时，应识别为公告日期，
+    # 避免前文“收到终止挂牌决定”污染这条日期。
+    if any(term in after for term in ("指定信息披露平台公布", "指定信息披露平台发布", "公告发布")):
+        return "announcement_date"
     if after.startswith(("终止挂牌", "终止上市")):
         return "delisting_date"
     if any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
