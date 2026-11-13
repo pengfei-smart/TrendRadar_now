@@ -125,19 +125,18 @@ def build_neeq_announcement_search_plan(
         raise ValueError("need_fields 必须由非空字符串组成")
 
     endpoint = urljoin(NEEQ_BASE_URL, NEEQ_LIST_ENDPOINT)
+    # 浏览器抓包确认这些字段以重复表单键提交；空的多选项不发送。
     params = {
-        "noticeType": notice_type,
-        "disclosureType": disclosure_type,
-        "disclosureSubtype": disclosure_subtype,
+        "noticeType[]": [notice_type] if notice_type else [],
+        "disclosureType[]": [disclosure_type] if disclosure_type else [],
+        "disclosureSubtype[]": [disclosure_subtype] if disclosure_subtype else [],
         "page": page,
         "companyCd": company_code,
         "isNewThree": 1,
-        "startTime": start,
-        "endTime": end,
         "keyword": keyword.strip(),
-        "xxfcbj": market_layer,
-        "hyType": industry_type,
-        "needFields": list(need_fields),
+        "xxfcbj[]": [market_layer],
+        "hyType[]": [industry_type] if industry_type else [],
+        "needFields[]": list(need_fields),
         "siteId": 1,
     }
     return {
@@ -152,7 +151,7 @@ def build_neeq_announcement_search_plan(
         "warnings": [
             "当前仅生成检索计划，尚未发送请求。",
             "公告类型、行业类型及分类 ID 必须来自实时官方字典/分类响应。",
-            "POST、JSONP 响应包装、listInfo 响应结构和零起始分页已由浏览器运行时样本确认。",
+            "POST、JSONP 响应包装、listInfo 响应结构、零起始分页及重复表单键名称已由浏览器运行时样本确认。",
             "高级筛选分类与请求参数的映射尚未确认；不得将 businessNumber 或 datebaseNumber 猜测填入 disclosureSubtype。",
             "分类筛选生效前，不能将当前普通公告列表请求视为终止挂牌专用查询。",
             "检索结果必须保存原始公告元数据和原文哈希，并进入人工审核。",
