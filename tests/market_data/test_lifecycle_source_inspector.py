@@ -97,7 +97,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
 
 
     def test_extracts_endpoint_like_literals_from_allowlisted_javascript(self):
-        source = b"""
+        source = """
         const endpoint = "/api/disclosure/search.json";
         const detail = "/disclosure/announcement/detail.shtml";
         const controller = "/screening/advanced.do";
@@ -112,7 +112,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         const isAll = true;
         const dvalue = "3";
         const label = "search";
-        """
+        """.encode("utf-8")
         class ScriptFetcher:
             def fetch(self, source_id, url):
                 return FetchedDocument(
