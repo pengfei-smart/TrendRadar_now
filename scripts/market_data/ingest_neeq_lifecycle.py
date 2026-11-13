@@ -81,6 +81,7 @@ def main() -> int:
             "total_elements": probe["total_elements"],
             "lifecycle_candidate_count": probe["lifecycle_candidate_count"],
             "classification_filter_verified": probe["classification_filter_verified"],
+            "company_code_filter_verified": probe["company_code_filter_verified"],
             "warnings": probe["warnings"],
         },
         "ingestion": ingestion,
