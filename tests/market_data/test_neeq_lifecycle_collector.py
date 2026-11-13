@@ -50,11 +50,13 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
             end_date="2026-11-13",
             keyword="终止挂牌",
             market_layer="3",
-            page=1,
+            page=0,
             need_fields=("companyCd", "companyName", "disclosureTitle", "destFilePath", "publishDate"),
         )
         self.assertTrue(plan["endpoint_allowed"])
-        self.assertEqual(plan["http_method"], "unverified")
+        self.assertEqual(plan["http_method"], "POST")
+        self.assertEqual(plan["request_encoding"], "application/x-www-form-urlencoded + JSONP callback")
+        self.assertEqual(plan["params"]["page"], 0)
         self.assertFalse(plan["runtime_verified"])
         self.assertEqual(plan["params"]["isNewThree"], 1)
         self.assertEqual(plan["params"]["xxfcbj"], "3")
@@ -74,12 +76,18 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             build_neeq_announcement_search_plan(
-                start_date="2020-01-01", end_date="2026-01-01", page=0,
+                start_date="2020-01-01", end_date="2026-01-01", page=-1,
             )
         with self.assertRaises(ValueError):
             build_neeq_announcement_search_plan(
                 start_date="2020-01-01", end_date="2026-01-01", company_code="123",
             )
+
+    def test_accepts_zero_based_first_page(self):
+        plan = build_neeq_announcement_search_plan(
+            start_date="2020-01-01", end_date="2026-01-01", page=0,
+        )
+        self.assertEqual(plan["params"]["page"], 0)
 
     def test_normalizes_only_observed_list_info_response_shape(self):
         result = normalize_neeq_announcement_response([{
