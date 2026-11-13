@@ -75,6 +75,26 @@ class LifecycleEvidenceFetcherTests(unittest.TestCase):
         self.assertEqual(opener.timeout, 20.0)
         self.assertEqual(opener.request.get_header("User-agent"), "TrendRadar-LifecycleEvidence/1.0")
 
+    def test_neeq_fetch_uses_verified_browser_style_attachment_headers(self):
+        body = b"%PDF-1.7 official NEEQ notice"
+        opener = FakeOpener(FakeResponse(
+            body,
+            url="https://www.neeq.com.cn/disclosure/test.pdf",
+        ))
+        fetcher = LifecycleEvidenceFetcher(opener=opener)
+        result = fetcher.fetch("neeq", "https://www.neeq.com.cn/disclosure/test.pdf")
+        self.assertEqual(result.body, body)
+        self.assertIn("Chrome/131.0.0.0", opener.request.get_header("User-agent"))
+        self.assertEqual(
+            opener.request.get_header("Referer"),
+            "https://www.neeq.com.cn/disclosure/announcement.html",
+        )
+        self.assertEqual(opener.request.get_header("Origin"), "https://www.neeq.com.cn")
+        self.assertEqual(
+            opener.request.get_header("Accept"),
+            "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
+        )
+
     def test_rejects_unregistered_url_before_network(self):
         opener = FakeOpener(FakeResponse())
         fetcher = LifecycleEvidenceFetcher(opener=opener)
