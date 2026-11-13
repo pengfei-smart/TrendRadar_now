@@ -58,6 +58,44 @@ class MarketStorageTests(unittest.TestCase):
                     "SELECT COUNT(*) FROM security_lifecycle_events"
                 ).fetchone()[0], 0)
 
+    def test_unresolved_lifecycle_candidate_without_security_code_persists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            candidate = {
+                "candidate_id": "neeq-no-code-delisting-risk",
+                "candidate_kind": "event",
+                "security_code": "",
+                "exchange": "NEEQ",
+                "event_type": "delisting_arrangement_period",
+                "date_status": "unknown",
+                "source_name": "全国中小企业股份转让系统",
+                "source_title": "券商风险提示公告",
+                "source_url": "https://www.neeq.com.cn/disclosure/notice/no-code",
+                "retrieved_at": "2026-11-13T10:00:00+08:00",
+                "content_sha256": "d" * 64,
+                "evidence_excerpt": "北京华创搜了科技股份有限公司股票进入摘牌整理期",
+                "payload_json": {
+                    "identity_resolution_status": "unresolved",
+                    "identity_resolution_reason": "security_code_not_found_in_document",
+                    "company_name_candidates": ["北京华创搜了科技股份有限公司"],
+                },
+                "evidence_grade": "official",
+            }
+            self.assertEqual(storage.save_lifecycle_evidence_candidates([candidate]), 1)
+            rows = storage.list_lifecycle_evidence_candidates(
+                review_status="pending", candidate_kind="event",
+            )
+            row = next(item for item in rows if item["candidate_id"] == candidate["candidate_id"])
+            self.assertEqual(row["security_code"], "")
+            self.assertEqual(row["exchange"], "NEEQ")
+            self.assertEqual(row["review_status"], "pending")
+            self.assertEqual(row["date_status"], "unknown")
+            self.assertIn("北京华创搜了科技股份有限公司", row["payload_json"])
+            with storage.connect() as connection:
+                self.assertEqual(connection.execute(
+                    "SELECT COUNT(*) FROM security_lifecycle_events"
+                ).fetchone()[0], 0)
+
     def test_lifecycle_candidate_rejects_bad_hash_json_and_missing_candidate(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
