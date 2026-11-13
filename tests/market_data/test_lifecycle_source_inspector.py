@@ -101,10 +101,16 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         const endpoint = "/api/disclosure/search.json";
         const detail = "/disclosure/announcement/detail.shtml";
         const controller = "/screening/advanced.do";
+        const industry = "/disclosureInfoController/disclosure_hy.do";
         const companyCd = "123456";
         const distype = ["A", "B"];
         const hyType = "industry";
         const pageNumId = 0;
+        const sonList = [];
+        const datebaseNumber = "100";
+        const businessNumber = "分类";
+        const isAll = true;
+        const dvalue = "3";
         const label = "search";
         """
         class ScriptFetcher:
@@ -127,6 +133,7 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         self.assertIn("/api/disclosure/search.json", result["endpoint_candidates"])
         self.assertIn("/disclosure/announcement/detail.shtml", result["endpoint_candidates"])
         self.assertIn("/screening/advanced.do", result["endpoint_candidates"])
+        self.assertIn("/disclosureInfoController/disclosure_hy.do", result["endpoint_candidates"])
         self.assertEqual(result["content_length"], len(source))
         contexts = {item["endpoint"]: item for item in result["endpoint_contexts"]}
         self.assertEqual(contexts["/api/disclosure/search.json"]["occurrence_count"], 1)
@@ -137,6 +144,11 @@ class LifecycleSourceInspectorTests(unittest.TestCase):
         self.assertIn("distype", terms)
         self.assertIn("hyType", terms)
         self.assertIn("pageNumId", terms)
+        self.assertIn("sonList", terms)
+        self.assertIn("datebaseNumber", terms)
+        self.assertIn("businessNumber", terms)
+        self.assertIn("isAll", terms)
+        self.assertIn("dvalue", terms)
 
     def test_rejects_external_script_asset_before_fetch(self):
         class NeverFetcher:
