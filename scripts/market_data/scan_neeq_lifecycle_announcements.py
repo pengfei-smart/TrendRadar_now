@@ -143,7 +143,7 @@ def main() -> int:
             time.sleep(args.pause_seconds)
 
     coverage = page_coverage(total_elements, page_size, len(page_audits))
-    if stop_reason not in {"all_pages_scanned", "short_page"} and coverage["coverage_status"] != "complete":
+    if stop_reason not in {"all_pages_scanned", "short_page", "empty_response_unverified"} and coverage["coverage_status"] != "complete":
         coverage["coverage_status"] = "partial"
     output = {
         "source_id": "neeq",
