@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,8 +34,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="目标六位证券代码，可重复指定")
     parser.add_argument("--target-name", action="append", default=[],
                         help="目标公司名称或历史名称，可重复指定；仅精确规范化匹配")
-    parser.add_argument("--max-pages", type=int, default=10,
-                        help="最多扫描页数，默认10，范围1-500")
+    parser.add_argument("--max-pages", type=int, default=300,
+                        help="最多扫描页数，默认300，范围1-500")
+    parser.add_argument("--pause-seconds", type=float, default=0.3,
+                        help="分页请求间隔秒数，默认0.3，范围0-5")
     parser.add_argument("--max-announcements", type=int, default=20,
                         help="最多下载并解析的匹配生命周期公告数，默认20，范围1-100")
     parser.add_argument("--db", default="output/market/market.db",
@@ -52,6 +55,8 @@ def main() -> int:
         raise SystemExit("--target-code 必须是六位数字")
     if not 1 <= args.max_pages <= 500:
         raise SystemExit("--max-pages 必须在1到500之间")
+    if not 0 <= args.pause_seconds <= 5:
+        raise SystemExit("--pause-seconds 必须在0到5之间")
     if not 1 <= args.max_announcements <= 100:
         raise SystemExit("--max-announcements 必须在1到100之间")
 
@@ -134,6 +139,8 @@ def main() -> int:
         if page_size and probe["returned_count"] < page_size:
             stop_reason = "short_page"
             break
+        if args.pause_seconds:
+            time.sleep(args.pause_seconds)
 
     coverage = page_coverage(total_elements, page_size, len(page_audits))
     if stop_reason not in {"all_pages_scanned", "empty_page", "short_page"} and coverage["coverage_status"] != "complete":
@@ -142,6 +149,7 @@ def main() -> int:
         "source_id": "neeq",
         "scan": {
             "date_range": {"start": args.start_date, "end": args.end_date},
+            "pause_seconds": args.pause_seconds,
             "target_codes": args.target_code,
             "target_names": args.target_name,
             "server_side_company_filters_used": False,
