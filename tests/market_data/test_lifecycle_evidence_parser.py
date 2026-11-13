@@ -69,6 +69,16 @@ class LifecycleEvidenceParserTests(unittest.TestCase):
         self.assertEqual(by_value["2026-11-04"], "delisting_date")
         self.assertTrue(all(item.date_status == "unknown" for item in parsed.date_evidence))
 
+    def test_distinguishes_neeq_last_trading_day_from_delisting_date(self):
+        text = (
+            "2026年11月3日系公司摘牌整理期的最后一个交易日，"
+            "整理期结束后，公司股票将于2026年11月4日终止挂牌。"
+        )
+        parsed = parse_lifecycle_announcement(text)
+        by_value = {item.value: item.date_type for item in parsed.date_evidence}
+        self.assertEqual(by_value["2026-11-03"], "last_trading_date")
+        self.assertEqual(by_value["2026-11-04"], "delisting_date")
+
     def test_classifies_notice_publication_date_separately_from_decision_date(self):
         text = (
             "公司于2026年9月29日收到全国股转公司出具的终止挂牌决定。"
