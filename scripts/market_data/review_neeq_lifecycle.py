@@ -1,6 +1,13 @@
 # 本脚本提供NEEQ生命周期候选的命令行查看与人工审核入口，不写正式事实表。
 """CLI for reviewing NEEQ identity and lifecycle evidence candidates."""
 
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from trendradar.market_data.neeq_lifecycle_review import main
 
 
