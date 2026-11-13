@@ -74,6 +74,24 @@ class NEEQRuntimeProbeTests(unittest.TestCase):
         self.assertEqual(result["content_sha256"], hashlib.sha256(body).hexdigest())
         self.assertEqual(result["payload"], payload)
 
+    def test_accepts_html_mime_only_when_body_is_valid_jsonp(self):
+        import json
+        payload = [{"list": [{"title": "风险事项类", "datebaseNumber": "9504-1600"}]}]
+        body = (DEFAULT_CALLBACK + "(" + json.dumps(payload) + ");").encode()
+        result = probe_neeq_category_tree(
+            opener=FakeOpener(FakeResponse(body, content_type="text/html; charset=utf-8"))
+        )
+        self.assertEqual(result["content_type"], "text/html")
+        self.assertIsNotNone(result["content_type_warning"])
+        self.assertEqual(result["payload"], payload)
+
+    def test_rejects_html_page_even_when_html_mime_is_allowed(self):
+        body = b"<html><title>Access denied</title><body>blocked</body></html>"
+        with self.assertRaisesRegex(ValueError, "响应不是预期 JSON"):
+            probe_neeq_category_tree(
+                opener=FakeOpener(FakeResponse(body, content_type="text/html; charset=utf-8"))
+            )
+
     def test_rejects_unexpected_response_shape(self):
         import json
         body = (DEFAULT_CALLBACK + "(" + json.dumps({"list": []}) + ");").encode()
