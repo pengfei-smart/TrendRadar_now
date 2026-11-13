@@ -207,6 +207,8 @@ def inspect_script_asset(source_id: str, url: str, fetcher=None) -> dict:
         "totalElements", "listInfo", "defaultParams", "pagination",
         "ajax", "exchangeData", "distype", "pageNumId",
         "defaultPaginationParams", "initDisclosureList", "xxzrlx",
+        "advanced.do", "disclosure_hy.do", "sonList", "datebaseNumber",
+        "businessNumber", "isAll", "dvalue", "listInfo", "disclosures",
     )
     term_contexts = []
     for term in contract_terms:
