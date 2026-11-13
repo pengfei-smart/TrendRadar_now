@@ -80,7 +80,19 @@ def _normalize_date(match: re.Match) -> str | None:
 
 def _date_type(context: str) -> str:
     before, _, after = context.partition("⟦DATE⟧")
-    # 日期语义只由当前日期之前、且位于前一日期之后的最近标签决定。
+    # 优先使用当前日期之后的直接语义，避免前文其他日期的标签抢占判断。
+    if "未提出复核申请" in after or "未提交复核申请" in after or "提出复核申请" in after:
+        return "review_result_date"
+    if after.startswith(("终止挂牌", "终止上市")):
+        return "delisting_date"
+    if any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
+        return "arrangement_start_date"
+    if "复牌" in after or "恢复交易" in after:
+        return "resumption_date"
+    if ("决定" in after and ("终止" in after or "挂牌" in after)) or ("收到" in after and "通知书" in after):
+        return "decision_date"
+
+    # 后置语义不足时，再使用当前日期之前最近的明确标签。
     preceding = []
     for date_type, terms in DATE_LABEL_RULES:
         for term in terms:
@@ -89,21 +101,6 @@ def _date_type(context: str) -> str:
                 preceding.append((position, len(term), date_type))
     if preceding:
         return max(preceding)[2]
-    suffix_rules = (
-        ("delisting_date", ("终止挂牌", "终止上市")),
-        ("arrangement_start_date", ("进入摘牌整理期", "进入退市整理期")),
-        ("review_result_date", ("未提出复核申请", "未提交复核申请")),
-    )
-    if after.startswith(("终止挂牌", "终止上市")):
-        return "delisting_date"
-    if after.startswith(("日起复牌", "起复牌")) and any(term in after for term in ("进入摘牌整理期", "进入退市整理期")):
-        return "arrangement_start_date"
-    if "未提出复核申请" in after or "未提交复核申请" in after or "提出复核申请" in after:
-        return "review_result_date"
-    if "复牌" in after or "恢复交易" in after:
-        return "resumption_date"
-    if ("决定" in after and ("终止" in after or "挂牌" in after)) or ("收到" in after and "通知书" in after):
-        return "decision_date"
     return "unspecified"
 
 
