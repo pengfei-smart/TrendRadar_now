@@ -125,6 +125,7 @@ def ingest_neeq_lifecycle_probe_result(
                 "document_sha256": document.content_sha256,
                 "parsed_event_types": list(parsed.event_types),
                 "parsed_security_codes": list(parsed.security_codes),
+                "parsed_date_evidence": parsed.to_dict()["date_evidence"],
                 "identity_candidate_id": identity_id,
                 "lifecycle_candidate_ids": [row["candidate_id"] for row in lifecycle_rows],
                 "status": "saved_for_review",
