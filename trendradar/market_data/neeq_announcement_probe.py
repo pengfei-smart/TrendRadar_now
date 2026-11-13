@@ -149,6 +149,7 @@ def probe_neeq_announcement_list(
         "request_params": params,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "response_bytes": len(raw),
+        "response_preview": raw.decode("utf-8-sig", errors="replace")[:1000],
         "page_number": normalized.get("page_number"),
         "page_size": normalized.get("page_size"),
         "returned_count": len(records),
