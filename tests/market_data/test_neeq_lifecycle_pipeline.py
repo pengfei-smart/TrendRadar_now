@@ -75,8 +75,8 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
             identity = storage.list_neeq_issuer_identity_candidates(company_code="870099")
             self.assertEqual(identity[0]["review_status"], "pending")
             self.assertEqual(identity[0]["raw_record"]["companyCd"], "870099")
-            lifecycle = storage.list_lifecycle_evidence_candidates(exchange="NEEQ")
-            self.assertTrue(any(row["security_code"] == "" for row in lifecycle))
+            lifecycle = storage.list_lifecycle_evidence_candidates()
+            self.assertTrue(any(row["exchange"] == "NEEQ" and row["security_code"] == "" for row in lifecycle))
             with storage.connect() as connection:
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0)
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
