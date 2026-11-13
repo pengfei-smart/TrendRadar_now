@@ -154,6 +154,7 @@ def build_neeq_announcement_search_plan(
             "当前仅生成检索计划，尚未发送请求。",
             "公告类型、行业类型及分类 ID 必须来自实时官方字典/分类响应。",
             "POST、JSONP 响应包装、listInfo 响应结构、零起始分页及重复表单键名称已由浏览器运行时样本确认。",
+            "startTime/endTime 来自页面脚本参数契约，但未出现在已提供的那次 live payload 抓包中；实际是否随所有查询提交仍需运行时复核。",
             "高级筛选分类与请求参数的映射尚未确认；不得将 businessNumber 或 datebaseNumber 猜测填入 disclosureSubtype。",
             "分类筛选生效前，不能将当前普通公告列表请求视为终止挂牌专用查询。",
             "检索结果必须保存原始公告元数据和原文哈希，并进入人工审核。",
