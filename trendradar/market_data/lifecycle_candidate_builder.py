@@ -233,8 +233,13 @@ def build_lifecycle_evidence_candidates(
                     security_code="",
                     event_type=event_type,
                     extra_payload={
-                        "identity_resolution_status": "unresolved",
-                        "identity_resolution_reason": "security_code_not_found_in_document",
+                        "identity_resolution_status": (
+                            "metadata_linked_pending_review" if issuer_identity_hint else "unresolved"
+                        ),
+                        "identity_resolution_reason": (
+                            "official_announcement_metadata_linked_by_attachment_path"
+                            if issuer_identity_hint else "security_code_not_found_in_document"
+                        ),
                     },
                 )
 
