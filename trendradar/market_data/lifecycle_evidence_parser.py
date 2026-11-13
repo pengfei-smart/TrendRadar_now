@@ -16,6 +16,8 @@ DATE_PATTERNS = (
 
 EVENT_RULES = (
     ("delisting", ("终止上市", "终止挂牌", "摘牌", "退市")),
+    ("delisting_decision", ("终止挂牌的决定", "终止上市的决定", "决定终止挂牌", "决定终止上市")),
+    ("delisting_arrangement_period", ("摘牌整理期", "退市整理期")),
     ("suspension", ("暂停上市", "停牌", "暂停交易")),
     ("resumption", ("恢复上市", "恢复交易", "复牌")),
     ("listing", ("首次公开发行", "上市交易", "上市公告书", "正式上市")),
@@ -33,6 +35,10 @@ DATE_LABEL_RULES = (
     ("effective_date", ("生效日", "实施日", "正式生效")),
     ("transfer_start_date", ("开始转让日", "转让起始日", "挂牌转让日")),
     ("announcement_date", ("公告日期", "公告日", "发布日期", "发布于")),
+    ("decision_date", ("收到终止挂牌决定", "收到终止上市决定")),
+    ("review_result_date", ("未提出复核申请", "未提交复核申请")),
+    ("arrangement_start_date", ("进入摘牌整理期", "进入退市整理期")),
+    ("delisting_date", ("终止挂牌", "终止上市", "将于")),
 )
 
 
@@ -73,7 +79,7 @@ def _normalize_date(match: re.Match) -> str | None:
 
 
 def _date_type(context: str) -> str:
-    before, _, _ = context.partition("⟦DATE⟧")
+    before, _, after = context.partition("⟦DATE⟧")
     # 日期语义只由当前日期之前、且位于前一日期之后的最近标签决定。
     preceding = []
     for date_type, terms in DATE_LABEL_RULES:
@@ -81,7 +87,21 @@ def _date_type(context: str) -> str:
             position = before.rfind(term)
             if position >= 0:
                 preceding.append((position, len(term), date_type))
-    return max(preceding)[2] if preceding else "unspecified"
+    if preceding:
+        return max(preceding)[2]
+    suffix_rules = (
+        ("delisting_date", ("终止挂牌", "终止上市")),
+        ("arrangement_start_date", ("进入摘牌整理期", "进入退市整理期")),
+        ("review_result_date", ("未提出复核申请", "未提交复核申请")),
+    )
+    for date_type, terms in suffix_rules:
+        if any(term in after for term in terms):
+            return date_type
+    if "复牌" in after or "恢复交易" in after:
+        return "resumption_date"
+    if "收到" in after and ("决定" in after or "通知书" in after):
+        return "decision_date"
+    return "unspecified"
 
 
 def _date_context(text: str, start: int, end: int) -> str:
@@ -93,8 +113,8 @@ def _date_context(text: str, start: int, end: int) -> str:
     ]
     previous_ends = [match.end() for match in all_matches if match.end() <= start]
     next_starts = [match.start() for match in all_matches if match.start() >= end]
-    before_start = max(max(previous_ends, default=0), start - 32)
-    after_end = min(min(next_starts, default=len(text)), end + 24)
+    before_start = max(max(previous_ends, default=0), start - 64)
+    after_end = min(min(next_starts, default=len(text)), end + 96)
     before = text[before_start:start]
     after = text[end:after_end]
     return f"{before}⟦DATE⟧{after}"
