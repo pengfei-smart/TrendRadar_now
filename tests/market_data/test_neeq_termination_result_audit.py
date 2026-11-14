@@ -32,6 +32,13 @@ class TerminationResultAuditTests(unittest.TestCase):
         self.assertFalse(result["complete_coverage"])
         self.assertEqual(result["duplicate_company_codes"], ["000000"])
         self.assertEqual(result["duplicate_record_ids"], ["0"])
+        self.assertEqual(len(result["duplicate_record_details"]), 2)
+        self.assertEqual(
+            {row["page"] for row in result["duplicate_record_details"]},
+            {0, 1},
+        )
+        self.assertTrue(all(row["duplicate_company_code"] for row in result["duplicate_record_details"]))
+        self.assertTrue(all(row["duplicate_record_id"] for row in result["duplicate_record_details"]))
 
 
     def test_reports_attachment_coverage_separately(self):
