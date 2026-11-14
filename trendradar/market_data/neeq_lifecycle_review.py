@@ -69,6 +69,7 @@ def list_candidates(storage: MarketStorage, *, target: str = "all",
             result["lifecycle_candidates"].append({
                 "candidate_id": row["candidate_id"],
                 "candidate_kind": row["candidate_kind"],
+                "exchange": row.get("exchange", ""),
                 "security_code": row["security_code"],
                 "event_type": row["event_type"],
                 "event_date": row["event_date"],
