@@ -36,6 +36,41 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["termination_reason"], "2019年半年度报告")
         self.assertTrue(notice["conditional_termination_language"])
 
+    def test_parses_pdf_text_with_spaces_inside_chinese_phrases(self):
+        text = """股 转 系 统 公 告
+2020
+695 号
+武汉博奇玉宇环保股份有限公司 （证券简称： 玉宇环保； 证
+券代码：831100； 主办券商： 国信证券） 未能按照规定时间披露
+2019 年半年度报告。根据业务规则，我司于2020 年 9 月 7 日
+对玉宇环保作出终止其股票挂牌的决定。
+如玉宇环保未提交复核申请，我司将自 2020 年 9 月 17 日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2020 年 9 月 7 日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["document_number"], "2020-695")
+        self.assertEqual(notice["security_code"], "831100")
+        self.assertEqual(notice["short_name"], "玉宇环保")
+        self.assertEqual(notice["company_name"], "武汉博奇玉宇环保股份有限公司")
+        self.assertEqual(notice["decision_date"], "2020-09-07")
+        self.assertEqual(notice["planned_termination_date"], "2020-09-17")
+        self.assertEqual(notice["announcement_date"], "2020-09-07")
+
+    def test_candidate_short_name_matches_notice_short_name(self):
+        parsed = parse_neeq_termination_notice_text(NOTICE)
+        result = crosscheck_neeq_notice_task(parsed, {
+            "linked_candidates": [{
+                "company_code": "839401",
+                "company_name": "新复大",
+                "delisting_date": "2020-09-17",
+            }],
+        })
+        comparison = result["comparisons"][0]
+        self.assertTrue(comparison["company_name_match"])
+        self.assertFalse(comparison["company_full_name_exact_match"])
+        self.assertTrue(comparison["company_short_name_match"])
+        self.assertNotIn("company_name_mismatch", comparison["issues"])
+
     def test_parses_multiple_notices_in_one_document(self):
         text = NOTICE + "\n" + NOTICE.replace("839401", "831100").replace("新复大", "玉宇环保").replace("浙江新复大", "武汉博奇玉宇环保")
         result = parse_neeq_termination_notice_text(text)
