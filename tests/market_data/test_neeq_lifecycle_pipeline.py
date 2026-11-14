@@ -72,11 +72,23 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
             self.assertGreaterEqual(result["lifecycle_candidates_saved"], 1)
             self.assertEqual(result["formal_master_writes"], 0)
             self.assertEqual(result["formal_lifecycle_writes"], 0)
+            self.assertEqual(
+                result["items"][0]["notice_classification"]["category"],
+                "delisting_arrangement_risk_notice",
+            )
+            self.assertFalse(
+                result["items"][0]["notice_classification"]["confirmed_legal_fact"]
+            )
             identity = storage.list_neeq_issuer_identity_candidates(company_code="870099")
             self.assertEqual(identity[0]["review_status"], "pending")
             self.assertEqual(identity[0]["raw_record"]["companyCd"], "870099")
             lifecycle = storage.list_lifecycle_evidence_candidates()
             self.assertTrue(any(row["exchange"] == "NEEQ" and row["security_code"] == "" for row in lifecycle))
+            self.assertTrue(any(
+                __import__("json").loads(row["payload_json"])["notice_classification"]["category"]
+                == "delisting_arrangement_risk_notice"
+                for row in lifecycle if row["exchange"] == "NEEQ"
+            ))
             self.assertTrue(any("北京华创搜了科技股份有限公司" in row["evidence_excerpt"] for row in lifecycle))
             self.assertTrue(all(not row["evidence_excerpt"].startswith("%PDF-") for row in lifecycle))
             with storage.connect() as connection:
