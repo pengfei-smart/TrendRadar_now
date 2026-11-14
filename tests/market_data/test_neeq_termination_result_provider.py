@@ -80,6 +80,25 @@ class ProviderTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             NEEQTerminationResultProvider(opener=FakeOpener(body)).fetch_page()
 
+
+    def test_tolerant_audit_mode_skips_invalid_record_and_reports_it(self):
+        payload = [{"page": {
+            "content": [
+                {"companyCode": "870099", "companyName": "摘牌华搜",
+                 "delistingNotice": "https://www.neeq.com.cn/uploads/example.pdf"},
+                {"companyCode": "832480", "companyName": "摘牌商网",
+                 "delistingNotice": "https://evil.example/a.pdf"},
+            ],
+            "number": 0, "size": 20, "totalElements": 2, "totalPages": 1,
+        }}]
+        body = f"{CALLBACK}({json.dumps(payload, ensure_ascii=False)});".encode()
+        page = NEEQTerminationResultProvider(opener=FakeOpener(body)).fetch_page(
+            tolerate_invalid_records=True
+        )
+        self.assertEqual(len(page.records), 1)
+        self.assertEqual(page.rejected_record_count, 1)
+        self.assertIn("official HTTPS", page.record_validation_errors[0])
+
     def test_rejects_invalid_company_code(self):
         with self.assertRaises(ValueError):
             NEEQTerminationResultProvider().fetch_page(company_code="87099")
