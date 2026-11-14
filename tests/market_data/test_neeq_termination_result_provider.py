@@ -99,6 +99,24 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(page.rejected_record_count, 1)
         self.assertIn("官方 HTTPS 白名单", page.record_validation_errors[0])
 
+    def test_tolerant_audit_mode_exposes_rejected_attachment_host_for_review(self):
+        payload = [{"page": {
+            "content": [
+                {"companyCode": "870099", "companyName": "摘牌华搜",
+                 "delistingNotice": "http://legacy.example/notice.pdf"},
+            ],
+            "number": 0, "size": 20, "totalElements": 1, "totalPages": 1,
+        }}]
+        body = f"{CALLBACK}({json.dumps(payload, ensure_ascii=False)});".encode()
+        page = NEEQTerminationResultProvider(opener=FakeOpener(body)).fetch_page(
+            tolerate_invalid_records=True
+        )
+        detail = page.rejected_record_details[0]
+        self.assertEqual(detail["company_code"], "870099")
+        self.assertEqual(detail["attachment_scheme"], "http")
+        self.assertEqual(detail["attachment_host"], "legacy.example")
+        self.assertEqual(detail["validation_error"], page.record_validation_errors[0].split(":", 1)[1])
+
     def test_rejects_invalid_company_code(self):
         with self.assertRaises(ValueError):
             NEEQTerminationResultProvider().fetch_page(company_code="87099")
