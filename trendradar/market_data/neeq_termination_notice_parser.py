@@ -60,7 +60,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
     found: list[dict[str, str]] = []
     seen: set[str] = set()
     identity_pattern = re.compile(
-        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\\d{6})"
+        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
     )
     for match in identity_pattern.finditer(compact):
         code = match.group("code")
@@ -72,9 +72,9 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
         boundaries = [prefix.rfind(token) + len(token) for token in ("号", "公告", "决定", "终止")]
         boundary = max(boundaries)
         name_part = prefix[boundary:]
-        name_part = re.sub(r"^.*?\\d(?=[\\u4e00-\\u9fff])", "", name_part)
+        name_part = re.sub(r"^.*?\d(?=[\u4e00-\u9fff])", "", name_part)
         name_match = re.search(
-            r"(?P<name>[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
+            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
             name_part,
         )
         company_name = _clean(name_match.group("name")) if name_match else None
@@ -88,9 +88,9 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
 
     # HTML text extraction may flatten table cells onto separate lines or keep
     # several cells on one line. Support both code/name line pairs and row triples.
-    lines = [re.sub(r"\\s+", "", line.strip()) for line in original.splitlines() if line.strip()]
+    lines = [re.sub(r"\s+", "", line.strip()) for line in original.splitlines() if line.strip()]
     for index, line in enumerate(lines):
-        code_match = re.fullmatch(r"(\\d{6})", line)
+        code_match = re.fullmatch(r"(\d{6})", line)
         if not code_match:
             continue
         code = code_match.group(1)
@@ -99,7 +99,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
         short = None
         if index + 1 < len(lines):
             next_line = lines[index + 1]
-            if re.fullmatch(r"[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and next_line not in ("主办券商", "证券简称"):
+            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and next_line not in ("主办券商", "证券简称"):
                 short = next_line
         if short is None:
             continue
