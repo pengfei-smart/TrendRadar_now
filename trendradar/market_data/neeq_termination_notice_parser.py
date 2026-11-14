@@ -31,13 +31,12 @@ def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
 def _parse_notice(block: str, index: int) -> dict[str, Any]:
     number_match = _first(r"股转系统公告\s*(\d{4})\s*(\d{1,5})\s*号", block)
     identity_source = block[number_match.end():] if number_match else block
-    identity_source = block[number_match.end():] if number_match else block
     identity_match = _first(
         r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-\s]{2,100}?)\s*[（(]\s*证券简称\s*[：:]\s*(?P<short>[^；;）)]+)\s*[；;]\s*证券代码\s*[：:]\s*(?P<code>\d{6})",
         identity_source,
     )
     decision_match = _first(
-        r"我司于\s*" + _DATE + r"\s*对.{1,100}?作出终止其股票\s*挂牌的决定",
+        r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,100}?作出终止其股票\s*挂牌的决定",
         block,
     )
     planned_match = _first(
