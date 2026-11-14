@@ -21,7 +21,6 @@ def parse_neeq_termination_roster(text: str) -> dict:
         entries = list(re.finditer(r"(?<!\d)(\d{1,2})\s+(\d{6})(?!\d)", line))
         for match in entries:
             code = match.group(2)
-            code_start = match.start(2)
             start = max(0, match.start() - 8)
             end = min(len(line), match.end() + 100)
             context = line[start:end]
