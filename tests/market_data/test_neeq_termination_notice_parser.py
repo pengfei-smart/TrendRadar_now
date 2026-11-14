@@ -255,6 +255,19 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["security_code"], "832497")
         self.assertEqual(notice["termination_reason_category"], "voluntary_dissolution_liquidation")
 
+    def test_extracts_mongda_company_name_and_hyphenated_notice_number(self):
+        text = """股转系统公告
+-1-2021-666号
+-1-2021666内蒙古蒙达钛业股份有限公司（证券简称：蒙达钛业；证券代码：872853；主办券商：某券商）未能按照规定时间披露2020年半年度报告。根据业务规则第4.5.1条第（三）项规定，我司于2021年5月28日对蒙达钛业作出终止其股票挂牌的决定。如未在规定期限内提交复核申请或复核申请未被受理，我司将自2021年6月7日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年5月28日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["document_number"], "2021-666")
+        self.assertEqual(notice["company_name"], "内蒙古蒙达钛业股份有限公司")
+        self.assertEqual(notice["short_name"], "蒙达钛业")
+        self.assertEqual(notice["security_code"], "872853")
+        self.assertEqual(notice["decision_date"], "2021-05-28")
+
     def test_report_counts_unmatched_parsed_notices(self):
         text = """股转系统公告
 2021 894号
