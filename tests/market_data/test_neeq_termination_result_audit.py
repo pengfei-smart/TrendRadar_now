@@ -35,14 +35,17 @@ class TerminationResultAuditTests(unittest.TestCase):
 
 
     def test_reports_attachment_coverage_separately(self):
-        page = make_page(0, records=[
+        sample_page = SimpleNamespace(
+            page_number=0, page_size=3, total_pages=1, total_elements=3,
+            status_code=200, records=[
             {"companyCode": "870099", "id": "1",
              "delistingNotice": "https://www.neeq.com.cn/a.pdf"},
             {"companyCode": "832480", "id": "2",
              "delistingNotice": "https://www.neeq.com.cn/important_news/2.html"},
             {"companyCode": "831610", "id": "3", "delistingNotice": ""},
-        ], total_pages=1, total_elements=3)
-        result = audit_neeq_termination_pages([page])
+            ],
+        )
+        result = audit_neeq_termination_pages([sample_page])
         self.assertTrue(result["complete_coverage"])
         self.assertFalse(result["attachment_coverage_complete"])
         self.assertEqual(result["attachment_url_count"], 2)
