@@ -97,7 +97,7 @@ class ProviderTests(unittest.TestCase):
         )
         self.assertEqual(len(page.records), 1)
         self.assertEqual(page.rejected_record_count, 1)
-        self.assertIn("official HTTPS", page.record_validation_errors[0])
+        self.assertIn("官方 HTTPS 白名单", page.record_validation_errors[0])
 
     def test_rejects_invalid_company_code(self):
         with self.assertRaises(ValueError):
