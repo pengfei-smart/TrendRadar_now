@@ -117,7 +117,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
         short = None
         if index + 1 < len(lines):
             next_line = lines[index + 1]
-            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and re.search(r"[\u4e00-\u9fff]", next_line) and next_line not in ("主办券商", "证券简称"):
+            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and len(re.findall(r"[\u4e00-\u9fff]", next_line)) >= 2 and not re.search(r"\d{4}", next_line) and next_line not in ("主办券商", "证券简称"):
                 short = next_line
         if short is None:
             continue
