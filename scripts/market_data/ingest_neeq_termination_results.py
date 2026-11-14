@@ -52,6 +52,8 @@ def main() -> int:
             "page": p.page_number, "page_size": p.page_size,
             "total_elements": p.total_elements, "total_pages": p.total_pages,
             "response_sha256": p.response_sha256,
+            "request_parameters": p.request_parameters,
+            "request_body_sha256": p.request_body_sha256,
         } for p in pages],
         "ingestion": result,
         "safety": {
