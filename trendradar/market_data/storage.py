@@ -16,7 +16,7 @@ class MarketStorage:
     SCHEMA_VERSION = 6
 
     def __init__(self, db_path: str = "output/market/market.db"):
-        self.db_path = Path(db_path)
+        self.db_path = Path(db_path).expanduser().resolve()
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize()
 
@@ -37,6 +37,17 @@ class MarketStorage:
             raise
         finally:
             connection.close()
+
+    @contextmanager
+    def _connection_scope(
+        self, connection: sqlite3.Connection | None = None,
+    ) -> Iterator[sqlite3.Connection]:
+        """Reuse an outer transaction when supplied; otherwise own a normal transaction."""
+        if connection is None:
+            with self.connect() as active_connection:
+                yield active_connection
+        else:
+            yield connection
 
     @staticmethod
     def _columns(connection: sqlite3.Connection, table: str) -> set[str]:
@@ -598,7 +609,9 @@ class MarketStorage:
             ).fetchall()
             return [dict(row) for row in rows]
 
-    def save_lifecycle_evidence_candidates(self, candidates: Iterable[dict]) -> int:
+    def save_lifecycle_evidence_candidates(
+        self, candidates: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """保存待核验线索；采集行为绝不自动写入正式生命周期事实表。"""
         kinds = {"event", "corporate_action", "relationship"}
         date_statuses = {"confirmed", "approximate", "pending", "unknown"}
@@ -634,7 +647,7 @@ class MarketStorage:
                 item.get("source_published_at", ""), retrieved_at, content_sha256,
                 item.get("evidence_excerpt", ""), payload, item.get("evidence_grade", "unknown"),
             ))
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             connection.executemany(
                 """INSERT INTO lifecycle_evidence_candidates
                 (candidate_id,candidate_kind,security_code,related_security_code,exchange,
@@ -720,7 +733,9 @@ class MarketStorage:
             if cursor.rowcount != 1:
                 raise ValueError(f"生命周期证据候选不存在: {candidate_id}")
 
-    def save_neeq_issuer_identity_candidates(self, candidates: Iterable[dict]) -> int:
+    def save_neeq_issuer_identity_candidates(
+        self, candidates: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """保存NEEQ公告元数据身份候选；即使审核为verified也不自动创建发行人主档。"""
         rows = []
         for item in candidates:
@@ -749,7 +764,7 @@ class MarketStorage:
                 metadata_source_url, response_hash, retrieved_at,
                 json.dumps(raw_record, ensure_ascii=False, sort_keys=True),
             ))
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             connection.executemany(
                 """INSERT INTO neeq_issuer_identity_candidates
                 (identity_candidate_id,company_code,company_name,disclosure_title,publish_date,
@@ -772,6 +787,65 @@ class MarketStorage:
                     <> excluded.metadata_response_sha256 THEN '' ELSE neeq_issuer_identity_candidates.review_notes END,
                 updated_at=CURRENT_TIMESTAMP""", rows)
         return len(rows)
+
+    def save_neeq_lifecycle_candidate_batch(
+        self, identity_candidates: Iterable[dict],
+        lifecycle_candidates: Iterable[dict],
+    ) -> dict[str, int | bool]:
+        """Atomically persist both NEEQ review queues and verify committed rows by ID."""
+        identity_rows = list(identity_candidates)
+        lifecycle_rows = list(lifecycle_candidates)
+        identity_ids = [str(row.get("identity_candidate_id") or "").strip() for row in identity_rows]
+        lifecycle_ids = [str(row.get("candidate_id") or "").strip() for row in lifecycle_rows]
+        if any(not value for value in identity_ids + lifecycle_ids):
+            raise ValueError("NEEQ候选批次中的候选ID不得为空")
+
+        with self.connect() as connection:
+            identity_saved = self.save_neeq_issuer_identity_candidates(
+                identity_rows, connection=connection,
+            )
+            lifecycle_saved = self.save_lifecycle_evidence_candidates(
+                lifecycle_rows, connection=connection,
+            )
+            for table, column, expected_ids in (
+                ("neeq_issuer_identity_candidates", "identity_candidate_id", identity_ids),
+                ("lifecycle_evidence_candidates", "candidate_id", lifecycle_ids),
+            ):
+                if not expected_ids:
+                    continue
+                placeholders = ",".join("?" for _ in expected_ids)
+                found = {
+                    row[0] for row in connection.execute(
+                        f"SELECT {column} FROM {table} WHERE {column} IN ({placeholders})",
+                        expected_ids,
+                    ).fetchall()
+                }
+                if found != set(expected_ids):
+                    raise RuntimeError(f"NEEQ候选批次事务内回读不完整: {table}")
+
+        # Verify again through a fresh connection after COMMIT, not the write transaction.
+        with self.connect() as connection:
+            for table, column, expected_ids in (
+                ("neeq_issuer_identity_candidates", "identity_candidate_id", identity_ids),
+                ("lifecycle_evidence_candidates", "candidate_id", lifecycle_ids),
+            ):
+                if not expected_ids:
+                    continue
+                placeholders = ",".join("?" for _ in expected_ids)
+                found = {
+                    row[0] for row in connection.execute(
+                        f"SELECT {column} FROM {table} WHERE {column} IN ({placeholders})",
+                        expected_ids,
+                    ).fetchall()
+                }
+                if found != set(expected_ids):
+                    raise RuntimeError(f"NEEQ候选提交后回读不完整: {table}")
+
+        return {
+            "identity_candidates_saved": identity_saved,
+            "lifecycle_candidates_saved": lifecycle_saved,
+            "readback_verified": True,
+        }
 
     def list_neeq_issuer_identity_candidates(
         self, *, review_status: str | None = None, company_code: str | None = None,
