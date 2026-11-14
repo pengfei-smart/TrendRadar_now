@@ -56,36 +56,52 @@ def _extract_document_number(compact: str) -> str | None:
 
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
-    pattern = (
-        r"(?P<name>[^，,。；;：:\\d]{2,50}?(?:股份有限公司|有限责任公司|有限公司))"
-        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
-    )
+    """Extract every structured company identity and simple HTML table row."""
     found: list[dict[str, str]] = []
     seen: set[str] = set()
-    for match in re.finditer(pattern, compact):
+    identity_pattern = re.compile(
+        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\\d{6})"
+    )
+    for match in identity_pattern.finditer(compact):
         code = match.group("code")
         if code in seen:
             continue
+        prefix = compact[:match.start()]
+        # Start after the latest notice/header/title boundary. Some historical PDF
+        # text layers concatenate the page number directly with the legal name.
+        boundaries = [prefix.rfind(token) + len(token) for token in ("号", "公告", "决定", "终止")]
+        boundary = max(boundaries)
+        name_part = prefix[boundary:]
+        name_part = re.sub(r"^.*?\\d(?=[\\u4e00-\\u9fff])", "", name_part)
+        name_match = re.search(
+            r"(?P<name>[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
+            name_part,
+        )
+        company_name = _clean(name_match.group("name")) if name_match else None
         seen.add(code)
         found.append({
-            "company_name": _clean(match.group("name")),
+            "company_name": company_name,
             "short_name": _clean(match.group("short")),
             "security_code": code,
             "identity_source": "structured_identity_text",
         })
 
-    # HTML栏目页附表常被提取为“证券代码 / 证券简称 / 主办券商”逐行文本，
-    # 不一定保留括号身份字段；仅接受6位代码行后紧邻的简称行。
-    lines = [line.strip() for line in original.splitlines() if line.strip()]
-    for index, line in enumerate(lines[:-1]):
-        if not re.fullmatch(r"\d{6}", line):
+    # HTML text extraction may flatten table cells onto separate lines or keep
+    # several cells on one line. Support both code/name line pairs and row triples.
+    lines = [re.sub(r"\\s+", "", line.strip()) for line in original.splitlines() if line.strip()]
+    for index, line in enumerate(lines):
+        code_match = re.fullmatch(r"(\\d{6})", line)
+        if not code_match:
             continue
-        code = line
-        short = re.sub(r"\s+", "", lines[index + 1])
-        if code in seen or not re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", short):
+        code = code_match.group(1)
+        if code in seen:
             continue
-        # 排除把下一行序号、券商字段或页码当作证券简称的情况。
-        if re.fullmatch(r"\d+", short) or any(word in short for word in ("证券", "公司", "公告")):
+        short = None
+        if index + 1 < len(lines):
+            next_line = lines[index + 1]
+            if re.fullmatch(r"[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and next_line not in ("主办券商", "证券简称"):
+                short = next_line
+        if short is None:
             continue
         seen.add(code)
         found.append({
@@ -244,6 +260,7 @@ def crosscheck_neeq_notice_task(parsed: dict, task: dict, download_record: dict 
             if not name_match:
                 issues.append("company_name_mismatch")
             if date_match is False:
+                issues.append("result_date_vs_planned_date_mismatch")
                 issues.append("result_date_vs_notice_date_mismatch")
             issues.extend(notice.get("parse_warnings") or [])
             comparisons.append({
