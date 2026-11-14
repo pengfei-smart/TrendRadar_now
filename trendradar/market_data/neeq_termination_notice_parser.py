@@ -29,27 +29,29 @@ def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
 
 
 def _parse_notice(block: str, index: int) -> dict[str, Any]:
-    number_match = _first(r"股转系统公告\s*(\d{4})\s*(\d{1,5})\s*号", block)
-    identity_source = block[number_match.end():] if number_match else block
+    # PDF文本层可能在汉字之间插入空格或换行；匹配时压缩空白，原文仍由上层保留。
+    compact = re.sub(r"\s+", "", block)
+    number_match = _first(r"股转系统公告(\d{4})(\d{1,5})号", compact)
+    identity_source = compact[number_match.end():] if number_match else compact
     identity_match = _first(
-        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-\s]{2,100}?)\s*[（(]\s*证券简称\s*[：:]\s*(?P<short>[^；;）)]+)\s*[；;]\s*证券代码\s*[：:]\s*(?P<code>\d{6})",
+        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;）)]+)[；;]证券代码[：:](?P<code>\d{6})",
         identity_source,
     )
     decision_match = _first(
         r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,100}?作出终止其股票\s*挂牌的决定",
-        block,
+        compact,
     )
     planned_match = _first(
         r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌",
-        block,
+        compact,
     )
     announcement_match = _first(
         r"全国中小企业股份转让系统有限责任公司\s*" + _DATE,
-        block,
+        compact,
     )
     reason_match = _first(
         r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据",
-        block,
+        compact,
     )
     return {
         "notice_index": index,
@@ -117,7 +119,16 @@ def crosscheck_neeq_notice_task(
         for candidate in candidates:
             expected_name = _normalise_name(candidate.get("company_name"))
             actual_name = _normalise_name(notice.get("company_name"))
-            name_match = bool(expected_name and actual_name and expected_name == actual_name)
+            expected_short_name = _normalise_name(candidate.get("company_short_name"))
+            notice_short_name = _normalise_name(notice.get("short_name"))
+            exact_full_name_match = bool(expected_name and actual_name and expected_name == actual_name)
+            short_name_match = bool(
+                notice_short_name and (
+                    notice_short_name == expected_name
+                    or (expected_short_name and notice_short_name == expected_short_name)
+                )
+            )
+            name_match = exact_full_name_match or short_name_match
             source_date = str(candidate.get("delisting_date") or "").strip() or None
             planned_date = notice.get("planned_termination_date")
             date_match = (source_date == planned_date) if source_date and planned_date else None
@@ -135,6 +146,8 @@ def crosscheck_neeq_notice_task(
                 "notice_company_name": notice.get("company_name"),
                 "company_code_match": True,
                 "company_name_match": name_match,
+                "company_full_name_exact_match": exact_full_name_match,
+                "company_short_name_match": short_name_match,
                 "result_list_date": source_date,
                 "notice_planned_termination_date": planned_date,
                 "result_list_date_matches_planned_date": date_match,
