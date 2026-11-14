@@ -21,10 +21,14 @@ def _payload(row: dict) -> dict:
 
 def _date_evidence(payload: dict, row: dict | None = None) -> list[dict]:
     parsed = payload.get("parsed_evidence") or {}
-    values = parsed.get("date_evidence") if isinstance(parsed, dict) else []
-    if not isinstance(values, list):
-        values = payload.get("date_evidence") or ((row or {}).get("date_evidence", []))
-    return [item for item in values if isinstance(item, dict)] if isinstance(values, list) else []
+    candidates = []
+    if isinstance(parsed, dict):
+        candidates.append(parsed.get("date_evidence"))
+    candidates.extend((payload.get("date_evidence"), (row or {}).get("date_evidence")))
+    for values in candidates:
+        if isinstance(values, list) and values:
+            return [item for item in values if isinstance(item, dict)]
+    return []
 
 
 def _decision_date(payload: dict, row: dict | None = None) -> str:
@@ -62,7 +66,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
         event_type = str(row.get("event_type") or "").strip()
         decision_date = _decision_date(payload, row)
         if (
-            str(row.get("exchange") or "").upper() != "NEEQ"
+            str(row.get("exchange") or hint.get("exchange") or "").upper() != "NEEQ"
             or len(issuer_code) != 6
             or not issuer_code.isdigit()
             or not event_type
@@ -74,10 +78,14 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
 
     output = []
     for (issuer_code, event_type, decision_date), rows in sorted(groups.items()):
-        identity_names = {
-            str(((_payload(row).get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}).get("issuer_name")) or "").strip()
-            for row in rows
-        } - {""}
+        identity_names = set()
+        for row in rows:
+            row_payload = _payload(row)
+            row_hint = row_payload.get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}
+            if isinstance(row_hint, dict):
+                name = str(row_hint.get("issuer_name") or "").strip()
+                if name:
+                    identity_names.add(name)
         group_seed = "|".join(("NEEQ", issuer_code, event_type, decision_date))
         group_id = "neeq-event-" + hashlib.sha256(group_seed.encode("utf-8")).hexdigest()[:24]
         evidence = []
@@ -122,9 +130,11 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
     for row in ungrouped:
         payload = _payload(row)
         hint = payload.get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}
+        if not isinstance(hint, dict):
+            hint = {}
         output.append({
             "event_group_id": "",
-            "exchange": str(row.get("exchange") or ""),
+            "exchange": str(row.get("exchange") or hint.get("exchange") or ""),
             "issuer_code": str(hint.get("issuer_code") or row.get("security_code") or ""),
             "event_type": str(row.get("event_type") or ""),
             "decision_date_anchor": "",
