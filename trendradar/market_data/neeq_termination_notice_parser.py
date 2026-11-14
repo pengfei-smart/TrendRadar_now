@@ -37,11 +37,11 @@ def _parse_notice(block: str, index: int) -> dict[str, Any]:
         identity_source,
     )
     decision_match = _first(
-        r"我司于\s*" + _DATE + r"\s*对.{1,100}?作出终止其股票挂牌的决定",
+        r"我司于\s*" + _DATE + r"\s*对.{1,100}?作出终止其股票\s*挂牌的决定",
         block,
     )
     planned_match = _first(
-        r"将自\s*" + _DATE + r"\s*起终止其股票挂牌",
+        r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌",
         block,
     )
     announcement_match = _first(
@@ -49,7 +49,7 @@ def _parse_notice(block: str, index: int) -> dict[str, Any]:
         block,
     )
     reason_match = _first(
-        r"未能按照规定时间披露\s*(.{2,100}?)\s*。?\s*根据",
+        r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据",
         block,
     )
     return {
