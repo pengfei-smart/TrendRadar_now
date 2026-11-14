@@ -33,6 +33,10 @@ class NEEQLifecycleReviewTests(unittest.TestCase):
         result = list_candidates(self.storage, target="identity", company_code="870099")
         self.assertEqual(len(result["identity_candidates"]), 1)
         self.assertEqual(result["identity_candidates"][0]["raw_record"]["companyCd"], "870099")
+        self.assertEqual(
+            result["identity_candidates"][0]["notice_classification"]["category"],
+            "delisting_arrangement_risk_notice",
+        )
         self.assertEqual(result["lifecycle_candidates"], [])
 
     def test_reviews_identity_candidate_without_promoting_master(self):
