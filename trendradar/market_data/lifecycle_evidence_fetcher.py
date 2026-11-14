@@ -71,9 +71,11 @@ class LifecycleEvidenceFetcher:
                 "Referer": "https://www.neeq.com.cn/disclosure/announcement.html",
                 "Origin": "https://www.neeq.com.cn",
             })
-            if url and urlsplit(url).path.startswith("/uploads/"):
-                # 终止挂牌结果接口附件实测使用 uploads 路径；复用浏览器导航头，
-                # 避免通用公告列表 Referer 触发附件访问重定向异常。
+            if url and urlsplit(url).path.lower().startswith(
+                ("/uploads/", "/disclosure/", "/important_news/")
+            ):
+                # 终止挂牌结果接口的历史附件分布在 uploads、disclosure 和 important_news；
+                # 统一使用同源浏览器导航头，HTML 页面按类型协商 Accept。
                 path = urlsplit(url).path.lower()
                 accept = (
                     "text/html,application/xhtml+xml,application/pdf,*/*"
