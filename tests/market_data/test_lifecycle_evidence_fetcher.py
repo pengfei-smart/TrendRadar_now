@@ -95,6 +95,25 @@ class LifecycleEvidenceFetcherTests(unittest.TestCase):
             "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
         )
 
+    def test_neeq_termination_result_attachment_uses_verified_navigation_headers(self):
+        body = b"%PDF-1.7 official NEEQ termination result"
+        opener = FakeOpener(FakeResponse(
+            body,
+            url="https://www.neeq.com.cn/uploads/1/file/public/202609/sample.pdf",
+        ))
+        fetcher = LifecycleEvidenceFetcher(opener=opener)
+        fetcher.fetch(
+            "neeq",
+            "https://www.neeq.com.cn/uploads/1/file/public/202609/sample.pdf",
+        )
+        self.assertIn("Chrome/130.0.0.0", opener.request.get_header("User-agent"))
+        self.assertEqual(
+            opener.request.get_header("Referer"),
+            "https://www.neeq.com.cn/disclosure/termination_listing.html",
+        )
+        self.assertEqual(opener.request.get_header("Accept"), "application/pdf,*/*")
+        self.assertEqual(opener.request.get_header("Sec-fetch-dest"), "document")
+
     def test_rejects_unregistered_url_before_network(self):
         opener = FakeOpener(FakeResponse())
         fetcher = LifecycleEvidenceFetcher(opener=opener)
