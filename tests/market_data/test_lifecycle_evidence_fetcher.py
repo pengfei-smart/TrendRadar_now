@@ -79,10 +79,10 @@ class LifecycleEvidenceFetcherTests(unittest.TestCase):
         body = b"%PDF-1.7 official NEEQ notice"
         opener = FakeOpener(FakeResponse(
             body,
-            url="https://www.neeq.com.cn/disclosure/test.pdf",
+            url="https://www.neeq.com.cn/static/test.pdf",
         ))
         fetcher = LifecycleEvidenceFetcher(opener=opener)
-        result = fetcher.fetch("neeq", "https://www.neeq.com.cn/disclosure/test.pdf")
+        result = fetcher.fetch("neeq", "https://www.neeq.com.cn/static/test.pdf")
         self.assertEqual(result.body, body)
         self.assertIn("Chrome/131.0.0.0", opener.request.get_header("User-agent"))
         self.assertEqual(
