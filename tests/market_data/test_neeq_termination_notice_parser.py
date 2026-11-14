@@ -394,10 +394,10 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 
 
     def test_v6_prefers_notice_number_matching_signed_year_over_body_citation(self):
-        text = """股转系统公告
-2016-36号为正文引用的历史公告
-2017-701
+        text = """2017
+701
 中科招商投资管理集团股份有限公司（证券简称：中科招商；证券代码：832168）
+正文引用《股转系统公告2016-36号》历史公告。
 现决定于2017年12月18日对上述公司的股票暂停转让一天，12月26日起终止上述公司股票挂牌。
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
