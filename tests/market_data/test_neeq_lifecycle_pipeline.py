@@ -2,6 +2,7 @@
 """Tests for the review-only NEEQ lifecycle ingestion pipeline."""
 
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -85,7 +86,7 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
             lifecycle = storage.list_lifecycle_evidence_candidates()
             self.assertTrue(any(row["exchange"] == "NEEQ" and row["security_code"] == "" for row in lifecycle))
             self.assertTrue(any(
-                __import__("json").loads(row["payload_json"])["notice_classification"]["category"]
+                json.loads(row["payload_json"])["notice_classification"]["category"]
                 == "delisting_arrangement_risk_notice"
                 for row in lifecycle if row["exchange"] == "NEEQ"
             ))
