@@ -64,7 +64,7 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(result["processed_count"], 2)
             self.assertEqual(len(fetcher.calls), 1)
             self.assertEqual(result["formal_lifecycle_writes"], 0)
-            rows = storage.list_lifecycle_evidence_candidates(exchange=None) if False else storage.list_lifecycle_evidence_candidates()
+            rows = storage.list_lifecycle_evidence_candidates()
             selected = [row for row in rows if row["event_type"] == "delisting_completion"]
             self.assertEqual({row["security_code"] for row in selected}, {"870099", "832480"})
             self.assertTrue(all(row["review_status"] == "pending" for row in selected))
