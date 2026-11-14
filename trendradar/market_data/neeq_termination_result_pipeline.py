@@ -72,12 +72,17 @@ def ingest_neeq_termination_result_pages(
             document, text, roster = document_cache[notice_url]
             match = match_neeq_result_record(record, roster)
             date_value = str(record.get("delistingDateISO") or "")
+            semantic_record = {
+                key: record.get(key) for key in (
+                    "companyCode", "companyName", "hostBroker", "delistingDateISO",
+                    "delistingReason", "delistingNotice", "dataType", "status",
+                )
+            }
             record_fingerprint = json.dumps(
-                record, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+                semantic_record, ensure_ascii=False, sort_keys=True, separators=(",", ":")
             )
             evidence_hash = hashlib.sha256(
-                (document.content_sha256 + "|" + result_response_hash + "|" +
-                 record_fingerprint).encode("utf-8")
+                (document.content_sha256 + "|" + record_fingerprint).encode("utf-8")
             ).hexdigest()
             # Candidate identity remains stable across evidence refreshes; changed evidence
             # hash makes storage reset prior human review to pending.
