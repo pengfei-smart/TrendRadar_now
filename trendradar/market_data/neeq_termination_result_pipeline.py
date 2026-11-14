@@ -47,8 +47,8 @@ def ingest_neeq_termination_result_pages(
             if key in seen:
                 continue
             seen.add(key)
-            work.append((record, page.source_url, response_hash))
-    for record, result_source_url, result_response_hash in work[:max_records]:
+            work.append((record, page.source_url, response_hash, page.page_number, page.retrieved_at))
+    for record, result_source_url, result_response_hash, result_page_number, page_retrieved_at in work[:max_records]:
         code = str(record.get("companyCode") or "").strip()
         name = str(record.get("companyName") or "").strip()
         notice_url = str(record.get("delistingNotice") or "").strip()
@@ -87,7 +87,8 @@ def ingest_neeq_termination_result_pages(
                 "result_record": record,
                 "result_source_url": result_source_url,
                 "result_response_sha256": result_response_hash,
-                "result_retrieved_at": collected_at,
+                "result_retrieved_at": page_retrieved_at or collected_at,
+                "result_page_number": result_page_number,
                 "document_requested_url": document.requested_url,
                 "document_final_url": document.final_url,
                 "document_sha256": document.content_sha256,
