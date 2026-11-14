@@ -56,17 +56,18 @@ def _extract_company_name(value: str) -> str:
     cleaned = _clean(value)
     # 标题常先出现“关于终止……的公告”，随后才出现正文主体名称。
     tail = cleaned.rsplit("公告", 1)[-1]
-    match = re.search(
-        r"[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?(?:股份有限公司|有限责任公司|有限公司)",
+    # 法定主体名称通常以汉字开头；限制首字符可剔除PDF页码、公告编号等前置噪声。
+    matches = list(re.finditer(
+        r"[\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9（）()·\-]{1,100}?(?:股份有限公司|有限责任公司|有限公司)",
         tail,
-    )
-    return match.group(0) if match else cleaned
+    ))
+    return matches[-1].group(0) if matches else cleaned
 
 
 def _parse_notice(block: str, index: int) -> dict[str, Any]:
     # PDF文本层可能在汉字之间插入空格或换行；匹配时压缩空白，原文仍由上层保留。
     compact = re.sub(r"\s+", "", block)
-    number_match = _first(r"(?:股转系统公告)?[〔［\[]?(\d{4})[〕］\]]?\s*(\d{1,5})号", compact)
+    number_match = _first(r"(?:股转系统公告)?[〔［\[]?(\d{4})[〕］\]]?[-—–\s]*(\d{1,5})号", compact)
     identity_source = compact[number_match.end():] if number_match else compact
     identity_match = _first(
         r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})",
