@@ -26,8 +26,8 @@ def main() -> int:
     args = parser.parse_args()
     if args.start_page < 0 or args.start_page > 100000:
         parser.error("--start-page 必须在0到100000之间")
-    if not 1 <= args.max_pages <= 100:
-        parser.error("--max-pages 必须在1到100之间")
+    if not 1 <= args.max_pages <= 500:
+        parser.error("--max-pages 必须在1到500之间")
     provider = NEEQTerminationResultProvider(timeout_seconds=args.timeout)
     first = provider.fetch_page(
         page=args.start_page, company_code=args.company_code, keyword=args.keyword,
