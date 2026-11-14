@@ -117,6 +117,32 @@ class NEEQLifecycleEventAggregatorTests(unittest.TestCase):
         self.assertEqual(len(groups), 1)
         self.assertEqual(groups[0]["evidence_count"], 2)
 
+    def test_accepts_flattened_review_projection_with_empty_nested_dates(self):
+        rows = [
+            {
+                "candidate_id": "flat-1",
+                "exchange": "NEEQ",
+                "event_type": "delisting_decision",
+                "source_published_at": "2026-11-02",
+                "issuer_identity_hint": {"issuer_code": "870099", "issuer_name": "华搜股份"},
+                "date_evidence": [{"value": "2026-09-29", "date_type": "decision_date"}],
+                "payload_json": {"parsed_evidence": {"date_evidence": []}},
+            },
+            {
+                "candidate_id": "flat-2",
+                "exchange": "NEEQ",
+                "event_type": "delisting_decision",
+                "source_published_at": "2026-11-03",
+                "issuer_identity_hint": {"issuer_code": "870099", "issuer_name": "华搜股份"},
+                "date_evidence": [{"value": "2026-09-29", "date_type": "decision_date"}],
+                "payload_json": {"parsed_evidence": {"date_evidence": []}},
+            },
+        ]
+        groups = build_neeq_lifecycle_event_groups(rows)
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(groups[0]["evidence_count"], 2)
+        self.assertEqual(groups[0]["decision_date_anchor"], "2026-09-29")
+
     def test_does_not_merge_across_different_issuers(self):
         groups = build_neeq_lifecycle_event_groups([
             candidate("issuer-a", code="870099"),
