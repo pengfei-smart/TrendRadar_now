@@ -61,22 +61,55 @@ def _parse_jsonp(body: str, callback: str) -> object:
     return json.loads(match.group(1))
 
 
+def _normalize_attachment_url(value: str) -> str:
+    """Normalize only root-relative NEEQ paths; absolute URLs must already be allowlisted."""
+    from urllib.parse import urljoin, urlsplit
+
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    if any(ord(char) < 32 for char in raw) or "\\" in raw:
+        raise ValueError("终止挂牌公告附件 URL 含非法字符")
+    if raw.startswith("/") and not raw.startswith("//"):
+        normalized = urljoin("https://www.neeq.com.cn/", raw)
+    else:
+        normalized = raw
+    parsed = urlsplit(normalized)
+    if parsed.scheme != "https" or parsed.username is not None or parsed.password is not None:
+        raise ValueError("终止挂牌公告附件必须使用官方 HTTPS 地址")
+    if not is_allowed_url("neeq", normalized):
+        raise ValueError("终止挂牌公告附件 URL 不在 NEEQ 官方 HTTPS 白名单")
+    return normalized
+
+
+def _attachment_kind(url: str) -> str:
+    from urllib.parse import urlsplit
+
+    path = urlsplit(url).path.lower()
+    if path.endswith(".pdf"):
+        return "pdf"
+    if path.endswith((".html", ".htm")):
+        return "html"
+    return "unknown"
+
+
 def _validate_record(record: object) -> dict:
     if not isinstance(record, dict):
         raise ValueError("终止挂牌记录必须是对象")
     code = str(record.get("companyCode") or "").strip()
     name = str(record.get("companyName") or "").strip()
     broker = str(record.get("hostBroker") or "").strip()
-    notice = str(record.get("delistingNotice") or "").strip()
+    original_notice = str(record.get("delistingNotice") or "").strip()
     if len(code) != 6 or not code.isdigit() or not name:
         raise ValueError("终止挂牌记录缺少有效证券代码或名称")
-    if notice and not is_allowed_url("neeq", notice):
-        raise ValueError("终止挂牌公告附件 URL 不在 NEEQ 官方 HTTPS 白名单")
+    notice = _normalize_attachment_url(original_notice)
     result = dict(record)
     result["companyCode"] = code
     result["companyName"] = name
     result["hostBroker"] = broker
+    result["delistingNoticeOriginal"] = original_notice
     result["delistingNotice"] = notice
+    result["attachmentKind"] = _attachment_kind(notice)
     result["delistingDateISO"] = _format_epoch_date(record.get("delistingDate"))
     return result
 
