@@ -57,7 +57,7 @@ def _extract_document_number(compact: str) -> str | None:
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
     pattern = (
-        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)"
+        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?(?:股份有限公司|有限责任公司|有限公司))"
         r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
     )
     found: list[dict[str, str]] = []
@@ -112,7 +112,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         )
     planned_match = _first(r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌", compact)
     stated_match = _first(
-        r"(?:决定自|决定于|自)\s*" + _DATE + r"\s*起?终止[其上述]?公司?股票?挂牌",
+        r"(?:决定自|决定于|自)\s*" + _DATE + r"\s*起?终止(?:其|上述)?(?:公司)?(?:的)?股票(?:挂牌)?",
         compact,
     )
     # 兼容“12月26日起终止”这种沿用前文年份的历史写法。
