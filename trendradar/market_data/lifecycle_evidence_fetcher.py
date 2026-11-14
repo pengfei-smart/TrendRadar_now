@@ -74,13 +74,19 @@ class LifecycleEvidenceFetcher:
             if url and urlsplit(url).path.startswith("/uploads/"):
                 # 终止挂牌结果接口附件实测使用 uploads 路径；复用浏览器导航头，
                 # 避免通用公告列表 Referer 触发附件访问重定向异常。
+                path = urlsplit(url).path.lower()
+                accept = (
+                    "text/html,application/xhtml+xml,application/pdf,*/*"
+                    if path.endswith((".html", ".htm")) or "/important_news/" in path
+                    else "application/pdf,*/*"
+                )
                 headers.update({
                     "User-Agent": (
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                         "AppleWebKit/537.36 (KHTML, like Gecko) "
                         "Chrome/130.0.0.0 Safari/537.36"
                     ),
-                    "Accept": "application/pdf,*/*",
+                    "Accept": accept,
                     "Referer": "https://www.neeq.com.cn/disclosure/termination_listing.html",
                     "Sec-Fetch-Dest": "document",
                     "Sec-Fetch-Mode": "navigate",
