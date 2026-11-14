@@ -1,1640 +1,178 @@
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>python -X utf8 scripts\market_data\review_neeq_lifecycle.py list --target all --company-code 832480
+C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 scripts\market_data\ingest_neeq_lifecycle.py --start-date 2026-11-01 --end-date 2026-11-13 --page 0 --max-announcements 5 --notice-type 5 --disclosure-type 5 --company-code 870099 --db output\market\market.db
 {
-  "database": "output\\market\\market.db",
-  "identity_candidates": [
-    {
-      "candidate_id": "neeq-id-895a5447135f3ae7a60c1ce092f9915b",
-      "company_code": "832480",
-      "company_name": "摘牌商网",
-      "title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-      "publish_date": "2026-11-03",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "832480",
-        "companyName": "摘牌商网",
-        "destFilePath": "/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-11-03",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
+  "probe": {
+    "source_id": "neeq",
+    "status_code": 200,
+    "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
+    "response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+    "page_number": 0,
+    "page_size": 20,
+    "returned_count": 2,
+    "total_elements": 2,
+    "lifecycle_candidate_count": 2,
+    "classification_filter_verified": false,
+    "company_code_filter_verified": true,
+    "warnings": [
+      "本探测只验证公告列表请求、响应包装及分页元数据，不证明高级筛选分类参数已生效。",
+      "当前公告列表可能是混合公告；标题命中仅为人工审核候选，不是退市事实。",
+      "只返回公告元数据，不下载 PDF，不写入正式证券生命周期表。",
+      "noticeType、disclosureType、disclosureSubtype 的业务字典含义尚未全部核验；不要据此推断分类语义。",
+      "companyCd 参数已通过本次非空返回记录逐条匹配验证；keyword 参数仍未完成阳性对照。",
+      "即使筛选结果为零，也不得单凭零结果认定证券无公告或已经终止挂牌。"
+    ]
+  },
+  "ingestion": {
+    "source_id": "neeq",
+    "processed_count": 2,
+    "identity_candidates_saved": 2,
+    "lifecycle_candidates_saved": 8,
+    "readback_verified_batches": 2,
+    "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
+    "items": [
+      {
+        "company_code": "870099",
+        "company_name": "华搜股份",
+        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
+        "document_sha256": "6f951a9a94cfd15757aa7bfd21945f2ae84de02b8648fbf48ecf7d8598b2fc13",
+        "parsed_event_types": [
+          "delisting",
+          "delisting_decision",
+          "delisting_arrangement_period",
+          "resumption"
+        ],
+        "parsed_security_codes": [],
+        "parsed_date_evidence": [
+          {
+            "value": "2026-09-29",
+            "date_type": "decision_date",
+            "date_status": "unknown",
+            "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止"
+          },
+          {
+            "value": "2026-10-21",
+            "date_type": "arrangement_start_date",
+            "date_status": "unknown",
+            "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于"
+          },
+          {
+            "value": "2026-11-03",
+            "date_type": "last_trading_date",
+            "date_status": "unknown",
+            "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于"
+          },
+          {
+            "value": "2026-11-03",
+            "date_type": "unspecified",
+            "date_status": "unknown",
+            "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧"
+          },
+          {
+            "value": "2026-11-04",
+            "date_type": "delisting_date",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "notice_classification": {
+          "category": "delisting_arrangement_risk_notice",
+          "basis": "title_contains_risk_warning",
+          "issuer_role_hint": "broker_or_sponsor_notice",
+          "review_required": true,
+          "confirmed_legal_fact": false
+        },
+        "identity_candidate_id": "neeq-id-81a5d88421f368cea128cb1f00d5d3d4",
+        "lifecycle_candidate_ids": [
+          "life-27d078a64fb993069575fb02b243aac1",
+          "life-0b7fc219bd64b79e699a9d9b460e8a23",
+          "life-99938dbde3355672efc4ed201e100fa4",
+          "life-87404338b1b5f646bb21659592353ee9"
+        ],
+        "persistence_readback_verified": true,
+        "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
+        "status": "saved_for_review"
+      },
+      {
+        "company_code": "870099",
+        "company_name": "华搜股份",
+        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
+        "document_sha256": "10593a626089bed855b98b6871efbc7828613efd519e774fa5b46b9114da0c1a",
+        "parsed_event_types": [
+          "delisting",
+          "delisting_decision",
+          "delisting_arrangement_period",
+          "resumption"
+        ],
+        "parsed_security_codes": [],
+        "parsed_date_evidence": [
+          {
+            "value": "2026-09-29",
+            "date_type": "decision_date",
+            "date_status": "unknown",
+            "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止"
+          },
+          {
+            "value": "2026-10-21",
+            "date_type": "arrangement_start_date",
+            "date_status": "unknown",
+            "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于"
+          },
+          {
+            "value": "2026-11-02",
+            "date_type": "unspecified",
+            "date_status": "unknown",
+            "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧"
+          },
+          {
+            "value": "2026-11-04",
+            "date_type": "delisting_date",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "notice_classification": {
+          "category": "delisting_arrangement_risk_notice",
+          "basis": "title_contains_risk_warning",
+          "issuer_role_hint": "broker_or_sponsor_notice",
+          "review_required": true,
+          "confirmed_legal_fact": false
+        },
+        "identity_candidate_id": "neeq-id-6364b85a0b91422447f77f6251a1475e",
+        "lifecycle_candidate_ids": [
+          "life-77ea0fef5f6953db7ead519a661bfec6",
+          "life-1ceedb7f5afa3dfed1343d4218c70bb8",
+          "life-40072fa0c6420a975bd27c1016137ebb",
+          "life-5cf394af34cac252e78c558fc4282add"
+        ],
+        "persistence_readback_verified": true,
+        "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
+        "status": "saved_for_review"
       }
-    },
-    {
-      "candidate_id": "neeq-id-9e90616b958d8ca97458f03820c3db48",
-      "company_code": "832480",
-      "company_name": "摘牌商网",
-      "title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-      "publish_date": "2026-11-02",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "832480",
-        "companyName": "摘牌商网",
-        "destFilePath": "/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-11-02",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-9ca5809a7ddfc4cc6f76f0a0fc59eb7a",
-      "company_code": "832480",
-      "company_name": "摘牌商网",
-      "title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-      "publish_date": "2026-10-30",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "832480",
-        "companyName": "摘牌商网",
-        "destFilePath": "/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-30",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-2152a549437b55ea5c4ba5113fe29671",
-      "company_code": "832480",
-      "company_name": "摘牌商网",
-      "title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-      "publish_date": "2026-10-29",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "832480",
-        "companyName": "摘牌商网",
-        "destFilePath": "/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-29",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-d5db139749b7c8f3af8efe14a899a0b6",
-      "company_code": "832480",
-      "company_name": "摘牌商网",
-      "title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-      "publish_date": "2026-10-28",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "832480",
-        "companyName": "摘牌商网",
-        "destFilePath": "/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-28",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    }
-  ],
-  "lifecycle_candidates": [
-    {
-      "candidate_id": "life-0186256d3a43a2b852a5c60c78a4ad22",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "公告编号：2026-046\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-058b446a55496321be84598a3c8e0416",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "公告编号：2026-044\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-194f02be6cdefb8ddb856859efb374ea",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "公告编号：2026-048\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n关于公司股票在全国中小企业股份转让系统终止挂牌的公告\n\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记\n载、 误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于2026 年9 月 29\n日收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股\n份转让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ）\n第十七条的规定，全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司\n对终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n2026 年 10 月 13 日，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21\n日起复牌，并于2026 年 11 月 4 日终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二) 股票登记、转让、管理的相关安排\n公司将在股票终止挂牌后根据中国证券登记结算有限责任公司北京分公司\n相关规定及时办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂\n牌制度的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细\n则》 等规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司\n设立的摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治\n理、 信息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵\n守《非上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导\n意见》 等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导\n致股东累计超过 200 人， 或者股东超过200 人后向特定对象发行股票， 将报中国\n证监会注册。\n三、 挂牌公司及主办券商的联系方式\n(一) 公司联系方式\n公司联系人：何振",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n⟦DATE⟧，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起复牌，并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "起复牌，并于⟦DATE⟧终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二)",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-35e250058109a337cdfae138f21d643e",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "公告编号：2026-046\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-381897610f6aa83d160ba406c04f8fff",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "公告编号：2026-044\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-3c7a038780ce112fee5f50c1cd0bbc97",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "公告编号：2026-045\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-3da2e0ad9ad09c22d44c4a7f2fd11368",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "公告编号：2026-045\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-48144eefcca10cd890df7cd53afb2663",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "公告编号：2026-047\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-5367d7b787a05bdc441863a232cb9599",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "公告编号：2026-046\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-671a4f4b3bc8efa2d8beb5a1cef58107",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "公告编号：2026-044\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-6dfa8eda17bd27172ca26c313d3203c1",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "公告编号：2026-048\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n关于公司股票在全国中小企业股份转让系统终止挂牌的公告\n\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记\n载、 误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于2026 年9 月 29\n日收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股\n份转让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ）\n第十七条的规定，全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司\n对终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n2026 年 10 月 13 日，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21\n日起复牌，并于2026 年 11 月 4 日终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二) 股票登记、转让、管理的相关安排\n公司将在股票终止挂牌后根据中国证券登记结算有限责任公司北京分公司\n相关规定及时办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂\n牌制度的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细\n则》 等规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司\n设立的摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治\n理、 信息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵\n守《非上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导\n意见》 等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导\n致股东累计超过 200 人， 或者股东超过200 人后向特定对象发行股票， 将报中国\n证监会注册。\n三、 挂牌公司及主办券商的联系方式\n(一) 公司联系方式\n公司联系人：何振",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n⟦DATE⟧，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起复牌，并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "起复牌，并于⟦DATE⟧终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二)",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-7028df0e19bab32dcaf49b4b9ad4db79",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "公告编号：2026-044\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/98435f9e9aeb43b9aece1a9d213285f3.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-044\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-7f0887ec0c89bd9e06e710c3c3bb9706",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "公告编号：2026-045\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-80bfac388bd360f3578ef7900aa1d6f4",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "公告编号：2026-047\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-9740eea0431297880066ad11c986014d",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "公告编号：2026-048\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n关于公司股票在全国中小企业股份转让系统终止挂牌的公告\n\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记\n载、 误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于2026 年9 月 29\n日收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股\n份转让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ）\n第十七条的规定，全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司\n对终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n2026 年 10 月 13 日，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21\n日起复牌，并于2026 年 11 月 4 日终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二) 股票登记、转让、管理的相关安排\n公司将在股票终止挂牌后根据中国证券登记结算有限责任公司北京分公司\n相关规定及时办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂\n牌制度的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细\n则》 等规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司\n设立的摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治\n理、 信息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵\n守《非上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导\n意见》 等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导\n致股东累计超过 200 人， 或者股东超过200 人后向特定对象发行股票， 将报中国\n证监会注册。\n三、 挂牌公司及主办券商的联系方式\n(一) 公司联系方式\n公司联系人：何振",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/62718da784bf44a5979a4ed8fc5d0b5c.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "实性、 准确性和完整性承担个\n别及连带法律责任。\n\n一、 基本情况\n上海商会网网络集团股份有限公司 （以下简称 “公司” ） 于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司 （以下简称 “全国股转公司” ）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转\n发〔2026〕165 号） ，因公司未披露2",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "的， 应当在收到终止挂牌决定或者全国股转公司公告\n发布之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。 截至\n⟦DATE⟧，公司在收到终止挂牌决定或者全国股转公司公告发布之\n日（以在先者为准）起5 个交易日内未向全国股转公司提出复核申请。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提\n交复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起复牌，并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "起复牌，并于⟦DATE⟧终止挂牌。\n\n二、 终止挂牌后的相关安排\n(一) 股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利， 保障股东\n的合法权益。\n公告编号：2026-048\n(二)",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-a77d3dd3221286e01ca80d134a4fa313",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "公告编号：2026-046\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/f770804c32a4402eaa0819d7d77ad537.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-046\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-bfc71a4da636c4b01a24315d47a088e5",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "公告编号：2026-045\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/3ed4703e35c248bfa12c8272d31093b9.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-045\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-cb69d2bdcf9698faa8e46a071f66ca76",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "公告编号：2026-047\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-e5c4bbc0c866ba4a49151a915b883e16",
-      "candidate_kind": "event",
-      "security_code": "832480",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "公告编号：2026-047\n证券代码：832480 证券简称：摘牌商网 主办券商：西南证券\n\n上海商会网网络集团股份有限公司\n股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告\n本公司及董事会全体成员保证公告内容的真实、 准确和完整， 没有虚假记载、\n误导性陈述或者重大遗漏， 并对其内容的真实性、 准确性和完整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于2026 年 9 月 29\n日收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025 年年度报告，根据《全国中小企业股份转\n让系统挂牌公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 2026 年 9 月 30\n日在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 2026\n年10 月 13 日， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 2026 年\n10 月 13 日在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 2026 年 10 月 21 日起\n复牌， 并于2026 年 11 月 4 日终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 2026 年10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌商网” ，证券代码保持不变，交易方式为集合竞价交易。公司\n将于每个交易日开盘前披露一次股票将被终止挂牌的风险提示公告， 请投资者关\n注公告，注意投资风险。\n三、 终止挂牌后的相关安排\n（一）股东权益保护的相关安排\n公司将按照相关法律法规的规定， 保障股东依法行使股东权利，保障股东的\n合法权益。\n\n（二）股票登记、",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[临时公告]摘牌商网:股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/77792620c08a4441a3fa83bddf83dae6.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "832480",
-        "issuer_name": "摘牌商网",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "d988f94975ee73d53d24ffba3322f4dc7dbe09561f1f217f940ce77b689d7ba9",
-        "metadata_retrieved_at": "2026-11-13T14:17:34.109696+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "整性承担个别及连\n带法律责任。\n\n一、 关于公司股票将被终止挂牌的风险提示\n上海商会网网络集团股份有限公司（以下简称“公司”）于⟦DATE⟧收到全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司”）\n出具的《关于终止上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发\n〔2026〕165 号） ，因公司未披露2025",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "公司股票终止挂牌实施细则》 （以下简称 《终止挂牌实施细则》 ） 第十\n七条的规定，全国股转公司决定终止公司股票挂牌。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《收到公司股票被终止挂牌的决定的\n公告》 （公告编号：2026-036）。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-09-30"
-        },
-        {
-          "context": "公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于 ⟦DATE⟧在全国股转系统指定信息披露平台公布了 《关于未提出终止挂牌复核\n申请的提示性公告》 （公告编号：2026-037）。\n根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交",
-          "date_status": "unknown",
-          "date_type": "announcement_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日(以在先者为准)起 5 个交易日内向全国股转公司提交复核申请。截至 ⟦DATE⟧， 公司在收到终止挂牌决定或者全国股转公司公告发布之日 （以在\n先者为准）起 5 个交易日内未向全国股转公司提出复核申请。公司已于",
-          "date_status": "unknown",
-          "date_type": "review_result_date",
-          "value": "2026-10-13"
-        },
-        {
-          "context": "行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "根据 《终止挂牌实施细则》 第二十五条的规定， 如公司未在规定期限内提交\n复核申请且不存在影响股票恢复交易的情形，公司股票自 ⟦DATE⟧起\n复牌， 并于",
-          "date_status": "unknown",
-          "date_type": "resumption_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "上海商会网网络集团股份有限公司股票挂牌的决定》 （股转发 〔2026〕\n165 号）\n\n上海商会网网络集团股份有限公司\n董事会\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "context": "起\n复牌， 并于⟦DATE⟧终止挂牌。 恢复交易期间， 全国股转公司对公司股\n票进行特殊标识，证券简称变更为“摘牌商网”。\n\n公告编号：2026-047\n二、 公司股票进入摘牌整理期交易的具体安排\n公司股票自",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    }
-  ],
+    ],
+    "formal_master_writes": 0,
+    "formal_lifecycle_writes": 0,
+    "unprocessed_count": 0
+  },
+  "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
   "safety": {
     "formal_issuer_master_writes": 0,
     "formal_lifecycle_writes": 0,
-    "read_only": true
+    "writes_are_review_candidates_only": true
   }
 }
 
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>python -X utf8 scripts\market_data\review_neeq_lifecycle.py list --target all --company-code 870099
+C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 scripts\market_data\review_neeq_lifecycle.py --db output\market\market.db list --target all --company-code 870099
 {
-  "database": "output\\market\\market.db",
+  "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
   "identity_candidates": [
     {
-      "candidate_id": "neeq-id-f5c285d43a7cb3fc682f9dde4f39f7b5",
+      "candidate_id": "neeq-id-81a5d88421f368cea128cb1f00d5d3d4",
       "company_code": "870099",
       "company_name": "华搜股份",
       "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
       "publish_date": "2026-11-03",
       "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
       "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
+      "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
       "review_status": "pending",
       "reviewer": "",
       "reviewed_at": "",
@@ -1649,17 +187,24 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "publishDate": "2026-11-03",
         "xxfcbj": "0",
         "xxzrlx": "C"
+      },
+      "notice_classification": {
+        "category": "delisting_arrangement_risk_notice",
+        "basis": "title_contains_risk_warning",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true,
+        "confirmed_legal_fact": false
       }
     },
     {
-      "candidate_id": "neeq-id-07cec079b48bf4d97f681deb2fedd6af",
+      "candidate_id": "neeq-id-6364b85a0b91422447f77f6251a1475e",
       "company_code": "870099",
       "company_name": "华搜股份",
       "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
       "publish_date": "2026-11-02",
       "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
       "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
+      "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
       "review_status": "pending",
       "reviewer": "",
       "reviewed_at": "",
@@ -1674,81 +219,13 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "publishDate": "2026-11-02",
         "xxfcbj": "0",
         "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-e685a27126276403f5be0dc5b29a66c3",
-      "company_code": "870099",
-      "company_name": "华搜股份",
-      "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-      "publish_date": "2026-10-30",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "870099",
-        "companyName": "华搜股份",
-        "destFilePath": "/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-30",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-39e10b76fb68db2d0811a5b89fd2c74f",
-      "company_code": "870099",
-      "company_name": "华搜股份",
-      "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-      "publish_date": "2026-10-29",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "870099",
-        "companyName": "华搜股份",
-        "destFilePath": "/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-29",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      }
-    },
-    {
-      "candidate_id": "neeq-id-7896875a1b2056b18061cff22adbd3fe",
-      "company_code": "870099",
-      "company_name": "华搜股份",
-      "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-      "publish_date": "2026-10-28",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "870099",
-        "companyName": "华搜股份",
-        "destFilePath": "/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-10-28",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
+      },
+      "notice_classification": {
+        "category": "delisting_arrangement_risk_notice",
+        "basis": "title_contains_risk_warning",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true,
+        "confirmed_legal_fact": false
       }
     }
   ],
@@ -1777,8 +254,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-03",
         "review_required": true
@@ -1799,7 +276,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         {
           "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
           "date_status": "unknown",
-          "date_type": "delisting_date",
+          "date_type": "last_trading_date",
           "value": "2026-11-03"
         },
         {
@@ -1814,7 +291,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true
+      },
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-1ceedb7f5afa3dfed1343d4218c70bb8",
@@ -1840,8 +342,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-02",
         "review_required": true
@@ -1871,64 +373,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
-    },
-    {
-      "candidate_id": "life-230be954d69d532942cc619542f360db",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第七次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
         "review_required": true
       },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-27d078a64fb993069575fb02b243aac1",
@@ -1954,8 +424,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-03",
         "review_required": true
@@ -1976,7 +446,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         {
           "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
           "date_status": "unknown",
-          "date_type": "delisting_date",
+          "date_type": "last_trading_date",
           "value": "2026-11-03"
         },
         {
@@ -1991,7 +461,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true
+      },
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-40072fa0c6420a975bd27c1016137ebb",
@@ -2017,8 +512,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-02",
         "review_required": true
@@ -2048,64 +543,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
-    },
-    {
-      "candidate_id": "life-4c6652486579e5f7c88fb32fb753952d",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第八次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
         "review_required": true
       },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-5cf394af34cac252e78c558fc4282add",
@@ -2131,8 +594,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-02",
         "review_required": true
@@ -2162,235 +625,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
-    },
-    {
-      "candidate_id": "life-671f161d47711890daff071c407d56cd",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第九次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
         "review_required": true
       },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-6c7e8285c8b87a61eeb27183759b2e49",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第八次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-71c6fe51b02d92235a59f7264afc9a82",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第七次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-741bff1853ca205905ce8e3fc3463c64",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第七次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-77ea0fef5f6953db7ead519a661bfec6",
@@ -2416,8 +676,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-02",
         "review_required": true
@@ -2447,7 +707,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true
+      },
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-87404338b1b5f646bb21659592353ee9",
@@ -2473,8 +758,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-03",
         "review_required": true
@@ -2495,7 +780,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         {
           "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
           "date_status": "unknown",
-          "date_type": "delisting_date",
+          "date_type": "last_trading_date",
           "value": "2026-11-03"
         },
         {
@@ -2510,7 +795,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "review_required": true
+      },
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     },
     {
       "candidate_id": "life-99938dbde3355672efc4ed201e100fa4",
@@ -2536,8 +846,8 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "issuer_code": "870099",
         "issuer_name": "华搜股份",
         "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
+        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
+        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
         "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
         "publish_date": "2026-11-03",
         "review_required": true
@@ -2558,7 +868,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         {
           "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
           "date_status": "unknown",
-          "date_type": "delisting_date",
+          "date_type": "last_trading_date",
           "value": "2026-11-03"
         },
         {
@@ -2573,349 +883,32 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
           "date_type": "delisting_date",
           "value": "2026-11-04"
         }
-      ]
-    },
-    {
-      "candidate_id": "life-9ace8356ccc0b64caeff86cdddb0d36a",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第八次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
+      ],
+      "notice_classification": {
+        "basis": "title_contains_risk_warning",
+        "category": "delisting_arrangement_risk_notice",
+        "confirmed_legal_fact": false,
+        "issuer_role_hint": "broker_or_sponsor_notice",
         "review_required": true
       },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-a0be9c8ae57707fc88cf0f2dc7b23bcc",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第九次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-af71cf95e397e219ce1e6c592b26b67f",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第九次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-ce200f9ce7d53797b0ef6c4d2325b017",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-      "source_published_at": "2026-10-29",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第八次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第八次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-29/65756dce9ecf459e94658546c659c03b.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-29",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-29"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-e9dcbe829248353ee41ed614478881b0",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-      "source_published_at": "2026-10-30",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第九次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第九次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-30/a37af918c1f14209bfaddba0de4ebb7f.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-30",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-30"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "candidate_id": "life-f11644317b7007eb34b0873e6c29a707",
-      "candidate_kind": "event",
-      "security_code": "",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-      "source_published_at": "2026-10-28",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第七次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第七次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-10-28/8df3cff400c54000b06f63d486ba2d7d.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "93c65fd3c49d7b871d2baa3dc5889926f197dd8a990be758d60caa978b054f2d",
-        "metadata_retrieved_at": "2026-11-13T14:17:43.451987+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-10-28",
-        "review_required": true
-      },
-      "date_evidence": [
-        {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-10-28"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        }
-      ]
+      "termination_evidence_assessment": {
+        "outcome": "risk_or_intermediary_notice_not_final_proof",
+        "notice_category": "delisting_arrangement_risk_notice",
+        "issuer_role_hint": "broker_or_sponsor_notice",
+        "identity_status": "official_metadata_linked_identity_pending_review",
+        "body_security_codes": [],
+        "metadata_issuer_code": "870099",
+        "delisting_date_evidence": [
+          {
+            "date": "2026-11-04",
+            "date_status": "unknown",
+            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
+          }
+        ],
+        "review_required": true,
+        "confirmed_legal_fact": false,
+        "formal_lifecycle_write_allowed": false
+      }
     }
   ],
   "safety": {
