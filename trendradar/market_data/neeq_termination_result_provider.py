@@ -29,6 +29,8 @@ class NEEQTerminationPage:
     total_elements: int
     total_pages: int
     records: tuple[dict, ...]
+    request_parameters: dict
+    request_body_sha256: str
     status_code: int = 200
 
 
@@ -110,8 +112,9 @@ class NEEQTerminationResultProvider:
         source_url = ENDPOINT + "?" + urlencode({"callback": CALLBACK})
         if not is_allowed_url("neeq", source_url):
             raise ValueError("NEEQ 查询接口不在官方 HTTPS 白名单")
+        request_body = urlencode(params).encode("utf-8")
         request = Request(
-            source_url, data=urlencode(params).encode("utf-8"), method="POST",
+            source_url, data=request_body, method="POST",
             headers={
                 "User-Agent": self.user_agent,
                 "Accept": "application/javascript, text/javascript, */*;q=0.01",
@@ -150,7 +153,14 @@ class NEEQTerminationResultProvider:
             response_sha256=hashlib.sha256(body_bytes).hexdigest(),
             retrieved_at=retrieved_at or datetime.now(timezone.utc).isoformat(),
             page_number=number, page_size=size, total_elements=total,
-            total_pages=pages, records=records, status_code=200,
+            total_pages=pages, records=records,
+            request_parameters={
+                "page": page, "sortfield": "bean.delisting_date",
+                "sorttype": "desc", "companyCode": company_code,
+                "newThreeArray": list(market_layers), "keyword": keyword,
+            },
+            request_body_sha256=hashlib.sha256(request_body).hexdigest(),
+            status_code=200,
         )
 
     def fetch_all(self, *, company_code: str = "", keyword: str = "",
