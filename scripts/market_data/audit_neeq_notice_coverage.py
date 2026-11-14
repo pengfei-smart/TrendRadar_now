@@ -1,4 +1,4 @@
-# 本脚本读取v5/v6公告审核报告和附件候选清单，生成只读关联覆盖审计。
+# 本脚本读取v7公告审核报告和附件候选清单，生成只读关联覆盖审计。
 """CLI for read-only NEEQ notice-to-candidate coverage audit."""
 
 from __future__ import annotations
