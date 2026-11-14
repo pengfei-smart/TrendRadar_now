@@ -23,12 +23,15 @@ def main() -> int:
     parser.add_argument("--input", required=True, help="neeq_attachment_manifest.json")
     parser.add_argument("--output-dir", default="output/market/neeq_evidence")
     parser.add_argument("--limit", type=int, default=5, help="本批最多处理任务数，默认5")
+    parser.add_argument("--offset", type=int, default=0, help="从第几个任务开始（从0计数），用于分批推进")
     parser.add_argument("--delay-seconds", type=float, default=1.0)
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--download", action="store_true", help="明确开启实际下载；不指定时只预览")
     args = parser.parse_args()
     if args.limit < 1 or args.limit > 259:
         parser.error("--limit 必须在1到259之间")
+    if args.offset < 0 or args.offset >= 259:
+        parser.error("--offset 必须在0到258之间")
     if args.delay_seconds < 0:
         parser.error("--delay-seconds 不能小于0")
     if not 0 <= args.retries <= 5:
@@ -38,7 +41,7 @@ def main() -> int:
     tasks = payload.get("tasks")
     if not isinstance(tasks, list):
         parser.error("输入清单缺少 tasks 数组")
-    selected = tasks[:args.limit]
+    selected = tasks[args.offset:args.offset + args.limit]
     for task in selected:
         if not is_allowed_url("neeq", str(task.get("url") or "")):
             parser.error("所选任务包含不在NEEQ官方HTTPS白名单内的URL")
@@ -48,6 +51,7 @@ def main() -> int:
             "mode": "dry_run",
             "manifest_task_count": len(tasks),
             "selected_task_count": len(selected),
+            "offset": args.offset,
             "output_dir": args.output_dir,
             "tasks": [{
                 "attachment_id": task.get("attachment_id"),
@@ -61,7 +65,7 @@ def main() -> int:
         return 0
 
     result = download_neeq_attachments(
-        payload, args.output_dir, limit=args.limit,
+        payload, args.output_dir, limit=args.limit, offset=args.offset,
         delay_seconds=args.delay_seconds, retries=args.retries,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
