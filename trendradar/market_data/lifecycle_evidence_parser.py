@@ -90,7 +90,9 @@ def _date_type(context: str) -> str:
         return "announcement_date"
     # NEEQ 券商风险提示常写作“某日系摘牌整理期最后一个交易日”，
     # 该日期不能被前面的“股票将于”误判为正式终止挂牌日期。
-    if any(term in after for term in ("最后交易日", "最后一个交易日", "最后交易日为")):
+    # 仅识别“该日期系……最后一个交易日”这种明确回指当前日期的后置表达；
+    # 若后文是“最后交易日为2024-03-08”，标签属于后一个日期，不能污染当前日期。
+    if re.search(r"系.{0,32}最后(?:一个)?交易日", after):
         return "last_trading_date"
     if after.startswith(("终止挂牌", "终止上市")):
         return "delisting_date"
