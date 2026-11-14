@@ -20,7 +20,7 @@ class FakeFetcher:
         self.calls.append((source_id, url))
         return FetchedDocument(
             source_id=source_id, requested_url=url, final_url=url,
-            status_code=200, content_type="application/pdf", body=self.body,
+            status_code=200, content_type="text/plain", body=self.body,
             content_sha256=hashlib.sha256(self.body).hexdigest(),
         )
 
