@@ -57,7 +57,7 @@ def _extract_document_number(compact: str) -> str | None:
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
     pattern = (
-        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?(?:股份有限公司|有限责任公司|有限公司))"
+        r"(?P<name>[^，,。；;：:\\d]{2,50}?(?:股份有限公司|有限责任公司|有限公司))"
         r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
     )
     found: list[dict[str, str]] = []
