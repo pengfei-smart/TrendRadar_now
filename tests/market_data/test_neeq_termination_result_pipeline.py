@@ -13,15 +13,16 @@ from trendradar.market_data.storage import MarketStorage
 
 
 class FakeFetcher:
-    def __init__(self, body):
+    def __init__(self, body, content_type="text/plain"):
         self.body = body
+        self.content_type = content_type
         self.calls = []
 
     def fetch(self, source_id, url):
         self.calls.append((source_id, url))
         return FetchedDocument(
             source_id=source_id, requested_url=url, final_url=url,
-            status_code=200, content_type="text/plain", body=self.body,
+            status_code=200, content_type=self.content_type, body=self.body,
             content_sha256=hashlib.sha256(self.body).hexdigest(),
         )
 
@@ -76,6 +77,39 @@ class PipelineTests(unittest.TestCase):
             with storage.connect() as connection:
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0)
+
+    def test_extracts_official_html_termination_roster_attachment(self):
+        html = """
+        <html><head><title>终止挂牌决定公告</title></head><body>
+        <h1>关于作出终止陕西成明节能技术股份有限公司等未披露定期报告公司股票挂牌决定的公告</h1>
+        <p>全国股转公司于2026年9月29日作出终止挂牌决定。</p>
+        <p>11 870099 华搜股份 万和证券</p>
+        </body></html>
+        """.encode("utf-8")
+        record_page = FakePage()
+        record_page.records = ({
+            "companyCode": "870099", "companyName": "摘牌华搜",
+            "hostBroker": "万和证券", "delistingDateISO": "2026-11-04",
+            "delistingNotice": "https://www.neeq.com.cn/important_news/200006570.html",
+            "attachmentKind": "html",
+        },)
+        fetcher = FakeFetcher(html, content_type="text/html")
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            result = ingest_neeq_termination_result_pages(
+                [record_page], storage=storage, fetcher=fetcher,
+                retrieved_at="2026-11-14T10:00:00+08:00",
+            )
+            self.assertEqual(result["processed_count"], 1)
+            self.assertEqual(result["failed_count"], 0)
+            row = next(
+                item for item in storage.list_lifecycle_evidence_candidates()
+                if item["event_type"] == "delisting_completion"
+            )
+            payload = json.loads(row["payload_json"])
+            self.assertEqual(payload["document_content_type"], "text/html")
+            self.assertEqual(payload["attachment_kind"], "html")
+            self.assertTrue(payload["document_match"]["roster_code_match"])
 
     def test_invalid_source_page_rejected(self):
         class BadPage(FakePage):
