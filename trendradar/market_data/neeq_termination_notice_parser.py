@@ -151,10 +151,13 @@ def crosscheck_neeq_notice_task(
         str(item.get("company_code") or "") for item in linked
         if str(item.get("company_code") or "") not in matched_codes
     })
+    requested_url = (download_record or {}).get("requested_url")
+    url_match = (requested_url == task.get("url")) if requested_url else None
     download_ok = bool(
         download_record
         and download_record.get("download_status") == "downloaded"
         and download_record.get("text_extraction_status") == "extracted"
+        and url_match is True
     )
     return {
         "attachment_id": task.get("attachment_id"),
@@ -162,6 +165,9 @@ def crosscheck_neeq_notice_task(
         "download_status": (download_record or {}).get("download_status", "missing"),
         "text_extraction_status": (download_record or {}).get("text_extraction_status", "missing"),
         "download_and_extraction_verified": download_ok,
+        "requested_url": requested_url,
+        "download_url_matches_manifest": url_match,
+        "document_sha256": (download_record or {}).get("content_sha256"),
         "parsed_notice_count": len(notices),
         "comparisons": comparisons,
         "unmatched_notices": unmatched_notices,
