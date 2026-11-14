@@ -306,5 +306,60 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertTrue(report["items"][0]["notices"][0]["follow_up_evidence_required"])
 
 
+    def test_v4_expands_html_batch_notice_to_all_54_companies(self):
+        rows = []
+        for index in range(54):
+            rows.extend([str(430315 + index), f"公司简称{index}", "主办券商"])
+        text = """关于作出终止54家未披露2018年年度报告公司股票挂牌决定的公告
+股转系统公告〔2019〕985号
+我司决定自2019年7月5日对众联信息等54家公司作出终止其股票挂牌的决定。
+对于未在规定期限内提交复核申请或复核申请未被受理的被摘牌公司，我司将自2019年7月15日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2019年7月5日
+""" + "\\n".join(rows)
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v4")
+        self.assertEqual(result["notice_count"], 54)
+        self.assertEqual(result["notices"][0]["document_number"], "2019-985")
+        self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
+        self.assertEqual(result["notices"][0]["planned_termination_date"], "2019-07-15")
+        self.assertTrue(result["notices"][0]["conditional_termination"])
+        self.assertEqual(result["notices"][0]["short_name"], "公司简称0")
+
+    def test_v4_parses_two_companies_and_separates_suspension_date(self):
+        text = """股转系统公告
+2017
+701
+中科招商投资管理集团股份有限公司（证券简称：中科招商；证券代码：832168）、达仁投资管理集团股份有限公司（证券简称：达仁资管；证券代码：831639）。
+现决定于2017年12月18日对上述2家公司的股票暂停转让一天，12月26日起终止上述公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 2)
+        self.assertEqual([n["security_code"] for n in result["notices"]], ["832168", "831639"])
+        self.assertEqual(result["notices"][0]["suspension_date"], "2017-12-18")
+        self.assertEqual(result["notices"][0]["stated_termination_date"], "2017-12-26")
+        self.assertEqual(result["notices"][0]["announcement_date"], "2017-12-15")
+
+    def test_v4_parses_single_company_stated_termination_without_decision_date(self):
+        text = """股转系统公告
+2017
+722
+优诺电梯股份有限公司（证券简称：优诺股份；证券代码：833794）未能按照规定时间披露2016年年度报告。根据业务规则，我司现决定自2018年1月3日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2018年1月2日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["security_code"], "833794")
+        self.assertEqual(notice["stated_termination_date"], "2018-01-03")
+        self.assertEqual(notice["announcement_date"], "2018-01-02")
+        self.assertIsNone(notice["decision_date"])
+
+    def test_v4_keeps_low_quality_2016_text_unresolved(self):
+        text = "1 2016 56 2016 6 30 831505 831610 2015 4.5.1 2016 7 1"
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertIsNone(notice["security_code"])
+        self.assertIn("missing_company_identity", notice["parse_warnings"])
+
+
 if __name__ == "__main__":
     unittest.main()
