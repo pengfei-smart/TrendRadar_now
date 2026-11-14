@@ -50,13 +50,24 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
     return category, legal_basis, registration_cancelled
 
 
+
+def _extract_company_name(value: str) -> str:
+    """从公告标题噪声中提取完整法定公司名称。"""
+    cleaned = _clean(value)
+    matches = list(re.finditer(
+        r"[\\u4e00-\\u9fffA-Za-z0-9（）()·\\-]{2,100}?(?:股份有限公司|有限责任公司|有限公司)",
+        cleaned,
+    ))
+    return matches[-1].group(0) if matches else cleaned
+
+
 def _parse_notice(block: str, index: int) -> dict[str, Any]:
     # PDF文本层可能在汉字之间插入空格或换行；匹配时压缩空白，原文仍由上层保留。
     compact = re.sub(r"\s+", "", block)
     number_match = _first(r"股转系统公告(\d{4})(\d{1,5})号", compact)
     identity_source = compact[number_match.end():] if number_match else compact
     identity_match = _first(
-        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;）)]+)[；;]证券代码[：:](?P<code>\d{6})",
+        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})",
         identity_source,
     )
     decision_match = _first(
@@ -88,7 +99,7 @@ def _parse_notice(block: str, index: int) -> dict[str, Any]:
         "document_number": (
             f"{number_match.group(1)}-{number_match.group(2)}" if number_match else None
         ),
-        "company_name": _clean(identity_match.group("name")) if identity_match else None,
+        "company_name": _extract_company_name(identity_match.group("name")) if identity_match else None,
         "short_name": _clean(identity_match.group("short")) if identity_match else None,
         "security_code": identity_match.group("code") if identity_match else None,
         "decision_date": _date(decision_match),
@@ -100,7 +111,7 @@ def _parse_notice(block: str, index: int) -> dict[str, Any]:
         "conditional_termination": conditional,
         "conditional_termination_language": conditional,
         "notice_states_company_deregistered": registration_cancelled,
-        "follow_up_evidence_required": bool(conditional or not registration_cancelled),
+        "follow_up_evidence_required": bool(conditional or not registration_cancelled or not identity_match or not decision_match),
         "parse_warnings": [],
     }
 
