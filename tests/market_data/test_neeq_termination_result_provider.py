@@ -68,6 +68,50 @@ class ProviderTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _parse_jsonp("x({})", "x);evil(")
 
+    def test_normalizes_root_relative_pdf_and_html_attachments(self):
+        payload = [{"page": {
+            "content": [
+                {"companyCode": "870099", "companyName": "摘牌华搜",
+                 "delistingNotice": "/uploads/1/file/public/202010/example.pdf"},
+                {"companyCode": "832480", "companyName": "摘牌商网",
+                 "delistingNotice": "/important_news//200006570.html"},
+            ],
+            "number": 0, "size": 20, "totalElements": 2, "totalPages": 1,
+        }}]
+        body = f"{CALLBACK}({json.dumps(payload, ensure_ascii=False)});".encode()
+        page = NEEQTerminationResultProvider(opener=FakeOpener(body)).fetch_page()
+        pdf_record, html_record = page.records
+        self.assertEqual(
+            pdf_record["delistingNotice"],
+            "https://www.neeq.com.cn/uploads/1/file/public/202010/example.pdf",
+        )
+        self.assertEqual(pdf_record["delistingNoticeOriginal"],
+                         "/uploads/1/file/public/202010/example.pdf")
+        self.assertEqual(pdf_record["attachmentKind"], "pdf")
+        self.assertEqual(
+            html_record["delistingNotice"],
+            "https://www.neeq.com.cn/important_news//200006570.html",
+        )
+        self.assertEqual(html_record["attachmentKind"], "html")
+
+    def test_rejects_protocol_relative_and_malformed_relative_attachment_urls(self):
+        for url in (
+            "//evil.example/notice.pdf",
+            "/\\\\evil.example/notice.pdf",
+            "/uploads/../private/notice.pdf",
+            "javascript:alert(1)",
+        ):
+            payload = [{"page": {
+                "content": [{
+                    "companyCode": "870099", "companyName": "摘牌华搜",
+                    "delistingNotice": url,
+                }],
+                "number": 0, "size": 20, "totalElements": 1, "totalPages": 1,
+            }}]
+            body = f"{CALLBACK}({json.dumps(payload)});".encode()
+            with self.subTest(url=url), self.assertRaises(ValueError):
+                NEEQTerminationResultProvider(opener=FakeOpener(body)).fetch_page()
+
     def test_rejects_untrusted_attachment_url(self):
         payload = [{"page": {
             "content": [{
