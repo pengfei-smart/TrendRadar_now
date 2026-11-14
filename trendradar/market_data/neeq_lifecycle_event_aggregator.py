@@ -24,7 +24,11 @@ def _date_evidence(payload: dict, row: dict | None = None) -> list[dict]:
     candidates = []
     if isinstance(parsed, dict):
         candidates.append(parsed.get("date_evidence"))
-    candidates.extend((payload.get("date_evidence"), (row or {}).get("date_evidence")))
+    candidates.extend((
+        payload.get("result_date_evidence"),
+        payload.get("date_evidence"),
+        (row or {}).get("date_evidence"),
+    ))
     for values in candidates:
         if isinstance(values, list) and values:
             return [item for item in values if isinstance(item, dict)]
