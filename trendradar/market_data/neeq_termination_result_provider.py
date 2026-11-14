@@ -71,6 +71,10 @@ def _normalize_attachment_url(value: str) -> str:
     if any(ord(char) < 32 for char in raw) or "\\" in raw:
         raise ValueError("终止挂牌公告附件 URL 含非法字符")
     if raw.startswith("/") and not raw.startswith("//"):
+        from urllib.parse import unquote
+        raw_path = unquote(raw.split("?", 1)[0].split("#", 1)[0])
+        if any(part in {".", ".."} for part in raw_path.split("/")):
+            raise ValueError("终止挂牌公告附件 URL 不允许路径回退")
         normalized = urljoin("https://www.neeq.com.cn/", raw)
     else:
         normalized = raw
