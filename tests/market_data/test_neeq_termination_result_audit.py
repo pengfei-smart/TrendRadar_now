@@ -34,6 +34,22 @@ class TerminationResultAuditTests(unittest.TestCase):
         self.assertEqual(result["duplicate_record_ids"], ["0"])
 
 
+    def test_reports_attachment_coverage_separately(self):
+        page = make_page(0, records=[
+            {"companyCode": "870099", "id": "1",
+             "delistingNotice": "https://www.neeq.com.cn/a.pdf"},
+            {"companyCode": "832480", "id": "2",
+             "delistingNotice": "https://www.neeq.com.cn/important_news/2.html"},
+            {"companyCode": "831610", "id": "3", "delistingNotice": ""},
+        ], total_pages=1, total_elements=3)
+        result = audit_neeq_termination_pages([page])
+        self.assertTrue(result["complete_coverage"])
+        self.assertFalse(result["attachment_coverage_complete"])
+        self.assertEqual(result["attachment_url_count"], 2)
+        self.assertEqual(result["records_missing_attachment_url"], 1)
+        self.assertEqual(result["attachment_kind_counts"],
+                         {"html": 1, "missing": 1, "pdf": 1})
+
     def test_rejected_records_block_complete_coverage(self):
         rejected = SimpleNamespace(
             page_number=0, page_size=1, total_pages=1, total_elements=1,
