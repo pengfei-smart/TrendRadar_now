@@ -58,6 +58,8 @@ def ingest_neeq_lifecycle_probe_result(
         "processed_count": 0,
         "identity_candidates_saved": 0,
         "lifecycle_candidates_saved": 0,
+        "readback_verified_batches": 0,
+        "database": str(storage.db_path),
         "items": [],
         "formal_master_writes": 0,
         "formal_lifecycle_writes": 0,
@@ -123,11 +125,15 @@ def ingest_neeq_lifecycle_probe_result(
                 "retrieved_at": collected_at,
                 "raw_record": record,
             }]
-            identity_saved = storage.save_neeq_issuer_identity_candidates(identity_rows)
-            lifecycle_saved = storage.save_lifecycle_evidence_candidates(lifecycle_rows) if lifecycle_rows else 0
+            batch_save = storage.save_neeq_lifecycle_candidate_batch(
+                identity_rows, lifecycle_rows,
+            )
+            identity_saved = int(batch_save["identity_candidates_saved"])
+            lifecycle_saved = int(batch_save["lifecycle_candidates_saved"])
             result["processed_count"] += 1
             result["identity_candidates_saved"] += identity_saved
             result["lifecycle_candidates_saved"] += lifecycle_saved
+            result["readback_verified_batches"] += int(bool(batch_save["readback_verified"]))
             result["items"].append({
                 "company_code": code,
                 "company_name": name,
@@ -139,6 +145,8 @@ def ingest_neeq_lifecycle_probe_result(
                 "notice_classification": notice_classification,
                 "identity_candidate_id": identity_id,
                 "lifecycle_candidate_ids": [row["candidate_id"] for row in lifecycle_rows],
+                "persistence_readback_verified": bool(batch_save["readback_verified"]),
+                "database": str(storage.db_path),
                 "status": "saved_for_review",
             })
         except Exception as exc:
