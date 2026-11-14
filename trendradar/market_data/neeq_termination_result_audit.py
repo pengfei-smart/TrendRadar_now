@@ -27,6 +27,10 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
     for page in ordered:
         if getattr(page, "status_code", None) != 200:
             metadata_errors.append(f"page_{page.page_number}_http_status_invalid")
+        for error in getattr(page, "record_validation_errors", ()):
+            metadata_errors.append(f"page_{page.page_number}_{error}")
+        if getattr(page, "rejected_record_count", 0):
+            metadata_errors.append(f"page_{page.page_number}_rejected_records_{page.rejected_record_count}")
         if page.page_number < start_page:
             metadata_errors.append(f"page_{page.page_number}_before_requested_start")
         page_sizes.add(getattr(page, "page_size", None))
