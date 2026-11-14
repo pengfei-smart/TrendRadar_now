@@ -409,6 +409,67 @@ if __name__ == "__main__":
     unittest.main()
 
 
+if __name__ == "__main__":
+    unittest.main()
+
+
+    def test_v7_real_2017_two_company_pdf_header_beats_body_citations(self):
+        # Reproduces the supplied TXT: the current notice number is split over
+        # the first header lines; 2016-36 and 2017-1394 are body citations.
+        text = """- 1 -
+
+2017
+701
+
+2
+
+近期，根据《关于金融类企业挂牌融资有关事项的通知》
+（股转系统公告
+2016
+36 号）与《关于挂牌私募机构自查整
+改相关问题的通知》 （股转系统发
+2017
+1394 号，以下简称
+《1394 号通知》 ） ，相关挂牌私募机构向我司提交了自查整改报
+告与主办券商核查报告。
+经进一步审查，2 家挂牌私募机构不符合整改要求， 具体包
+括：中科招商投资管理集团股份有限公司 （证券简称：中科招商；
+证券代码：832168）、达仁投资管理集团股份有限公司（证券简
+称：达仁资管；证券代码：831639）。
+根据《1394 号通知》第六条与《全国中小企业股份转让系
+统业务规则（试行）》第4.4.2条之规定，现决定于2017年12月
+18日对上述2家公司的股票暂停转让一天，12月26日起终止
+上述2家公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v7")
+        self.assertEqual(result["notice_count"], 2)
+        self.assertEqual([n["security_code"] for n in result["notices"]], ["832168", "831639"])
+        for notice in result["notices"]:
+            self.assertEqual(notice["document_number"], "2017-701")
+            self.assertEqual(notice["suspension_date"], "2017-12-18")
+            self.assertEqual(notice["stated_termination_date"], "2017-12-26")
+            self.assertEqual(notice["announcement_date"], "2017-12-15")
+
+    def test_v7_does_not_infer_notice_number_from_low_quality_date_fragments(self):
+        text = """1
+2016
+56
+2016
+6
+30
+831505
+831610
+2015
+4.5.1
+2016
+7
+1"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertIsNone(notice["document_number"])
+
+
     def test_v7_real_2017_two_company_pdf_header_beats_body_citations(self):
         # Reproduces the supplied TXT: the current notice number is split over
         # the first header lines; 2016-36 and 2017-1394 are body citations.
