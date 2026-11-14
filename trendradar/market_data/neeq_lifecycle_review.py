@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from trendradar.market_data.storage import MarketStorage
 from trendradar.market_data.neeq_notice_classifier import classify_neeq_notice
 from trendradar.market_data.neeq_termination_evidence import assess_neeq_termination_evidence
+from trendradar.market_data.neeq_lifecycle_event_aggregator import build_neeq_lifecycle_event_groups
 
 
 REVIEW_STATUSES = ("pending", "verified", "rejected", "needs_more_evidence")
@@ -86,6 +87,7 @@ def list_candidates(storage: MarketStorage, *, target: str = "all",
                 "notice_classification": payload.get("notice_classification") or classify_neeq_notice(row["source_title"]),
                 "termination_evidence_assessment": assess_neeq_termination_evidence(row),
             })
+    result["event_groups"] = build_neeq_lifecycle_event_groups(result["lifecycle_candidates"])
     return result
 
 
