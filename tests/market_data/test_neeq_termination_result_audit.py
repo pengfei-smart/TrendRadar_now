@@ -29,7 +29,14 @@ class TerminationResultAuditTests(unittest.TestCase):
     def test_detects_duplicate_record_ids_and_company_codes(self):
         duplicate = page(1, records=[{"companyCode": "000000", "id": 0}])
         result = audit_neeq_termination_pages([page(0), duplicate])
-        self.assertFalse(result["complete_coverage"])
+        self.assertTrue(result["complete_coverage"])
+        self.assertEqual(result["status"], "complete")
+        self.assertEqual(result["exact_duplicate_record_ids"], ["0"])
+        self.assertEqual(result["conflicting_duplicate_record_ids"], [])
+        self.assertEqual(
+            result["duplicate_record_id_classifications"]["0"]["classification"],
+            "exact_duplicate",
+        )
         self.assertEqual(result["duplicate_company_codes"], ["000000"])
         self.assertEqual(result["duplicate_record_ids"], ["0"])
         self.assertEqual(len(result["duplicate_record_details"]), 2)
@@ -40,6 +47,46 @@ class TerminationResultAuditTests(unittest.TestCase):
         self.assertTrue(all(row["duplicate_company_code"] for row in result["duplicate_record_details"]))
         self.assertTrue(all(row["duplicate_record_id"] for row in result["duplicate_record_details"]))
 
+
+    def test_conflicting_duplicate_record_id_blocks_complete_coverage(self):
+        first = page(0, total_pages=2, total_elements=2, records=[
+            {"companyCode": "000001", "companyName": "甲公司", "id": 7}
+        ])
+        second = page(1, total_pages=2, total_elements=2, records=[
+            {"companyCode": "000001", "companyName": "乙公司", "id": 7}
+        ])
+        result = audit_neeq_termination_pages([first, second])
+        self.assertFalse(result["complete_coverage"])
+        self.assertEqual(result["conflicting_duplicate_record_ids"], ["7"])
+        self.assertEqual(result["exact_duplicate_record_ids"], [])
+        self.assertEqual(
+            result["duplicate_record_id_classifications"]["7"]["classification"],
+            "conflicting_duplicate",
+        )
+        self.assertEqual(
+            result["duplicate_record_id_classifications"]["7"]["pages"],
+            [0, 1],
+        )
+        self.assertEqual(
+            {row["duplicate_classification"] for row in result["duplicate_record_details"]},
+            {"conflicting_duplicate"},
+        )
+
+    def test_duplicate_company_code_with_distinct_record_ids_is_not_record_id_conflict(self):
+        first = page(0, total_pages=2, total_elements=2, records=[
+            {"companyCode": "000001", "companyName": "甲公司", "id": 7}
+        ])
+        second = page(1, total_pages=2, total_elements=2, records=[
+            {"companyCode": "000001", "companyName": "甲公司", "id": 8}
+        ])
+        result = audit_neeq_termination_pages([first, second])
+        self.assertTrue(result["complete_coverage"])
+        self.assertEqual(result["duplicate_company_codes"], ["000001"])
+        self.assertEqual(result["duplicate_record_ids"], [])
+        self.assertEqual(
+            {row["duplicate_classification"] for row in result["duplicate_record_details"]},
+            {"duplicate_company_code_only"},
+        )
 
     def test_reports_attachment_coverage_separately(self):
         sample_page = SimpleNamespace(
