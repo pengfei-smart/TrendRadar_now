@@ -31,12 +31,14 @@ def main() -> int:
     provider = NEEQTerminationResultProvider(timeout_seconds=args.timeout)
     first = provider.fetch_page(
         page=args.start_page, company_code=args.company_code, keyword=args.keyword,
+        tolerate_invalid_records=True,
     )
     pages = [first]
     stop_page = min(first.total_pages, args.start_page + args.max_pages)
     for number in range(args.start_page + 1, stop_page):
         pages.append(provider.fetch_page(
             page=number, company_code=args.company_code, keyword=args.keyword,
+            tolerate_invalid_records=True,
         ))
     audit = audit_neeq_termination_pages(pages, start_page=args.start_page)
     print(json.dumps({
@@ -46,6 +48,8 @@ def main() -> int:
             "page": page.page_number, "page_size": page.page_size,
             "total_elements": page.total_elements, "total_pages": page.total_pages,
             "response_sha256": page.response_sha256,
+            "rejected_record_count": page.rejected_record_count,
+            "record_validation_errors": list(page.record_validation_errors),
         } for page in pages],
         "audit": audit,
         "safety": {"database_writes": 0, "pdf_downloads": 0, "read_only": True},
