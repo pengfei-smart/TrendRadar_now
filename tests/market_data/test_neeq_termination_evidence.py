@@ -72,6 +72,49 @@ class NEEQTerminationEvidenceTests(unittest.TestCase):
         ))
         self.assertEqual(result["outcome"], "identity_review_required")
 
+    def test_official_result_record_and_roster_match_stays_review_only(self):
+        row = {
+            "source_title": "强制终止挂牌结果记录及批量终止挂牌决定公告",
+            "security_code": "870099",
+            "event_date": "2026-11-04",
+            "payload_json": {
+                "evidence_kind": "official_termination_result_list",
+                "result_record": {
+                    "companyCode": "870099",
+                    "companyName": "摘牌华搜",
+                    "delistingDateISO": "2026-11-04",
+                },
+                "document_match": {
+                    "roster_code_match": True,
+                    "broker_match": True,
+                },
+            },
+        }
+        result = assess_neeq_termination_evidence(row)
+        self.assertEqual(
+            result["outcome"],
+            "official_result_record_and_roster_match_pending_human_review",
+        )
+        self.assertEqual(result["identity_status"], "official_result_record_code_and_roster_match")
+        self.assertEqual(result["delisting_date_evidence"][0]["date"], "2026-11-04")
+        self.assertFalse(result["confirmed_legal_fact"])
+        self.assertFalse(result["formal_lifecycle_write_allowed"])
+
+    def test_official_result_record_without_roster_match_is_not_confirmed(self):
+        row = {
+            "source_title": "强制终止挂牌结果记录",
+            "security_code": "870099",
+            "event_date": "2026-11-04",
+            "payload_json": {
+                "evidence_kind": "official_termination_result_list",
+                "result_record": {"companyCode": "870099", "delistingDateISO": "2026-11-04"},
+                "document_match": {"roster_code_match": False, "broker_match": True},
+            },
+        }
+        result = assess_neeq_termination_evidence(row)
+        self.assertEqual(result["outcome"], "official_result_record_identity_crosscheck_incomplete")
+        self.assertFalse(result["confirmed_legal_fact"])
+
     def test_non_formal_notice_does_not_qualify(self):
         result = assess_neeq_termination_evidence(candidate(
             "关于收到终止挂牌决定的公告", ["832480"],
