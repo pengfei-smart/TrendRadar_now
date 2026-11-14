@@ -77,6 +77,7 @@ def download_neeq_attachments(
     output_dir: str | Path,
     *,
     limit: int = 5,
+    offset: int = 0,
     delay_seconds: float = 1.0,
     retries: int = 2,
     fetcher=None,
@@ -88,12 +89,14 @@ def download_neeq_attachments(
         raise ValueError("附件清单必须包含 tasks 数组")
     if limit < 1:
         raise ValueError("limit 必须大于等于 1")
+    if offset < 0:
+        raise ValueError("offset 不能小于 0")
     if delay_seconds < 0:
         raise ValueError("delay_seconds 不能小于 0")
     if retries < 0 or retries > 5:
         raise ValueError("retries 必须在 0 到 5 之间")
 
-    tasks = manifest["tasks"][:limit]
+    tasks = manifest["tasks"][offset:offset + limit]
     for task in tasks:
         if not isinstance(task, dict):
             raise ValueError("附件任务格式无效")
@@ -206,6 +209,7 @@ def download_neeq_attachments(
     return {
         "processed_this_run": processed,
         "requested_limit": limit,
+        "requested_offset": offset,
         "downloaded_total": sum(item.get("download_status") == "downloaded" for item in results),
         "failed_total": sum(item.get("download_status") == "failed" for item in results),
         "text_extracted_total": sum(item.get("text_extraction_status") == "extracted" for item in results),
