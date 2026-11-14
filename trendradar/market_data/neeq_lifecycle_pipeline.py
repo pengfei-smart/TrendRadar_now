@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlsplit
 
@@ -17,6 +18,7 @@ from trendradar.market_data.lifecycle_evidence_parser import (
     parse_lifecycle_announcement,
 )
 from trendradar.market_data.lifecycle_source_registry import is_allowed_url
+from trendradar.market_data.neeq_notice_classifier import classify_neeq_notice
 
 
 def ingest_neeq_lifecycle_probe_result(
@@ -83,6 +85,7 @@ def ingest_neeq_lifecycle_probe_result(
                 raise ValueError("附件重定向后的路径与公告元数据路径不一致")
             text = extract_lifecycle_document_text(document)
             parsed = parse_lifecycle_announcement(text)
+            notice_classification = classify_neeq_notice(title)
             lifecycle_rows = build_lifecycle_evidence_candidates(
                 document,
                 parsed,
@@ -97,6 +100,13 @@ def ingest_neeq_lifecycle_probe_result(
                     "retrieved_at": collected_at,
                 },
             )
+            # Title classification is a review hint only, never a confirmed legal fact.
+            for lifecycle_row in lifecycle_rows:
+                payload = lifecycle_row.get("payload_json") or {}
+                if isinstance(payload, str):
+                    payload = json.loads(payload)
+                payload["notice_classification"] = notice_classification
+                lifecycle_row["payload_json"] = payload
             # Identity and lifecycle evidence remain separate review queues.
             identity_id = "neeq-id-" + hashlib.sha256(
                 (code + "|" + attachment_url + "|" + response_hash).encode("utf-8")
@@ -126,6 +136,7 @@ def ingest_neeq_lifecycle_probe_result(
                 "parsed_event_types": list(parsed.event_types),
                 "parsed_security_codes": list(parsed.security_codes),
                 "parsed_date_evidence": parsed.to_dict()["date_evidence"],
+                "notice_classification": notice_classification,
                 "identity_candidate_id": identity_id,
                 "lifecycle_candidate_ids": [row["candidate_id"] for row in lifecycle_rows],
                 "status": "saved_for_review",
