@@ -86,6 +86,37 @@ class NEEQLifecycleEventAggregatorTests(unittest.TestCase):
             for item in groups
         ))
 
+    def test_accepts_review_cli_projection_shape(self):
+        rows = [
+            {
+                "candidate_id": "cli-1",
+                "exchange": "NEEQ",
+                "security_code": "",
+                "event_type": "delisting",
+                "source_title": "公告一",
+                "source_url": "https://www.neeq.com.cn/a.pdf",
+                "source_published_at": "2026-11-02",
+                "review_status": "pending",
+                "issuer_identity_hint": {"issuer_code": "870099", "issuer_name": "华搜股份"},
+                "date_evidence": [{"value": "2026-09-29", "date_type": "decision_date"}],
+            },
+            {
+                "candidate_id": "cli-2",
+                "exchange": "NEEQ",
+                "security_code": "",
+                "event_type": "delisting",
+                "source_title": "公告二",
+                "source_url": "https://www.neeq.com.cn/b.pdf",
+                "source_published_at": "2026-11-03",
+                "review_status": "pending",
+                "issuer_identity_hint": {"issuer_code": "870099", "issuer_name": "华搜股份"},
+                "date_evidence": [{"value": "2026-09-29", "date_type": "decision_date"}],
+            },
+        ]
+        groups = build_neeq_lifecycle_event_groups(rows)
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(groups[0]["evidence_count"], 2)
+
     def test_does_not_merge_across_different_issuers(self):
         groups = build_neeq_lifecycle_event_groups([
             candidate("issuer-a", code="870099"),
