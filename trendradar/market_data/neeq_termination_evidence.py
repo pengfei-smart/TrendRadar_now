@@ -26,6 +26,46 @@ def assess_neeq_termination_evidence(candidate: dict) -> dict:
     title = str(candidate.get("source_title") or candidate.get("disclosure_title") or "")
     classification = classify_neeq_notice(title)
     payload = _payload(candidate)
+
+    # 官方终止挂牌结果名录属于独立证据类型：不得误按普通公告正文解析，
+    # 但其证券代码、结果日期及附表交叉匹配可形成待人工审核的官方证据。
+    if payload.get("evidence_kind") == "official_termination_result_list":
+        record = payload.get("result_record") or {}
+        match = payload.get("document_match") or {}
+        code = str(record.get("companyCode") or candidate.get("security_code") or "")
+        date_value = str(record.get("delistingDateISO") or candidate.get("event_date") or "")
+        code_match = bool(code and code == str(candidate.get("security_code") or ""))
+        roster_match = bool(match.get("roster_code_match"))
+        broker_match = bool(match.get("broker_match"))
+        date_evidence = []
+        if date_value:
+            date_evidence.append({
+                "date": date_value,
+                "date_status": "pending",
+                "evidence_source": "official_neeq_termination_result_list",
+                "context": "NEEQ官方终止挂牌结果名录记录；日期字段尚待人工法律审核",
+            })
+        if not code_match:
+            outcome = "identity_unresolved"
+        elif not (roster_match and broker_match):
+            outcome = "official_result_record_identity_crosscheck_incomplete"
+        else:
+            outcome = "official_result_record_and_roster_match_pending_human_review"
+        return {
+            "outcome": outcome,
+            "notice_category": "official_termination_result_list_record",
+            "issuer_role_hint": "official_exchange_result_list",
+            "identity_status": "official_result_record_code_and_roster_match" if code_match and roster_match else "identity_review_required",
+            "body_security_codes": [code] if code else [],
+            "metadata_issuer_code": code,
+            "delisting_date_evidence": date_evidence,
+            "roster_code_match": roster_match,
+            "broker_match": broker_match,
+            "confirmed_legal_fact": False,
+            "formal_lifecycle_write_allowed": False,
+            "review_required": True,
+        }
+
     parsed = payload.get("parsed_evidence") or {}
     if not isinstance(parsed, dict):
         parsed = {}
