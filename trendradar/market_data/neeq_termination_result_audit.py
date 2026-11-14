@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 from collections import Counter
+import hashlib
+import json
 from typing import Iterable
 from urllib.parse import urlsplit
 
@@ -78,25 +80,65 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
     id_counts = Counter(ids)
     duplicate_codes = sorted(code for code, count in code_counts.items() if count > 1)
     duplicate_ids = sorted(record_id for record_id, count in id_counts.items() if count > 1)
-    duplicate_record_details = [
-        {
+
+    # 对完整原始记录做规范化哈希；不只比较公司代码、名称、日期等展示字段。
+    id_occurrences = {}
+    for page_number, row in records:
+        if row.get("id") is None:
+            continue
+        record_id = str(row.get("id"))
+        canonical = json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        fingerprint = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        id_occurrences.setdefault(record_id, []).append({
             "page": page_number,
-            "company_code": str(row.get("companyCode") or ""),
+            "fingerprint": fingerprint,
+        })
+    duplicate_id_classifications = {}
+    for record_id in duplicate_ids:
+        occurrences = id_occurrences[record_id]
+        fingerprints = {item["fingerprint"] for item in occurrences}
+        duplicate_id_classifications[record_id] = {
+            "classification": "exact_duplicate" if len(fingerprints) == 1 else "conflicting_duplicate",
+            "occurrence_count": len(occurrences),
+            "pages": sorted(item["page"] for item in occurrences),
+            "raw_record_sha256_values": sorted(fingerprints),
+        }
+
+    duplicate_record_details = []
+    for page_number, row in records:
+        code = str(row.get("companyCode") or "")
+        record_id = str(row.get("id")) if row.get("id") is not None else None
+        if code not in duplicate_codes and record_id not in duplicate_ids:
+            continue
+        canonical = json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        fingerprint = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        id_info = duplicate_id_classifications.get(record_id)
+        duplicate_record_details.append({
+            "page": page_number,
+            "company_code": code,
             "company_name": str(row.get("companyName") or ""),
-            "record_id": str(row.get("id")) if row.get("id") is not None else None,
+            "record_id": record_id,
             "delisting_date": row.get("delistingDateISO") or row.get("delistingDate"),
             "delisting_notice": row.get("delistingNotice") or "",
-            "duplicate_company_code": str(row.get("companyCode") or "") in duplicate_codes,
-            "duplicate_record_id": (
-                str(row.get("id")) in duplicate_ids if row.get("id") is not None else False
+            "duplicate_company_code": code in duplicate_codes,
+            "duplicate_record_id": record_id in duplicate_ids if record_id is not None else False,
+            "duplicate_classification": (
+                id_info["classification"] if id_info else "duplicate_company_code_only"
             ),
-        }
-        for page_number, row in records
-        if (
-            str(row.get("companyCode") or "") in duplicate_codes
-            or (row.get("id") is not None and str(row.get("id")) in duplicate_ids)
-        )
-    ]
+            "duplicate_occurrence_count": id_info["occurrence_count"] if id_info else code_counts[code],
+            "duplicate_pages": id_info["pages"] if id_info else sorted(
+                p for p, item in records if str(item.get("companyCode") or "") == code
+            ),
+            "raw_record_sha256": fingerprint,
+        })
+    conflicting_duplicate_ids = sorted(
+        record_id for record_id, info in duplicate_id_classifications.items()
+        if info["classification"] == "conflicting_duplicate"
+    )
+    exact_duplicate_ids = sorted(
+        record_id for record_id, info in duplicate_id_classifications.items()
+        if info["classification"] == "exact_duplicate"
+    )
     requested_pages = list(range(start_page, start_page + len(ordered)))
     missing_pages = sorted(set(requested_pages) - set(page_numbers))
     if ordered:
@@ -109,7 +151,7 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
     )
     complete = (
         all_pages_covered and not missing_pages and not metadata_errors
-        and not duplicate_ids and not record_limit_reached
+        and not conflicting_duplicate_ids and not record_limit_reached
         and (reported_elements is None or len(records) == reported_elements)
     )
     return {
@@ -126,6 +168,9 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
         "unique_company_code_count": len(set(codes)),
         "duplicate_company_codes": duplicate_codes,
         "duplicate_record_ids": duplicate_ids,
+        "duplicate_record_id_classifications": duplicate_id_classifications,
+        "exact_duplicate_record_ids": exact_duplicate_ids,
+        "conflicting_duplicate_record_ids": conflicting_duplicate_ids,
         "duplicate_record_details": duplicate_record_details,
         "attachment_url_count": len(attachment_urls),
         "attachment_kind_counts": dict(sorted(attachment_kinds.items())),
