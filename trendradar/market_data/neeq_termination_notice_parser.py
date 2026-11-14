@@ -68,6 +68,13 @@ def _parse_notice(block: str, index: int) -> dict[str, Any]:
     # PDF文本层可能在汉字之间插入空格或换行；匹配时压缩空白，原文仍由上层保留。
     compact = re.sub(r"\s+", "", block)
     number_match = _first(r"(?:股转系统公告)?[〔［\[]?(\d{4})[〕］\]]?[-—–\s]*(\d{1,5})号", compact)
+    if not number_match:
+        # 部分PDF页眉会把公告编号压成“ -1-2021666公司全称 ”，没有分隔符和“号”。
+        # 仅在年份+序号后紧接汉字时启用，避免把正文日期或证券代码误当公告编号。
+        number_match = _first(
+            r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–\s]?(\d{3,5})(?=[\u4e00-\u9fff])",
+            compact,
+        )
     identity_source = compact[number_match.end():] if number_match else compact
     identity_match = _first(
         r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})",
@@ -135,7 +142,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         required = ("security_code", "company_name", "decision_date", "planned_termination_date")
         notice["parse_warnings"] = [f"missing_{field}" for field in required if not notice.get(field)]
     return {
-        "parser": "neeq_termination_notice_parser_v2",
+        "parser": "neeq_termination_notice_parser_v3",
         "notice_count": len(notices),
         "notices": notices,
     }
