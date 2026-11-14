@@ -91,6 +91,16 @@ def ingest_neeq_termination_result_pages(
                 "result_response_sha256": result_response_hash,
                 "result_retrieved_at": page_retrieved_at or collected_at,
                 "result_page_number": result_page_number,
+                "result_request_parameters": getattr(
+                    next((p for p in pages if p.source_url == result_source_url
+                          and p.response_sha256 == result_response_hash), None),
+                    "request_parameters", {},
+                ),
+                "result_request_body_sha256": getattr(
+                    next((p for p in pages if p.source_url == result_source_url
+                          and p.response_sha256 == result_response_hash), None),
+                    "request_body_sha256", "",
+                ),
                 "document_requested_url": document.requested_url,
                 "document_final_url": document.final_url,
                 "document_sha256": document.content_sha256,
