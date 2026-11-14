@@ -270,13 +270,36 @@ def build_neeq_notice_review_report(
         item = crosscheck_neeq_notice_task(parsed, task, record)
         item["notices"] = parsed["notices"]
         items.append(item)
+    comparisons = [
+        comparison
+        for item in items
+        for comparison in item.get("comparisons", [])
+    ]
+    reason_category_counts: dict[str, int] = {}
+    for comparison in comparisons:
+        category = str(comparison.get("termination_reason_category") or "unknown")
+        reason_category_counts[category] = reason_category_counts.get(category, 0) + 1
     return {
         "schema_version": 2,
         "source": "neeq_official_termination_result_list_and_notice_attachments",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
         "parsed_notice_count": sum(item.get("parsed_notice_count", 0) for item in items),
-        "comparison_count": sum(len(item.get("comparisons", [])) for item in items),
+        "comparison_count": len(comparisons),
+        "termination_reason_category_counts": reason_category_counts,
+        "conditional_termination_count": sum(
+            bool(item.get("conditional_termination")) for item in comparisons
+        ),
+        "notice_registration_cancellation_count": sum(
+            bool(item.get("notice_states_company_deregistered")) for item in comparisons
+        ),
+        "date_mismatch_count": sum(
+            item.get("date_consistency_status") == "mismatch_requires_follow_up"
+            for item in comparisons
+        ),
+        "follow_up_evidence_required_count": sum(
+            bool(item.get("follow_up_evidence_required")) for item in comparisons
+        ),
         "items": items,
         "safety": {
             "network_downloads": 0,
