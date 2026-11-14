@@ -84,7 +84,10 @@ def list_candidates(storage: MarketStorage, *, target: str = "all",
                 "reviewed_at": row["reviewed_at"],
                 "review_notes": row["review_notes"],
                 "issuer_identity_hint": payload.get("issuer_identity_hint", {}),
-                "date_evidence": (payload.get("parsed_evidence") or {}).get("date_evidence", []),
+                "date_evidence": (
+                    payload.get("result_date_evidence")
+                    or (payload.get("parsed_evidence") or {}).get("date_evidence", [])
+                ),
                 "notice_classification": payload.get("notice_classification") or classify_neeq_notice(row["source_title"]),
                 "termination_evidence_assessment": assess_neeq_termination_evidence(row),
             })
