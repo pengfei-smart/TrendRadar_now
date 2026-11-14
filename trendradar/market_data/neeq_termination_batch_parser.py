@@ -26,8 +26,7 @@ def parse_neeq_termination_roster(text: str) -> dict:
             # PDF 双栏表格可能把同一行的两家公司放在一起；以代码为锚点保留局部上下文。
             tail = line[match.end():]
             broker_match = re.search(
-                r"(国联民生承销保荐|申万宏源承销保荐|长江承销保荐|"
-                r"[\u4e00-\u9fffA-Za-z0-9（）()]+证券)",
+                r"([\u4e00-\u9fffA-Za-z0-9（）()]+(?:证券|承销保荐))",
                 tail,
             )
             broker = broker_match.group(1) if broker_match else ""
