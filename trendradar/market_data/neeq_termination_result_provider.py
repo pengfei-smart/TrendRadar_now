@@ -8,7 +8,7 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, build_opener
 
 from trendradar.market_data.lifecycle_source_registry import is_allowed_url
@@ -34,6 +34,7 @@ class NEEQTerminationPage:
     status_code: int = 200
     rejected_record_count: int = 0
     record_validation_errors: tuple[str, ...] = ()
+    rejected_record_details: tuple[dict, ...] = ()
 
 
 def _format_epoch_date(value) -> str:
@@ -144,6 +145,7 @@ class NEEQTerminationResultProvider:
             raise ValueError("NEEQ JSONP 缺少 page.content")
         valid_records = []
         validation_errors = []
+        rejected_details = []
         for index, raw_record in enumerate(page_data["content"]):
             try:
                 valid_records.append(_validate_record(raw_record))
@@ -151,6 +153,19 @@ class NEEQTerminationResultProvider:
                 if not tolerate_invalid_records:
                     raise
                 validation_errors.append(f"record_{index}:{exc}")
+                raw = raw_record if isinstance(raw_record, dict) else {}
+                notice_url = str(raw.get("delistingNotice") or "").strip()
+                parsed_url = urlparse(notice_url)
+                rejected_details.append({
+                    "record_index": index,
+                    "company_code": str(raw.get("companyCode") or "")[:16],
+                    "company_name": str(raw.get("companyName") or "")[:100],
+                    "host_broker": str(raw.get("hostBroker") or "")[:100],
+                    "attachment_url": notice_url[:500],
+                    "attachment_scheme": parsed_url.scheme,
+                    "attachment_host": parsed_url.hostname or "",
+                    "validation_error": str(exc)[:200],
+                })
         records = tuple(valid_records)
         number = page_data.get("number")
         size = page_data.get("size")
@@ -174,6 +189,7 @@ class NEEQTerminationResultProvider:
             request_body_sha256=hashlib.sha256(request_body).hexdigest(),
             status_code=200, rejected_record_count=len(validation_errors),
             record_validation_errors=tuple(validation_errors),
+            rejected_record_details=tuple(rejected_details),
         )
 
     def fetch_all(self, *, company_code: str = "", keyword: str = "",
