@@ -228,5 +228,59 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(result["comparisons"][0]["date_consistency_status"], "matches")
 
 
+    def test_parses_identity_with_chinese_comma_delimiters(self):
+        text = """股转系统公告
+2021 894号
+浙江腾骏祥科技股份有限公司（证券简称：ST 腾骏，证券代码：871865，主办券商：财通证券）因破产清算，已注销公司登记。根据《业务规则》第4.5.1条第（五）项规定，我司将自2021年9月8日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年8月31日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["security_code"], "871865")
+        self.assertEqual(notice["company_name"], "浙江腾骏祥科技股份有限公司")
+        self.assertEqual(notice["short_name"], "ST腾骏")
+        self.assertEqual(notice["termination_reason_category"], "bankruptcy_liquidation")
+        self.assertTrue(notice["notice_states_company_deregistered"])
+        self.assertTrue(notice["follow_up_evidence_required"])
+
+    def test_parses_bracketed_2022_notice_number_and_removes_title_noise(self):
+        text = """股转系统公告
+〔2022〕106号
+106号关于终止上海安技智能科技股份有限公司股票挂牌的公告
+上海安技智能科技股份有限公司（证券简称：ST安技；证券代码：832497；主办券商：某券商）因主动解散清算，已注销公司登记。根据《业务规则》第4.5.1条第（五）项规定，我司将自2022年4月15日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2022年4月6日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["document_number"], "2022-106")
+        self.assertEqual(notice["company_name"], "上海安技智能科技股份有限公司")
+        self.assertEqual(notice["security_code"], "832497")
+        self.assertEqual(notice["termination_reason_category"], "voluntary_dissolution_liquidation")
+
+    def test_report_counts_unmatched_parsed_notices(self):
+        text = """股转系统公告
+2021 894号
+浙江腾骏祥科技股份有限公司（证券简称：ST腾骏，证券代码：871865，主办券商：财通证券）因破产清算，已注销公司登记。根据《业务规则》第4.5.1条第（五）项规定，我司将自2021年9月8日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年8月31日"""
+        manifest = {"tasks": [{
+            "attachment_id": "a2",
+            "url": "https://www.neeq.com.cn/a2.pdf",
+            "linked_candidates": [{"company_code": "999999", "company_name": "其他公司"}],
+        }]}
+        state = {"results": {"a2": {
+            "download_status": "downloaded",
+            "text_extraction_status": "extracted",
+            "text_file": "a2.txt",
+        }}}
+        report = build_neeq_notice_review_report(manifest, state, lambda name: text)
+        self.assertEqual(report["parsed_notice_count"], 1)
+        self.assertEqual(report["comparison_count"], 0)
+        self.assertEqual(report["unmatched_notice_count"], 1)
+        self.assertEqual(report["termination_reason_category_counts"], {
+            "bankruptcy_liquidation": 1
+        })
+        self.assertEqual(report["notice_registration_cancellation_count"], 1)
+        self.assertTrue(report["items"][0]["notices"][0]["follow_up_evidence_required"])
+
+
 if __name__ == "__main__":
     unittest.main()
