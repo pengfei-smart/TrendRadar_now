@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from collections import Counter
 from typing import Iterable
+from urllib.parse import urlsplit
 
 
 def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_pages: int | None = None,
@@ -53,6 +54,26 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
         metadata_errors.append("expected_total_elements_mismatch")
     codes = [str(row.get("companyCode") or "") for _, row in records]
     ids = [str(row.get("id")) for _, row in records if row.get("id") is not None]
+    attachment_kinds = Counter()
+    missing_attachment_count = 0
+    attachment_urls = set()
+    for _, row in records:
+        attachment_url = str(row.get("delistingNotice") or "").strip()
+        if not attachment_url:
+            missing_attachment_count += 1
+            attachment_kinds["missing"] += 1
+            continue
+        attachment_urls.add(attachment_url)
+        path = urlsplit(attachment_url).path.lower()
+        if path.endswith(".pdf"):
+            attachment_kinds["pdf"] += 1
+        elif path.endswith((".html", ".htm")):
+            attachment_kinds["html"] += 1
+        else:
+            attachment_kinds["unknown"] += 1
+    attachment_coverage_complete = (
+        missing_attachment_count == 0 and attachment_kinds["unknown"] == 0
+    )
     code_counts = Counter(codes)
     id_counts = Counter(ids)
     duplicate_codes = sorted(code for code, count in code_counts.items() if count > 1)
@@ -86,6 +107,10 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
         "unique_company_code_count": len(set(codes)),
         "duplicate_company_codes": duplicate_codes,
         "duplicate_record_ids": duplicate_ids,
+        "attachment_url_count": len(attachment_urls),
+        "attachment_kind_counts": dict(sorted(attachment_kinds.items())),
+        "records_missing_attachment_url": missing_attachment_count,
+        "attachment_coverage_complete": attachment_coverage_complete,
         "metadata_errors": metadata_errors,
         "record_limit_reached": bool(record_limit_reached),
         "unfetched_page_count": max(0, (reported_pages or 0) - len(ordered)) if start_page == 0 else None,
