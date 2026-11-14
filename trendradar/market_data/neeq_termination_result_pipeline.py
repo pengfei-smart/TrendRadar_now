@@ -101,13 +101,22 @@ def ingest_neeq_termination_result_pages(
                     "broker_match": bool(match.get("broker_match")),
                     "review_required": True,
                 },
-                "result_date_evidence": ([{
-                    "value": date_value,
-                    "date_type": "delisting_date",
-                    "date_status": "pending",
-                    "source": "official_neeq_termination_result_list",
-                    "context": "NEEQ官方终止挂牌结果名录记录；尚待人工法律审核",
-                }] if date_value else []),
+                "result_date_evidence": (
+                    ([{
+                        "value": date_value,
+                        "date_type": "delisting_date",
+                        "date_status": "pending",
+                        "source": "official_neeq_termination_result_list",
+                        "context": "NEEQ官方终止挂牌结果名录记录；尚待人工法律审核",
+                    }] if date_value else [])
+                    + ([{
+                        "value": roster["decision_date"],
+                        "date_type": "decision_date",
+                        "date_status": "pending",
+                        "source": "official_batch_termination_decision_notice",
+                        "context": "批量终止挂牌决定公告落款日期；尚待人工审核",
+                    }] if roster.get("decision_date") else [])
+                ),
                 "result_record": record,
                 "result_source_url": result_source_url,
                 "result_response_sha256": result_response_hash,
