@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 import re
 import time
 from datetime import datetime, timezone
@@ -153,7 +154,10 @@ def download_neeq_attachments(
                 extraction_status = "extracted"
                 extraction_error = None
                 try:
-                    extracted_text = extractor(document)
+                    extraction_document = document
+                    if kind == "pdf" and document.content_type.split(";", 1)[0].strip().lower() == "application/octet-stream":
+                        extraction_document = replace(document, content_type="application/pdf")
+                    extracted_text = extractor(extraction_document)
                     _atomic_write(text_path, extracted_text.encode("utf-8"))
                 except Exception as exc:
                     extraction_status = "needs_manual_review"
