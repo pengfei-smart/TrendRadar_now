@@ -186,6 +186,30 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertFalse(comparison["confirmed_legal_fact"])
         self.assertFalse(comparison["formal_lifecycle_write_allowed"])
 
+    def test_xianglian_831479_official_date_mismatch_is_preserved(self):
+        text = """股转系统公告
+2020 990号
+湖南湘联节能科技股份有限公司（证券简称：湘联股份；证券代码：831479；主办券商：申万宏源承销保荐）未能按照规定时间披露2019年半年度报告。根据业务规则，我司于2021年1月5日对湘联股份作出终止其股票挂牌的决定。
+如湘联股份未在规定期限内提交复核申请或复核申请未被受理，我司将自2021年1月15日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年1月5日"""
+        parsed = parse_neeq_termination_notice_text(text)
+        result = crosscheck_neeq_notice_task(parsed, {
+            "linked_candidates": [{
+                "record_id": "1016",
+                "company_code": "831479",
+                "company_name": "湘联股份",
+                "delisting_date": "2021-03-22",
+            }],
+        })
+        comparison = result["comparisons"][0]
+        self.assertEqual(comparison["notice_planned_termination_date"], "2021-01-15")
+        self.assertEqual(comparison["result_list_date"], "2021-03-22")
+        self.assertEqual(comparison["date_consistency_status"], "mismatch_requires_follow_up")
+        self.assertTrue(comparison["conditional_termination"])
+        self.assertTrue(comparison["follow_up_evidence_required"])
+        self.assertFalse(comparison["confirmed_legal_fact"])
+
     def test_result_date_match_has_matches_status(self):
         parsed = parse_neeq_termination_notice_text(NOTICE)
         result = crosscheck_neeq_notice_task(parsed, {
