@@ -47,7 +47,9 @@ def ingest_neeq_termination_result_pages(
             if key in seen:
                 continue
             seen.add(key)
-            work.append((record, page.source_url, response_hash, page.page_number, page.retrieved_at))
+            work.append((record, page.source_url, response_hash,
+                         getattr(page, "page_number", 0),
+                         getattr(page, "retrieved_at", "")))
     for record, result_source_url, result_response_hash, result_page_number, page_retrieved_at in work[:max_records]:
         code = str(record.get("companyCode") or "").strip()
         name = str(record.get("companyName") or "").strip()
