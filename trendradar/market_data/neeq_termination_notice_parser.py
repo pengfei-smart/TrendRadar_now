@@ -49,29 +49,35 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
 
 
 def _extract_document_number(compact: str) -> str | None:
-    # The current notice number belongs to the header immediately after the
-    # "股转系统公告" marker. A referenced historical notice number in the body
-    # must never override the current document number.
-    header = re.search(r"股转系统公告", compact)
-    if header:
-        region = compact[header.end():header.end() + 100]
-        region = re.sub(r"^(?:-\d+-)+", "", region)
-        patterns = (
-            r"^[〔［\[]?(20\d{2})[〕］\]]?[-—–](\d{1,5})(?:号)?",
-            r"^[〔［\[]?(20\d{2})[〕］\]]?(\d{3,5})(?:号)?(?=[\u4e00-\u9fff]|$)",
-            r"^[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})号",
-        )
-        for pattern in patterns:
-            match = re.match(pattern, region)
-            if match:
-                return f"{match.group(1)}-{match.group(2)}"
+    # Prefer the notice number whose year agrees with the issuer's signed
+    # announcement date. Body citations to older notices must not win.
+    signed = re.search(
+        r"全国中小企业股份转让系统有限责任公司(20\\d{2})年\\d{1,2}月\\d{1,2}日",
+        compact,
+    )
+    signed_year = signed.group(1) if signed else None
+    marker = compact.find("股转系统公告")
+    search_region = compact[:500] if marker < 0 else compact[max(0, marker - 180):marker + 320]
+    patterns = (
+        r"[〔［\\[]?(20\\d{2})[〕］\\]]?[-—–](\\d{1,5})(?:号)?",
+        r"[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{3,5})(?:号)?(?=[\\u4e00-\\u9fff]|$)",
+        r"(?:^|[^0-9])(?:-\\d+-)?(20\\d{2})[-—–\\s]?(\\d{3,5})(?=[\\u4e00-\\u9fff]|$)",
+    )
+    candidates: list[tuple[int, str, str]] = []
+    for pattern in patterns:
+        for match in re.finditer(pattern, search_region):
+            year, serial = match.group(1), match.group(2)
+            candidates.append((match.start(), year, serial))
+    if not candidates:
         return None
-
-    # Legacy fallback applies only when no explicit notice-header marker exists.
-    match = _first(r"[〔［\[]?(\d{4})[〕］\]]?[-—–\s]*(\d{1,5})号", compact)
-    if not match:
-        match = _first(r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–\s]?(\d{3,5})(?=[\u4e00-\u9fff])", compact)
-    return f"{match.group(1)}-{match.group(2)}" if match else None
+    if signed_year:
+        same_year = [item for item in candidates if item[1] == signed_year]
+        if same_year:
+            candidates = same_year
+    # When several same-year numbers exist, the first one in the header region
+    # is the current notice number; never search the full body for a fallback.
+    _, year, serial = min(candidates, key=lambda item: item[0])
+    return f"{year}-{serial}"
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
     """Extract every structured company identity and simple HTML table row."""
@@ -245,7 +251,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
     for index, block in enumerate(blocks):
         notices.extend(_parse_notice(block, index))
     return {
-        "parser": "neeq_termination_notice_parser_v5",
+        "parser": "neeq_termination_notice_parser_v6",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
         "notices": notices,
