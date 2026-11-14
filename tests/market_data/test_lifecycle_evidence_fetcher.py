@@ -114,6 +114,21 @@ class LifecycleEvidenceFetcherTests(unittest.TestCase):
         self.assertEqual(opener.request.get_header("Accept"), "application/pdf,*/*")
         self.assertEqual(opener.request.get_header("Sec-fetch-dest"), "document")
 
+    def test_neeq_historical_html_notice_uses_html_navigation_accept_header(self):
+        body = b"<html><body>official NEEQ notice</body></html>"
+        opener = FakeOpener(FakeResponse(
+            body,
+            url="https://www.neeq.com.cn/important_news/200006570.html",
+            content_type="text/html",
+        ))
+        fetcher = LifecycleEvidenceFetcher(opener=opener)
+        result = fetcher.fetch(
+            "neeq", "https://www.neeq.com.cn/important_news/200006570.html"
+        )
+        self.assertEqual(result.content_type, "text/html")
+        self.assertIn("text/html", opener.request.get_header("Accept"))
+        self.assertEqual(opener.request.get_header("Sec-fetch-dest"), "document")
+
     def test_rejects_unregistered_url_before_network(self):
         opener = FakeOpener(FakeResponse())
         fetcher = LifecycleEvidenceFetcher(opener=opener)
