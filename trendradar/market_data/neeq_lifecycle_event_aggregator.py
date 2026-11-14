@@ -23,7 +23,7 @@ def _date_evidence(payload: dict) -> list[dict]:
     parsed = payload.get("parsed_evidence") or {}
     values = parsed.get("date_evidence") if isinstance(parsed, dict) else []
     if not isinstance(values, list):
-        values = payload.get("date_evidence", [])
+        values = payload.get("date_evidence") or row.get("date_evidence", [])
     return [item for item in values if isinstance(item, dict)] if isinstance(values, list) else []
 
 
@@ -53,7 +53,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
         if not isinstance(row, dict):
             continue
         payload = _payload(row)
-        hint = payload.get("issuer_identity_hint") or {}
+        hint = payload.get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}
         if not isinstance(hint, dict):
             hint = {}
         issuer_code = str(
@@ -75,7 +75,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
     output = []
     for (issuer_code, event_type, decision_date), rows in sorted(groups.items()):
         identity_names = {
-            str((_payload(row).get("issuer_identity_hint") or {}).get("issuer_name") or "").strip()
+            str(((_payload(row).get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}).get("issuer_name")) or "").strip()
             for row in rows
         } - {""}
         group_seed = "|".join(("NEEQ", issuer_code, event_type, decision_date))
@@ -99,7 +99,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
                 "source_url": str(row.get("source_url") or ""),
                 "source_published_at": str(row.get("source_published_at") or ""),
                 "review_status": str(row.get("review_status") or "pending"),
-                "notice_classification": payload.get("notice_classification", {}),
+                "notice_classification": payload.get("notice_classification") or row.get("notice_classification", {}),
             })
         output.append({
             "event_group_id": group_id,
@@ -121,7 +121,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
 
     for row in ungrouped:
         payload = _payload(row)
-        hint = payload.get("issuer_identity_hint") or {}
+        hint = payload.get("issuer_identity_hint") or row.get("issuer_identity_hint") or {}
         output.append({
             "event_group_id": "",
             "exchange": str(row.get("exchange") or ""),
@@ -135,7 +135,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
                 "source_url": str(row.get("source_url") or ""),
                 "source_published_at": str(row.get("source_published_at") or ""),
                 "review_status": str(row.get("review_status") or "pending"),
-                "notice_classification": payload.get("notice_classification", {}),
+                "notice_classification": payload.get("notice_classification") or row.get("notice_classification", {}),
             }],
             "date_evidence": [],
             "review_status": "pending",
