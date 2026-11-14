@@ -22,6 +22,7 @@ class BatchParserTests(unittest.TestCase):
         roster = parse_neeq_termination_roster(NOTICE)
         self.assertIn("870099", roster["security_codes"])
         self.assertIn("832480", roster["security_codes"])
+        self.assertNotIn("820024", roster["security_codes"])
         self.assertEqual(roster["document_number"], "股转公告〔2026〕305号")
         self.assertEqual(roster["decision_date"], "2026-09-29")
 
