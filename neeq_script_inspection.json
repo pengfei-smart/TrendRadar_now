@@ -1,164 +1,22 @@
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 scripts\market_data\ingest_neeq_lifecycle.py --start-date 2026-11-01 --end-date 2026-11-13 --page 0 --max-announcements 5 --notice-type 5 --disclosure-type 5 --company-code 870099 --db output\market\market.db
-{
-  "probe": {
-    "source_id": "neeq",
-    "status_code": 200,
-    "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-    "response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-    "page_number": 0,
-    "page_size": 20,
-    "returned_count": 2,
-    "total_elements": 2,
-    "lifecycle_candidate_count": 2,
-    "classification_filter_verified": false,
-    "company_code_filter_verified": true,
-    "warnings": [
-      "本探测只验证公告列表请求、响应包装及分页元数据，不证明高级筛选分类参数已生效。",
-      "当前公告列表可能是混合公告；标题命中仅为人工审核候选，不是退市事实。",
-      "只返回公告元数据，不下载 PDF，不写入正式证券生命周期表。",
-      "noticeType、disclosureType、disclosureSubtype 的业务字典含义尚未全部核验；不要据此推断分类语义。",
-      "companyCd 参数已通过本次非空返回记录逐条匹配验证；keyword 参数仍未完成阳性对照。",
-      "即使筛选结果为零，也不得单凭零结果认定证券无公告或已经终止挂牌。"
-    ]
-  },
-  "ingestion": {
-    "source_id": "neeq",
-    "processed_count": 2,
-    "identity_candidates_saved": 2,
-    "lifecycle_candidates_saved": 8,
-    "readback_verified_batches": 2,
-    "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
-    "items": [
-      {
-        "company_code": "870099",
-        "company_name": "华搜股份",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "document_sha256": "6f951a9a94cfd15757aa7bfd21945f2ae84de02b8648fbf48ecf7d8598b2fc13",
-        "parsed_event_types": [
-          "delisting",
-          "delisting_decision",
-          "delisting_arrangement_period",
-          "resumption"
-        ],
-        "parsed_security_codes": [],
-        "parsed_date_evidence": [
-          {
-            "value": "2026-09-29",
-            "date_type": "decision_date",
-            "date_status": "unknown",
-            "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止"
-          },
-          {
-            "value": "2026-10-21",
-            "date_type": "arrangement_start_date",
-            "date_status": "unknown",
-            "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于"
-          },
-          {
-            "value": "2026-11-03",
-            "date_type": "last_trading_date",
-            "date_status": "unknown",
-            "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于"
-          },
-          {
-            "value": "2026-11-03",
-            "date_type": "unspecified",
-            "date_status": "unknown",
-            "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧"
-          },
-          {
-            "value": "2026-11-04",
-            "date_type": "delisting_date",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "notice_classification": {
-          "category": "delisting_arrangement_risk_notice",
-          "basis": "title_contains_risk_warning",
-          "issuer_role_hint": "broker_or_sponsor_notice",
-          "review_required": true,
-          "confirmed_legal_fact": false
-        },
-        "identity_candidate_id": "neeq-id-81a5d88421f368cea128cb1f00d5d3d4",
-        "lifecycle_candidate_ids": [
-          "life-27d078a64fb993069575fb02b243aac1",
-          "life-0b7fc219bd64b79e699a9d9b460e8a23",
-          "life-99938dbde3355672efc4ed201e100fa4",
-          "life-87404338b1b5f646bb21659592353ee9"
-        ],
-        "persistence_readback_verified": true,
-        "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
-        "status": "saved_for_review"
-      },
-      {
-        "company_code": "870099",
-        "company_name": "华搜股份",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "document_sha256": "10593a626089bed855b98b6871efbc7828613efd519e774fa5b46b9114da0c1a",
-        "parsed_event_types": [
-          "delisting",
-          "delisting_decision",
-          "delisting_arrangement_period",
-          "resumption"
-        ],
-        "parsed_security_codes": [],
-        "parsed_date_evidence": [
-          {
-            "value": "2026-09-29",
-            "date_type": "decision_date",
-            "date_status": "unknown",
-            "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止"
-          },
-          {
-            "value": "2026-10-21",
-            "date_type": "arrangement_start_date",
-            "date_status": "unknown",
-            "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于"
-          },
-          {
-            "value": "2026-11-02",
-            "date_type": "unspecified",
-            "date_status": "unknown",
-            "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧"
-          },
-          {
-            "value": "2026-11-04",
-            "date_type": "delisting_date",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "notice_classification": {
-          "category": "delisting_arrangement_risk_notice",
-          "basis": "title_contains_risk_warning",
-          "issuer_role_hint": "broker_or_sponsor_notice",
-          "review_required": true,
-          "confirmed_legal_fact": false
-        },
-        "identity_candidate_id": "neeq-id-6364b85a0b91422447f77f6251a1475e",
-        "lifecycle_candidate_ids": [
-          "life-77ea0fef5f6953db7ead519a661bfec6",
-          "life-1ceedb7f5afa3dfed1343d4218c70bb8",
-          "life-40072fa0c6420a975bd27c1016137ebb",
-          "life-5cf394af34cac252e78c558fc4282add"
-        ],
-        "persistence_readback_verified": true,
-        "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
-        "status": "saved_for_review"
-      }
-    ],
-    "formal_master_writes": 0,
-    "formal_lifecycle_writes": 0,
-    "unprocessed_count": 0
-  },
-  "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
-  "safety": {
-    "formal_issuer_master_writes": 0,
-    "formal_lifecycle_writes": 0,
-    "writes_are_review_candidates_only": true
-  }
-}
+C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 -m unittest tests.market_data.test_neeq_lifecycle_event_aggregator -v
+test_accepts_flattened_review_projection_with_empty_nested_dates (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_accepts_flattened_review_projection_with_empty_nested_dates) ... ok
+test_accepts_review_cli_projection_shape (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_accepts_review_cli_projection_shape) ... ok
+test_does_not_merge_across_different_issuers (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_does_not_merge_across_different_issuers) ... ok
+test_does_not_merge_when_decision_date_is_missing_or_conflicting (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_does_not_merge_when_decision_date_is_missing_or_conflicting) ... ok
+test_groups_same_event_across_distinct_notices_without_dropping_evidence (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_groups_same_event_across_distinct_notices_without_dropping_evidence) ... ok
+test_keeps_different_event_types_in_separate_groups (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_keeps_different_event_types_in_separate_groups) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK
+
+C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 -m unittest discover -s tests\market_data -p "test_*.py"
+..........................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 202 tests in 3.408s
+
+OK
 
 C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 scripts\market_data\review_neeq_lifecycle.py --db output\market\market.db list --target all --company-code 870099
 {
@@ -233,6 +91,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-0b7fc219bd64b79e699a9d9b460e8a23",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting_decision",
       "event_date": "",
@@ -321,6 +180,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-1ceedb7f5afa3dfed1343d4218c70bb8",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting_decision",
       "event_date": "",
@@ -403,6 +263,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-27d078a64fb993069575fb02b243aac1",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting",
       "event_date": "",
@@ -491,6 +352,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-40072fa0c6420a975bd27c1016137ebb",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting_arrangement_period",
       "event_date": "",
@@ -573,6 +435,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-5cf394af34cac252e78c558fc4282add",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "resumption",
       "event_date": "",
@@ -655,6 +518,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-77ea0fef5f6953db7ead519a661bfec6",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting",
       "event_date": "",
@@ -737,6 +601,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-87404338b1b5f646bb21659592353ee9",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "resumption",
       "event_date": "",
@@ -825,6 +690,7 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
     {
       "candidate_id": "life-99938dbde3355672efc4ed201e100fa4",
       "candidate_kind": "event",
+      "exchange": "NEEQ",
       "security_code": "",
       "event_type": "delisting_arrangement_period",
       "event_date": "",
@@ -909,6 +775,288 @@ C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\Tren
         "confirmed_legal_fact": false,
         "formal_lifecycle_write_allowed": false
       }
+    }
+  ],
+  "event_groups": [
+    {
+      "event_group_id": "neeq-event-8231e6f519d7073d672e1f7e",
+      "exchange": "NEEQ",
+      "issuer_code": "870099",
+      "issuer_names": [
+        "华搜股份"
+      ],
+      "event_type": "delisting",
+      "decision_date_anchor": "2026-09-29",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "candidate_id": "life-77ea0fef5f6953db7ead519a661bfec6",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
+          "source_published_at": "2026-11-02",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        },
+        {
+          "candidate_id": "life-27d078a64fb993069575fb02b243aac1",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
+          "source_published_at": "2026-11-03",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        }
+      ],
+      "date_evidence": [
+        {
+          "date_type": "arrangement_start_date",
+          "value": "2026-10-21"
+        },
+        {
+          "date_type": "decision_date",
+          "value": "2026-09-29"
+        },
+        {
+          "date_type": "delisting_date",
+          "value": "2026-11-04"
+        },
+        {
+          "date_type": "last_trading_date",
+          "value": "2026-11-03"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-02"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-03"
+        }
+      ],
+      "review_status": "pending",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "event_group_id": "neeq-event-566239c3586645199250ae84",
+      "exchange": "NEEQ",
+      "issuer_code": "870099",
+      "issuer_names": [
+        "华搜股份"
+      ],
+      "event_type": "delisting_arrangement_period",
+      "decision_date_anchor": "2026-09-29",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "candidate_id": "life-40072fa0c6420a975bd27c1016137ebb",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
+          "source_published_at": "2026-11-02",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        },
+        {
+          "candidate_id": "life-99938dbde3355672efc4ed201e100fa4",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
+          "source_published_at": "2026-11-03",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        }
+      ],
+      "date_evidence": [
+        {
+          "date_type": "arrangement_start_date",
+          "value": "2026-10-21"
+        },
+        {
+          "date_type": "decision_date",
+          "value": "2026-09-29"
+        },
+        {
+          "date_type": "delisting_date",
+          "value": "2026-11-04"
+        },
+        {
+          "date_type": "last_trading_date",
+          "value": "2026-11-03"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-02"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-03"
+        }
+      ],
+      "review_status": "pending",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "event_group_id": "neeq-event-8f3ac6dac3397f7fa2862429",
+      "exchange": "NEEQ",
+      "issuer_code": "870099",
+      "issuer_names": [
+        "华搜股份"
+      ],
+      "event_type": "delisting_decision",
+      "decision_date_anchor": "2026-09-29",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "candidate_id": "life-1ceedb7f5afa3dfed1343d4218c70bb8",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
+          "source_published_at": "2026-11-02",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        },
+        {
+          "candidate_id": "life-0b7fc219bd64b79e699a9d9b460e8a23",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
+          "source_published_at": "2026-11-03",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        }
+      ],
+      "date_evidence": [
+        {
+          "date_type": "arrangement_start_date",
+          "value": "2026-10-21"
+        },
+        {
+          "date_type": "decision_date",
+          "value": "2026-09-29"
+        },
+        {
+          "date_type": "delisting_date",
+          "value": "2026-11-04"
+        },
+        {
+          "date_type": "last_trading_date",
+          "value": "2026-11-03"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-02"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-03"
+        }
+      ],
+      "review_status": "pending",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "event_group_id": "neeq-event-e0b701bec4f2f4be26f64dc3",
+      "exchange": "NEEQ",
+      "issuer_code": "870099",
+      "issuer_names": [
+        "华搜股份"
+      ],
+      "event_type": "resumption",
+      "decision_date_anchor": "2026-09-29",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "candidate_id": "life-5cf394af34cac252e78c558fc4282add",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
+          "source_published_at": "2026-11-02",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        },
+        {
+          "candidate_id": "life-87404338b1b5f646bb21659592353ee9",
+          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
+          "source_published_at": "2026-11-03",
+          "review_status": "pending",
+          "notice_classification": {
+            "basis": "title_contains_risk_warning",
+            "category": "delisting_arrangement_risk_notice",
+            "confirmed_legal_fact": false,
+            "issuer_role_hint": "broker_or_sponsor_notice",
+            "review_required": true
+          }
+        }
+      ],
+      "date_evidence": [
+        {
+          "date_type": "arrangement_start_date",
+          "value": "2026-10-21"
+        },
+        {
+          "date_type": "decision_date",
+          "value": "2026-09-29"
+        },
+        {
+          "date_type": "delisting_date",
+          "value": "2026-11-04"
+        },
+        {
+          "date_type": "last_trading_date",
+          "value": "2026-11-03"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-02"
+        },
+        {
+          "date_type": "unspecified",
+          "value": "2026-11-03"
+        }
+      ],
+      "review_status": "pending",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
     }
   ],
   "safety": {
