@@ -32,6 +32,8 @@ class NEEQTerminationPage:
     request_parameters: dict
     request_body_sha256: str
     status_code: int = 200
+    rejected_record_count: int = 0
+    record_validation_errors: tuple[str, ...] = ()
 
 
 def _format_epoch_date(value) -> str:
@@ -96,7 +98,8 @@ class NEEQTerminationResultProvider:
 
     def fetch_page(self, *, page: int = 0, company_code: str = "",
                    keyword: str = "", market_layers: tuple[str, ...] = ("0", "1", "2"),
-                   retrieved_at: str | None = None) -> NEEQTerminationPage:
+                   retrieved_at: str | None = None,
+                   tolerate_invalid_records: bool = False) -> NEEQTerminationPage:
         if isinstance(page, bool) or not isinstance(page, int) or page < 0 or page > 100000:
             raise ValueError("page 必须在 0 到 100000 之间")
         if company_code and (len(company_code) != 6 or not company_code.isdigit()):
@@ -139,7 +142,16 @@ class NEEQTerminationResultProvider:
         page_data = payload[0].get("page")
         if not isinstance(page_data, dict) or not isinstance(page_data.get("content"), list):
             raise ValueError("NEEQ JSONP 缺少 page.content")
-        records = tuple(_validate_record(x) for x in page_data["content"])
+        valid_records = []
+        validation_errors = []
+        for index, raw_record in enumerate(page_data["content"]):
+            try:
+                valid_records.append(_validate_record(raw_record))
+            except (TypeError, ValueError) as exc:
+                if not tolerate_invalid_records:
+                    raise
+                validation_errors.append(f"record_{index}:{exc}")
+        records = tuple(valid_records)
         number = page_data.get("number")
         size = page_data.get("size")
         total = page_data.get("totalElements")
@@ -160,7 +172,8 @@ class NEEQTerminationResultProvider:
                 "newThreeArray": list(market_layers), "keyword": keyword,
             },
             request_body_sha256=hashlib.sha256(request_body).hexdigest(),
-            status_code=200,
+            status_code=200, rejected_record_count=len(validation_errors),
+            record_validation_errors=tuple(validation_errors),
         )
 
     def fetch_all(self, *, company_code: str = "", keyword: str = "",
