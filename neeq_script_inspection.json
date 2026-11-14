@@ -1,1067 +1,310 @@
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 -m unittest tests.market_data.test_neeq_lifecycle_event_aggregator -v
-test_accepts_flattened_review_projection_with_empty_nested_dates (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_accepts_flattened_review_projection_with_empty_nested_dates) ... ok
-test_accepts_review_cli_projection_shape (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_accepts_review_cli_projection_shape) ... ok
-test_does_not_merge_across_different_issuers (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_does_not_merge_across_different_issuers) ... ok
-test_does_not_merge_when_decision_date_is_missing_or_conflicting (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_does_not_merge_when_decision_date_is_missing_or_conflicting) ... ok
-test_groups_same_event_across_distinct_notices_without_dropping_evidence (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_groups_same_event_across_distinct_notices_without_dropping_evidence) ... ok
-test_keeps_different_event_types_in_separate_groups (tests.market_data.test_neeq_lifecycle_event_aggregator.NEEQLifecycleEventAggregatorTests.test_keeps_different_event_types_in_separate_groups) ... ok
-
-----------------------------------------------------------------------
-Ran 6 tests in 0.001s
-
-OK
-
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 -m unittest discover -s tests\market_data -p "test_*.py"
-..........................................................................................................................................................................................................
-----------------------------------------------------------------------
-Ran 202 tests in 3.408s
-
-OK
-
-C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 scripts\market_data\review_neeq_lifecycle.py --db output\market\market.db list --target all --company-code 870099
+C:\Users\pengfei\Desktop\TrendRadar_now-feature-market-opportunity-radar-v1\TrendRadar_now-feature-market-opportunity-radar-v1>set PYTHONPATH=. && python -X utf8 -c "import json; from trendradar.market_data.lifecycle_source_inspector import inspect_script_asset; r=inspect_script_asset('neeq','https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/supervision_open_information/termination_listing.min.js'); print(json.dumps(r,ensure_ascii=False,indent=2))"
 {
-  "database": "C:\\Users\\pengfei\\Desktop\\TrendRadar_now-feature-market-opportunity-radar-v1\\TrendRadar_now-feature-market-opportunity-radar-v1\\output\\market\\market.db",
-  "identity_candidates": [
+  "source_id": "neeq",
+  "script_url": "https://www.neeq.com.cn/template/1/bluewise/_files/js/disclosure/supervision_open_information/termination_listing.min.js",
+  "status_code": 200,
+  "content_type": "application/javascript",
+  "content_length": 5527,
+  "content_sha256": "69f4d7c3392d8e1cc4ab28fb4b058874a69db616d25f3b9d0753c760b4eb252f",
+  "endpoint_candidates": [
+    "/terminationController/infoResultse.do"
+  ],
+  "endpoint_contexts": [
     {
-      "candidate_id": "neeq-id-81a5d88421f368cea128cb1f00d5d3d4",
-      "company_code": "870099",
-      "company_name": "华搜股份",
-      "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-      "publish_date": "2026-11-03",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "870099",
-        "companyName": "华搜股份",
-        "destFilePath": "/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-11-03",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      },
-      "notice_classification": {
-        "category": "delisting_arrangement_risk_notice",
-        "basis": "title_contains_risk_warning",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true,
-        "confirmed_legal_fact": false
-      }
-    },
-    {
-      "candidate_id": "neeq-id-6364b85a0b91422447f77f6251a1475e",
-      "company_code": "870099",
-      "company_name": "华搜股份",
-      "title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-      "publish_date": "2026-11-02",
-      "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-      "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-      "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "raw_record": {
-        "companyCd": "870099",
-        "companyName": "华搜股份",
-        "destFilePath": "/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "disclosurePostTitle": "",
-        "disclosureTitle": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-        "fileExt": "pdf",
-        "publishDate": "2026-11-02",
-        "xxfcbj": "0",
-        "xxzrlx": "C"
-      },
-      "notice_classification": {
-        "category": "delisting_arrangement_risk_notice",
-        "basis": "title_contains_risk_warning",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true,
-        "confirmed_legal_fact": false
-      }
+      "endpoint": "/terminationController/infoResultse.do",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "offset": 3658,
+          "context": "panyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\"<span>\"+r+\"</span>\"}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{theadLink:\"_companyName_\",}},{title:\"主办券商\",data:\"hostBroker\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_hostBroker_\",bodyLink:function(q){var r=q.hostBroker;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌原因\",data:\"delistingReason\",diyTh:'<th style=\"height:50px;width:45%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingReason_\",bodyLink:function(q){var r=q.delistingReason;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌日期\",data:\"delistingDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'delistingDate\\')\" style=\"cursor:pointer\">_delistingDate_</a>',bodyLink:function(r){var t=r.delistingDate;var u=new Date(t.time);var s=u.getMonth()+1;if(s<10){s=\"0\"+s}var q=u.getDate();if(q<10){q=\"0\"+q}var v=u.getFullYear()+\"-\"+s+\"-\"+q;return v}}},{title:\"摘牌公告\",data:\"delistingNotice\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        }
+      ]
     }
   ],
-  "lifecycle_candidates": [
+  "endpoint_contracts": [],
+  "term_contexts": [
     {
-      "candidate_id": "life-0b7fc219bd64b79e699a9d9b460e8a23",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股\n票终止挂牌的风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司股票摘牌整理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n2026 年 11 月 3 日系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于2026 年 11 月 4 日终止挂牌。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "companyCode",
+      "occurrence_count": 14,
+      "occurrences": [
         {
-          "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 901,
+          "context": ":\".min\")],function(f,e,g,a,b,c){function k(m){if(typeof m==\"undefined\"||m==null||m==\"\"){return false}else{return true}}function h(){var n=new Date();var m=\"-\";var p=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%"
         },
         {
-          "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
+          "offset": 917,
+          "context": "on(f,e,g,a,b,c){function k(m){if(typeof m==\"undefined\"||m==null||m==\"\"){return false}else{return true}}function h(){var n=new Date();var m=\"-\";var p=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{"
         },
         {
-          "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
-          "date_status": "unknown",
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
+          "offset": 1910,
+          "context": "ntPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\"<span>\"+r+\"</span>\"}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{theadLink:\"_companyName_\",}},{title:\"主办券商\",data:\"hostBroker\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_hostBroker_\",bodyLink:function(q){var r=q.hostBroker;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌原因\",data:\"delistingReason\",diyTh:'<th style=\"height:50px;width:45%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingReason_\",bodyLink:function(q){var r=q.delistingReason;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌日期\",data:\"delistingDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'delistingDate\\')\" style=\"cursor:pointer\">_delistingDate_</a>',bodyLin"
         },
         {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
+          "offset": 2055,
+          "context": "0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\"<span>\"+r+\"</span>\"}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{theadLink:\"_companyName_\",}},{title:\"主办券商\",data:\"hostBroker\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_hostBroker_\",bodyLink:function(q){var r=q.hostBroker;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌原因\",data:\"delistingReason\",diyTh:'<th style=\"height:50px;width:45%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingReason_\",bodyLink:function(q){var r=q.delistingReason;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌日期\",data:\"delistingDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'delistingDate\\')\" style=\"cursor:pointer\">_delistingDate_</a>',bodyLink:function(r){var t=r.delistingDate;var u=new Date(t.time);var s=u.getMonth()+1;if(s<10){s=\"0\"+s}var q=u.getDate();if(q<10){q=\"0\"+q}var v=u.getFu"
         },
         {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 2095,
+          "context": "10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\"<span>\"+r+\"</span>\"}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{theadLink:\"_companyName_\",}},{title:\"主办券商\",data:\"hostBroker\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_hostBroker_\",bodyLink:function(q){var r=q.hostBroker;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌原因\",data:\"delistingReason\",diyTh:'<th style=\"height:50px;width:45%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingReason_\",bodyLink:function(q){var r=q.delistingReason;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌日期\",data:\"delistingDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'delistingDate\\')\" style=\"cursor:pointer\">_delistingDate_</a>',bodyLink:function(r){var t=r.delistingDate;var u=new Date(t.time);var s=u.getMonth()+1;if(s<10){s=\"0\"+s}var q=u.getDate();if(q<10){q=\"0\"+q}var v=u.getFullYear()+\"-\"+s+\"-\"+q;return v}}},{title:"
+        },
+        {
+          "offset": 2142,
+          "context": "t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\"<span>\"+r+\"</span>\"}}},{title:\"简称\",data:\"companyName\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{theadLink:\"_companyName_\",}},{title:\"主办券商\",data:\"hostBroker\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_hostBroker_\",bodyLink:function(q){var r=q.hostBroker;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌原因\",data:\"delistingReason\",diyTh:'<th style=\"height:50px;width:45%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingReason_\",bodyLink:function(q){var r=q.delistingReason;return\"<span>\"+r+\"</span>\"}}},{title:\"摘牌日期\",data:\"delistingDate\",diyTh:'<th style=\"height:50px;width:15%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'delistingDate\\')\" style=\"cursor:pointer\">_delistingDate_</a>',bodyLink:function(r){var t=r.delistingDate;var u=new Date(t.time);var s=u.getMonth()+1;if(s<10){s=\"0\"+s}var q=u.getDate();if(q<10){q=\"0\"+q}var v=u.getFullYear()+\"-\"+s+\"-\"+q;return v}}},{title:\"摘牌公告\",data:\"delistingNotice\",diyTh:'<th style="
+        },
+        {
+          "offset": 3776,
+          "context": "-\"+s+\"-\"+q;return v}}},{title:\"摘牌公告\",data:\"delistingNotice\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue"
+        },
+        {
+          "offset": 4268,
+          "context": ",headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-1ceedb7f5afa3dfed1343d4218c70bb8",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting_decision",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第十次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "startTime",
+      "occurrence_count": 8,
+      "occurrences": [
         {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 3791,
+          "context": "rn v}}},{title:\"摘牌公告\",data:\"delistingNotice\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0]"
         },
         {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
+          "offset": 3831,
+          "context": "ice\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']"
         },
         {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
+          "offset": 4333,
+          "context": "foResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,new"
         },
         {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4373,
+          "context": "ge:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.la"
+        },
+        {
+          "offset": 4859,
+          "context": "indow.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 4899,
+          "context": ".makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5255,
+          "context": "().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5265,
+          "context": "q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-27d078a64fb993069575fb02b243aac1",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股\n票终止挂牌的风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司股票摘牌整理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n2026 年 11 月 3 日系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于2026 年 11 月 4 日终止挂牌。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "endTime",
+      "occurrence_count": 8,
+      "occurrences": [
         {
-          "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 3843,
+          "context": "<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"s"
         },
         {
-          "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
+          "offset": 3881,
+          "context": "lumnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date"
         },
         {
-          "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
-          "date_status": "unknown",
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
+          "offset": 4385,
+          "context": "ld:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0"
         },
         {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
+          "offset": 4423,
+          "context": "c\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         },
         {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4911,
+          "context": "rttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 4949,
+          "context": "al(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5275,
+          "context": "ging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5283,
+          "context": "agination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-40072fa0c6420a975bd27c1016137ebb",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第十次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "keyword",
+      "occurrence_count": 9,
+      "occurrences": [
         {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 994,
+          "context": "n false}else{return true}}function h(){var n=new Date();var m=\"-\";var p=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortabl"
         },
         {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
+          "offset": 3919,
+          "context": "headLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keyword"
         },
         {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
+          "offset": 4304,
+          "context": "rl:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sortty"
         },
         {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4316,
+          "context": "tionController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.ma"
+        },
+        {
+          "offset": 4969,
+          "context": "words\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 4990,
+          "context": "me:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5018,
+          "context": "ata(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5054,
+          "context": "me='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-5cf394af34cac252e78c558fc4282add",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第十次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "pageId",
+      "occurrence_count": 6,
+      "occurrences": [
         {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 1096,
+          "context": "th()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCod"
         },
         {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
+          "offset": 3942,
+          "context": "ice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordR"
         },
         {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
+          "offset": 4191,
+          "context": "/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={ke"
         },
         {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4532,
+          "context": "ndTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5298,
+          "context": "talElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        },
+        {
+          "offset": 5454,
+          "context": "click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-77ea0fef5f6953db7ead519a661bfec6",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-      "source_published_at": "2026-11-02",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将\n被终止挂牌的第十次风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司对股票进入摘牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规定， 履行公司治理、 信息披露等有关义务； 如向特定对象发行股票导致股东\n累计超过200 人， 或者股东超过200 人后向特定对",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-02",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "pageNum",
+      "occurrence_count": 2,
+      "occurrences": [
         {
-          "context": "牌整理期交易并将被\n终止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 1105,
+          "context": "r q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r"
         },
         {
-          "context": "在先者为准） 起5 个交易日内向全国股转公司提交复核申请。截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 3951,
+          "context": "yLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-87404338b1b5f646bb21659592353ee9",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "resumption",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股\n票终止挂牌的风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司股票摘牌整理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n2026 年 11 月 3 日系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于2026 年 11 月 4 日终止挂牌。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "totalElements",
+      "occurrence_count": 2,
+      "occurrences": [
         {
-          "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
+          "offset": 4646,
+          "context": "\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         },
         {
-          "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
-          "date_status": "unknown",
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4688,
+          "context": "\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
     },
     {
-      "candidate_id": "life-99938dbde3355672efc4ed201e100fa4",
-      "candidate_kind": "event",
-      "exchange": "NEEQ",
-      "security_code": "",
-      "event_type": "delisting_arrangement_period",
-      "event_date": "",
-      "date_status": "unknown",
-      "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-      "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-      "source_published_at": "2026-11-03",
-      "evidence_excerpt": "万和证券股份有限公司\n关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股\n票终止挂牌的风险提示性公告\n\n万和证券作为北京华创搜了科技股份有限公司的持续督导主办券商，通过持\n续督导，发现公司存在以下情况：\n\n一、 风险事项基本情况\n（一） 风险事项类别\n序号 类别 风险事项\n挂牌公司是\n否履行信息\n披露义务\n1 其他 公司股票摘牌整理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n2026 年 9 月 29 日下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止华搜股份股票挂牌。 由于挂牌公司未按规\n定及时履行信息披露义务，主办券商根据《全国中小企业股份转让系统主办券商\n持续督导工作指引》相关规定，代为披露相关内容如下：\n因公司未披露 2025 年年度报告，根据《全国中小企业股份转让系统挂牌公\n司股票终止挂牌实施细则》 （以下简称《终止挂牌实施细则》 ）第十七条的规定，\n全国股转公司决定终止公司股票挂牌。\n根据 《全国中小企业股份转让系统复核实施细则》 第十四条的规定， 公司对\n终止挂牌决定存在异议的， 应当在收到终止挂牌决定或者全国股转公司公告发布\n之日 （以在先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 2026 年 10 月 21 日起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于2026 年 11 月 4 日终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n2026 年 11 月 3 日系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于2026 年 11 月 4 日终止挂牌。\n\n二、 对公司的影响\n\n股票登记、转让、管理的相关安排\n公司股票终止挂牌后 将根据中国证券登记结算有限责任公司北京分公司相\n关规定办理后续手续。 根据 《关于完善全国中小企业股份转让系统终止挂牌制度\n的指导意见》 《全国中小企业股份转让系统挂牌公司股票终止挂牌实施细则》等\n规定， 如股票终止挂牌时公司股东人数超过200 人， 将进入全国股转公司设立的\n摘牌证券非公开电子化转让服务专区转让， 并履行非上市公众公司公司治理、 信\n息披露等义务； 如股票未进入专区但后续公司股东人数超过200 人， 将遵守 《非\n上市公众公司监督管理办法》 《关于加强非上市公众公司监管工作的指导意见》\n等规",
-      "evidence_grade": "official",
-      "review_status": "pending",
-      "reviewer": "",
-      "reviewed_at": "",
-      "review_notes": "",
-      "issuer_identity_hint": {
-        "announcement_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-        "attachment_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-        "exchange": "NEEQ",
-        "identity_resolution_status": "metadata_linked_pending_review",
-        "issuer_code": "870099",
-        "issuer_name": "华搜股份",
-        "match_method": "exact_attachment_path",
-        "metadata_response_sha256": "31cf19b6544a78875a656456a88800fa611c8649224b221d2aecee1ff88e1da6",
-        "metadata_retrieved_at": "2026-11-14T01:28:40.576064+00:00",
-        "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do?callback=TrendRadarAnnouncementProbe",
-        "publish_date": "2026-11-03",
-        "review_required": true
-      },
-      "date_evidence": [
+      "term": "defaultParams",
+      "occurrence_count": 1,
+      "occurrences": [
         {
-          "context": "理期结束暨公司股票终\n止挂牌\n否\n\n（二） 风险事项情况\n全国中小企业股份转让系统有限责任公司（以下简称“全国股转公司” ）于\n⟦DATE⟧下发了 《关于作出终止陕西成明节能技术股份有限公司等未披\n露定期报告公司股票挂牌决定的公告》 （股转公告 〔2026〕305 号） （以下简称 “终\n止挂牌决定” ） ， 全国股转公司决定终止",
-          "date_status": "unknown",
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "context": "先者为准） 起5 个交易日内向全国股转公司提交复核申请。 截至复核\n期限届满⽇，公司未向全国股转公司提出复核申请。\n公司股票自 ⟦DATE⟧起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于",
-          "date_status": "unknown",
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "context": "为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者关注公告，注意投资风险。\n⟦DATE⟧系公司摘牌整理期的最后一个交易日，整理期结束后，公\n司股票将于",
-          "date_status": "unknown",
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "om\n\n主办券商提醒广大投资者：\n请投资者充分关注上述事项及由此产生的相关风险。\n\n四、 备查文件\n无\n\n万和证券股份有限公司\n⟦DATE⟧",
-          "date_status": "unknown",
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        },
-        {
-          "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者",
-          "date_status": "unknown",
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
+          "offset": 4140,
+          "context": "><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\")."
         }
-      ],
-      "notice_classification": {
-        "basis": "title_contains_risk_warning",
-        "category": "delisting_arrangement_risk_notice",
-        "confirmed_legal_fact": false,
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "review_required": true
-      },
-      "termination_evidence_assessment": {
-        "outcome": "risk_or_intermediary_notice_not_final_proof",
-        "notice_category": "delisting_arrangement_risk_notice",
-        "issuer_role_hint": "broker_or_sponsor_notice",
-        "identity_status": "official_metadata_linked_identity_pending_review",
-        "body_security_codes": [],
-        "metadata_issuer_code": "870099",
-        "delisting_date_evidence": [
-          {
-            "date": "2026-11-04",
-            "date_status": "unknown",
-            "context": "起复牌、进入摘牌整理期，摘牌整理期为10\n个交易日， 公司股票将于⟦DATE⟧终止挂牌。 股票恢复交易期间， 证券\n简称变更为“摘牌华搜” ，证券代码保持不变，交易方式为集合竞价交易。主办\n券商将于每个交易日开盘前代为披露一次股票将被终止挂牌的风险提示公告， 请\n投资者"
-          }
-        ],
-        "review_required": true,
-        "confirmed_legal_fact": false,
-        "formal_lifecycle_write_allowed": false
-      }
+      ]
+    },
+    {
+      "term": "pagination",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "offset": 4675,
+          "context": ",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        }
+      ]
+    },
+    {
+      "term": "ajax",
+      "occurrence_count": 3,
+      "occurrences": [
+        {
+          "offset": 3635,
+          "context": "var t=r.delistingDate;var u=new Date(t.time);var s=u.getMonth()+1;if(s<10){s=\"0\"+s}var q=u.getDate();if(q<10){q=\"0\"+q}var v=u.getFullYear()+\"-\"+s+\"-\"+q;return v}}},{title:\"摘牌公告\",data:\"delistingNotice\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{style:\"text-align:center;\",theadLink:\"_delistingNotice_\",bodyLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.t"
+        },
+        {
+          "offset": 4156,
+          "context": "<img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"p"
+        },
+        {
+          "offset": 5231,
+          "context": "t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        }
+      ]
+    },
+    {
+      "term": "exchangeData",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "offset": 4474,
+          "context": ".data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        }
+      ]
+    },
+    {
+      "term": "pageNumId",
+      "occurrence_count": 2,
+      "occurrences": [
+        {
+          "offset": 1105,
+          "context": "r q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var o=p+m+r+m+q;return o}function l(){var n=new Date();var m=\"-\";var o=n.getFullYear();var r=n.getMonth()+1;var q=n.getDate();if(r>=1&&r<=9){r=\"0\"+r}if(q>=0&&q<=9){q=\"0\"+q}var p=(o-1)+m+r+m+q;return p}function d(p,r){var q=\"-\";var o;var n;var t;o=p.split(q);n=r.split(q);var s=new Date(o[0],o[1],o[2]);var m=new Date(n[0],n[1],n[2]);t=parseInt(Math.abs(s-m)/1000/60/60/24);return t}b.companyCode(f(\"#companyCode\"),function(m){if(m.keyCode==13){f(\".go\").trigger(\"click\")}});f(\"#keywords\").keydown(function(m){if(m.keyCode==13){f(\".go\").click()}});f(\"body\").data(\"currentPageObj\",{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"bean.delisting_date\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"});var j=f(\"body\").data(\"currentPageObj\");function i(s){var p=new Date(s);var q=p.getFullYear();var r=p.getMonth()+1;if(r<10){r=\"0\"+r.toString()}var o=p.getDate();if(o<10){o=\"0\"+o.toString()}var m=p.getHours();if(m<10){m=\"0\"+m.toString()}var t=p.getMinutes();if(t<10){t=\"0\"+t.toString()}var n=p.getSeconds();if(n<10){n=\"0\"+n.toString()}return q+\"-\"+r+\"-\"+o}f(function(){b.picker(\"input[name='date']\",{singleDatePicker:false,showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"});var n={showDropdown:true,autoUpdateInput:false,timePicker24Hour:true,timePicker:false,opens:\"center\"};b.picker(\"input[name='date']\",n);var m=[{title:\"代码\",data:\"companyCode\",diyTh:'<th style=\"height:50px;width:10%\">',columnDefs:{sortable:\"desc\",theadLink:'<a href=\"javascript:void(0);\" onclick=\"sortable(\\'companyCode\\')\" style=\"cursor:pointer\">_companyCode_</a>',bodyLink:function(q){var r=q.companyCode;return r=\""
+        },
+        {
+          "offset": 3951,
+          "context": "yLink:function(q){var r=q.fileExt;var s=q.delistingNotice;if(r==\"html\"||r==\"htm\"){return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span></a>'}else{return'<a target=\"_blank\" href =\" '+s+'\"><span>查看</span><img src=\"'+settingObj.baseUrl+'img/listingCompany/ico-wpic1.png\" alt=\"\"></a>'}}}}];var o={container:f(\"#table\"),headerColumns:m,ajax:{type:\"post\",url:\"/terminationController/infoResultse.do\",dataType:\"jsonp\",data:{page:0,sortfield:\"bean.delisting_date\",sorttype:\"desc\",companyCode:\"\",startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],keyword:\"\"}},cacheObj:{pageId:0,pageNumId:0,zqName:0,companyNum:0,sortfield:\"\",sortInfo:\"\",sorttype:\"desc\",dmsortLabel:\"\",datesortLabel:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q=="
+        }
+      ]
+    },
+    {
+      "term": "defaultPaginationParams",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "offset": 4702,
+          "context": "el:\"\"},callback:{sortable:function p(r){window.makerObj.sortfield=r;var q=window.neeqDT.defaultParams;o.ajax[\"data\"]={page:window.makerObj.pageId,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,companyCode:f(\"#companyCode\").val(),keyword:f(\"#keywords\").val(),startTime:f(\"input[name='date']\").data(\"startTime\"),endTime:f(\"input[name='date']\").data(\"endTime\"),newThreeArray:[\"0\",\"1\",\"2\"],};a.init(o)},exchangeData:function(u,s,w,r){u.data=s[0].page.content;j.pageId=0;var v=s[0].page;var t=v.content;var q=w(t,m,u);u.container.empty().append(q);if(u.paging.isPagination&&v.totalElements>20){r.show();r.pagination(v.totalElements,defaultPaginationParams([v]))}else{if(r instanceof jQuery){r.hide()}}}}};a.init(o);f(\"#searchButton\").click(function(){var s=c.getValue();var r=s[0][\"type\"];startTime=f(\"input[name='date']\").data(\"startTime\");endTime=f(\"input[name='date']\").data(\"endTime\");var q=f(\"#keywords\").val();q=b.keywordReg(q);if(q==-1){f(\"#keywords\").val(\"\");return}if(q){f(\"#keywords\").val(q)}var t=f(\"#companyCode\").val();if(t!=\"\"){t=f.trim(t);f(\"#companyCode\").val(t)}var u=f(\"#companyCode\").val();if(u==f(\"#companyCode\").attr(\"placeholder\")){u=\"\"}o.ajax[\"data\"]={keyword:q,startTime:startTime,endTime:endTime,page:j.pageId,companyCode:u,sortfield:window.makerObj.sortfield,sorttype:window.makerObj.sorttype,newThreeArray:[\"0\",\"1\",\"2\"],};o.cacheObj.lastPageId=0;o.cacheObj.pageId=0;a.init(o)})})});"
+        }
+      ]
     }
   ],
-  "event_groups": [
-    {
-      "event_group_id": "neeq-event-8231e6f519d7073d672e1f7e",
-      "exchange": "NEEQ",
-      "issuer_code": "870099",
-      "issuer_names": [
-        "华搜股份"
-      ],
-      "event_type": "delisting",
-      "decision_date_anchor": "2026-09-29",
-      "evidence_count": 2,
-      "evidence": [
-        {
-          "candidate_id": "life-77ea0fef5f6953db7ead519a661bfec6",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-          "source_published_at": "2026-11-02",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        },
-        {
-          "candidate_id": "life-27d078a64fb993069575fb02b243aac1",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-          "source_published_at": "2026-11-03",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        }
-      ],
-      "date_evidence": [
-        {
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        },
-        {
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        }
-      ],
-      "review_status": "pending",
-      "confirmed_legal_fact": false,
-      "formal_lifecycle_write_allowed": false
-    },
-    {
-      "event_group_id": "neeq-event-566239c3586645199250ae84",
-      "exchange": "NEEQ",
-      "issuer_code": "870099",
-      "issuer_names": [
-        "华搜股份"
-      ],
-      "event_type": "delisting_arrangement_period",
-      "decision_date_anchor": "2026-09-29",
-      "evidence_count": 2,
-      "evidence": [
-        {
-          "candidate_id": "life-40072fa0c6420a975bd27c1016137ebb",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-          "source_published_at": "2026-11-02",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        },
-        {
-          "candidate_id": "life-99938dbde3355672efc4ed201e100fa4",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-          "source_published_at": "2026-11-03",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        }
-      ],
-      "date_evidence": [
-        {
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        },
-        {
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        }
-      ],
-      "review_status": "pending",
-      "confirmed_legal_fact": false,
-      "formal_lifecycle_write_allowed": false
-    },
-    {
-      "event_group_id": "neeq-event-8f3ac6dac3397f7fa2862429",
-      "exchange": "NEEQ",
-      "issuer_code": "870099",
-      "issuer_names": [
-        "华搜股份"
-      ],
-      "event_type": "delisting_decision",
-      "decision_date_anchor": "2026-09-29",
-      "evidence_count": 2,
-      "evidence": [
-        {
-          "candidate_id": "life-1ceedb7f5afa3dfed1343d4218c70bb8",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-          "source_published_at": "2026-11-02",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        },
-        {
-          "candidate_id": "life-0b7fc219bd64b79e699a9d9b460e8a23",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-          "source_published_at": "2026-11-03",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        }
-      ],
-      "date_evidence": [
-        {
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        },
-        {
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        }
-      ],
-      "review_status": "pending",
-      "confirmed_legal_fact": false,
-      "formal_lifecycle_write_allowed": false
-    },
-    {
-      "event_group_id": "neeq-event-e0b701bec4f2f4be26f64dc3",
-      "exchange": "NEEQ",
-      "issuer_code": "870099",
-      "issuer_names": [
-        "华搜股份"
-      ],
-      "event_type": "resumption",
-      "decision_date_anchor": "2026-09-29",
-      "evidence_count": 2,
-      "evidence": [
-        {
-          "candidate_id": "life-5cf394af34cac252e78c558fc4282add",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票进入摘牌整理期交易并将被终止挂牌的第十次风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-02/f4ef5dc528de4b45ae92449e0db7a075.pdf",
-          "source_published_at": "2026-11-02",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        },
-        {
-          "candidate_id": "life-87404338b1b5f646bb21659592353ee9",
-          "source_title": "[券商公告]华搜股份:万和证券股份有限公司关于北京华创搜了科技股份有限公司股票摘牌整理期结束暨公司股票终止挂牌的风险提示性公告",
-          "source_url": "https://www.neeq.com.cn/disclosure/2026/2026-11-03/f6b5f1f1efd14d78b28edcfce1d071ed.pdf",
-          "source_published_at": "2026-11-03",
-          "review_status": "pending",
-          "notice_classification": {
-            "basis": "title_contains_risk_warning",
-            "category": "delisting_arrangement_risk_notice",
-            "confirmed_legal_fact": false,
-            "issuer_role_hint": "broker_or_sponsor_notice",
-            "review_required": true
-          }
-        }
-      ],
-      "date_evidence": [
-        {
-          "date_type": "arrangement_start_date",
-          "value": "2026-10-21"
-        },
-        {
-          "date_type": "decision_date",
-          "value": "2026-09-29"
-        },
-        {
-          "date_type": "delisting_date",
-          "value": "2026-11-04"
-        },
-        {
-          "date_type": "last_trading_date",
-          "value": "2026-11-03"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-02"
-        },
-        {
-          "date_type": "unspecified",
-          "value": "2026-11-03"
-        }
-      ],
-      "review_status": "pending",
-      "confirmed_legal_fact": false,
-      "formal_lifecycle_write_allowed": false
-    }
-  ],
-  "safety": {
-    "formal_issuer_master_writes": 0,
-    "formal_lifecycle_writes": 0,
-    "read_only": true
-  }
+  "candidate_count": 1
 }
