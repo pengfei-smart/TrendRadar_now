@@ -14,6 +14,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from trendradar.market_data.storage import MarketStorage
+from trendradar.market_data.neeq_notice_classifier import classify_neeq_notice
 
 
 REVIEW_STATUSES = ("pending", "verified", "rejected", "needs_more_evidence")
@@ -42,6 +43,7 @@ def list_candidates(storage: MarketStorage, *, target: str = "all",
             "reviewed_at": row["reviewed_at"],
             "review_notes": row["review_notes"],
             "raw_record": row["raw_record"],
+            "notice_classification": classify_neeq_notice(row["disclosure_title"]),
         } for row in identities]
     if target in {"all", "lifecycle"}:
         lifecycle = storage.list_lifecycle_evidence_candidates(
@@ -80,6 +82,7 @@ def list_candidates(storage: MarketStorage, *, target: str = "all",
                 "review_notes": row["review_notes"],
                 "issuer_identity_hint": payload.get("issuer_identity_hint", {}),
                 "date_evidence": (payload.get("parsed_evidence") or {}).get("date_evidence", []),
+                "notice_classification": payload.get("notice_classification") or classify_neeq_notice(row["source_title"]),
             })
     return result
 
