@@ -130,6 +130,27 @@ class NEEQAttachmentDownloaderTests(unittest.TestCase):
             self.assertEqual(len(fetcher.calls), 3)
             self.assertEqual(sleeps, [0.25, 0.5])
 
+
+    def test_offset_processes_the_next_batch_instead_of_repeating_first_batch(self):
+        first_url = "https://www.neeq.com.cn/uploads/first.pdf"
+        second_url = "https://www.neeq.com.cn/uploads/second.pdf"
+        manifest = make_manifest(first_url)
+        second_task = dict(manifest["tasks"][0])
+        second_task["attachment_id"] = "neeq-attachment-second"
+        second_task["url"] = second_url
+        manifest["tasks"].append(second_task)
+        fetcher = FakeFetcher({
+            first_url: make_doc(first_url, b"%PDF-1.7 first", "application/pdf"),
+            second_url: make_doc(second_url, b"%PDF-1.7 second", "application/pdf"),
+        })
+        with tempfile.TemporaryDirectory() as directory:
+            result = download_neeq_attachments(
+                manifest, directory, limit=1, offset=1, delay_seconds=0,
+                retries=0, fetcher=fetcher, extractor=lambda document: "text",
+            )
+            self.assertEqual(fetcher.calls, [("neeq", second_url)])
+            self.assertEqual(result["requested_offset"], 1)
+
     def test_rejects_conflicting_or_unknown_reported_kinds(self):
         manifest = make_manifest()
         manifest["tasks"][0]["attachment_kinds_reported"] = ["pdf", "html"]
