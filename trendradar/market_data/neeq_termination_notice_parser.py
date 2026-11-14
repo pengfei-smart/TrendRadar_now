@@ -286,10 +286,21 @@ def build_neeq_notice_review_report(
         for item in items
         for comparison in item.get("comparisons", [])
     ]
-    reason_category_counts: dict[str, int] = {}
-    for comparison in comparisons:
-        category = str(comparison.get("termination_reason_category") or "unknown")
-        reason_category_counts[category] = reason_category_counts.get(category, 0) + 1
+    parsed_notices = [
+        notice
+        for item in items
+        for notice in item.get("notices", [])
+    ]
+
+    def _category_counts(records: list[dict]) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for record in records:
+            category = str(record.get("termination_reason_category") or "unknown")
+            counts[category] = counts.get(category, 0) + 1
+        return counts
+
+    parsed_reason_counts = _category_counts(parsed_notices)
+    matched_reason_counts = _category_counts(comparisons)
     return {
         "schema_version": 2,
         "source": "neeq_official_termination_result_list_and_notice_attachments",
@@ -297,11 +308,20 @@ def build_neeq_notice_review_report(
         "attachment_count": len(items),
         "parsed_notice_count": sum(item.get("parsed_notice_count", 0) for item in items),
         "comparison_count": len(comparisons),
-        "termination_reason_category_counts": reason_category_counts,
+        "termination_reason_category_counts": parsed_reason_counts,
+        "parsed_notice_reason_category_counts": parsed_reason_counts,
+        "matched_comparison_reason_category_counts": matched_reason_counts,
+        "unmatched_notice_count": sum(len(item.get("unmatched_notices", [])) for item in items),
         "conditional_termination_count": sum(
+            bool(item.get("conditional_termination")) for item in parsed_notices
+        ),
+        "matched_comparison_conditional_termination_count": sum(
             bool(item.get("conditional_termination")) for item in comparisons
         ),
         "notice_registration_cancellation_count": sum(
+            bool(item.get("notice_states_company_deregistered")) for item in parsed_notices
+        ),
+        "matched_comparison_registration_cancellation_count": sum(
             bool(item.get("notice_states_company_deregistered")) for item in comparisons
         ),
         "date_mismatch_count": sum(
