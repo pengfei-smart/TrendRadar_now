@@ -78,6 +78,25 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
     id_counts = Counter(ids)
     duplicate_codes = sorted(code for code, count in code_counts.items() if count > 1)
     duplicate_ids = sorted(record_id for record_id, count in id_counts.items() if count > 1)
+    duplicate_record_details = [
+        {
+            "page": page_number,
+            "company_code": str(row.get("companyCode") or ""),
+            "company_name": str(row.get("companyName") or ""),
+            "record_id": str(row.get("id")) if row.get("id") is not None else None,
+            "delisting_date": row.get("delistingDateISO") or row.get("delistingDate"),
+            "delisting_notice": row.get("delistingNotice") or "",
+            "duplicate_company_code": str(row.get("companyCode") or "") in duplicate_codes,
+            "duplicate_record_id": (
+                str(row.get("id")) in duplicate_ids if row.get("id") is not None else False
+            ),
+        }
+        for page_number, row in records
+        if (
+            str(row.get("companyCode") or "") in duplicate_codes
+            or (row.get("id") is not None and str(row.get("id")) in duplicate_ids)
+        )
+    ]
     requested_pages = list(range(start_page, start_page + len(ordered)))
     missing_pages = sorted(set(requested_pages) - set(page_numbers))
     if ordered:
@@ -107,6 +126,7 @@ def audit_neeq_termination_pages(pages: Iterable[object], *, expected_total_page
         "unique_company_code_count": len(set(codes)),
         "duplicate_company_codes": duplicate_codes,
         "duplicate_record_ids": duplicate_ids,
+        "duplicate_record_details": duplicate_record_details,
         "attachment_url_count": len(attachment_urls),
         "attachment_kind_counts": dict(sorted(attachment_kinds.items())),
         "records_missing_attachment_url": missing_attachment_count,
