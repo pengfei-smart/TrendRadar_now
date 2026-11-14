@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -53,7 +54,7 @@ class LifecycleEvidenceFetcher:
         self.user_agent = user_agent
         self._opener = opener
 
-    def _request_headers(self, source_id: str) -> dict[str, str]:
+    def _request_headers(self, source_id: str, url: str = "") -> dict[str, str]:
         headers = {
             "User-Agent": self.user_agent,
             "Accept": "text/html,application/pdf,application/xml,text/xml,application/json,*/*;q=0.5",
@@ -70,13 +71,28 @@ class LifecycleEvidenceFetcher:
                 "Referer": "https://www.neeq.com.cn/disclosure/announcement.html",
                 "Origin": "https://www.neeq.com.cn",
             })
+            if url and urlsplit(url).path.startswith("/uploads/"):
+                # 终止挂牌结果接口附件实测使用 uploads 路径；复用浏览器导航头，
+                # 避免通用公告列表 Referer 触发附件访问重定向异常。
+                headers.update({
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/130.0.0.0 Safari/537.36"
+                    ),
+                    "Accept": "application/pdf,*/*",
+                    "Referer": "https://www.neeq.com.cn/disclosure/termination_listing.html",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                })
         return headers
 
     def fetch(self, source_id: str, url: str) -> FetchedDocument:
         source = get_source(source_id)
         if not is_allowed_url(source_id, url):
             raise ValueError(f"URL 不属于 {source.name} 的 HTTPS 白名单")
-        request = Request(url, headers=self._request_headers(source_id))
+        request = Request(url, headers=self._request_headers(source_id, url))
         opener = self._opener or build_opener(_SameSourceRedirectHandler(source_id))
         try:
             response = opener.open(request, timeout=self.timeout_seconds)
