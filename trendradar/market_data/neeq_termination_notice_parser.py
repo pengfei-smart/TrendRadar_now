@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-_DATE = r"(\\d{4})\\s*年\\s*(\\d{1,2})\\s*月\\s*(\\d{1,2})\\s*日"
+_DATE = r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日"
 
 
 def _date(match: re.Match | None) -> str | None:
@@ -21,7 +21,7 @@ def _date(match: re.Match | None) -> str | None:
 
 
 def _clean(value: str) -> str:
-    return re.sub(r"\\s+", "", str(value or "")).strip("；;，,。 ")
+    return re.sub(r"\s+", "", str(value or "")).strip("；;，,。 ")
 
 
 def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
@@ -30,7 +30,7 @@ def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
 
 def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | None, bool]:
     legal_match = _first(
-        r"第\\s*4\\s*[.．]\\s*5\\s*[.．]\\s*1\\s*条\\s*第\\s*[（(]?\\s*[一二三四五六七八九十0-9]+\\s*[）)]?\\s*项",
+        r"第\s*4\s*[.．]\s*5\s*[.．]\s*1\s*条\s*第\s*[（(]?\s*[一二三四五六七八九十0-9]+\s*[）)]?\s*项",
         compact,
     )
     legal_basis = _clean(legal_match.group(0)) if legal_match else None
@@ -52,27 +52,27 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
 
 def _parse_notice(block: str, index: int) -> dict[str, Any]:
     # PDF文本层可能在汉字之间插入空格或换行；匹配时压缩空白，原文仍由上层保留。
-    compact = re.sub(r"\\s+", "", block)
-    number_match = _first(r"股转系统公告(\\d{4})(\\d{1,5})号", compact)
+    compact = re.sub(r"\s+", "", block)
+    number_match = _first(r"股转系统公告(\d{4})(\d{1,5})号", compact)
     identity_source = compact[number_match.end():] if number_match else compact
     identity_match = _first(
-        r"(?P<name>[\\u4e00-\\u9fffA-Za-z0-9（）()·\\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;）)]+)[；;]证券代码[：:](?P<code>\\d{6})",
+        r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·\-]{2,100}?)[（(]证券简称[：:](?P<short>[^；;）)]+)[；;]证券代码[：:](?P<code>\d{6})",
         identity_source,
     )
     decision_match = _first(
-        r"我司于\\s*" + _DATE + r"\\s*对[\\s\\S]{1,100}?作出终止其股票\\s*挂牌的决定",
+        r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,100}?作出终止其股票\s*挂牌的决定",
         compact,
     )
     planned_match = _first(
-        r"将自\\s*" + _DATE + r"\\s*起终止其股票\\s*挂牌",
+        r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌",
         compact,
     )
     announcement_match = _first(
-        r"全国中小企业股份转让系统有限责任公司\\s*" + _DATE,
+        r"全国中小企业股份转让系统有限责任公司\s*" + _DATE,
         compact,
     )
     reason_match = _first(
-        r"未能按照规定\\s*时间披露\\s*(.{2,100}?)\\s*。?\\s*根据",
+        r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据",
         compact,
     )
     reason = _clean(reason_match.group(1)) if reason_match else None
