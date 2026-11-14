@@ -17,24 +17,27 @@ def parse_neeq_termination_roster(text: str) -> dict:
     compact_lines = [line for line in compact_lines if line]
     rows = {}
     for index, line in enumerate(compact_lines):
-        codes = list(re.finditer(r"(?<!\d)(\d{6})(?!\d)", line))
-        for match in codes:
-            code = match.group(1)
+        # 只接受“附表序号 + 六位证券代码”结构；避免把表格旁的优先股等其他代码误识别为被摘牌公司。
+        entries = list(re.finditer(r"(?<!\d)(\d{1,2})\s+(\d{6})(?!\d)", line))
+        for match in entries:
+            code = match.group(2)
+            code_start = match.start(2)
             start = max(0, match.start() - 8)
             end = min(len(line), match.end() + 100)
             context = line[start:end]
             # PDF 双栏表格可能把同一行的两家公司放在一起；以代码为锚点保留局部上下文。
-            tail = line[match.end():]
+            tail = line[match.end(2):]
             broker_match = re.search(
                 r"([\u4e00-\u9fffA-Za-z0-9（）()]+(?:证券|承销保荐))",
                 tail,
             )
             broker = broker_match.group(1) if broker_match else ""
-            before = line[max(0, match.start() - 24):match.start()].strip()
+            before = line[max(0, match.start() - 24):match.start(1)].strip()
             after = tail[:broker_match.start()].strip() if broker_match else tail[:32].strip()
             # 附表列通常为“序号 证券代码 证券简称 主办券商”；不强制名称与结果列表一致。
             rows.setdefault(code, {
                 "security_code": code,
+                "roster_serial_number": match.group(1),
                 "line_index": index,
                 "context": context,
                 "name_context": after,
