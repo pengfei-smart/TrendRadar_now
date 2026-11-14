@@ -68,6 +68,10 @@ class PipelineTests(unittest.TestCase):
             selected = [row for row in rows if row["event_type"] == "delisting_completion"]
             self.assertEqual({row["security_code"] for row in selected}, {"870099", "832480"})
             self.assertTrue(all(row["review_status"] == "pending" for row in selected))
+            for row in selected:
+                payload = row["payload_json"]
+                self.assertEqual(payload["issuer_identity_hint"]["issuer_code"], row["security_code"])
+                self.assertEqual(payload["result_date_evidence"][0]["value"], "2026-11-04")
             with storage.connect() as connection:
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0)
