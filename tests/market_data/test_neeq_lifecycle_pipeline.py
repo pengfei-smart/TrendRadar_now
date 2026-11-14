@@ -71,6 +71,9 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
             self.assertEqual(result["processed_count"], 1)
             self.assertEqual(result["identity_candidates_saved"], 1)
             self.assertGreaterEqual(result["lifecycle_candidates_saved"], 1)
+            self.assertEqual(result["readback_verified_batches"], 1)
+            self.assertTrue(result["items"][0]["persistence_readback_verified"])
+            self.assertEqual(result["database"], str(storage.db_path))
             self.assertEqual(result["formal_master_writes"], 0)
             self.assertEqual(result["formal_lifecycle_writes"], 0)
             self.assertEqual(
@@ -96,6 +99,27 @@ class NEEQLifecyclePipelineTests(unittest.TestCase):
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0)
                 self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
             self.assertEqual(fetcher.urls[0][1], "https://www.neeq.com.cn/disclosure/sample.pdf")
+
+    def test_candidate_batch_rolls_back_identity_when_lifecycle_validation_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            identity = {
+                "identity_candidate_id": "identity-atomic-test",
+                "company_code": "870099",
+                "company_name": "华搜股份",
+                "attachment_url": "https://www.neeq.com.cn/disclosure/sample.pdf",
+                "metadata_source_url": "https://www.neeq.com.cn/disclosureInfoController/companyAnnouncement.do",
+                "metadata_response_sha256": "a" * 64,
+                "retrieved_at": "2026-11-13T20:00:00+08:00",
+                "raw_record": {"companyCd": "870099"},
+            }
+            invalid_lifecycle = {"candidate_id": "invalid-lifecycle"}
+            with self.assertRaises(ValueError):
+                storage.save_neeq_lifecycle_candidate_batch(
+                    [identity], [invalid_lifecycle],
+                )
+            self.assertEqual(storage.list_neeq_issuer_identity_candidates(), [])
+            self.assertEqual(storage.list_lifecycle_evidence_candidates(), [])
 
     def test_rejects_untrusted_metadata_source_before_downloading(self):
         probe = self._probe()
