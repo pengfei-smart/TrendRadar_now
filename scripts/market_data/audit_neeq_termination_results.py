@@ -50,6 +50,7 @@ def main() -> int:
             "response_sha256": page.response_sha256,
             "rejected_record_count": page.rejected_record_count,
             "record_validation_errors": list(page.record_validation_errors),
+            "rejected_record_details": list(page.rejected_record_details),
         } for page in pages],
         "audit": audit,
         "safety": {"database_writes": 0, "pdf_downloads": 0, "read_only": True},
