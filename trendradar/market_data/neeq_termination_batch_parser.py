@@ -47,7 +47,7 @@ def parse_neeq_termination_roster(text: str) -> dict:
         "security_codes": sorted(rows),
         "rows": rows,
         "document_mentions_decision": (
-            "作出终止" in text and "挂牌决定" in text
+            "终止" in text and "挂牌" in text and "决定" in text
         ),
         "document_number": (
             re.search(r"股转公告\s*〔\s*(20\d{2})\s*〕\s*(\d+)\s*号", text)
