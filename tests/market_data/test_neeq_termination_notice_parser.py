@@ -383,7 +383,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v5")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v6")
         self.assertEqual(result["notice_count"], 2)
         for notice in result["notices"]:
             self.assertEqual(notice["document_number"], "2017-701")
