@@ -318,7 +318,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 2019年7月5日
 """ + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v4")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v5")
         self.assertEqual(result["notice_count"], 54)
         self.assertEqual(result["notices"][0]["document_number"], "2019-985")
         self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
@@ -355,10 +355,30 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertIsNone(notice["decision_date"])
 
     def test_v4_keeps_low_quality_2016_text_unresolved(self):
-        text = "1 2016 56 2016 6 30 831505 831610 2015 4.5.1 2016 7 1"
+        # Numeric PDF extraction noise must not be treated as a code/name table.
+        text = "1\\n2016\\n56\\n2016\\n6\\n30\\n831505\\n831610\\n2015\\n4.5.1\\n2016\\n7\\n1"
         notice = parse_neeq_termination_notice_text(text)["notices"][0]
         self.assertIsNone(notice["security_code"])
         self.assertIn("missing_company_identity", notice["parse_warnings"])
+
+    def test_v5_prefers_current_header_number_and_extracts_termination_after_suspension(self):
+        text = """股转系统公告
+2017
+701
+中科招商投资管理集团股份有限公司（证券简称：中科招商；证券代码：832168）、达仁投资管理集团股份有限公司（证券简称：达仁资管；证券代码：831639）。
+正文另引用2016-36号历史公告。
+现决定于2017年12月18日对上述2家公司的股票暂停转让一天，12月26日起终止上述公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v5")
+        self.assertEqual(result["notice_count"], 2)
+        for notice in result["notices"]:
+            self.assertEqual(notice["document_number"], "2017-701")
+            self.assertEqual(notice["suspension_date"], "2017-12-18")
+            self.assertEqual(notice["stated_termination_date"], "2017-12-26")
+            self.assertEqual(notice["announcement_date"], "2017-12-15")
+            self.assertIsNone(notice["decision_date"])
 
 
 if __name__ == "__main__":
