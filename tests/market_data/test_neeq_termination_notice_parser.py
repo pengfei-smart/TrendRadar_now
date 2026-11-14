@@ -125,6 +125,11 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(report["parsed_notice_count"], 1)
         self.assertEqual(report["comparison_count"], 1)
         self.assertEqual(report["items"][0]["comparisons"][0]["company_name_match"], True)
+        self.assertEqual(report["termination_reason_category_counts"], {
+            "failure_to_disclose_periodic_report": 1
+        })
+        self.assertEqual(report["conditional_termination_count"], 1)
+        self.assertEqual(report["date_mismatch_count"], 0)
         self.assertEqual(report["safety"]["database_writes"], 0)
         self.assertFalse(report["items"][0]["confirmed_legal_fact"])
 
