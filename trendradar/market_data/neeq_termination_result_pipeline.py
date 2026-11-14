@@ -91,6 +91,23 @@ def ingest_neeq_termination_result_pages(
             ).hexdigest()[:32]
             payload = {
                 "evidence_kind": "official_termination_result_list",
+                "issuer_identity_hint": {
+                    "exchange": "NEEQ",
+                    "issuer_code": code,
+                    "issuer_name": name,
+                    "identity_resolution_status": "official_result_record_linked_pending_review",
+                    "match_method": "official_result_record_company_code",
+                    "roster_code_match": bool(match.get("roster_code_match")),
+                    "broker_match": bool(match.get("broker_match")),
+                    "review_required": True,
+                },
+                "result_date_evidence": ([{
+                    "value": date_value,
+                    "date_type": "delisting_date",
+                    "date_status": "pending",
+                    "source": "official_neeq_termination_result_list",
+                    "context": "NEEQ官方终止挂牌结果名录记录；尚待人工法律审核",
+                }] if date_value else []),
                 "result_record": record,
                 "result_source_url": result_source_url,
                 "result_response_sha256": result_response_hash,
