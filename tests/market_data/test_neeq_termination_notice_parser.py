@@ -318,7 +318,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 2019年7月5日
 """ + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v5")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v6")
         self.assertEqual(result["notice_count"], 54)
         self.assertEqual(result["notices"][0]["document_number"], "2019-985")
         self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
@@ -391,6 +391,18 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
             self.assertEqual(notice["stated_termination_date"], "2017-12-26")
             self.assertEqual(notice["announcement_date"], "2017-12-15")
             self.assertIsNone(notice["decision_date"])
+
+
+    def test_v6_prefers_notice_number_matching_signed_year_over_body_citation(self):
+        text = """股转系统公告
+2016-36号为正文引用的历史公告
+2017-701
+中科招商投资管理集团股份有限公司（证券简称：中科招商；证券代码：832168）
+现决定于2017年12月18日对上述公司的股票暂停转让一天，12月26日起终止上述公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["document_number"], "2017-701")
 
 
 if __name__ == "__main__":
