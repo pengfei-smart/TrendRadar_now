@@ -48,36 +48,45 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
     return category, legal_basis, registration_cancelled
 
 
-def _extract_document_number(compact: str) -> str | None:
-    # Prefer the notice number whose year agrees with the issuer's signed
-    # announcement date. Body citations to older notices must not win.
-    signed = re.search(
-        r"全国中小企业股份转让系统有限责任公司(20\d{2})年\d{1,2}月\d{1,2}日",
-        compact,
-    )
-    signed_year = signed.group(1) if signed else None
-    marker = compact.find("股转系统公告")
-    search_region = compact[:500] if marker < 0 else compact[max(0, marker - 180):marker + 320]
+def _extract_document_number(document_text: str) -> str | None:
+    """Extract a notice number only from the opening header lines.
+
+    PDF text layers may put the current number on two separate lines
+    (year, then serial). Body citations are deliberately outside this window.
+    """
+    lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
+    lines = [line for line in lines if line]
+    header_lines = lines[:8]
+    header = "\n".join(header_lines)
+
+    # Standard HTML/text headers and one-line PDF header forms.
     patterns = (
         r"[〔［\[]?(20\d{2})[〕］\]]?[-—–](\d{1,5})(?:号)?",
-        r"[〔［\[]?(20\d{2})[〕］\]]?(\d{3,5})(?:号)?(?=[\u4e00-\u9fff]|$)",
-        r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–\s]?(\d{3,5})(?=[\u4e00-\u9fff]|$)",
+        r"股转系统公告[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?",
+        r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–](\d{1,5})(?:号)?",
     )
-    candidates: list[tuple[int, str, str]] = []
     for pattern in patterns:
-        for match in re.finditer(pattern, search_region):
-            year, serial = match.group(1), match.group(2)
-            candidates.append((match.start(), year, serial))
-    if not candidates:
-        return None
-    if signed_year:
-        same_year = [item for item in candidates if item[1] == signed_year]
-        if same_year:
-            candidates = same_year
-    # When several same-year numbers exist, the first one in the header region
-    # is the current notice number; never search the full body for a fallback.
-    _, year, serial = min(candidates, key=lambda item: item[0])
-    return f"{year}-{serial}"
+        match = re.search(pattern, header)
+        if match:
+            return f"{match.group(1)}-{match.group(2)}"
+
+    # Scanned PDF text-layer layout: year and serial occupy adjacent lines.
+    # Require at least three serial digits to avoid treating date fragments
+    # and low-quality numeric extraction noise as an announcement number.
+    for index, line in enumerate(header_lines[:-1]):
+        if not re.fullmatch(r"20\d{2}", line):
+            continue
+        serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
+        if serial_match:
+            return f"{line}-{serial_match.group(1)}"
+
+    # Compact page-header form such as "-1-2021666公司名称".
+    compact_header = "".join(header_lines)
+    compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
+    if compact_match:
+        return f"{compact_match.group(1)}-{compact_match.group(2)}"
+    return None
+
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
     """Extract every structured company identity and simple HTML table row."""
@@ -139,7 +148,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
 
 def _parse_shared_fields(block: str) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
-    number = _extract_document_number(compact)
+    number = _extract_document_number(block)
     decision_match = _first(
         r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,120}?作出终止其股票\s*挂牌的决定",
         compact,
@@ -245,13 +254,20 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
     if not isinstance(text, str) or not text.strip():
         raise ValueError("公告文本为空")
     starts = [match.start() for match in re.finditer(r"股转系统公告", text)]
-    blocks = [text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
-              for pos, start in enumerate(starts)] if starts else [text]
+    # A PDF may mention "股转系统公告" inside its body while the actual
+    # notice number is printed in the preceding page header. Do not split away
+    # that opening header when it already contains a valid notice number.
+    if starts and _extract_document_number(text[:starts[0]]) is not None:
+        blocks = [text[:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
+                  for pos in range(len(starts))]
+    else:
+        blocks = [text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
+                  for pos, start in enumerate(starts)] if starts else [text]
     notices = []
     for index, block in enumerate(blocks):
         notices.extend(_parse_notice(block, index))
     return {
-        "parser": "neeq_termination_notice_parser_v6",
+        "parser": "neeq_termination_notice_parser_v7",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
         "notices": notices,
@@ -390,7 +406,7 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
 
     return {
         "schema_version": 3,
-        "parser_version": "neeq_termination_notice_parser_v5",
+        "parser_version": "neeq_termination_notice_parser_v7",
         "source": "neeq_official_termination_result_list_and_notice_attachments",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
