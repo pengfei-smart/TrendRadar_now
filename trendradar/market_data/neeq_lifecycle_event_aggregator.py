@@ -19,18 +19,18 @@ def _payload(row: dict) -> dict:
     return value if isinstance(value, dict) else {}
 
 
-def _date_evidence(payload: dict) -> list[dict]:
+def _date_evidence(payload: dict, row: dict | None = None) -> list[dict]:
     parsed = payload.get("parsed_evidence") or {}
     values = parsed.get("date_evidence") if isinstance(parsed, dict) else []
     if not isinstance(values, list):
-        values = payload.get("date_evidence") or row.get("date_evidence", [])
+        values = payload.get("date_evidence") or ((row or {}).get("date_evidence", []))
     return [item for item in values if isinstance(item, dict)] if isinstance(values, list) else []
 
 
-def _decision_date(payload: dict) -> str:
+def _decision_date(payload: dict, row: dict | None = None) -> str:
     dates = {
         str(item.get("value") or item.get("date") or "").strip()
-        for item in _date_evidence(payload)
+        for item in _date_evidence(payload, row)
         if item.get("date_type") == "decision_date"
         and str(item.get("value") or item.get("date") or "").strip()
     }
@@ -60,7 +60,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
             hint.get("issuer_code") or row.get("security_code") or ""
         ).strip()
         event_type = str(row.get("event_type") or "").strip()
-        decision_date = _decision_date(payload)
+        decision_date = _decision_date(payload, row)
         if (
             str(row.get("exchange") or "").upper() != "NEEQ"
             or len(issuer_code) != 6
@@ -88,7 +88,7 @@ def build_neeq_lifecycle_event_groups(candidates: Iterable[dict]) -> list[dict]:
             str(item.get("candidate_id") or ""),
         )):
             payload = _payload(row)
-            for item in _date_evidence(payload):
+            for item in _date_evidence(payload, row):
                 value = str(item.get("value") or item.get("date") or "").strip()
                 date_type = str(item.get("date_type") or "unspecified").strip()
                 if value:
