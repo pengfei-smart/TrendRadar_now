@@ -331,6 +331,9 @@ def build_neeq_notice_review_report(
             for item in comparisons
         ),
         "follow_up_evidence_required_count": sum(
+            bool(item.get("follow_up_evidence_required")) for item in parsed_notices
+        ),
+        "matched_comparison_follow_up_evidence_required_count": sum(
             bool(item.get("follow_up_evidence_required")) for item in comparisons
         ),
         "items": items,
