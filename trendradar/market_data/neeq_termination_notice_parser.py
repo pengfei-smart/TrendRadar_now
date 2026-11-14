@@ -52,16 +52,16 @@ def _extract_document_number(compact: str) -> str | None:
     # Prefer the notice number whose year agrees with the issuer's signed
     # announcement date. Body citations to older notices must not win.
     signed = re.search(
-        r"全国中小企业股份转让系统有限责任公司(20\\d{2})年\\d{1,2}月\\d{1,2}日",
+        r"全国中小企业股份转让系统有限责任公司(20\d{2})年\d{1,2}月\d{1,2}日",
         compact,
     )
     signed_year = signed.group(1) if signed else None
     marker = compact.find("股转系统公告")
     search_region = compact[:500] if marker < 0 else compact[max(0, marker - 180):marker + 320]
     patterns = (
-        r"[〔［\\[]?(20\\d{2})[〕］\\]]?[-—–](\\d{1,5})(?:号)?",
-        r"[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{3,5})(?:号)?(?=[\\u4e00-\\u9fff]|$)",
-        r"(?:^|[^0-9])(?:-\\d+-)?(20\\d{2})[-—–\\s]?(\\d{3,5})(?=[\\u4e00-\\u9fff]|$)",
+        r"[〔［\[]?(20\d{2})[〕］\]]?[-—–](\d{1,5})(?:号)?",
+        r"[〔［\[]?(20\d{2})[〕］\]]?(\d{3,5})(?:号)?(?=[\u4e00-\u9fff]|$)",
+        r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–\s]?(\d{3,5})(?=[\u4e00-\u9fff]|$)",
     )
     candidates: list[tuple[int, str, str]] = []
     for pattern in patterns:
