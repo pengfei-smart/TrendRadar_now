@@ -33,6 +33,18 @@ class TerminationResultAuditTests(unittest.TestCase):
         self.assertEqual(result["duplicate_company_codes"], ["000000"])
         self.assertEqual(result["duplicate_record_ids"], ["0"])
 
+
+    def test_rejected_records_block_complete_coverage(self):
+        rejected = SimpleNamespace(
+            page_number=0, page_size=1, total_pages=1, total_elements=1,
+            status_code=200, records=[{"companyCode": "870099", "id": 1}],
+            rejected_record_count=1,
+            record_validation_errors=("record_1:untrusted attachment",),
+        )
+        result = audit_neeq_termination_pages([rejected])
+        self.assertFalse(result["complete_coverage"])
+        self.assertIn("page_0_rejected_records_1", result["metadata_errors"])
+
     def test_detects_pagination_metadata_drift(self):
         result = audit_neeq_termination_pages([page(0), page(1, total_pages=3)])
         self.assertFalse(result["complete_coverage"])
