@@ -134,6 +134,8 @@ def ingest_neeq_termination_result_pages(
                 ),
                 "document_requested_url": document.requested_url,
                 "document_final_url": document.final_url,
+                "document_content_type": document.content_type,
+                "attachment_kind": record.get("attachmentKind", "unknown"),
                 "document_sha256": document.content_sha256,
                 "document_match": match,
                 "roster_document_number": roster["document_number"],
