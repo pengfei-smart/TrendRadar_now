@@ -316,7 +316,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 对于未在规定期限内提交复核申请或复核申请未被受理的被摘牌公司，我司将自2019年7月15日起终止其股票挂牌。
 全国中小企业股份转让系统有限责任公司
 2019年7月5日
-""" + "\\n".join(rows)
+""" + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
         self.assertEqual(result["parser"], "neeq_termination_notice_parser_v4")
         self.assertEqual(result["notice_count"], 54)
