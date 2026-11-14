@@ -136,5 +136,68 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertIsNone(result["notices"][0]["planned_termination_date"])
 
 
+    def test_classifies_failure_to_disclose_as_conditional(self):
+        notice = parse_neeq_termination_notice_text(NOTICE)["notices"][0]
+        self.assertEqual(
+            notice["termination_reason_category"], "failure_to_disclose_periodic_report"
+        )
+        self.assertTrue(notice["conditional_termination"])
+        self.assertFalse(notice["notice_states_company_deregistered"])
+        self.assertTrue(notice["follow_up_evidence_required"])
+
+    def test_classifies_voluntary_dissolution_and_registration_cancellation(self):
+        text = """股转系统公告
+2021 402号
+常熟联邦化工股份有限公司（证券简称：联邦化工；证券代码：832517；主办券商：某券商）因主动解散清算，已注销公司登记。根据业务规则第4.5.1条第（五）项规定，我司将自2021年5月12日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年4月23日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(
+            notice["termination_reason_category"], "voluntary_dissolution_liquidation"
+        )
+        self.assertEqual(notice["termination_legal_basis"], "第4.5.1条第（五）项")
+        self.assertTrue(notice["notice_states_company_deregistered"])
+        self.assertFalse(notice["conditional_termination"])
+
+    def test_classifies_bankruptcy_liquidation_and_registration_cancellation(self):
+        text = """股转系统公告
+2021 894号
+浙江腾骏祥科技股份有限公司（证券简称：ST腾骏；证券代码：871865；主办券商：某券商）因破产清算，已注销公司登记。根据业务规则第4.5.1条第（五）项规定，我司将自2021年9月8日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2021年8月31日"""
+        notice = parse_neeq_termination_notice_text(text)["notices"][0]
+        self.assertEqual(notice["termination_reason_category"], "bankruptcy_liquidation")
+        self.assertTrue(notice["notice_states_company_deregistered"])
+        self.assertFalse(notice["conditional_termination"])
+
+    def test_result_date_mismatch_is_explicit_follow_up_not_legal_confirmation(self):
+        parsed = parse_neeq_termination_notice_text(NOTICE)
+        result = crosscheck_neeq_notice_task(parsed, {
+            "linked_candidates": [{
+                "record_id": "1016",
+                "company_code": "839401",
+                "company_name": "新复大",
+                "delisting_date": "2021-03-22",
+            }],
+        })
+        comparison = result["comparisons"][0]
+        self.assertEqual(comparison["date_consistency_status"], "mismatch_requires_follow_up")
+        self.assertTrue(comparison["follow_up_evidence_required"])
+        self.assertFalse(comparison["confirmed_legal_fact"])
+        self.assertFalse(comparison["formal_lifecycle_write_allowed"])
+
+    def test_result_date_match_has_matches_status(self):
+        parsed = parse_neeq_termination_notice_text(NOTICE)
+        result = crosscheck_neeq_notice_task(parsed, {
+            "linked_candidates": [{
+                "record_id": "1",
+                "company_code": "839401",
+                "company_name": "新复大",
+                "delisting_date": "2020-09-17",
+            }],
+        })
+        self.assertEqual(result["comparisons"][0]["date_consistency_status"], "matches")
+
+
 if __name__ == "__main__":
     unittest.main()
