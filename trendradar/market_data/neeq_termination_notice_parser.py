@@ -55,11 +55,11 @@ def _extract_document_number(compact: str) -> str | None:
     header = re.search(r"股转系统公告", compact)
     if header:
         region = compact[header.end():header.end() + 100]
-        region = re.sub(r"^(?:-\\d+-)+", "", region)
+        region = re.sub(r"^(?:-\d+-)+", "", region)
         patterns = (
-            r"^[〔［\\[]?(20\\d{2})[〕］\\]]?[-—–](\\d{1,5})(?:号)?",
-            r"^[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{3,5})(?:号)?(?=[\\u4e00-\\u9fff]|$)",
-            r"^[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{1,5})号",
+            r"^[〔［\[]?(20\d{2})[〕］\]]?[-—–](\d{1,5})(?:号)?",
+            r"^[〔［\[]?(20\d{2})[〕］\]]?(\d{3,5})(?:号)?(?=[\u4e00-\u9fff]|$)",
+            r"^[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})号",
         )
         for pattern in patterns:
             match = re.match(pattern, region)
@@ -68,9 +68,9 @@ def _extract_document_number(compact: str) -> str | None:
         return None
 
     # Legacy fallback applies only when no explicit notice-header marker exists.
-    match = _first(r"[〔［\\[]?(\\d{4})[〕］\\]]?[-—–\\s]*(\\d{1,5})号", compact)
+    match = _first(r"[〔［\[]?(\d{4})[〕］\]]?[-—–\s]*(\d{1,5})号", compact)
     if not match:
-        match = _first(r"(?:^|[^0-9])(?:-\\d+-)?(20\\d{2})[-—–\\s]?(\\d{3,5})(?=[\\u4e00-\\u9fff])", compact)
+        match = _first(r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–\s]?(\d{3,5})(?=[\u4e00-\u9fff])", compact)
     return f"{match.group(1)}-{match.group(2)}" if match else None
 
 def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
@@ -117,7 +117,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
         short = None
         if index + 1 < len(lines):
             next_line = lines[index + 1]
-            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and re.search(r"[\\u4e00-\\u9fff]", next_line) and next_line not in ("主办券商", "证券简称"):
+            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and re.search(r"[\u4e00-\u9fff]", next_line) and next_line not in ("主办券商", "证券简称"):
                 short = next_line
         if short is None:
             continue
@@ -132,25 +132,25 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
 
 
 def _parse_shared_fields(block: str) -> dict[str, Any]:
-    compact = re.sub(r"\\s+", "", block)
+    compact = re.sub(r"\s+", "", block)
     number = _extract_document_number(compact)
     decision_match = _first(
-        r"我司于\\s*" + _DATE + r"\\s*对[\\s\\S]{1,120}?作出终止其股票\\s*挂牌的决定",
+        r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,120}?作出终止其股票\s*挂牌的决定",
         compact,
     )
     if not decision_match:
         # 批量公告可写作“我司决定自YYYY年M月D日对……作出终止决定”。
         decision_match = _first(
-            r"我司决定自\\s*" + _DATE + r"\\s*对[\\s\\S]{1,180}?作出终止其股票\\s*挂牌的决定",
+            r"我司决定自\s*" + _DATE + r"\s*对[\s\S]{1,180}?作出终止其股票\s*挂牌的决定",
             compact,
         )
-    planned_match = _first(r"将自\\s*" + _DATE + r"\\s*起终止其股票\\s*挂牌", compact)
-    suspension_match = _first(r"(?:于|自)\\s*" + _DATE + r"\\s*对[\\s\\S]{0,100}?暂停转让", compact)
-    announcement_match = _first(r"全国中小企业股份转让系统有限责任公司\\s*" + _DATE, compact)
+    planned_match = _first(r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌", compact)
+    suspension_match = _first(r"(?:于|自)\s*" + _DATE + r"\s*对[\s\S]{0,100}?暂停转让", compact)
+    announcement_match = _first(r"全国中小企业股份转让系统有限责任公司\s*" + _DATE, compact)
     announcement_date = _date(announcement_match)
 
     stated_match = _first(
-        r"(?:决定自|决定于|自)\\s*" + _DATE + r"\\s*起?终止(?:其|上述)?(?:公司)?(?:的)?股票(?:挂牌)?",
+        r"(?:决定自|决定于|自)\s*" + _DATE + r"\s*起?终止(?:其|上述)?(?:公司)?(?:的)?股票(?:挂牌)?",
         compact,
     )
     if not stated_match:
@@ -163,7 +163,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
             stated_date = _date(full_event_match)
         else:
             short_match = _first(
-                r"(\\d{1,2})月(\\d{1,2})日(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
+                r"(\d{1,2})月(\d{1,2})日(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
                 compact,
             )
             if short_match and announcement_date:
@@ -180,7 +180,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     else:
         stated_date = _date(stated_match)
 
-    reason_match = _first(r"未能按照规定\\s*时间披露\\s*(.{2,100}?)\\s*。?\\s*根据", compact)
+    reason_match = _first(r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据", compact)
     reason = _clean(reason_match.group(1)) if reason_match else None
     category, legal_basis, deregistered = _classify_termination(compact, reason)
     conditional = bool(_first(
