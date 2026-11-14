@@ -354,9 +354,21 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["announcement_date"], "2018-01-02")
         self.assertIsNone(notice["decision_date"])
 
-    def test_v4_keeps_low_quality_2016_text_unresolved(self):
+    def test_v5_keeps_low_quality_2016_text_unresolved(self):
         # Numeric PDF extraction noise must not be treated as a code/name table.
-        text = "1\\n2016\\n56\\n2016\\n6\\n30\\n831505\\n831610\\n2015\\n4.5.1\\n2016\\n7\\n1"
+        text = """1
+2016
+56
+2016
+6
+30
+831505
+831610
+2015
+4.5.1
+2016
+7
+1"""
         notice = parse_neeq_termination_notice_text(text)["notices"][0]
         self.assertIsNone(notice["security_code"])
         self.assertIn("missing_company_identity", notice["parse_warnings"])
