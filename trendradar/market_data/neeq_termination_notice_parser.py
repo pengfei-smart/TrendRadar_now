@@ -184,7 +184,12 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
         if title_company:
             company_name = _clean(title_company.group("name"))
             tail = compact[title_company.end():]
-            alias = re.search(r"以下简称[“\"「]?([^”\"」、，,；;）)]+)", tail)
+            # The sponsor itself may be introduced first as “主办券商”.
+            # Resolve the issuer alias only after the second occurrence of the
+            # issuer's full name, not from the sponsor's own definition.
+            issuer_position = tail.find(company_name)
+            issuer_context = tail[issuer_position + len(company_name):] if issuer_position >= 0 else tail
+            alias = re.search(r"以下简称[“\"「]?([^”\"」、，,；;）)]+)", issuer_context)
             found.append({
                 "company_name": company_name,
                 "short_name": _clean(alias.group(1)) if alias else None,
@@ -290,7 +295,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     )
     if not stated_match:
         full_event_match = _first(
-            _DATE + r"(?:起)?[\s\S]{0,80}?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
+            _DATE + r"(?:起)?(?:(?!(?:20\d{2}年)?\d{1,2}月\d{1,2}日)[^。；;]){0,80}?终止[^。；;]{0,30}?(?:股票挂牌|挂牌)",
             date_compact,
         )
         if full_event_match:
