@@ -1,0 +1,398 @@
+[
+  {
+    "evidence_id": "neeq-2017-684-834502-issuer-001",
+    "security_code": "834502",
+    "notice_document_number": "2017-684",
+    "evidence_type": "issuer_announcement",
+    "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+    "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+    "source_document_number": "2017-039",
+    "published_date": "2017-12-12",
+    "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+    "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+    "date_assertions": [
+      {
+        "assertion_id": "834502-decision",
+        "date_type": "decision_received_date",
+        "date_value": "2017-12-12",
+        "source_quote": "2017年12月12日收到全国中小企业股份转让系统有限责任公司出具的《关于终止深圳市富海银涛资产管理股份有限公司股票挂牌的决定》",
+        "page_number": 1,
+        "section": "终止挂牌决定"
+      },
+      {
+        "assertion_id": "834502-suspension",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "自2017年12月13日（周三）开市起暂停转让",
+        "page_number": 1,
+        "section": "暂停转让安排"
+      },
+      {
+        "assertion_id": "834502-tentative-resumption",
+        "date_type": "other_date",
+        "date_value": "2017-12-14",
+        "source_quote": "公司暂定的最晚恢复转让日为2017年12月14日",
+        "page_number": 1,
+        "section": "暂定最晚恢复转让日，不代表实际恢复日期"
+      },
+      {
+        "assertion_id": "834502-planned-termination",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "公司股票将于2017年12月21日被全国股转公司强制终止挂牌",
+        "page_number": 1,
+        "section": "强制终止挂牌安排"
+      }
+    ],
+    "review_notes": "原始公司公告已下载，SHA256已验证。四项日期均有第1页原文支持；2017-12-14仅为暂定最晚恢复日期。个别终止挂牌决定文号为股转系统发〔2017〕1656号，与批次公告〔2017〕684号不同。"
+  },
+  {
+    "evidence_id": "neeq-2017-684-834904-sponsor-001",
+    "security_code": "834904",
+    "notice_document_number": "2017-684",
+    "evidence_type": "supplementary_termination_notice",
+    "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票恢复转让及终止挂牌的风险提示公告",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201712131065943556_1.pdf",
+    "source_document_number": null,
+    "published_date": "2017-12-13",
+    "source_file": "neeq_historical_evidence/2017-684/834904/notice.pdf",
+    "source_sha256": "470665a688827c74a778605f13a40b963219c7d45b050418d6515240ca4e25d2",
+    "date_assertions": [
+      {
+        "assertion_id": "834904-suspension",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "公司股票于2017年12月13日暂停交易一天",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      },
+      {
+        "assertion_id": "834904-resumption",
+        "date_type": "transfer_resumption_date",
+        "date_value": "2017-12-14",
+        "source_quote": "银纪资产股票于2017年12月14日（星期四）起恢复转让",
+        "page_number": 2,
+        "section": "恢复转让安排"
+      },
+      {
+        "assertion_id": "834904-planned-termination",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "2017年12月21日起终止挂牌",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      }
+    ],
+    "review_notes": "万联证券主办券商风险提示公告，原件已下载并验证SHA256。原文第2页引用股转系统公告〔2017〕684号。该文件未见独立公告编号，因此source_document_number留空。"
+  },
+  {
+    "evidence_id": "834606-2017-040",
+    "security_code": "834606",
+    "notice_document_number": "2017-684",
+    "evidence_type": "final_termination_announcement",
+    "source_title": "青岛拥湾资产管理集团股份有限公司关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+    "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+    "source_document_number": "2017-040",
+    "published_date": "2017-12-20",
+    "source_file": "neeq_evidence_834606/neeq_834606_20171220_final_termination_announcement.pdf",
+    "source_sha256": "6f48bc1648ecb1792d802f76ea1f079b8a1ebc3a4779275b30537d663c6378ea",
+    "date_assertions": [
+      {
+        "assertion_id": "834606-decision-received",
+        "date_type": "decision_received_date",
+        "date_value": "2017-12-12",
+        "source_quote": "公司于2017年12月12日收到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》",
+        "page_number": 1,
+        "section": "正文"
+      },
+      {
+        "assertion_id": "834606-company-announcement",
+        "date_type": "company_announcement_date",
+        "date_value": "2017-12-20",
+        "source_quote": "青岛拥湾资产管理集团股份有限公司 董事会 2017年12月20日",
+        "page_number": 2,
+        "section": "落款"
+      },
+      {
+        "assertion_id": "834606-planned-termination-date",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "公司股票将于2017年12月21日起在全国中小企业股份转让系统终止挂牌",
+        "page_number": 1,
+        "section": "正文"
+      }
+    ],
+    "review_notes": "官方NEEQ PDF已下载并成功提取文本；已通过下载状态文件记录SHA256。公告明确记载公司于2017-12-12收到决定、股票自2017-12-21起终止挂牌。仍作为计划日期候选，待人工复核。"
+  },
+  {
+    "evidence_id": "834502-2017-042",
+    "security_code": "834502",
+    "notice_document_number": "2017-684",
+    "evidence_type": "issuer_announcement",
+    "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+    "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+    "source_document_number": "2017-042",
+    "published_date": "2017-12-14",
+    "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+    "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+    "date_assertions": [
+      {
+        "assertion_id": "834502-2017-042-suspension",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "公司于2017年12月13日停牌一日",
+        "page_number": 2,
+        "section": "公司股票将被终止挂牌的风险提示"
+      },
+      {
+        "assertion_id": "834502-2017-042-resumption",
+        "date_type": "transfer_resumption_date",
+        "date_value": "2017-12-14",
+        "source_quote": "并于2017年12月14日复牌",
+        "page_number": 2,
+        "section": "公司股票将被终止挂牌的风险提示"
+      },
+      {
+        "assertion_id": "834502-2017-042-termination",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "将于2017年12月21日正式终止挂牌",
+        "page_number": 2,
+        "section": "公司股票将被终止挂牌的风险提示"
+      },
+      {
+        "assertion_id": "834502-2017-042-announcement",
+        "date_type": "company_announcement_date",
+        "date_value": "2017-12-14",
+        "source_quote": "董事会 2017年12月14日",
+        "page_number": 2,
+        "section": "公告落款"
+      }
+    ],
+    "review_notes": "公司后续公告2017-042。明确记载2017-12-13停牌一天、2017-12-14复牌、2017-12-21正式终止挂牌。引用个别决定股转系统发〔2017〕1656号。该公告可补强实际复牌日期证据，但终止挂牌日期仍作为公告主张保留，待官方结果交叉核验。"
+  },
+  {
+    "evidence_id": "834904-2017-12-20-sponsor",
+    "security_code": "834904",
+    "notice_document_number": "2017-684",
+    "evidence_type": "supplementary_termination_notice",
+    "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票终止挂牌的提示公告",
+    "source_url": "https://notice.10jqka.com.cn/api/pdf/97451618ded4526a.pdf",
+    "published_date": "2017-12-20",
+    "source_file": "neeq_historical_evidence/2017-684/834904/termination_risk_notice_2017-12-20.pdf",
+    "source_sha256": "5f0a35f8fd5ee36738aad11079e8e37478821b7f4d86a7258b78a91beed962ce",
+    "date_assertions": [
+      {
+        "assertion_id": "834904-2017-12-20-batch-date",
+        "date_type": "batch_announcement_date",
+        "date_value": "2017-12-12",
+        "source_quote": "股转公司于2017年12月12日发布了《关于对上海银纪资产管理股份有限公司等3家挂牌公司强制终止挂牌的公告》（股转系统公告[2017]684号）",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      },
+      {
+        "assertion_id": "834904-2017-12-20-termination",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "银纪资产股票于2017年12月21日起终止挂牌",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      }
+    ],
+    "review_notes": "万联证券主办券商终止挂牌提示公告。明确识别证券代码834904，并引用股转系统公告〔2017〕684号及2017-12-21终止挂牌日期。属于主办券商公告，不是股转公司个别终止决定原件。批次公告日期属于本文件转述的官方公告日期，仍需原始批次公告核验。"
+  },
+  {
+    "evidence_id": "834502-batch-2017-684",
+    "security_code": "834502",
+    "notice_document_number": "2017-684",
+    "evidence_type": "other_official_document",
+    "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+    "source_url": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+    "source_document_number": "2017-684",
+    "published_date": "2017-12-12",
+    "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+    "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+    "date_assertions": [
+      {
+        "assertion_id": "834502-batch-date",
+        "date_type": "batch_announcement_date",
+        "date_value": "2017-12-12",
+        "source_quote": "全国股转公司 2017年12月12日",
+        "page_number": 2,
+        "section": "公告落款"
+      },
+      {
+        "assertion_id": "834502-suspension-date",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "13日对上述3家公司的股票暂停转让一天",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      },
+      {
+        "assertion_id": "834502-termination-date",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "12月21日起终止上述3家公司股票挂牌",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      }
+    ],
+    "review_notes": "全国股转公司批次公告，正文明确列出834502富海银涛。此记录与834606、834904记录引用同一份物理PDF，不代表三份独立文件。批次公告日期、暂停转让日期及计划终止挂牌日期均待人工复核；不将批次公告编号解释为个别决定编号。 官方结果接口附件 URL 与本地共享 PDF 的 SHA256 完全一致（aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d）；用户提供的 PDF 正文文本确认公告标题及股转系统公告〔2017〕684号，并明确列出本证券代码。解析报告中的“2016-36”是正文引用的另一份通知编号，不是本公告编号。日期及法律事实仍待人工复核。"
+  },
+  {
+    "evidence_id": "834606-batch-2017-684",
+    "security_code": "834606",
+    "notice_document_number": "2017-684",
+    "evidence_type": "other_official_document",
+    "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+    "source_url": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+    "source_document_number": "2017-684",
+    "published_date": "2017-12-12",
+    "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+    "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+    "date_assertions": [
+      {
+        "assertion_id": "834606-batch-date",
+        "date_type": "batch_announcement_date",
+        "date_value": "2017-12-12",
+        "source_quote": "全国股转公司 2017年12月12日",
+        "page_number": 2,
+        "section": "公告落款"
+      },
+      {
+        "assertion_id": "834606-suspension-date",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "13日对上述3家公司的股票暂停转让一天",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      },
+      {
+        "assertion_id": "834606-termination-date",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "12月21日起终止上述3家公司股票挂牌",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      }
+    ],
+    "review_notes": "全国股转公司批次公告，正文明确列出834606拥湾资产。此记录与834502、834904记录引用同一份物理PDF，不代表三份独立文件。批次公告日期、暂停转让日期及计划终止挂牌日期均待人工复核；批次公告编号不等同于该公司的个别决定编号。 官方结果接口附件 URL 与本地共享 PDF 的 SHA256 完全一致（aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d）；用户提供的 PDF 正文文本确认公告标题及股转系统公告〔2017〕684号，并明确列出本证券代码。解析报告中的“2016-36”是正文引用的另一份通知编号，不是本公告编号。日期及法律事实仍待人工复核。"
+  },
+  {
+    "evidence_id": "834904-batch-2017-684",
+    "security_code": "834904",
+    "notice_document_number": "2017-684",
+    "evidence_type": "other_official_document",
+    "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+    "source_url": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+    "source_document_number": "2017-684",
+    "published_date": "2017-12-12",
+    "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+    "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+    "date_assertions": [
+      {
+        "assertion_id": "834904-batch-date",
+        "date_type": "batch_announcement_date",
+        "date_value": "2017-12-12",
+        "source_quote": "全国股转公司 2017年12月12日",
+        "page_number": 2,
+        "section": "公告落款"
+      },
+      {
+        "assertion_id": "834904-suspension-date",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "13日对上述3家公司的股票暂停转让一天",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      },
+      {
+        "assertion_id": "834904-termination-date",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "12月21日起终止上述3家公司股票挂牌",
+        "page_number": 2,
+        "section": "终止挂牌安排"
+      }
+    ],
+    "review_notes": "全国股转公司批次公告，正文明确列出834904银纪资产。此记录与834502、834606记录引用同一份物理PDF，不代表三份独立文件。批次公告日期、暂停转让日期及计划终止挂牌日期均待人工复核；批次公告编号不等同于该公司的个别决定编号。 官方结果接口附件 URL 与本地共享 PDF 的 SHA256 完全一致（aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d）；用户提供的 PDF 正文文本确认公告标题及股转系统公告〔2017〕684号，并明确列出本证券代码。解析报告中的“2016-36”是正文引用的另一份通知编号，不是本公告编号。日期及法律事实仍待人工复核。"
+  },
+  {
+    "evidence_id": "neeq-834606-2017-1218-sponsor-risk",
+    "security_code": "834606",
+    "notice_document_number": "2017-684",
+    "evidence_type": "other_official_document",
+    "source_title": "上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告",
+    "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-18/1513588406_121348.pdf",
+    "source_document_number": "",
+    "published_date": "2017-12-18",
+    "source_file": "neeq_evidence_834606/neeq_834606_20171218_sponsor_risk_warning.pdf",
+    "source_sha256": "064321241ad2ec0d453f609445fbda160685aab32b04750babbc3fe411c64a8d",
+    "date_assertions": [
+      {
+        "assertion_id": "834606-risk-announcement-date",
+        "date_type": "company_announcement_date",
+        "date_value": "2017-12-18",
+        "source_quote": "公告日期：2017.12.18",
+        "section": "公告元数据"
+      }
+    ],
+    "review_notes": "官方NEEQ PDF已下载并成功提取文本；已通过下载状态文件记录SHA256。主办券商说明整改核查结论及强制摘牌背景，不作为恢复转让日期的主要证据。待人工复核。"
+  },
+  {
+    "evidence_id": "neeq-834606-2017-035-company-risk-warning",
+    "security_code": "834606",
+    "notice_document_number": "2017-684",
+    "evidence_type": "supplementary_termination_notice",
+    "source_title": "青岛拥湾资产管理集团股份有限公司关于股票被终止挂牌的风险提示性公告",
+    "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-18/1513588286_896761.pdf",
+    "source_document_number": "2017-035",
+    "published_date": "2017-12-18",
+    "source_file": "neeq_evidence_834606/neeq_834606_20171218_termination_risk_warning.pdf",
+    "source_sha256": "9a69e187aac9b875037785602ef51a8f7aaa1dfde6c44fc23d7d23bfce63597d",
+    "review_notes": "官方NEEQ PDF已下载并成功提取文本。公告第2页明确记载2017-12-13停牌、2017-12-14起恢复转让、恢复转让期至2017-12-20及2017-12-21终止挂牌。SHA256需由本地登记程序对原件重新计算核对；仅作证据登记，待人工复核。",
+    "date_assertions": [
+      {
+        "assertion_id": "834606-2017-035-decision-received",
+        "date_type": "decision_received_date",
+        "date_value": "2017-12-12",
+        "source_quote": "目前已接到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》（股转系统发[2017]1655号文）。",
+        "page_number": 2,
+        "section": "终止挂牌决定送达情况"
+      },
+      {
+        "assertion_id": "834606-2017-035-suspension",
+        "date_type": "transfer_suspension_date",
+        "date_value": "2017-12-13",
+        "source_quote": "按照规定公司已于2017年12月13日停牌",
+        "page_number": 2,
+        "section": "股票停复牌安排"
+      },
+      {
+        "assertion_id": "834606-2017-035-resumption",
+        "date_type": "transfer_resumption_date",
+        "date_value": "2017-12-14",
+        "source_quote": "2017年12月14日起恢复转让",
+        "page_number": 2,
+        "section": "股票停复牌安排"
+      },
+      {
+        "assertion_id": "834606-2017-035-planned-termination",
+        "date_type": "planned_termination_date",
+        "date_value": "2017-12-21",
+        "source_quote": "12月21日终止挂牌。",
+        "page_number": 2,
+        "section": "恢复转让及终止挂牌安排"
+      },
+      {
+        "assertion_id": "834606-2017-035-announcement-date",
+        "date_type": "company_announcement_date",
+        "date_value": "2017-12-18",
+        "source_quote": "青岛拥湾资产管理集团股份有限公司 董事会 2017年12月18日",
+        "page_number": 2,
+        "section": "公告落款"
+      }
+    ]
+  }
+]
