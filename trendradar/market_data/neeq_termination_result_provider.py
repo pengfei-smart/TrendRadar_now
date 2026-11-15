@@ -35,6 +35,7 @@ class NEEQTerminationPage:
     rejected_record_count: int = 0
     record_validation_errors: tuple[str, ...] = ()
     rejected_record_details: tuple[dict, ...] = ()
+    raw_response_body: bytes = b""
 
 
 def _format_epoch_date(value) -> str:
@@ -227,6 +228,7 @@ class NEEQTerminationResultProvider:
             status_code=200, rejected_record_count=len(validation_errors),
             record_validation_errors=tuple(validation_errors),
             rejected_record_details=tuple(rejected_details),
+            raw_response_body=body_bytes,
         )
 
     def fetch_all(self, *, company_code: str = "", keyword: str = "",
