@@ -251,8 +251,8 @@ def build_neeq_termination_batch_reconciliation(
         for field in date_fields
     }
     return {
-        "schema_version": 1,
-        "audit_version": "neeq_termination_batch_reconciliation_v1",
+        "schema_version": 2,
+        "audit_version": "neeq_termination_batch_reconciliation_v2",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source_reports": {
             "review_parser_version": review_report.get("parser_version"),
