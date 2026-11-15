@@ -447,6 +447,7 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
         "source_document_block_count": sum(item.get("source_document_block_count", 0) for item in items),
+        "contextual_identity_count": sum(item.get("contextual_identity_count", 0) for item in items),
         "parsed_notice_count": len(parsed_notices),
         "comparison_count": len(comparisons),
         "termination_reason_category_counts": counts(parsed_notices),
