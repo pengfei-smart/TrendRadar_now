@@ -34,7 +34,7 @@ def _extract_legal_basis(compact: str) -> str | None:
     clause = clause_match.group(1) if clause_match else compact
     patterns = (
         r"《[^》]{1,100}》第[一二三四五六七八九十0-9]+条(?:第[（(]?[一二三四五六七八九十0-9]+[）)]?项)?",
-        r"第\s*\\d+(?:[.．]\\d+){1,3}\s*条(?:第\s*[（(]?[一二三四五六七八九十0-9]+[）)]?\s*项)?",
+        r"第\s*\d+(?:[.．]\d+){1,3}\s*条(?:第\s*[（(]?[一二三四五六七八九十0-9]+[）)]?\s*项)?",
     )
     found = []
     for pattern in patterns:
