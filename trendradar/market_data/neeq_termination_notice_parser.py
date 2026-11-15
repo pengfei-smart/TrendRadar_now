@@ -38,7 +38,7 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
-    elif any(term in compact for term in ("不符合整改", "不符合自查整改", "未完成整改")):
+    elif re.search(r"不符合.{0,12}整改|未完成整改", compact):
         category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
@@ -59,10 +59,13 @@ def _extract_document_number(document_text: str) -> str | None:
 
     # Official notices may put the year and serial on adjacent opening lines.
     # Accept this only at the start, before any body citations can occur.
-    for index in range(min(3, len(header_lines) - 1)):
+    for index in range(min(2, len(header_lines) - 1)):
         year_match = re.fullmatch(r"(20\d{2})", header_lines[index])
-        serial_match = re.fullmatch(r"(\d{1,5})(?:号)?", header_lines[index + 1])
-        if year_match and serial_match:
+        serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
+        starts_at_document_header = index == 0 or (
+            index == 1 and re.fullmatch(r"-\d+-", header_lines[0])
+        )
+        if year_match and serial_match and starts_at_document_header:
             return f"{year_match.group(1)}-{serial_match.group(1)}"
 
     # Bracketed system notice number: require the marker in the opening header.
@@ -315,10 +318,12 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         date_compact,
     )
 
-    stated_match = _first(
-        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
-        date_compact,
-    )
+    stated_match = planned_match
+    if not stated_match:
+        stated_match = _first(
+            r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
+            date_compact,
+        )
     if not stated_match:
         full_event_match = _first(
             _DATE + r"(?:起)?(?:(?!(?:20\d{2}年)?\d{1,2}月\d{1,2}日)[^。；;]){0,80}?终止[^。；;]{0,30}?(?:股票挂牌|挂牌)",
