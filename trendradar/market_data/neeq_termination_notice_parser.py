@@ -54,7 +54,9 @@ def _extract_document_number(document_text: str) -> str | None:
     """Extract a notice number from the opening header, never from body citations."""
     lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
-    header_lines = lines[:8]
+    # Keep document-number discovery close to the opening header. A sponsor
+    # notice may cite older 股转系统公告 numbers much later in its body.
+    header_lines = lines[:3]
 
     for index, line in enumerate(header_lines[:-1]):
         if not re.fullmatch(r"20\d{2}", line):
@@ -80,6 +82,12 @@ def _extract_document_number(document_text: str) -> str | None:
             return f"{labelled.group(1)}-{labelled.group(2)}"
 
     compact_header = "".join(header_lines)
+    labelled_header = re.search(
+        r"(?:股转系统公告|公告编号)[：:]?[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?",
+        compact_header,
+    )
+    if labelled_header:
+        return f"{labelled_header.group(1)}-{labelled_header.group(2)}"
     compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
     if compact_match:
         return f"{compact_match.group(1)}-{compact_match.group(2)}"
@@ -154,10 +162,19 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
             continue
         # Prefer the issuer name from its own title; this avoids accidentally
         # absorbing the sponsor-broker label into the company name.
-        title_company = re.search(
-            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))关于(?:公司)?股票",
-            compact,
-        )
+        # Resolve the issuer from its own standalone title line. Searching the
+        # whitespace-stripped whole document can concatenate sponsor and issuer names.
+        title_company = None
+        source_lines = [re.sub(r"\s+", "", line).strip() for line in original.splitlines()]
+        for line_index, line in enumerate(source_lines):
+            if not re.search(r"关于.*(?:股票|终止挂牌)", line):
+                continue
+            for previous_line in reversed(source_lines[:line_index]):
+                if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司)", previous_line):
+                    title_company = re.match(r"(?P<name>.+)", previous_line)
+                    break
+            if title_company:
+                break
         if not title_company:
             tail = compact[match.end():]
             tail = re.sub(r"^主办券商[：:][^青]{1,20}", "", tail)
@@ -249,8 +266,10 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     )
     announcement_date = _date(announcement_match)
 
+    # Do not let “决定自/决定于” consume a decision or suspension date
+    # when a later date in the same sentence is the actual termination date.
     planned_match = _first(
-        r"(?:将自|自|将于)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
+        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
         date_compact,
     )
     planned_date = _date(planned_match)
@@ -290,7 +309,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     )
 
     stated_match = _first(
-        r"(?:决定自|决定于|自|将于)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
+        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
         date_compact,
     )
     if not stated_match:
@@ -398,7 +417,8 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
     # First inspect the opening header as a whole (including the number on
     # the same line as "股转系统公告"). If it is a real numbered document,
     # retain the title/header and split only after a complete prior signature.
-    if starts and _extract_document_number(text) is not None:
+    opening_header = bool(starts and starts[0] <= 120)
+    if opening_header:
         boundaries = [0]
         last_boundary = 0
         signature_pattern = re.compile(
@@ -414,10 +434,9 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
             for index, start in enumerate(boundaries)
         ]
     else:
-        blocks = [
-            text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
-            for pos, start in enumerate(starts)
-        ] if starts else [text]
+        # A citation in a sponsor/issuer body is not a document boundary.
+        # Only split when the first system-notice marker is in the opening header.
+        blocks = [text]
     notices = []
     contextual_identities = []
     for index, block in enumerate(blocks):
