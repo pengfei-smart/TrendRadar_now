@@ -55,7 +55,7 @@ def _extract_document_number(document_text: str) -> str | None:
     lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:8]
-    header = "".join(header_lines[:4])
+    header = "".join(header_lines[:3])
 
     # Official notices may put the year and serial on adjacent opening lines.
     # Accept this only at the start, before any body citations can occur.
