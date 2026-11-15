@@ -66,6 +66,25 @@ class NEEQDateReconciliationAuditTests(unittest.TestCase):
         result = build_neeq_date_reconciliation_audit({}, coverage, {})
         self.assertEqual(result["summary"]["supplemental_candidate_count"], 1)
 
+
+    def test_excludes_fully_matched_dates_and_keeps_missing_plan_for_review(self):
+        review = {"items": [{
+            "notices": [],
+            "comparisons": [
+                {"security_code": "111111", "notice_document_number": "N1",
+                 "notice_planned_termination_date": "2020-01-10",
+                 "result_list_date": "2020-01-10", "date_consistency_status": "matches"},
+                {"security_code": "222222", "notice_document_number": "N2",
+                 "notice_planned_termination_date": None,
+                 "result_list_date": "2020-01-10", "date_consistency_status": "not_comparable"},
+            ],
+        }]}
+        result = build_neeq_date_reconciliation_audit(review, {}, {})
+        self.assertEqual(result["summary"]["date_case_count"], 1)
+        self.assertEqual(result["summary"]["incomplete_date_evidence_count"], 1)
+        self.assertEqual(result["date_reconciliation_cases"][0]["security_code"], "222222")
+        self.assertEqual(result["date_reconciliation_cases"][0]["date_reconciliation_status"], "pending_manual_review")
+
     def test_empty_inputs_are_safe(self):
         result = build_neeq_date_reconciliation_audit({}, {}, {})
         self.assertEqual(result["summary"]["date_case_count"], 0)
