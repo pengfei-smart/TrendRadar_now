@@ -38,7 +38,7 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
-    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "未完成整改")):
+    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "不符合自查整改条件", "未完成整改")):
         category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
@@ -56,14 +56,15 @@ def _extract_document_number(document_text: str) -> str | None:
     lines = [line for line in lines if line]
     # Keep document-number discovery close to the opening header. A sponsor
     # notice may cite older 股转系统公告 numbers much later in its body.
-    header_lines = lines[:3]
+    header_lines = lines[:5]
 
-    for index, line in enumerate(header_lines[:-1]):
-        if not re.fullmatch(r"20\d{2}", line):
-            continue
-        serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
-        if serial_match:
-            return f"{line}-{serial_match.group(1)}"
+    if header_lines and "股转系统公告" in header_lines[0]:
+        for index, line in enumerate(header_lines[:-1]):
+            if not re.fullmatch(r"20\d{2}", line):
+                continue
+            serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
+            if serial_match:
+                return f"{line}-{serial_match.group(1)}"
 
     for line in header_lines:
         # A bracketed year/serial is only a document number when explicitly
@@ -269,7 +270,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     # Do not let “决定自/决定于” consume a decision or suspension date
     # when a later date in the same sentence is the actual termination date.
     planned_match = _first(
-        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
+        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
         date_compact,
     )
     planned_date = _date(planned_match)
@@ -309,7 +310,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     )
 
     stated_match = _first(
-        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
+        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
         date_compact,
     )
     if not stated_match:
