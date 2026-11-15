@@ -60,6 +60,7 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(page.records[0]["companyCode"], "870099")
         self.assertEqual(page.records[0]["delistingDateISO"], "2026-11-04")
         self.assertEqual(page.response_sha256, hashlib.sha256(body).hexdigest())
+        self.assertEqual(page.raw_response_body, body)
         self.assertEqual(opener.request.get_method(), "POST")
 
     def test_rejects_bad_jsonp_and_callback_injection(self):
