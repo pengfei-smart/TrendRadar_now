@@ -519,6 +519,61 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 
 
 
+    def test_v9_parses_real_2017_684_pdf_page_split_and_company_alias(self):
+        text = """- 1 -
+
+
+2017
+ 684
+
+
+
+3
+
+
+近期，根据《关于金融类企业挂牌融资有关事项的通知》
+（股转系统公告[2016]36 号） 与 《关于挂牌私募机构自查整改相
+关问题的通知》 （股转系统发[2017]1394 号，以下简称 《1394 号
+通知》） ，相关挂牌私募机构向我司提交了自查整改报告与券商
+核查报告。我司随即进行了审查。
+经审查，3 家挂牌私募机构不符合整改要求， 具体包括： 深
+圳市富海银涛资产管理股份有限公司 （证券简称： 富海银涛； 证
+券代码：834502） ；青岛拥湾资产管理集团股份有限公司（证券
+简称：拥湾资产；证券代码：834606） ；上海银纪资产管理股份
+有限公司（证券简称：银纪资产；证券代码：834904）。
+根据《1394 号通知》第六条与《全国中小企业股份转让系
+统业务规则 （试行） 》 第4.4.2 条之规定，现决定于 2017 年 12 月
+- 2 -
+13 日对上述 3 家公司的股票暂停转让一天，12 月 21 日起终止
+上述 3 家公司股票挂牌。被终止挂牌公司应积极应对投资者诉
+求，主办券商应指定专门人员负责被终止挂牌公司相关事宜并
+披露联系方式，协助做好被终止挂牌公司投资者的沟通工作，
+指导被终止挂牌公司妥善解决投资者诉求。
+经审查合格的挂牌私募机构已按要求披露自查报告 及券商
+核查报告， 其他的挂牌私募机构是否符合整改要求仍在核查中。
+
+特此公告。
+全国股转公司
+2017 年 12 月 12 日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["source_document_block_count"], 1)
+        self.assertEqual(result["notice_count"], 3)
+        self.assertEqual(
+            [item["security_code"] for item in result["notices"]],
+            ["834502", "834606", "834904"],
+        )
+        for notice in result["notices"]:
+            self.assertEqual(notice["document_number"], "2017-684")
+            self.assertIsNone(notice["decision_date"])
+            self.assertEqual(notice["announcement_date"], "2017-12-12")
+            self.assertEqual(notice["suspension_date"], "2017-12-13")
+            self.assertEqual(notice["planned_termination_date"], "2017-12-21")
+            self.assertEqual(notice["stated_termination_date"], "2017-12-21")
+
+    def test_report_metadata_matches_v9_parser(self):
+        report = build_neeq_notice_review_report({"tasks": []}, {"results": {}}, lambda name: "")
+        self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v9")
+
 
 if __name__ == "__main__":
     unittest.main()
