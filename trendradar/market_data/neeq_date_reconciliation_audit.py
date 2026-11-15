@@ -55,7 +55,8 @@ def build_neeq_date_reconciliation_audit(
             official = comparison.get("result_list_date")
             delta = _day_difference(planned, official)
             status = comparison.get("date_consistency_status")
-            if status in (None, "", "consistent", "not_comparable") and delta in (None, 0):
+            # 日期齐全且相同的记录属于正常匹配，不进入差异/待补证清单。
+            if planned and official and delta == 0:
                 continue
             source_item, notice = _find_notice(review_items, comparison)
             date_cases.append({
@@ -67,6 +68,7 @@ def build_neeq_date_reconciliation_audit(
                 "notice_announcement_date": notice.get("announcement_date"),
                 "notice_planned_termination_date": _as_iso_date(planned),
                 "official_result_delisting_date": _as_iso_date(official),
+                "official_result_date_source_field": "delistingDate",
                 "date_difference_days": delta,
                 "date_reconciliation_status": (
                     "matched" if delta == 0 else
@@ -140,6 +142,8 @@ def build_neeq_date_reconciliation_audit(
         },
         "summary": {
             "date_case_count": len(date_cases),
+            "date_discrepancy_count": sum(1 for row in date_cases if row["date_reconciliation_status"] in ("later_than_planned", "earlier_than_planned")),
+            "incomplete_date_evidence_count": sum(1 for row in date_cases if row["date_reconciliation_status"] in ("missing_official_date", "pending_manual_review")),
             "date_reconciliation_status_counts": statuses,
             "supplemental_candidate_count": len(supplemental),
             "supplemental_candidate_security_codes": sorted({row["security_code"] for row in supplemental}),
