@@ -121,6 +121,42 @@ class NEEQLifecycleCaseReviewTests(unittest.TestCase):
         self.assertTrue(all(not case["confirmed_legal_fact"] for case in result["cases"]))
         self.assertTrue(all(not case["formal_lifecycle_write_allowed"] for case in result["cases"]))
 
+    def test_integrates_official_result_candidates_without_legal_confirmation(self):
+        audit = {
+            "cases": [
+                {
+                    "security_code": code,
+                    "date_evidence_candidates": [{
+                        "date_value": "2017-12-21",
+                        "date_type": "official_result_delisting_date",
+                        "classification_status": "candidate_pending_manual_review",
+                        "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do",
+                        "raw_response_sha256": (str(index) * 64)[:64],
+                    }],
+                    "pages": [{
+                        "response_sha256": (str(index) * 64)[:64],
+                        "raw_response_file": f"raw/{code}_page_0.jsonp",
+                    }],
+                }
+                for index, code in enumerate(("834502", "834606", "834904"), start=1)
+            ]
+        }
+        result = build_neeq_lifecycle_case_review(
+            self.register(), official_result_audit=audit
+        )
+        self.assertEqual(result["summary"]["official_result_candidate_count"], 3)
+        for case in result["cases"]:
+            self.assertTrue(case["coverage"]["actual_termination_result_evidence_found"])
+            self.assertEqual(case["official_result_candidate_count"], 1)
+            candidate = case["official_result_evidence"][0]
+            self.assertEqual(candidate["date_value"], "2017-12-21")
+            self.assertEqual(candidate["assertion_review_status"], "candidate_pending_manual_review")
+            self.assertFalse(case["confirmed_legal_fact"])
+            self.assertFalse(case["formal_lifecycle_write_allowed"])
+        case_606 = next(row for row in result["cases"] if row["security_code"] == "834606")
+        self.assertFalse(case_606["coverage"]["explicit_transfer_resumption_evidence_found"])
+        self.assertTrue(result["safety"]["read_only"])
+
 
 if __name__ == "__main__":
     unittest.main()
