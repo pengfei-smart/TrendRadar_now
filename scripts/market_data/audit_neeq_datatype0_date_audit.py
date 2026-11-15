@@ -167,7 +167,7 @@ def main() -> int:
         raise ValueError("crosscheck report root must be an object")
     report = build_report(source)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report["summary"], ensure_ascii=False, indent=2))
     print(f"report_path={args.output}")
     print("safety=read_only; database_writes=0; formal_lifecycle_writes=0")
