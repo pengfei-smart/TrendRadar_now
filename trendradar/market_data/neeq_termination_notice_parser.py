@@ -63,6 +63,22 @@ def _extract_document_number(document_text: str) -> str | None:
         document_text,
     )
     header_text = document_text[:body_start.start()] if body_start else document_text
+    # Sponsor risk-warning notices often have no issuer-style notice number.
+    # Their opening lines are the sponsor name and article title; a historical
+    # “股转系统公告〔20xx〕xx号” citation may appear in the first body
+    # paragraph. Keep that citation out of the header when generic body
+    # markers do not recognize the sponsor's opening prose.
+    opening_lines = [line.strip() for line in document_text.splitlines() if line.strip()]
+    if (
+        len(opening_lines) >= 2
+        and "风险提示公告" in opening_lines[1]
+        and "股转系统公告" not in "\\n".join(opening_lines[:2])
+    ):
+        first_blank = re.search(r"\\n\\s*\\n", document_text)
+        if first_blank:
+            sponsor_header = document_text[:first_blank.start()]
+            if "股转系统公告" not in sponsor_header:
+                header_text = sponsor_header
     lines = [re.sub(r"\s+", "", line).strip() for line in header_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:40]
