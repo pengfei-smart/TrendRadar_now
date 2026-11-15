@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "report_version": "neeq_targeted_termination_result_audit_v1",
+  "generated_at": "2026-11-15T07:44:45.360075+00:00",
+  "source": "https://www.neeq.com.cn/terminationController/infoResultse.do",
+  "query_security_codes": [
+    "834502",
+    "834606",
+    "834904"
+  ],
+  "cases": [
+    {
+      "security_code": "834502",
+      "query_status": "matched",
+      "matched_record_count": 1,
+      "records": [
+        {
+          "companyCode": "834502",
+          "companyName": "富海银涛",
+          "createBy": 0,
+          "createTime": {
+            "date": 16,
+            "day": 2,
+            "hours": 9,
+            "minutes": 8,
+            "month": 6,
+            "seconds": 6,
+            "time": 1563239286000,
+            "timezoneOffset": -480,
+            "year": 119
+          },
+          "dataType": 1,
+          "delistingDate": {
+            "date": 21,
+            "day": 4,
+            "hours": 0,
+            "minutes": 0,
+            "month": 11,
+            "seconds": 0,
+            "time": 1513785600000,
+            "timezoneOffset": -480,
+            "year": 117
+          },
+          "delistingNotice": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "delistingReason": "不符合挂牌私募机构整改要求",
+          "fileExt": "pdf",
+          "hostBroker": "光大证券",
+          "id": 48,
+          "importNewThree": "",
+          "isNewThree": 1,
+          "lastUpdateBy": 0,
+          "lastUpdateTime": null,
+          "status": 0,
+          "delistingNoticeOriginal": "/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "attachmentKind": "pdf",
+          "delistingDateISO": "2017-12-21"
+        }
+      ],
+      "pages": [
+        {
+          "page_number": 0,
+          "page_size": 20,
+          "total_elements": 1,
+          "total_pages": 1,
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "retrieved_at": "2026-11-15T07:44:45.360075+00:00",
+          "request_parameters": {
+            "page": 0,
+            "sortfield": "bean.delisting_date",
+            "sorttype": "desc",
+            "companyCode": "834502",
+            "newThreeArray": [
+              "0",
+              "1",
+              "2"
+            ],
+            "keyword": ""
+          },
+          "request_body_sha256": "baf7db879568b6df1270580ef90c49ddc777ee561e0e12c028f9efc1138f4c5d",
+          "response_sha256": "7b619371c3a24276c541f2f0398b29aea87311e85e793ca84e25c601e4f9aebe",
+          "raw_response_file": "output\\market\\neeq_result_raw\\834502_page_0.jsonp",
+          "status_code": 200,
+          "rejected_record_count": 0,
+          "record_validation_errors": [],
+          "rejected_record_details": []
+        }
+      ],
+      "rejected_record_count": 0,
+      "date_evidence_candidates": [
+        {
+          "date_value": "2017-12-21",
+          "date_type": "official_result_delisting_date",
+          "classification_status": "candidate_pending_manual_review",
+          "source": "NEEQ官方终止挂牌结果列表接口",
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "raw_response_sha256": "7b619371c3a24276c541f2f0398b29aea87311e85e793ca84e25c601e4f9aebe",
+          "legal_fact_confirmed": false,
+          "formal_lifecycle_write_allowed": false
+        }
+      ]
+    },
+    {
+      "security_code": "834606",
+      "query_status": "matched",
+      "matched_record_count": 1,
+      "records": [
+        {
+          "companyCode": "834606",
+          "companyName": "拥湾资产",
+          "createBy": 0,
+          "createTime": {
+            "date": 16,
+            "day": 2,
+            "hours": 9,
+            "minutes": 8,
+            "month": 6,
+            "seconds": 6,
+            "time": 1563239286000,
+            "timezoneOffset": -480,
+            "year": 119
+          },
+          "dataType": 1,
+          "delistingDate": {
+            "date": 21,
+            "day": 4,
+            "hours": 0,
+            "minutes": 0,
+            "month": 11,
+            "seconds": 0,
+            "time": 1513785600000,
+            "timezoneOffset": -480,
+            "year": 117
+          },
+          "delistingNotice": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "delistingReason": "不符合挂牌私募机构整改要求",
+          "fileExt": "pdf",
+          "hostBroker": "上海华信证券",
+          "id": 49,
+          "importNewThree": "",
+          "isNewThree": 1,
+          "lastUpdateBy": 0,
+          "lastUpdateTime": null,
+          "status": 0,
+          "delistingNoticeOriginal": "/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "attachmentKind": "pdf",
+          "delistingDateISO": "2017-12-21"
+        }
+      ],
+      "pages": [
+        {
+          "page_number": 0,
+          "page_size": 20,
+          "total_elements": 1,
+          "total_pages": 1,
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "retrieved_at": "2026-11-15T07:44:45.360075+00:00",
+          "request_parameters": {
+            "page": 0,
+            "sortfield": "bean.delisting_date",
+            "sorttype": "desc",
+            "companyCode": "834606",
+            "newThreeArray": [
+              "0",
+              "1",
+              "2"
+            ],
+            "keyword": ""
+          },
+          "request_body_sha256": "f5fd1cd500539ee7a40bb64fdf90f45eb93e3ebda9c95083a20b18e99a5fe974",
+          "response_sha256": "26a938f266dbd7f8efc7aad75ba764927665e99f71be9920ddae5d163a13c995",
+          "raw_response_file": "output\\market\\neeq_result_raw\\834606_page_0.jsonp",
+          "status_code": 200,
+          "rejected_record_count": 0,
+          "record_validation_errors": [],
+          "rejected_record_details": []
+        }
+      ],
+      "rejected_record_count": 0,
+      "date_evidence_candidates": [
+        {
+          "date_value": "2017-12-21",
+          "date_type": "official_result_delisting_date",
+          "classification_status": "candidate_pending_manual_review",
+          "source": "NEEQ官方终止挂牌结果列表接口",
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "raw_response_sha256": "26a938f266dbd7f8efc7aad75ba764927665e99f71be9920ddae5d163a13c995",
+          "legal_fact_confirmed": false,
+          "formal_lifecycle_write_allowed": false
+        }
+      ]
+    },
+    {
+      "security_code": "834904",
+      "query_status": "matched",
+      "matched_record_count": 1,
+      "records": [
+        {
+          "companyCode": "834904",
+          "companyName": "银纪资产",
+          "createBy": 0,
+          "createTime": {
+            "date": 16,
+            "day": 2,
+            "hours": 9,
+            "minutes": 8,
+            "month": 6,
+            "seconds": 6,
+            "time": 1563239286000,
+            "timezoneOffset": -480,
+            "year": 119
+          },
+          "dataType": 1,
+          "delistingDate": {
+            "date": 21,
+            "day": 4,
+            "hours": 0,
+            "minutes": 0,
+            "month": 11,
+            "seconds": 0,
+            "time": 1513785600000,
+            "timezoneOffset": -480,
+            "year": 117
+          },
+          "delistingNotice": "https://www.neeq.com.cn/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "delistingReason": "不符合挂牌私募机构整改要求",
+          "fileExt": "pdf",
+          "hostBroker": "万联证券",
+          "id": 50,
+          "importNewThree": "",
+          "isNewThree": 1,
+          "lastUpdateBy": 0,
+          "lastUpdateTime": null,
+          "status": 0,
+          "delistingNoticeOriginal": "/uploads/1/file/public/201712/20171212192401_jvgycc3di7.pdf",
+          "attachmentKind": "pdf",
+          "delistingDateISO": "2017-12-21"
+        }
+      ],
+      "pages": [
+        {
+          "page_number": 0,
+          "page_size": 20,
+          "total_elements": 1,
+          "total_pages": 1,
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "retrieved_at": "2026-11-15T07:44:45.360075+00:00",
+          "request_parameters": {
+            "page": 0,
+            "sortfield": "bean.delisting_date",
+            "sorttype": "desc",
+            "companyCode": "834904",
+            "newThreeArray": [
+              "0",
+              "1",
+              "2"
+            ],
+            "keyword": ""
+          },
+          "request_body_sha256": "2816bb6600953ac63c84b81c9377d399605e456cdd78f09a141bbb1573d70028",
+          "response_sha256": "37ec58c6df8d96040751ef72c8455f8539b20836e08202cf4d2da3468ce9a8c6",
+          "raw_response_file": "output\\market\\neeq_result_raw\\834904_page_0.jsonp",
+          "status_code": 200,
+          "rejected_record_count": 0,
+          "record_validation_errors": [],
+          "rejected_record_details": []
+        }
+      ],
+      "rejected_record_count": 0,
+      "date_evidence_candidates": [
+        {
+          "date_value": "2017-12-21",
+          "date_type": "official_result_delisting_date",
+          "classification_status": "candidate_pending_manual_review",
+          "source": "NEEQ官方终止挂牌结果列表接口",
+          "source_url": "https://www.neeq.com.cn/terminationController/infoResultse.do?callback=TrendRadarTerminationProbe",
+          "raw_response_sha256": "37ec58c6df8d96040751ef72c8455f8539b20836e08202cf4d2da3468ce9a8c6",
+          "legal_fact_confirmed": false,
+          "formal_lifecycle_write_allowed": false
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "security_count": 3,
+    "matched_security_count": 3,
+    "missing_security_count": 0,
+    "matched_record_count": 3,
+    "raw_response_page_count": 3,
+    "rejected_record_count": 0
+  },
+  "safety": {
+    "official_api_queries_only": true,
+    "attachment_downloads": 0,
+    "database_writes": 0,
+    "formal_lifecycle_writes": 0,
+    "legal_fact_confirmations": 0,
+    "automatic_date_promotions": 0,
+    "manual_review_required": true,
+    "read_only": true
+  }
+}
