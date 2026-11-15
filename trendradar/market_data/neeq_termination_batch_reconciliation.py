@@ -91,11 +91,10 @@ def build_neeq_termination_batch_reconciliation(
             notice_name = _name(notice.get("company_name"))
             notice_short = _name(notice.get("short_name"))
             name_match = None
-            if candidate_names and notice_name:
-                name_match = notice_name in candidate_names
-            elif refs and notice_short:
+            if refs and (notice_name or notice_short):
                 short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
-                name_match = notice_short in short_names if short_names else None
+                comparable_names = set(candidate_names) | short_names
+                name_match = bool(({notice_name, notice_short} - {""}) & comparable_names) if comparable_names else None
             issues = []
             if not refs:
                 issues.append("candidate_absent_from_result_manifest")
@@ -156,7 +155,9 @@ def build_neeq_termination_batch_reconciliation(
             candidate_names = sorted({_name(row.get("company_name")) for row in refs if _name(row.get("company_name"))})
             expected_short = _name(identity.get("short_name"))
             short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
-            name_match = (expected_short in short_names) if expected_short and short_names else None
+            candidate_names = {_name(row.get("company_name")) for row in refs if _name(row.get("company_name"))}
+            comparable_names = candidate_names | short_names
+            name_match = (expected_short in comparable_names) if expected_short and comparable_names else None
             memberships.append({
                 "security_code": code,
                 "company_name": identity.get("company_name"),
@@ -224,6 +225,14 @@ def build_neeq_termination_batch_reconciliation(
             "candidate_manifest_source": (candidate_manifest.get("manifest") or candidate_manifest).get("source"),
             "candidate_manifest_generated_at": (candidate_manifest.get("manifest") or candidate_manifest).get("generated_at"),
             "candidate_manifest_count": len(candidates_by_code),
+            "candidate_manifest_complete_coverage": bool(
+                (candidate_manifest.get("audit") or {}).get("complete_coverage")
+                or (candidate_manifest.get("manifest") or {}).get("audit_baseline", {}).get("complete_coverage")
+            ),
+            "candidate_manifest_reported_record_count": (
+                (candidate_manifest.get("audit") or {}).get("fetched_record_count")
+                or (candidate_manifest.get("manifest") or {}).get("audit_baseline", {}).get("fetched_record_count")
+            ),
         },
         "summary": {
             "candidate_security_code_count": len(candidate_rows),
