@@ -38,6 +38,8 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
+    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "未完成整改")):
+        category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
     elif any(term in compact for term in ("已注销公司登记", "公司登记已注销", "完成公司注销登记")):
@@ -49,18 +51,11 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
 
 
 def _extract_document_number(document_text: str) -> str | None:
-    """Extract a notice number from the opening header, never from body citations.
-
-    NEEQ text layers use several layouts: a bracketed number on one line,
-    year and serial on adjacent lines, or a compact PDF page header.
-    """
+    """Extract a notice number from the opening header, never from body citations."""
     lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:8]
 
-    # Prefer the adjacent year/serial pair in the actual opening header.
-    # This must run before inline matching so a later body citation such as
-    # 2016-36 cannot override a split header such as 2017 / 701.
     for index, line in enumerate(header_lines[:-1]):
         if not re.fullmatch(r"20\d{2}", line):
             continue
@@ -68,22 +63,22 @@ def _extract_document_number(document_text: str) -> str | None:
         if serial_match:
             return f"{line}-{serial_match.group(1)}"
 
-    # Bracketed NEEQ style: 股转系统公告〔2022〕106号 or 〔2022〕106号.
     for line in header_lines:
-        bracketed = re.search(r"[〔［\[]?(20\d{2})[〕］\]](\d{1,5})(?:号)?", line)
-        if bracketed:
-            return f"{bracketed.group(1)}-{bracketed.group(2)}"
+        # A bracketed year/serial is only a document number when explicitly
+        # labelled as an announcement number, not a cited regulatory circular.
+        if "公告编号" in line or "股转系统公告" in line:
+            bracketed = re.search(r"[〔［\[]?(20\d{2})[〕］\]](\d{1,5})(?:号)?", line)
+            if bracketed:
+                return f"{bracketed.group(1)}-{bracketed.group(2)}"
 
-        # Conventional one-line forms, including -1-2021-666号.
         conventional = re.search(r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–](\d{1,5})(?:号)?", line)
-        if conventional:
+        if conventional and ("公告编号" in line or "股转系统公告" in line):
             return f"{conventional.group(1)}-{conventional.group(2)}"
 
         labelled = re.search(r"股转系统公告[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?", line)
         if labelled:
             return f"{labelled.group(1)}-{labelled.group(2)}"
 
-    # Compact page-header form such as "-1-2021666公司名称".
     compact_header = "".join(header_lines)
     compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
     if compact_match:
@@ -120,9 +115,9 @@ def _extract_html_table_identities(source: str) -> list[dict[str, str]]:
     return found
 
 
-def _extract_identities(compact: str, original: str, *, table_source: str | None = None) -> list[dict[str, str]]:
-    """Extract structured identities and rows only from the selected decision table."""
-    found: list[dict[str, str]] = []
+def _extract_identities(compact: str, original: str, *, table_source: str | None = None) -> list[dict[str, str | None]]:
+    """Extract identities from standard and issuer-style NEEQ announcement layouts."""
+    found: list[dict[str, str | None]] = []
     seen: set[str] = set()
     identity_pattern = re.compile(
         r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
@@ -137,7 +132,7 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
         name_part = prefix[boundary:]
         name_part = re.sub(r"^.*?\d(?=[\u4e00-\u9fff])", "", name_part)
         name_match = re.search(
-            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
+            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,60}?(?:股份有限公司|有限责任公司|有限公司))$",
             name_part,
         )
         company_name = _clean(name_match.group("name")) if name_match else None
@@ -148,6 +143,46 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
             "security_code": code,
             "identity_source": "structured_identity_text",
         })
+
+    # Issuer announcements often place the security code before the short name.
+    code_first = re.compile(
+        r"证券代码[：:](?P<code>\d{6})[^。；;]{0,40}?证券简称[：:](?P<short>[^主办券商；;，,]{1,20})"
+    )
+    for match in code_first.finditer(compact):
+        code = match.group("code")
+        if code in seen:
+            continue
+        tail = compact[match.end():]
+        company_match = re.search(
+            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))",
+            tail,
+        )
+        company_name = _clean(company_match.group("name")) if company_match else None
+        seen.add(code)
+        found.append({
+            "company_name": company_name,
+            "short_name": _clean(match.group("short")),
+            "security_code": code,
+            "identity_source": "issuer_header_code_first",
+        })
+
+    # Sponsor/broker notices may identify the issuer in the title and define
+    # an alias in the body, without publishing a security code.
+    if not found:
+        title_company = re.search(
+            r"关于(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))的(?:风险提示|终止挂牌)",
+            compact,
+        )
+        if title_company:
+            company_name = _clean(title_company.group("name"))
+            tail = compact[title_company.end():]
+            alias = re.search(r"以下简称[“\"「]?([^”\"」、，,；;）)]+)", tail)
+            found.append({
+                "company_name": company_name,
+                "short_name": _clean(alias.group(1)) if alias else None,
+                "security_code": None,
+                "identity_source": "issuer_title_and_alias",
+            })
 
     for identity in _extract_html_table_identities(table_source if table_source is not None else original):
         if identity["security_code"] not in seen:
@@ -176,32 +211,39 @@ def _select_decision_table_scope(original: str) -> tuple[str, str]:
 
 def _parse_shared_fields(block: str) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
-    # PDF text layers may insert page markers (for example "-2-") inside a
-    # date. Remove only isolated page-number tokens before date recognition.
+    # Remove isolated PDF page markers, including those inserted inside dates.
     date_compact = re.sub(r"(?<=月)-\d+-(?=\d{1,2}日)", "", compact)
     date_compact = re.sub(r"(?<!\d)-\d+-(?!\d)", "", date_compact)
     number = _extract_document_number(block)
+
     decision_match = _first(
         r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,120}?作出终止其股票\s*挂牌的决定",
         date_compact,
     )
     if not decision_match:
-        # 批量公告可写作“我司决定自YYYY年M月D日对……作出终止决定”。
         decision_match = _first(
             r"我司决定自\s*" + _DATE + r"\s*对[\s\S]{1,180}?作出终止其股票\s*挂牌的决定",
             date_compact,
         )
+    received_match = _first(
+        r"(?:公司)?于\s*" + _DATE + r"\s*收到[\s\S]{0,100}?(?:终止|挂牌)?决定",
+        date_compact,
+    )
+
     announcement_match = _first(
         r"(?:全国中小企业股份转让系统有限责任公司|全国股转公司)\s*" + _DATE,
         date_compact,
     )
     announcement_date = _date(announcement_match)
 
-    planned_match = _first(r"(?:将自|自)\s*" + _DATE + r"\s*起终止其股票\s*挂牌", date_compact)
+    planned_match = _first(
+        r"(?:将自|自|将于)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
+        date_compact,
+    )
     planned_date = _date(planned_match)
     if not planned_date:
         short_planned_match = _first(
-            r"(\d{1,2})月(\d{1,2})日起终止[^。]{0,40}?(?:股票挂牌|挂牌)",
+            r"(\d{1,2})月(\d{1,2})日(?:起)?终止[^。]{0,100}?(?:股票挂牌|挂牌)",
             date_compact,
         )
         if short_planned_match and announcement_date:
@@ -213,33 +255,48 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
                 ).date().isoformat()
             except ValueError:
                 planned_date = None
+        elif short_planned_match:
+            year_match = _first(r"(20\d{2})年", date_compact)
+            if year_match:
+                try:
+                    planned_date = datetime(
+                        int(year_match.group(1)),
+                        int(short_planned_match.group(1)),
+                        int(short_planned_match.group(2)),
+                    ).date().isoformat()
+                except ValueError:
+                    planned_date = None
 
     suspension_match = _first(
-        r"(?:于|自)\s*" + _DATE + r"\s*对[\s\S]{0,100}?暂停转让",
+        r"(?:于|自|已于)\s*" + _DATE + r"\s*(?:对[\s\S]{0,100}?)?(?:暂停转让|停牌)",
+        date_compact,
+    )
+    resumption_match = _first(
+        r"(?:" + _DATE + r"\s*起恢复转让|" + _DATE + r"\s*起复牌)",
         date_compact,
     )
 
     stated_match = _first(
-        r"(?:决定自|决定于|自)\s*" + _DATE + r"\s*起?终止(?:其|上述)?(?:公司)?(?:的)?股票(?:挂牌)?",
+        r"(?:决定自|决定于|自|将于)\s*" + _DATE + r"\s*起?[\s\S]{0,100}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:挂牌)?",
         date_compact,
     )
     if not stated_match:
-        # Older notices may omit "自" and/or the year, e.g. "12月26日起终止上述公司股票挂牌".
         full_event_match = _first(
-            _DATE + r"(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
+            _DATE + r"(?:起)?[\s\S]{0,80}?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
             date_compact,
         )
         if full_event_match:
             stated_date = _date(full_event_match)
         else:
             short_match = _first(
-                r"(\d{1,2})月(\d{1,2})日(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
+                r"(\d{1,2})月(\d{1,2})日(?:起)?终止[^。]{0,80}?(?:股票挂牌|挂牌)",
                 date_compact,
             )
-            if short_match and announcement_date:
+            year_match = _first(r"(20\d{2})年", date_compact)
+            if short_match and year_match:
                 try:
                     stated_date = datetime(
-                        int(announcement_date[:4]),
+                        int(year_match.group(1)),
                         int(short_match.group(1)),
                         int(short_match.group(2)),
                     ).date().isoformat()
@@ -251,28 +308,38 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         stated_date = _date(stated_match)
 
     reason_match = _first(r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据", compact)
-    reason = _clean(reason_match.group(1)) if reason_match else None
-    category, legal_basis, deregistered = _classify_termination(compact, reason)
+    category, legal_basis, deregistered = _classify_termination(compact, _clean(reason_match.group(1)) if reason_match else None)
+
+    signature_lines = [line for line in block.splitlines() if line.strip()][-6:]
+    signature_text = "".join(re.sub(r"\s+", "", line) for line in signature_lines)
+    signature_dates = list(re.finditer(_DATE, signature_text))
+    signature_date = _date(signature_dates[-1]) if signature_dates else None
+
     conditional = bool(_first(
         r"(?:如|对于|对)[^。]{0,220}?(?:未在规定期限内提交复核申请|未提交复核申请|复核申请未被受理|未在规定期限内提出复核)",
         compact,
     ))
     if not conditional and planned_match and category == "failure_to_disclose_periodic_report":
         conditional = bool(_first(r"(?:逾期未|未按期).{0,30}复核申请", compact))
+
     return {
         "document_number": number,
         "decision_date": _date(decision_match),
+        "decision_received_date": _date(received_match),
+        "document_signature_date": signature_date,
+        "transfer_resumption_date": _date(resumption_match),
         "planned_termination_date": planned_date,
         "stated_termination_date": stated_date,
         "suspension_date": _date(suspension_match),
         "announcement_date": announcement_date,
-        "termination_reason": reason,
+        "termination_reason": _clean(reason_match.group(1)) if reason_match else None,
         "termination_reason_category": category,
         "termination_legal_basis": legal_basis,
         "conditional_termination": conditional,
         "conditional_termination_language": conditional,
         "notice_states_company_deregistered": deregistered,
     }
+
 
 def _parse_notice(block: str, index: int, *, table_source: str | None = None) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
