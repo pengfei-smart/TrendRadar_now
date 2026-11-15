@@ -54,7 +54,7 @@ def _extract_document_number(document_text: str) -> str | None:
     NEEQ text layers use several layouts: a bracketed number on one line,
     year and serial on adjacent lines, or a compact PDF page header.
     """
-    lines = [re.sub(r"\\s+", "", line).strip() for line in document_text.splitlines()]
+    lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:8]
 
@@ -62,30 +62,30 @@ def _extract_document_number(document_text: str) -> str | None:
     # This must run before inline matching so a later body citation such as
     # 2016-36 cannot override a split header such as 2017 / 701.
     for index, line in enumerate(header_lines[:-1]):
-        if not re.fullmatch(r"20\\d{2}", line):
+        if not re.fullmatch(r"20\d{2}", line):
             continue
-        serial_match = re.fullmatch(r"(\\d{1,5})(?:号)?", header_lines[index + 1])
+        serial_match = re.fullmatch(r"(\d{1,5})(?:号)?", header_lines[index + 1])
         if serial_match:
             return f"{line}-{serial_match.group(1)}"
 
     # Bracketed NEEQ style: 股转系统公告〔2022〕106号 or 〔2022〕106号.
     for line in header_lines:
-        bracketed = re.search(r"[〔［\\[]?(20\\d{2})[〕］\\]](\\d{1,5})(?:号)?", line)
+        bracketed = re.search(r"[〔［\[]?(20\d{2})[〕］\]](\d{1,5})(?:号)?", line)
         if bracketed:
             return f"{bracketed.group(1)}-{bracketed.group(2)}"
 
         # Conventional one-line forms, including -1-2021-666号.
-        conventional = re.search(r"(?:^|[^0-9])(?:-\\d+-)?(20\\d{2})[-—–](\\d{1,5})(?:号)?", line)
+        conventional = re.search(r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–](\d{1,5})(?:号)?", line)
         if conventional:
             return f"{conventional.group(1)}-{conventional.group(2)}"
 
-        labelled = re.search(r"股转系统公告[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{1,5})(?:号)?", line)
+        labelled = re.search(r"股转系统公告[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?", line)
         if labelled:
             return f"{labelled.group(1)}-{labelled.group(2)}"
 
     # Compact page-header form such as "-1-2021666公司名称".
     compact_header = "".join(header_lines)
-    compact_match = re.search(r"-\\d+-(20\\d{2})(\\d{3,5})(?=[\\u4e00-\\u9fff])", compact_header)
+    compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
     if compact_match:
         return f"{compact_match.group(1)}-{compact_match.group(2)}"
     return None
