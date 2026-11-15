@@ -463,3 +463,119 @@ CREATE INDEX IF NOT EXISTS idx_neeq_issuer_alias_name
     ON neeq_issuer_aliases(alias_name, review_status);
 CREATE INDEX IF NOT EXISTS idx_neeq_issuer_alias_company_period
     ON neeq_issuer_aliases(company_code, valid_from, valid_to);
+
+
+-- v7 NEEQ历史终止挂牌证据台账。与A股security_master及正式生命周期事实隔离。
+CREATE TABLE IF NOT EXISTS neeq_termination_case (
+    case_id TEXT PRIMARY KEY,
+    company_code TEXT NOT NULL CHECK (length(company_code) = 6 AND company_code NOT GLOB '*[^0-9]*'),
+    company_name_snapshot TEXT NOT NULL DEFAULT '',
+    source_record_id TEXT NOT NULL DEFAULT '',
+    source_api TEXT NOT NULL DEFAULT '',
+    interface_result_date TEXT NOT NULL DEFAULT '',
+    interface_create_at TEXT NOT NULL DEFAULT '',
+    raw_record_json TEXT NOT NULL DEFAULT '{}',
+    raw_record_sha256 TEXT NOT NULL CHECK (length(raw_record_sha256) = 64),
+    case_status TEXT NOT NULL DEFAULT 'pending_review'
+        CHECK (case_status IN ('pending_review','evidence_gathering','ready_for_review','reviewed','closed','invalid')),
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(company_code, source_api, source_record_id, raw_record_sha256)
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_case_company
+    ON neeq_termination_case(company_code, interface_result_date);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_case_status
+    ON neeq_termination_case(case_status, updated_at DESC);
+
+CREATE TABLE IF NOT EXISTS neeq_termination_evidence (
+    evidence_id TEXT PRIMARY KEY,
+    evidence_kind TEXT NOT NULL CHECK (evidence_kind IN (
+        'batch_notice','formal_decision','review_application','review_decision',
+        'supplementary_decision','final_termination_notice','transfer_exit_record',
+        'issuer_notice','sponsor_notice','third_party_lead','other')),
+    source_authority TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (source_authority IN ('neeq_official','issuer_official','sponsor_official',
+        'government_or_registry','reliable_secondary','third_party','unknown')),
+    notice_number TEXT NOT NULL DEFAULT '',
+    document_title TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL,
+    published_date TEXT NOT NULL DEFAULT '',
+    retrieved_at TEXT NOT NULL,
+    content_sha256 TEXT NOT NULL DEFAULT ''
+        CHECK (content_sha256 = '' OR length(content_sha256) = 64),
+    evidence_status TEXT NOT NULL DEFAULT 'located'
+        CHECK (evidence_status IN ('located','downloaded','extracted','crosschecked','unverified','rejected')),
+    content_excerpt TEXT NOT NULL DEFAULT '',
+    metadata_json TEXT NOT NULL DEFAULT '{}',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_notice
+    ON neeq_termination_evidence(notice_number, published_date);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_kind_status
+    ON neeq_termination_evidence(evidence_kind, evidence_status);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_hash
+    ON neeq_termination_evidence(content_sha256);
+
+CREATE TABLE IF NOT EXISTS neeq_termination_procedure (
+    procedure_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    procedure_type TEXT NOT NULL CHECK (procedure_type IN (
+        'decision_issued','decision_received','review_filed','review_accepted',
+        'review_rejected','supplementary_decision','conditional_termination',
+        'final_termination','transfer_market_entry','transfer_exit','other')),
+    event_date TEXT NOT NULL DEFAULT '',
+    date_semantics TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (date_semantics IN ('decision_issued','decision_received','announcement',
+        'conditional_termination','last_trading_day','actual_termination','transfer_start',
+        'transfer_exit','unknown')),
+    date_status TEXT NOT NULL DEFAULT 'unknown'
+        CHECK (date_status IN ('confirmed','approximate','pending','unknown')),
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (case_id) REFERENCES neeq_termination_case(case_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_procedure_case_date
+    ON neeq_termination_procedure(case_id, event_date, procedure_type);
+
+CREATE TABLE IF NOT EXISTS neeq_termination_evidence_link (
+    link_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    procedure_id TEXT,
+    relation_type TEXT NOT NULL DEFAULT 'supports_case'
+        CHECK (relation_type IN ('supports_case','supports_procedure','contradicts','context_only')),
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (case_id) REFERENCES neeq_termination_case(case_id) ON DELETE CASCADE,
+    FOREIGN KEY (evidence_id) REFERENCES neeq_termination_evidence(evidence_id) ON DELETE RESTRICT,
+    FOREIGN KEY (procedure_id) REFERENCES neeq_termination_procedure(procedure_id) ON DELETE CASCADE,
+    CHECK ((relation_type = 'supports_procedure' AND procedure_id IS NOT NULL)
+        OR (relation_type <> 'supports_procedure'))
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_link_case
+    ON neeq_termination_evidence_link(case_id, relation_type);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_link_evidence
+    ON neeq_termination_evidence_link(evidence_id);
+
+CREATE TABLE IF NOT EXISTS neeq_termination_review (
+    review_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    case_id TEXT NOT NULL,
+    evidence_id TEXT,
+    procedure_id TEXT,
+    review_status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (review_status IN ('pending','verified','rejected','needs_more_evidence')),
+    conclusion_code TEXT NOT NULL DEFAULT '',
+    reviewer TEXT NOT NULL DEFAULT '',
+    reviewed_at TEXT NOT NULL DEFAULT '',
+    review_notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (case_id) REFERENCES neeq_termination_case(case_id) ON DELETE CASCADE,
+    FOREIGN KEY (evidence_id) REFERENCES neeq_termination_evidence(evidence_id) ON DELETE RESTRICT,
+    FOREIGN KEY (procedure_id) REFERENCES neeq_termination_procedure(procedure_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_review_case_time
+    ON neeq_termination_review(case_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_review_status
+    ON neeq_termination_review(review_status, reviewed_at);
