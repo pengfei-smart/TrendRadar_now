@@ -591,6 +591,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
         self.assertEqual(notice["short_name"], "拥湾资产")
         self.assertEqual(notice["document_signature_date"], "2017-12-18")
+        self.assertEqual(notice["announcement_date"], "2017-12-18")
         self.assertEqual(notice["termination_reason_category"], "failure_to_meet_rectification_requirements")
 
     def test_v10_parses_issuer_risk_warning_identity_and_transfer_timeline(self):
@@ -610,7 +611,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["security_code"], "834606")
         self.assertEqual(notice["short_name"], "拥湾资产")
         self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
-        self.assertEqual(notice["decision_received_date"], "2017-12-13")
+        self.assertIsNone(notice["decision_received_date"])
         self.assertEqual(notice["suspension_date"], "2017-12-13")
         self.assertEqual(notice["transfer_resumption_date"], "2017-12-14")
         self.assertEqual(notice["planned_termination_date"], "2017-12-21")
@@ -637,6 +638,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["planned_termination_date"], "2017-12-21")
         self.assertEqual(notice["stated_termination_date"], "2017-12-21")
         self.assertEqual(notice["document_signature_date"], "2017-12-20")
+        self.assertEqual(notice["announcement_date"], "2017-12-20")
 
 
 if __name__ == "__main__":
