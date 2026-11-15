@@ -64,12 +64,38 @@ def _json_text(value) -> list[str]:
 
 
 def _extract_pdf_text(body: bytes) -> str:
-    """Extract a bounded number of text-layer pages; OCR is intentionally not attempted."""
+    """Extract a bounded number of PDF text-layer pages; OCR is intentionally not attempted."""
+    # PyMuPDF preserves some positioned Chinese headings that pypdf may omit.
+    # Use its plain reading-order text mode; sort=True can scramble multi-column
+    # or centered headings. Keep pypdf as a compatibility fallback.
+    try:
+        import pymupdf
+    except ImportError:
+        pymupdf = None
+
+    if pymupdf is not None:
+        try:
+            document = pymupdf.open(stream=body, filetype="pdf")
+            if document.needs_pass:
+                raise ValueError("暂不处理加密 PDF，需先由人工解密")
+            page_count = len(document)
+            if page_count > _MAX_PDF_PAGES:
+                raise ValueError(f"PDF 页数超过安全上限 {_MAX_PDF_PAGES}")
+            parts = [page.get_text("text") for page in document]
+            text = "\\n".join(part for part in parts if part)
+            if text.strip():
+                return text
+        except ValueError:
+            raise
+        except Exception:
+            # A malformed/unsupported document can still be readable by pypdf.
+            pass
+
     try:
         from pypdf import PdfReader
     except ImportError as exc:
         raise ValueError(
-            "提取 PDF 需要可选依赖 pypdf，请安装项目的 pdf extra"
+            "提取 PDF 需要可选依赖 PyMuPDF 或 pypdf，请安装项目的 pdf extra"
         ) from exc
 
     try:
@@ -89,7 +115,7 @@ def _extract_pdf_text(body: bytes) -> str:
     except Exception as exc:
         raise ValueError("PDF 无法解析或文本提取失败") from exc
 
-    text = "\n".join(parts)
+    text = "\\n".join(parts)
     if not text.strip():
         raise ValueError("PDF 未提取到文本层，可能是扫描版 PDF；当前不执行 OCR")
     return text
