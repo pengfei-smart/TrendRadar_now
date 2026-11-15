@@ -152,12 +152,20 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
         code = match.group("code")
         if code in seen:
             continue
-        tail = compact[match.end():]
-        company_match = re.search(
-            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))",
-            tail,
+        # Prefer the issuer name from its own title; this avoids accidentally
+        # absorbing the sponsor-broker label into the company name.
+        title_company = re.search(
+            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))关于(?:公司)?股票",
+            compact,
         )
-        company_name = _clean(company_match.group("name")) if company_match else None
+        if not title_company:
+            tail = compact[match.end():]
+            tail = re.sub(r"^主办券商[：:][^青]{1,20}", "", tail)
+            title_company = re.search(
+                r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{4,60}?(?:股份有限公司|有限责任公司|有限公司))",
+                tail,
+            )
+        company_name = _clean(title_company.group("name")) if title_company else None
         seen.add(code)
         found.append({
             "company_name": company_name,
