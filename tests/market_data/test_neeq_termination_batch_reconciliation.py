@@ -186,17 +186,20 @@ class NEEQTerminationBatchReconciliationTests(unittest.TestCase):
         self.assertEqual(len(result["display_name_differences"]), 1)
 
     def test_date_completeness_keeps_missing_decision_date_missing(self):
+        missing_decision_notice = notice(
+            "000007", "乙公司股份有限公司", "乙公司", "2019-700", "2019-07-01", "2019-07-09"
+        )
+        missing_decision_notice["decision_date"] = None
         result = self.build([{
             "attachment_id": "a",
             "url": "https://www.neeq.com.cn/notice.html",
-            "notices": [notice("000007", "乙公司股份有限公司", "乙公司",
-                               "2019-700", "2019-07-01", "2019-07-09")],
+            "notices": [missing_decision_notice],
             "contextual_identities": [],
         }], [candidate("000007", "乙公司股份有限公司", "乙公司", "7")])
         row = result["batch_memberships"][0]
         self.assertEqual(row["batch_announcement_date"], "2019-07-01")
-        self.assertEqual(row["formal_decision_date"], "2019-07-01")
-        self.assertEqual(result["summary"]["date_completeness"]["formal_decision_date"]["present_count"], 1)
+        self.assertIsNone(row["formal_decision_date"])
+        self.assertEqual(result["summary"]["date_completeness"]["formal_decision_date"]["missing_count"], 1)
         self.assertFalse(result["safety"]["batch_coverage_is_exhaustive"])
 
     def test_report_is_read_only_and_never_confirms_legal_facts(self):
