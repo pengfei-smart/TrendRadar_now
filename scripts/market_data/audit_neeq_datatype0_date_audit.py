@@ -116,6 +116,26 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
         status_counts[comparison_status] += 1
 
         leads = item.get("supplemental_leads") or []
+        follow_up_required = bool(formal_evidence)
+        follow_up_tracking = {
+            "follow_up_required": follow_up_required,
+            "task_status": "pending_evidence_search" if follow_up_required else "not_started_no_formal_decision_evidence",
+            "procedure_stage": "post_decision_procedure" if follow_up_required else "formal_decision_not_established",
+            "review_application_status": "unknown",
+            "review_decision_status": "unknown",
+            "supplementary_decision_evidence": [],
+            "final_termination_date": None,
+            "final_termination_source_url": None,
+            "final_termination_evidence_status": "not_found",
+            "required_evidence_types": [
+                "review_application_or_non_application_evidence",
+                "review_acceptance_or_rejection_decision",
+                "supplementary_or_revised_termination_decision",
+                "final_termination_announcement",
+                "securities_registration_or_transfer_exit_record",
+            ] if follow_up_required else [],
+            "review_status": "pending_manual_review",
+        }
         rows.append({
             "record_id": item.get("record_id"),
             "security_code": item.get("security_code"),
@@ -145,6 +165,7 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
             "batch_relation_status": item.get("batch_relation_status"),
             "raw_record_sha256": item.get("raw_record_sha256"),
             "review_status": "pending_manual_review",
+            "follow_up_tracking": follow_up_tracking,
             "actual_termination_date": None,
             "actual_termination_date_confirmed": False,
             "notes": [
@@ -157,8 +178,8 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
 
     rows.sort(key=lambda row: (row.get("interface_result_date") or "", row.get("security_code") or ""))
     return {
-        "schema_version": 3,
-        "report_version": "neeq_datatype0_date_audit_v3",
+        "schema_version": 4,
+        "report_version": "neeq_datatype0_date_audit_v4",
         "source_report_version": crosscheck_report.get("report_version"),
         "summary": {
             "candidate_count": len(rows),
@@ -170,6 +191,8 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
             "background_membership_only_candidate_count": sum(r["comparison_status"] == "background_membership_only" for r in rows),
             "supplemental_unverified_lead_count": sum(len(r["supplemental_unverified_leads"]) for r in rows),
             "actual_termination_dates_confirmed": 0,
+            "follow_up_task_candidate_count": sum(r["follow_up_tracking"]["follow_up_required"] for r in rows),
+            "follow_up_pending_count": sum(r["follow_up_tracking"]["task_status"] == "pending_evidence_search" for r in rows),
             "manual_review_required": True,
         },
         "candidates": rows,
@@ -187,7 +210,7 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--crosscheck-report", type=Path, default=Path("output/market/neeq_datatype0_notice_crosscheck_v2.json"))
-    parser.add_argument("--output", type=Path, default=Path("output/market/neeq_datatype0_date_audit_v3.json"))
+    parser.add_argument("--output", type=Path, default=Path("output/market/neeq_datatype0_date_audit_v4.json"))
     args = parser.parse_args()
     with args.crosscheck_report.open("r", encoding="utf-8") as handle:
         source = json.load(handle)
