@@ -282,15 +282,30 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
     if not isinstance(text, str) or not text.strip():
         raise ValueError("公告文本为空")
     starts = [match.start() for match in re.finditer(r"股转系统公告", text)]
-    # A PDF may mention "股转系统公告" inside its body while the actual
-    # notice number is printed in the preceding page header. Do not split away
-    # that opening header when it already contains a valid notice number.
-    if starts and _extract_document_number(text[:starts[0]]) is not None:
-        blocks = [text[:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
-                  for pos in range(len(starts))]
+    # A body citation can contain the same phrase as the document header.
+    # First inspect the opening header as a whole (including the number on
+    # the same line as "股转系统公告"). If it is a real numbered document,
+    # retain the title/header and split only after a complete prior signature.
+    if starts and _extract_document_number(text) is not None:
+        boundaries = [0]
+        last_boundary = 0
+        signature_pattern = re.compile(
+            r"全国中小企业股份转让系统有限责任公司[\\s\\S]{0,120}" + _DATE
+        )
+        for position in starts[1:]:
+            preceding_block = text[last_boundary:position]
+            if signature_pattern.search(preceding_block):
+                boundaries.append(position)
+                last_boundary = position
+        blocks = [
+            text[start:(boundaries[index + 1] if index + 1 < len(boundaries) else len(text))]
+            for index, start in enumerate(boundaries)
+        ]
     else:
-        blocks = [text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
-                  for pos, start in enumerate(starts)] if starts else [text]
+        blocks = [
+            text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
+            for pos, start in enumerate(starts)
+        ] if starts else [text]
     notices = []
     contextual_identities = []
     for index, block in enumerate(blocks):
@@ -299,7 +314,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         if context_table:
             contextual_identities.extend(_extract_html_table_identities(context_table))
     return {
-        "parser": "neeq_termination_notice_parser_v8",
+        "parser": "neeq_termination_notice_parser_v9",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
         "contextual_identity_count": len(contextual_identities),
