@@ -169,7 +169,7 @@ class LifecycleDocumentTextTests(unittest.TestCase):
 
     def test_rejects_missing_pdf_optional_dependency(self):
         with patch.dict(sys.modules, {"pymupdf": None, "pypdf": None}):
-            with self.assertRaisesRegex(ValueError, "可选依赖 pypdf"):
+            with self.assertRaisesRegex(ValueError, "可选依赖 PyMuPDF 或 pypdf"):
                 extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
     def test_rejects_invalid_json_and_empty_extraction(self):
