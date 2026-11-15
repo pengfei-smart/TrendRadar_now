@@ -283,6 +283,7 @@ def build_neeq_historical_evidence_register(
     return {
         "schema_version": 1,
         "register_version": "neeq_historical_evidence_register_v1",
+        "date_classification_version": 1,
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
         "source_tracker_version": tracker_report.get("tracker_version"),
         "summary": {
