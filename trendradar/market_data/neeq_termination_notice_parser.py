@@ -72,9 +72,9 @@ def _extract_document_number(document_text: str) -> str | None:
     if (
         len(opening_lines) >= 2
         and "风险提示公告" in opening_lines[1]
-        and "股转系统公告" not in "\\n".join(opening_lines[:2])
+        and "股转系统公告" not in "\n".join(opening_lines[:2])
     ):
-        first_blank = re.search(r"\\n\\s*\\n", document_text)
+        first_blank = re.search(r"\n\s*\n", document_text)
         if first_blank:
             sponsor_header = document_text[:first_blank.start()]
             if "股转系统公告" not in sponsor_header:
