@@ -155,4 +155,3 @@ def build_neeq_date_reconciliation_audit(
             "read_only": True,
         },
     }
-}
