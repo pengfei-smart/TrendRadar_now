@@ -62,13 +62,22 @@ def _extract_document_number(document_text: str) -> str | None:
 
     # Official notices may put the year and serial on adjacent opening lines.
     # Accept this only at the start, before any body citations can occur.
-    for index in range(min(2, len(header_lines) - 1)):
+    for index in range(min(3, len(header_lines) - 1)):
         year_match = re.fullmatch(r"(20\d{2})", header_lines[index])
         serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
-        starts_at_document_header = index == 0 or (
-            index == 1 and (
-                re.fullmatch(r"-\d+-", header_lines[0])
-                or "股转系统公告" in header_lines[0]
+        starts_at_document_header = (
+            index == 0
+            or (
+                index == 1
+                and (
+                    re.fullmatch(r"-\d+-", header_lines[0])
+                    or "股转系统公告" in header_lines[0]
+                )
+            )
+            or (
+                index == 2
+                and re.fullmatch(r"-\d+-", header_lines[0])
+                and "股转系统公告" in header_lines[1]
             )
         )
         if year_match and serial_match and starts_at_document_header:
