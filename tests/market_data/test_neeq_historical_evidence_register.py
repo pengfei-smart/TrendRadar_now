@@ -88,6 +88,28 @@ class NEEQHistoricalEvidenceRegisterTests(unittest.TestCase):
         self.assertTrue(all(row["date_type_valid"] for row in item["date_assertions"]))
         self.assertEqual(item["review_status"], "evidence_integrity_complete_pending_manual_review")
 
+    def test_accepts_decision_received_and_planned_termination_date_types(self):
+        assertions = [
+            {
+                "date_type": "decision_received_date",
+                "date_value": "2017-12-12",
+                "source_quote": "公司2017年12月12日收到全国中小企业股份转让系统有限责任公司出具的决定",
+                "page_number": 1,
+            },
+            {
+                "date_type": "planned_termination_date",
+                "date_value": "2017-12-21",
+                "source_quote": "公司股票将于2017年12月21日被全国股转公司强制终止挂牌",
+                "page_number": 1,
+            },
+        ]
+        result = build_neeq_historical_evidence_register(
+            self.tracker(), [self.record(date_assertions=assertions)], evidence_root=self.root
+        )
+        item = result["dossiers"][0]["evidence_records"][0]
+        self.assertTrue(all(row["date_type_valid"] for row in item["date_assertions"]))
+        self.assertEqual(item["review_status"], "evidence_integrity_complete_pending_manual_review")
+
     def test_source_document_number_is_optional_for_un_numbered_sponsor_notice(self):
         result = build_neeq_historical_evidence_register(
             self.tracker(), [self.record(source_document_number=None)], evidence_root=self.root
