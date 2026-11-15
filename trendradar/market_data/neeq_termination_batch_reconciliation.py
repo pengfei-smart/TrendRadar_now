@@ -37,6 +37,11 @@ def _classify_name_match(notice_names: set[str], candidate_names: set[str]) -> s
     normalized_candidate = {_comparison_name(name) for name in candidate_names}
     if normalized_notice & normalized_candidate:
         return "delisted_display_name"
+    # A result-list name prefixed with 摘牌 is a delisted display label.
+    # With a matching security code, retain it as a pending name variant rather
+    # than asserting either identity equivalence or a hard name conflict.
+    if any(name.startswith("摘牌") for name in candidate_names):
+        return "delisted_display_name_variant_pending_review"
     return "unresolved_name_conflict"
 
 
@@ -240,7 +245,7 @@ def build_neeq_termination_batch_reconciliation(
     membership_counts = Counter(row["membership_type"] for row in memberships)
     progression_count = sum(row.get("batch_progression_type") == "later_batch_decision_company" for row in memberships)
     name_conflicts = [row for row in memberships if row.get("candidate_name_match_type") == "unresolved_name_conflict"]
-    display_name_differences = [row for row in memberships if row.get("candidate_name_match_type") == "delisted_display_name"]
+    display_name_differences = [row for row in memberships if row.get("candidate_name_match_type") in ("delisted_display_name", "delisted_display_name_variant_pending_review")]
     candidate_without_batch = [row for row in candidate_rows if not row["parsed_batch_membership_found"]]
     date_fields = ("batch_announcement_date", "formal_decision_date", "conditional_termination_date", "stated_termination_date")
     date_completeness = {
