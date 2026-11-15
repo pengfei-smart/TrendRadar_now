@@ -318,7 +318,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 2019年7月5日
 """ + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
         self.assertEqual(result["notice_count"], 54)
         self.assertEqual(result["notices"][0]["document_number"], "2019-985")
         self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
@@ -383,7 +383,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
         self.assertEqual(result["notice_count"], 2)
         for notice in result["notices"]:
             self.assertEqual(notice["document_number"], "2017-701")
@@ -433,7 +433,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
         self.assertEqual(result["notice_count"], 2)
         self.assertEqual([n["security_code"] for n in result["notices"]], ["832168", "831639"])
         for notice in result["notices"]:
@@ -481,7 +481,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 财达证券
 """
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
         self.assertEqual(result["notice_count"], 2)
         self.assertEqual(
             [notice["security_code"] for notice in result["notices"]],
@@ -506,7 +506,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月12日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
         self.assertEqual(result["notice_count"], 3)
         self.assertEqual(
             [item["security_code"] for item in result["notices"]],
@@ -572,7 +572,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 
     def test_report_metadata_matches_v9_parser(self):
         report = build_neeq_notice_review_report({"tasks": []}, {"results": {}}, lambda name: "")
-        self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v10")
 
 
     def test_v10_parses_sponsor_risk_warning_without_inventing_document_number(self):
@@ -591,7 +591,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
         self.assertEqual(notice["short_name"], "拥湾资产")
         self.assertEqual(notice["document_signature_date"], "2017-12-18")
-        self.assertEqual(notice["termination_reason_category"], "failure_to_disclose_periodic_report")
+        self.assertEqual(notice["termination_reason_category"], "failure_to_meet_rectification_requirements")
 
     def test_v10_parses_issuer_risk_warning_identity_and_transfer_timeline(self):
         text = """公告编号：2017-035
