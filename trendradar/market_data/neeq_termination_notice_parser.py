@@ -290,7 +290,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         boundaries = [0]
         last_boundary = 0
         signature_pattern = re.compile(
-            r"全国中小企业股份转让系统有限责任公司[\\s\\S]{0,120}" + _DATE
+            r"全国中小企业股份转让系统有限责任公司[\s\S]{0,120}" + _DATE
         )
         for position in starts[1:]:
             preceding_block = text[last_boundary:position]
