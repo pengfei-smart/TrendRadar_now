@@ -42,7 +42,7 @@ def main() -> int:
         help="neeq_termination_candidate_manifest_v2.json（支持导出器完整外层结构）",
     )
     parser.add_argument(
-        "--output", default="output/market/neeq_termination_batch_reconciliation_v1.json",
+        "--output", default="output/market/neeq_termination_batch_reconciliation_v2.json",
     )
     args = parser.parse_args()
 
