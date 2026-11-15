@@ -79,6 +79,22 @@ class NeeqDataType0DateAuditTests(unittest.TestCase):
         self.assertEqual(row["comparison_status"], "no_parsed_decision_evidence")
         self.assertTrue(any(note.startswith("未匹配到已解析公告不代表历史上不存在公告") for note in row["notes"]))
 
+
+    def test_same_official_decision_from_two_sources_is_deduplicated(self):
+        candidate = self._candidate(supplemental_independent_decisions=[{
+            "notice_number": "2019-984", "decision_date": "2019-07-01",
+            "conditional_termination_date": "2019-07-09",
+            "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+            "evidence_status": "official_notice_identity_and_dates_crosschecked",
+        }])
+        report = build_report({"candidates": [candidate]})
+        row = report["candidates"][0]
+        self.assertEqual(row["formal_decision_evidence_count"], 2)
+        self.assertEqual(row["formal_decision_unique_count"], 1)
+        self.assertEqual(row["formal_decision_duplicate_evidence_count"], 1)
+        self.assertEqual(report["summary"]["formal_decision_unique_count"], 1)
+        self.assertEqual(report["summary"]["duplicate_formal_decision_evidence_count"], 1)
+
     def test_safety_boundary_is_read_only(self):
         report = build_report({"candidates": [self._candidate()]})
         self.assertTrue(report["safety"]["read_only"])
