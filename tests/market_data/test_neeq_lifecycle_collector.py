@@ -125,6 +125,8 @@ class NEEQLifecycleCollectorTests(unittest.TestCase):
 
     def test_title_filter_only_flags_candidates(self):
         self.assertTrue(is_lifecycle_announcement_title("关于公司股票终止挂牌的公告"))
+        self.assertTrue(is_lifecycle_announcement_title("关于股票恢复转让的提示性公告"))
+        self.assertTrue(is_lifecycle_announcement_title("关于股票暂停转让的公告"))
         self.assertFalse(is_lifecycle_announcement_title("关于召开年度股东大会的通知"))
         self.assertFalse(is_lifecycle_announcement_title(None))
 
