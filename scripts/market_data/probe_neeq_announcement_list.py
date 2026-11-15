@@ -19,6 +19,8 @@ def main() -> int:
     parser.add_argument("--page", type=int, default=0, help="零起始页码，默认 0")
     parser.add_argument("--market-layer", choices=("0", "1", "3"), default="3")
     parser.add_argument("--omit-date-filter", action="store_true", help="对照实验：不向接口发送 startTime/endTime")
+    parser.add_argument("--omit-market-layer-filter", action="store_true", help="对照实验：不发送 xxfcbj[] 市场层级筛选")
+    parser.add_argument("--omit-new-three-filter", action="store_true", help="对照实验：不发送 isNewThree 参数")
     parser.add_argument("--notice-type", default="", help="公告类型筛选值；仅使用已抓包核验的值")
     parser.add_argument("--disclosure-type", default="", help="披露类型筛选值；仅使用已抓包核验的值")
     args = parser.parse_args()
@@ -32,6 +34,8 @@ def main() -> int:
             page=args.page,
             market_layer=args.market_layer,
             omit_date_filter=args.omit_date_filter,
+            omit_market_layer_filter=args.omit_market_layer_filter,
+            omit_new_three_filter=args.omit_new_three_filter,
             notice_type=args.notice_type,
             disclosure_type=args.disclosure_type,
         )
@@ -59,6 +63,8 @@ def main() -> int:
         "request_count": result["request_count"],
         "request_page": result["request_page"],
         "date_filter_omitted": result["date_filter_omitted"],
+        "market_layer_filter_omitted": result["market_layer_filter_omitted"],
+        "new_three_filter_omitted": result["new_three_filter_omitted"],
         "company_code": args.company_code,
         "company_code_filter_verified": result["company_code_filter_verified"],
         "notice_type": args.notice_type,
