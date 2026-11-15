@@ -570,7 +570,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
             self.assertEqual(notice["planned_termination_date"], "2017-12-21")
             self.assertEqual(notice["stated_termination_date"], "2017-12-21")
 
-    def test_report_metadata_matches_v9_parser(self):
+    def test_report_metadata_matches_v11_parser(self):
         report = build_neeq_notice_review_report({"tasks": []}, {"results": {}}, lambda name: "")
         self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v11")
 
