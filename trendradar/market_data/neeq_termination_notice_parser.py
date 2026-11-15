@@ -322,6 +322,11 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     signature_text = "".join(re.sub(r"\s+", "", line) for line in signature_lines)
     signature_dates = list(re.finditer(_DATE, signature_text))
     signature_date = _date(signature_dates[-1]) if signature_dates else None
+    # Issuer and sponsor announcements commonly use the board/sponsor signature
+    # date as the publication date; unlike NEEQ system notices, they do not carry
+    # the system-name publication footer parsed above.
+    if announcement_date is None and signature_date is not None:
+        announcement_date = signature_date
 
     conditional = bool(_first(
         r"(?:如|对于|对)[^。]{0,220}?(?:未在规定期限内提交复核申请|未提交复核申请|复核申请未被受理|未在规定期限内提出复核)",
