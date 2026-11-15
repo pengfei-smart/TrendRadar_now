@@ -30,11 +30,11 @@ def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
 
 def _extract_legal_basis(compact: str) -> str | None:
     """Extract legal citations from the operative '根据...规定' clause."""
-    clause_match = _first(r"根据([\\s\\S]{1,220}?)(?:之规定|规定)", compact)
+    clause_match = _first(r"根据([\s\S]{1,220}?)(?:之规定|规定)", compact)
     clause = clause_match.group(1) if clause_match else compact
     patterns = (
         r"《[^》]{1,100}》第[一二三四五六七八九十0-9]+条(?:第[（(]?[一二三四五六七八九十0-9]+[）)]?项)?",
-        r"第\\s*\\d+(?:[.．]\\d+){1,3}\\s*条(?:第\\s*[（(]?[一二三四五六七八九十0-9]+[）)]?\\s*项)?",
+        r"第\s*\\d+(?:[.．]\\d+){1,3}\s*条(?:第\s*[（(]?[一二三四五六七八九十0-9]+[）)]?\s*项)?",
     )
     found = []
     for pattern in patterns:
@@ -43,7 +43,7 @@ def _extract_legal_basis(compact: str) -> str | None:
             if value and value not in found:
                 found.append(value)
     if not found:
-        legacy = _first(r"第\\s*4\\s*[.．]\\s*5\\s*[.．]\\s*1\\s*条\\s*第\\s*[（(]?\\s*[一二三四五六七八九十0-9]+\\s*[）)]?\\s*项", compact)
+        legacy = _first(r"第\s*4\s*[.．]\s*5\s*[.．]\s*1\s*条\s*第\s*[（(]?\s*[一二三四五六七八九十0-9]+\s*[）)]?\s*项", compact)
         return _clean(legacy.group(0)) if legacy else None
     return "；".join(found)
 
