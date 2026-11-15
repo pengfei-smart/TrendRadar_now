@@ -116,7 +116,7 @@ def build_neeq_termination_batch_reconciliation(
             short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
             comparable_names = set(candidate_names) | short_names
             name_match_type = _classify_name_match({notice_name, notice_short}, comparable_names) if refs else "no_candidate_reference"
-            name_match = name_match_type in ("exact_name_match", "delisted_display_name")
+            name_match = (name_match_type in ("exact_name_match", "delisted_display_name")) if refs else None
             issues = []
             if not refs:
                 issues.append("candidate_absent_from_result_manifest")
@@ -181,7 +181,7 @@ def build_neeq_termination_batch_reconciliation(
             candidate_names = {_name(row.get("company_name")) for row in refs if _name(row.get("company_name"))}
             comparable_names = candidate_names | short_names
             name_match_type = _classify_name_match({expected_short}, comparable_names)
-            name_match = name_match_type in ("exact_name_match", "delisted_display_name")
+            name_match = (name_match_type in ("exact_name_match", "delisted_display_name")) if refs else None
             memberships.append({
                 "security_code": code,
                 "company_name": identity.get("company_name"),
