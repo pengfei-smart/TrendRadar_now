@@ -95,9 +95,9 @@ def _extract_html_table_identities(source: str) -> list[dict[str, str]]:
     """Extract code/name pairs from one HTML table text section."""
     found: list[dict[str, str]] = []
     seen: set[str] = set()
-    lines = [re.sub(r"\\s+", "", line.strip()) for line in source.splitlines() if line.strip()]
+    lines = [re.sub(r"\s+", "", line.strip()) for line in source.splitlines() if line.strip()]
     for index, line in enumerate(lines):
-        code_match = re.fullmatch(r"(\\d{6})", line)
+        code_match = re.fullmatch(r"(\d{6})", line)
         if not code_match:
             continue
         code = code_match.group(1)
@@ -106,7 +106,7 @@ def _extract_html_table_identities(source: str) -> list[dict[str, str]]:
         short = None
         if index + 1 < len(lines):
             next_line = lines[index + 1]
-            if re.fullmatch(r"[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and len(re.findall(r"[\\u4e00-\\u9fff]", next_line)) >= 2 and not re.search(r"\\d{4}", next_line) and next_line not in ("主办券商", "证券简称"):
+            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and len(re.findall(r"[\u4e00-\u9fff]", next_line)) >= 2 and not re.search(r"\d{4}", next_line) and next_line not in ("主办券商", "证券简称"):
                 short = next_line
         if short is None:
             continue
@@ -125,7 +125,7 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
     found: list[dict[str, str]] = []
     seen: set[str] = set()
     identity_pattern = re.compile(
-        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\\d{6})"
+        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
     )
     for match in identity_pattern.finditer(compact):
         code = match.group("code")
@@ -135,9 +135,9 @@ def _extract_identities(compact: str, original: str, *, table_source: str | None
         boundaries = [prefix.rfind(token) + len(token) for token in ("号", "公告", "决定", "终止")]
         boundary = max(boundaries)
         name_part = prefix[boundary:]
-        name_part = re.sub(r"^.*?\\d(?=[\\u4e00-\\u9fff])", "", name_part)
+        name_part = re.sub(r"^.*?\d(?=[\u4e00-\u9fff])", "", name_part)
         name_match = re.search(
-            r"(?P<name>[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
+            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
             name_part,
         )
         company_name = _clean(name_match.group("name")) if name_match else None
@@ -165,7 +165,7 @@ def _select_decision_table_scope(original: str) -> tuple[str, str]:
     termination notices.
     """
     marker_pattern = re.compile(
-        r"(?:附表\\s*[：:]?\\s*)?2\\s*[.．、]?\\s*(?:于)?20\\d{2}年"
+        r"(?:附表\s*[：:]?\s*)?2\s*[.．、]?\s*(?:于)?20\d{2}年"
     )
     matches = list(marker_pattern.finditer(original))
     if not matches:
