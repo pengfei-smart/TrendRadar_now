@@ -28,12 +28,28 @@ def _first(pattern: str, text: str, flags: int = re.I) -> re.Match | None:
     return re.search(pattern, text, flags)
 
 
-def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | None, bool]:
-    legal_match = _first(
-        r"第\s*4\s*[.．]\s*5\s*[.．]\s*1\s*条\s*第\s*[（(]?\s*[一二三四五六七八九十0-9]+\s*[）)]?\s*项",
-        compact,
+def _extract_legal_basis(compact: str) -> str | None:
+    """Extract legal citations from the operative '根据...规定' clause."""
+    clause_match = _first(r"根据([\\s\\S]{1,220}?)(?:之规定|规定)", compact)
+    clause = clause_match.group(1) if clause_match else compact
+    patterns = (
+        r"《[^》]{1,100}》第[一二三四五六七八九十0-9]+条(?:第[（(]?[一二三四五六七八九十0-9]+[）)]?项)?",
+        r"第\\s*\\d+(?:[.．]\\d+){1,3}\\s*条(?:第\\s*[（(]?[一二三四五六七八九十0-9]+[）)]?\\s*项)?",
     )
-    legal_basis = _clean(legal_match.group(0)) if legal_match else None
+    found = []
+    for pattern in patterns:
+        for match in re.finditer(pattern, clause):
+            value = _clean(match.group(0))
+            if value and value not in found:
+                found.append(value)
+    if not found:
+        legacy = _first(r"第\\s*4\\s*[.．]\\s*5\\s*[.．]\\s*1\\s*条\\s*第\\s*[（(]?\\s*[一二三四五六七八九十0-9]+\\s*[）)]?\\s*项", compact)
+        return _clean(legacy.group(0)) if legacy else None
+    return "；".join(found)
+
+
+def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | None, bool]:
+    legal_basis = _extract_legal_basis(compact)
     if "破产清算" in compact:
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
@@ -391,7 +407,12 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         stated_date = _date(stated_match)
 
     reason_match = _first(r"未能按照规定\s*时间披露\s*(.{2,100}?)\s*。?\s*根据", compact)
-    category, legal_basis, deregistered = _classify_termination(compact, _clean(reason_match.group(1)) if reason_match else None)
+    if not reason_match:
+        reason_match = _first(r"((?:不符合|未完成|未达到)[^。；;，,]{0,40}(?:整改要求|自查整改要求|整改条件))", compact)
+    if not reason_match:
+        reason_match = _first(r"因([^。；;]{2,80}?)(?:，|。|；|根据)", compact)
+    reason = _clean(reason_match.group(1)) if reason_match else None
+    category, legal_basis, deregistered = _classify_termination(compact, reason)
 
     signature_lines = [line for line in block.splitlines() if line.strip()][-6:]
     signature_text = "".join(re.sub(r"\s+", "", line) for line in signature_lines)
@@ -420,7 +441,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         "stated_termination_date": stated_date,
         "suspension_date": _date(suspension_match),
         "announcement_date": announcement_date,
-        "termination_reason": _clean(reason_match.group(1)) if reason_match else None,
+        "termination_reason": reason,
         "termination_reason_category": category,
         "termination_legal_basis": legal_basis,
         "conditional_termination": conditional,
@@ -516,7 +537,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         if context_table:
             contextual_identities.extend(_extract_html_table_identities(context_table))
     return {
-        "parser": "neeq_termination_notice_parser_v10",
+        "parser": "neeq_termination_notice_parser_v11",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
         "contextual_identity_count": len(contextual_identities),
