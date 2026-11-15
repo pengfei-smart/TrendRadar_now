@@ -383,7 +383,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v11")
         self.assertEqual(result["notice_count"], 2)
         for notice in result["notices"]:
             self.assertEqual(notice["document_number"], "2017-701")
@@ -433,7 +433,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v11")
         self.assertEqual(result["notice_count"], 2)
         self.assertEqual([n["security_code"] for n in result["notices"]], ["832168", "831639"])
         for notice in result["notices"]:
@@ -481,7 +481,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 财达证券
 """
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v11")
         self.assertEqual(result["notice_count"], 2)
         self.assertEqual(
             [notice["security_code"] for notice in result["notices"]],
@@ -506,7 +506,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月12日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v11")
         self.assertEqual(result["notice_count"], 3)
         self.assertEqual(
             [item["security_code"] for item in result["notices"]],
@@ -572,7 +572,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 
     def test_report_metadata_matches_v9_parser(self):
         report = build_neeq_notice_review_report({"tasks": []}, {"results": {}}, lambda name: "")
-        self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v11")
 
 
     def test_v11_extracts_rectification_reason_and_multiple_operating_legal_bases(self):
