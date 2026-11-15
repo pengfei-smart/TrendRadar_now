@@ -318,7 +318,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 2019年7月5日
 """ + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v7")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v8")
         self.assertEqual(result["notice_count"], 54)
         self.assertEqual(result["notices"][0]["document_number"], "2019-985")
         self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
@@ -383,7 +383,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v7")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v8")
         self.assertEqual(result["notice_count"], 2)
         for notice in result["notices"]:
             self.assertEqual(notice["document_number"], "2017-701")
@@ -433,7 +433,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 全国中小企业股份转让系统有限责任公司
 2017年12月15日"""
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v7")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v8")
         self.assertEqual(result["notice_count"], 2)
         self.assertEqual([n["security_code"] for n in result["notices"]], ["832168", "831639"])
         for notice in result["notices"]:
@@ -458,6 +458,43 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 1"""
         notice = parse_neeq_termination_notice_text(text)["notices"][0]
         self.assertIsNone(notice["document_number"])
+
+
+    def test_v8_separates_background_appendix_from_actual_decision_appendix(self):
+        text = """股转系统公告
+股转系统公告〔2019〕984号
+截至2019年6月28日，共有330家公司未披露2018年年度报告，详见附表1。对其中46家公司作出终止挂牌决定，详见附表2。
+附表：1．未在2019年6月28日前披露2018年年度报告的公司名单
+序号
+430166
+一正启源
+东北证券
+430415
+长天科技
+东北证券
+附表2．于2019年7月1日作出终止其股票挂牌决定的公司名单
+序号
+830919
+飞达股份
+申万宏源
+831528
+尚真新材
+财达证券
+"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v8")
+        self.assertEqual(result["notice_count"], 2)
+        self.assertEqual(
+            [notice["security_code"] for notice in result["notices"]],
+            ["830919", "831528"],
+        )
+        self.assertEqual(result["contextual_identity_count"], 2)
+        self.assertEqual(
+            [identity["security_code"] for identity in result["contextual_identities"]],
+            ["430166", "430415"],
+        )
+        self.assertTrue(all(n["review_status"] if "review_status" in n else True for n in result["notices"]))
+
 
 
 if __name__ == "__main__":
