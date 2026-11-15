@@ -38,7 +38,7 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
-    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "不符合自查整改条件", "不符合自查整改", "未完成整改")):
+    elif any(term in compact for term in ("不符合整改", "不符合自查整改", "未完成整改")):
         category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
@@ -54,37 +54,43 @@ def _extract_document_number(document_text: str) -> str | None:
     """Extract a notice number from the opening header, never from body citations."""
     lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
-    # Keep document-number discovery close to the opening header. A sponsor
-    # notice may cite older 股转系统公告 numbers much later in its body.
     header_lines = lines[:8]
+    header = "".join(header_lines[:4])
 
-    if header_lines and "股转系统公告" in header_lines[0]:
-        for index, line in enumerate(header_lines[:-1]):
-            if not re.fullmatch(r"20\d{2}", line):
-                continue
-            serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
-            if serial_match:
-                return f"{line}-{serial_match.group(1)}"
+    # Official notices may put the year and serial on adjacent opening lines.
+    # Accept this only at the start, before any body citations can occur.
+    for index in range(min(3, len(header_lines) - 1)):
+        year_match = re.fullmatch(r"(20\d{2})", header_lines[index])
+        serial_match = re.fullmatch(r"(\d{1,5})(?:号)?", header_lines[index + 1])
+        if year_match and serial_match:
+            return f"{year_match.group(1)}-{serial_match.group(1)}"
+
+    # Bracketed system notice number: require the marker in the opening header.
+    if "股转系统公告" in header:
+        bracketed = re.search(
+            r"股转系统公告[：:]?[〔［\[]\s*(20\d{2})\s*[〕］\]]\s*(\d{1,5})(?:号)?",
+            header,
+        )
+        if bracketed:
+            return f"{bracketed.group(1)}-{bracketed.group(2)}"
+        compact_number = re.search(
+            r"股转系统公告[：:]?\s*(20\d{2})\s*(\d{1,5})(?:号)?",
+            header,
+        )
+        if compact_number:
+            return f"{compact_number.group(1)}-{compact_number.group(2)}"
 
     for line in header_lines:
-        # A bracketed year/serial is only a document number when explicitly
-        # labelled as an announcement number, not a cited regulatory circular.
         if "公告编号" in line:
-            bracketed = re.search(r"[〔［\[]?(20\d{2})[〕］\]](\d{1,5})(?:号)?", line)
+            labelled = re.search(r"公告编号[：:]?(20\d{2})[-—–](\d{1,5})", line)
+            if labelled:
+                return f"{labelled.group(1)}-{labelled.group(2)}"
+            bracketed = re.search(r"公告编号[：:]?[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?", line)
             if bracketed:
                 return f"{bracketed.group(1)}-{bracketed.group(2)}"
 
-        conventional = re.search(r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–](\d{1,5})(?:号)?", line)
-        if conventional and ("公告编号" in line or "股转系统公告" in line):
-            return f"{conventional.group(1)}-{conventional.group(2)}"
-
-        labelled = re.search(r"股转系统公告[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?", line)
-        if labelled:
-            return f"{labelled.group(1)}-{labelled.group(2)}"
-
-    compact_header = "".join(header_lines[:4])
-    # Keep v9's bounded compact-PDF pattern; do not join arbitrary body lines.
-    compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
+    # Legacy PDF header: "-1-2021 666号" or "-1-2021666公司名称".
+    compact_match = re.search(r"-\d+-(20\d{2})\s*(\d{3,5})(?:号|(?=[\u4e00-\u9fff]))", header)
     if compact_match:
         return f"{compact_match.group(1)}-{compact_match.group(2)}"
     return None
@@ -265,12 +271,12 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     # Do not let “决定自/决定于” consume a decision or suspension date
     # when a later date in the same sentence is the actual termination date.
     planned_match = _first(
-        r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
+        r"(?:公司)?股票将于" + _DATE + r"起在全国中小企业股份转让系统终止挂牌",
         date_compact,
     )
     if not planned_match:
         planned_match = _first(
-            r"股票(?:将)?于\\s*" + _DATE + r"\\s*起?在全国中小企业股份转让系统终止挂牌",
+            r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
             date_compact,
         )
     planned_date = _date(planned_match)
