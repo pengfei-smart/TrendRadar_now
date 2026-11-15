@@ -15,6 +15,7 @@ def main() -> int:
     parser.add_argument("--start-date", required=True, help="开始日期 YYYY-MM-DD")
     parser.add_argument("--end-date", required=True, help="结束日期 YYYY-MM-DD")
     parser.add_argument("--keyword", default="", help="可选关键词")
+    parser.add_argument("--company-code", default="", help="可选六位证券代码，使用接口 companyCd 精确筛选")
     parser.add_argument("--page", type=int, default=0, help="零起始页码，默认 0")
     parser.add_argument("--market-layer", choices=("0", "1", "3"), default="3")
     parser.add_argument("--omit-date-filter", action="store_true", help="对照实验：不向接口发送 startTime/endTime")
@@ -27,6 +28,7 @@ def main() -> int:
             start_date=args.start_date,
             end_date=args.end_date,
             keyword=args.keyword,
+            company_code=args.company_code,
             page=args.page,
             market_layer=args.market_layer,
             omit_date_filter=args.omit_date_filter,
@@ -57,6 +59,8 @@ def main() -> int:
         "request_count": result["request_count"],
         "request_page": result["request_page"],
         "date_filter_omitted": result["date_filter_omitted"],
+        "company_code": args.company_code,
+        "company_code_filter_verified": result["company_code_filter_verified"],
         "notice_type": args.notice_type,
         "disclosure_type": args.disclosure_type,
         "page_number": result["page_number"],
