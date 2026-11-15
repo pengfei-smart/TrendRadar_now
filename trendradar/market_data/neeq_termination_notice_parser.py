@@ -176,38 +176,64 @@ def _select_decision_table_scope(original: str) -> tuple[str, str]:
 
 def _parse_shared_fields(block: str) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
+    # PDF text layers may insert page markers (for example "-2-") inside a
+    # date. Remove only isolated page-number tokens before date recognition.
+    date_compact = re.sub(r"(?<!\d)-\d+-(?!\d)", "", compact)
     number = _extract_document_number(block)
     decision_match = _first(
         r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,120}?作出终止其股票\s*挂牌的决定",
-        compact,
+        date_compact,
     )
     if not decision_match:
         # 批量公告可写作“我司决定自YYYY年M月D日对……作出终止决定”。
         decision_match = _first(
             r"我司决定自\s*" + _DATE + r"\s*对[\s\S]{1,180}?作出终止其股票\s*挂牌的决定",
-            compact,
+            date_compact,
         )
-    planned_match = _first(r"将自\s*" + _DATE + r"\s*起终止其股票\s*挂牌", compact)
-    suspension_match = _first(r"(?:于|自)\s*" + _DATE + r"\s*对[\s\S]{0,100}?暂停转让", compact)
-    announcement_match = _first(r"全国中小企业股份转让系统有限责任公司\s*" + _DATE, compact)
+    announcement_match = _first(
+        r"(?:全国中小企业股份转让系统有限责任公司|全国股转公司)\s*" + _DATE,
+        date_compact,
+    )
     announcement_date = _date(announcement_match)
+
+    planned_match = _first(r"(?:将自|自)\s*" + _DATE + r"\s*起终止其股票\s*挂牌", date_compact)
+    planned_date = _date(planned_match)
+    if not planned_date:
+        short_planned_match = _first(
+            r"(\d{1,2})月(\d{1,2})日起终止[^。]{0,40}?(?:股票挂牌|挂牌)",
+            date_compact,
+        )
+        if short_planned_match and announcement_date:
+            try:
+                planned_date = datetime(
+                    int(announcement_date[:4]),
+                    int(short_planned_match.group(1)),
+                    int(short_planned_match.group(2)),
+                ).date().isoformat()
+            except ValueError:
+                planned_date = None
+
+    suspension_match = _first(
+        r"(?:于|自)\s*" + _DATE + r"\s*对[\s\S]{0,100}?暂停转让",
+        date_compact,
+    )
 
     stated_match = _first(
         r"(?:决定自|决定于|自)\s*" + _DATE + r"\s*起?终止(?:其|上述)?(?:公司)?(?:的)?股票(?:挂牌)?",
-        compact,
+        date_compact,
     )
     if not stated_match:
         # Older notices may omit "自" and/or the year, e.g. "12月26日起终止上述公司股票挂牌".
         full_event_match = _first(
             _DATE + r"(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
-            compact,
+            date_compact,
         )
         if full_event_match:
             stated_date = _date(full_event_match)
         else:
             short_match = _first(
                 r"(\d{1,2})月(\d{1,2})日(?:起)?终止[^。]{0,30}?(?:股票挂牌|挂牌)",
-                compact,
+                date_compact,
             )
             if short_match and announcement_date:
                 try:
@@ -235,7 +261,7 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     return {
         "document_number": number,
         "decision_date": _date(decision_match),
-        "planned_termination_date": _date(planned_match),
+        "planned_termination_date": planned_date,
         "stated_termination_date": stated_date,
         "suspension_date": _date(suspension_match),
         "announcement_date": announcement_date,
@@ -457,7 +483,7 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
 
     return {
         "schema_version": 3,
-        "parser_version": "neeq_termination_notice_parser_v8",
+        "parser_version": "neeq_termination_notice_parser_v9",
         "source": "neeq_official_termination_result_list_and_notice_attachments",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
