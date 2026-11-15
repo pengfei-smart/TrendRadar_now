@@ -59,11 +59,11 @@ def _extract_document_number(document_text: str) -> str | None:
     # permits HTML article chrome before the notice number while preventing
     # historical citations inside PDF/body text from becoming the document ID.
     body_start = re.search(
-        r"(?m)^\\s*(?:截至|近期\\s*[，,]|根据|经进一步审查|经审查|我司(?:决定|于)|公司(?:于|已))",
+        r"(?m)^\s*(?:截至|近期\s*[，,]|根据|经进一步审查|经审查|我司(?:决定|于)|公司(?:于|已))",
         document_text,
     )
     header_text = document_text[:body_start.start()] if body_start else document_text
-    lines = [re.sub(r"\\s+", "", line).strip() for line in header_text.splitlines()]
+    lines = [re.sub(r"\s+", "", line).strip() for line in header_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:40]
     header = "".join(header_lines)
@@ -421,7 +421,7 @@ def _parse_notice(block: str, index: int, *, table_source: str | None = None) ->
         identities = [{"company_name": None, "short_name": None, "security_code": None, "identity_source": "unresolved"}]
     # A title must be an actual opening heading line, not a body citation
     # such as “（股转系统公告〔2016〕36号）”.
-    source_lines = [re.sub(r"\\s+", "", line).strip() for line in block.splitlines() if line.strip()]
+    source_lines = [re.sub(r"\s+", "", line).strip() for line in block.splitlines() if line.strip()]
     body_index = next(
         (i for i, line in enumerate(source_lines)
          if re.match(r"(?:截至|近期[，,]|根据|经进一步审查|经审查|我司(?:决定|于)|公司(?:于|已))", line)),
