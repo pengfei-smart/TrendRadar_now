@@ -1,0 +1,629 @@
+{
+  "schema_version": 1,
+  "report_version": "neeq_lifecycle_case_review_v1",
+  "generated_at": "2026-11-15T07:35:49.880220+00:00",
+  "source_register_version": "neeq_historical_evidence_register_v1",
+  "security_codes": [
+    "834502",
+    "834606",
+    "834904"
+  ],
+  "summary": {
+    "security_count": 3,
+    "evidence_record_count": 9,
+    "date_assertion_count": 26,
+    "securities_with_explicit_resumption_evidence": 2,
+    "securities_missing_explicit_resumption_evidence": 1,
+    "securities_with_actual_termination_result_evidence": 0
+  },
+  "cases": [
+    {
+      "security_code": "834502",
+      "company_short_name": "富海银涛",
+      "notice_document_numbers": [
+        "2017-684"
+      ],
+      "evidence_record_count": 3,
+      "date_assertion_count": 11,
+      "evidence_records": [
+        {
+          "evidence_id": "neeq-2017-684-834502-issuer-001",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+          "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+          "file_integrity_status": "sha256_match",
+          "review_status": "evidence_integrity_complete_pending_manual_review",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "834502-2017-042",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+          "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+          "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+          "file_integrity_status": "sha256_match",
+          "review_status": "evidence_integrity_complete_pending_manual_review",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "834502-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "file_integrity_status": "sha256_match",
+          "review_status": "source_metadata_incomplete",
+          "source_authority_status": "pending_manual_source_verification"
+        }
+      ],
+      "timeline": [
+        {
+          "date_value": "2017-12-12",
+          "date_type": "batch_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834502-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "全国股转公司 2017年12月12日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-12",
+          "date_type": "decision_received_date",
+          "date_type_category": "administrative_process",
+          "source_evidence_id": "neeq-2017-684-834502-issuer-001",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+          "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+          "source_quote": "2017年12月12日收到全国中小企业股份转让系统有限责任公司出具的《关于终止深圳市富海银涛资产管理股份有限公司股票挂牌的决定》",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "834502-2017-042",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+          "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+          "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+          "source_quote": "公司于2017年12月13日停牌一日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "834502-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "13日对上述3家公司的股票暂停转让一天",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "neeq-2017-684-834502-issuer-001",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+          "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+          "source_quote": "自2017年12月13日（周三）开市起暂停转让",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-14",
+          "date_type": "company_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834502-2017-042",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+          "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+          "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+          "source_quote": "董事会 2017年12月14日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-14",
+          "date_type": "other_date",
+          "date_type_category": "other",
+          "source_evidence_id": "neeq-2017-684-834502-issuer-001",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+          "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+          "source_quote": "公司暂定的最晚恢复转让日为2017年12月14日",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-14",
+          "date_type": "transfer_resumption_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "834502-2017-042",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+          "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+          "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+          "source_quote": "并于2017年12月14日复牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834502-2017-042",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司终止挂牌风险揭示公告",
+          "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/d4bff474872ab6a626206dea4a586a34.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/resumption_notice_2017-042.pdf",
+          "source_sha256": "d87103a2e8dece8135fbdd7359c22e232fbc4f55c6e11d06a0031325a1f16515",
+          "source_quote": "将于2017年12月21日正式终止挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834502-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "12月21日起终止上述3家公司股票挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "neeq-2017-684-834502-issuer-001",
+          "evidence_type": "issuer_announcement",
+          "source_title": "深圳市富海银涛资产管理股份有限公司重大事项暂停转让公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/5fdda10bb843b4bd_1513085714/%E5%AF%8C%E6%B5%B7%E9%93%B6%E6%B6%9B%3A%E9%87%8D%E5%A4%A7%E4%BA%8B%E9%A1%B9%E6%9A%82%E5%81%9C%E8%BD%AC%E8%AE%A9%E5%85%AC%E5%91%8A.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834502/notice.pdf",
+          "source_sha256": "0276298fb36cde665cc099501f382cf24c3ce519ff142f8a3c45145eac1c8ca4",
+          "source_quote": "公司股票将于2017年12月21日被全国股转公司强制终止挂牌",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        }
+      ],
+      "coverage": {
+        "explicit_transfer_resumption_evidence_found": true,
+        "planned_termination_date_found": true,
+        "actual_termination_result_evidence_found": false,
+        "source_metadata_incomplete_record_count": 1,
+        "file_integrity_problem_count": 0
+      },
+      "review_flags": [
+        {
+          "code": "actual_termination_result_not_corroborated",
+          "severity": "evidence_gap",
+          "message": "已有计划终止日期，但当前登记册未找到官方结果日期或明确的实际法律生效日期证据。"
+        },
+        {
+          "code": "source_metadata_incomplete",
+          "severity": "review_required",
+          "message": "有1条证据记录缺少完整来源元数据，需补充可核验的官方来源信息。"
+        }
+      ],
+      "review_status": "pending_manual_review",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "security_code": "834606",
+      "company_short_name": "拥湾资产",
+      "notice_document_numbers": [
+        "2017-684"
+      ],
+      "evidence_record_count": 3,
+      "date_assertion_count": 7,
+      "evidence_records": [
+        {
+          "evidence_id": "834606-2017-040",
+          "evidence_type": "final_termination_announcement",
+          "source_title": "青岛拥湾资产管理集团股份有限公司关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+          "source_file": "neeq_evidence/拥湾资产_关于公司股票在全国中小企业股份转让系统终止挂牌的公告.pdf",
+          "source_sha256": "6f48bc1648ecb1792d802f76ea1f079b8a1ebc3a4779275b30537d663c6378ea",
+          "file_integrity_status": "sha256_match",
+          "review_status": "evidence_integrity_complete_pending_manual_review",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "834606-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "file_integrity_status": "sha256_match",
+          "review_status": "source_metadata_incomplete",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "neeq-834606-2017-1218-sponsor-risk",
+          "evidence_type": "other_official_document",
+          "source_title": "上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告",
+          "source_url": null,
+          "source_file": "neeq_evidence/拥湾资产_上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告.pdf",
+          "source_sha256": "064321241ad2ec0d453f609445fbda160685aab32b04750babbc3fe411c64a8d",
+          "file_integrity_status": "sha256_match",
+          "review_status": "source_metadata_incomplete",
+          "source_authority_status": "pending_manual_source_verification"
+        }
+      ],
+      "timeline": [
+        {
+          "date_value": "2017-12-12",
+          "date_type": "batch_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834606-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "全国股转公司 2017年12月12日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-12",
+          "date_type": "decision_received_date",
+          "date_type_category": "administrative_process",
+          "source_evidence_id": "834606-2017-040",
+          "evidence_type": "final_termination_announcement",
+          "source_title": "青岛拥湾资产管理集团股份有限公司关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+          "source_file": "neeq_evidence/拥湾资产_关于公司股票在全国中小企业股份转让系统终止挂牌的公告.pdf",
+          "source_sha256": "6f48bc1648ecb1792d802f76ea1f079b8a1ebc3a4779275b30537d663c6378ea",
+          "source_quote": "公司于2017年12月12日收到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "834606-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "13日对上述3家公司的股票暂停转让一天",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-18",
+          "date_type": "company_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "neeq-834606-2017-1218-sponsor-risk",
+          "evidence_type": "other_official_document",
+          "source_title": "上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告",
+          "source_url": null,
+          "source_file": "neeq_evidence/拥湾资产_上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告.pdf",
+          "source_sha256": "064321241ad2ec0d453f609445fbda160685aab32b04750babbc3fe411c64a8d",
+          "source_quote": "公告日期：2017.12.18",
+          "page_number": null,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-20",
+          "date_type": "company_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834606-2017-040",
+          "evidence_type": "final_termination_announcement",
+          "source_title": "青岛拥湾资产管理集团股份有限公司关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+          "source_file": "neeq_evidence/拥湾资产_关于公司股票在全国中小企业股份转让系统终止挂牌的公告.pdf",
+          "source_sha256": "6f48bc1648ecb1792d802f76ea1f079b8a1ebc3a4779275b30537d663c6378ea",
+          "source_quote": "青岛拥湾资产管理集团股份有限公司 董事会 2017年12月20日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834606-2017-040",
+          "evidence_type": "final_termination_announcement",
+          "source_title": "青岛拥湾资产管理集团股份有限公司关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+          "source_file": "neeq_evidence/拥湾资产_关于公司股票在全国中小企业股份转让系统终止挂牌的公告.pdf",
+          "source_sha256": "6f48bc1648ecb1792d802f76ea1f079b8a1ebc3a4779275b30537d663c6378ea",
+          "source_quote": "公司股票将于2017年12月21日起在全国中小企业股份转让系统终止挂牌",
+          "page_number": 1,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834606-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "12月21日起终止上述3家公司股票挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        }
+      ],
+      "coverage": {
+        "explicit_transfer_resumption_evidence_found": false,
+        "planned_termination_date_found": true,
+        "actual_termination_result_evidence_found": false,
+        "source_metadata_incomplete_record_count": 2,
+        "file_integrity_problem_count": 0
+      },
+      "review_flags": [
+        {
+          "code": "explicit_resumption_evidence_not_found",
+          "severity": "evidence_gap",
+          "message": "当前登记册未找到明确的恢复转让日期断言；不得根据暂停时长或下一个交易日推断。"
+        },
+        {
+          "code": "actual_termination_result_not_corroborated",
+          "severity": "evidence_gap",
+          "message": "已有计划终止日期，但当前登记册未找到官方结果日期或明确的实际法律生效日期证据。"
+        },
+        {
+          "code": "source_metadata_incomplete",
+          "severity": "review_required",
+          "message": "有2条证据记录缺少完整来源元数据，需补充可核验的官方来源信息。"
+        }
+      ],
+      "review_status": "pending_manual_review",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "security_code": "834904",
+      "company_short_name": "银纪资产",
+      "notice_document_numbers": [
+        "2017-684"
+      ],
+      "evidence_record_count": 3,
+      "date_assertion_count": 8,
+      "evidence_records": [
+        {
+          "evidence_id": "neeq-2017-684-834904-sponsor-001",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票恢复转让及终止挂牌的风险提示公告",
+          "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201712131065943556_1.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/notice.pdf",
+          "source_sha256": "470665a688827c74a778605f13a40b963219c7d45b050418d6515240ca4e25d2",
+          "file_integrity_status": "sha256_match",
+          "review_status": "evidence_integrity_complete_pending_manual_review",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "834904-2017-12-20-sponsor",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票终止挂牌的提示公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/97451618ded4526a.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/termination_risk_notice_2017-12-20.pdf",
+          "source_sha256": "5f0a35f8fd5ee36738aad11079e8e37478821b7f4d86a7258b78a91beed962ce",
+          "file_integrity_status": "sha256_match",
+          "review_status": "evidence_integrity_complete_pending_manual_review",
+          "source_authority_status": "pending_manual_source_verification"
+        },
+        {
+          "evidence_id": "834904-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "file_integrity_status": "sha256_match",
+          "review_status": "source_metadata_incomplete",
+          "source_authority_status": "pending_manual_source_verification"
+        }
+      ],
+      "timeline": [
+        {
+          "date_value": "2017-12-12",
+          "date_type": "batch_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834904-2017-12-20-sponsor",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票终止挂牌的提示公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/97451618ded4526a.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/termination_risk_notice_2017-12-20.pdf",
+          "source_sha256": "5f0a35f8fd5ee36738aad11079e8e37478821b7f4d86a7258b78a91beed962ce",
+          "source_quote": "股转公司于2017年12月12日发布了《关于对上海银纪资产管理股份有限公司等3家挂牌公司强制终止挂牌的公告》（股转系统公告[2017]684号）",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-12",
+          "date_type": "batch_announcement_date",
+          "date_type_category": "announcement_metadata",
+          "source_evidence_id": "834904-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "全国股转公司 2017年12月12日",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "834904-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "13日对上述3家公司的股票暂停转让一天",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-13",
+          "date_type": "transfer_suspension_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "neeq-2017-684-834904-sponsor-001",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票恢复转让及终止挂牌的风险提示公告",
+          "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201712131065943556_1.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/notice.pdf",
+          "source_sha256": "470665a688827c74a778605f13a40b963219c7d45b050418d6515240ca4e25d2",
+          "source_quote": "公司股票于2017年12月13日暂停交易一天",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-14",
+          "date_type": "transfer_resumption_date",
+          "date_type_category": "trading_status_event",
+          "source_evidence_id": "neeq-2017-684-834904-sponsor-001",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票恢复转让及终止挂牌的风险提示公告",
+          "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201712131065943556_1.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/notice.pdf",
+          "source_sha256": "470665a688827c74a778605f13a40b963219c7d45b050418d6515240ca4e25d2",
+          "source_quote": "银纪资产股票于2017年12月14日（星期四）起恢复转让",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834904-2017-12-20-sponsor",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票终止挂牌的提示公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/97451618ded4526a.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/termination_risk_notice_2017-12-20.pdf",
+          "source_sha256": "5f0a35f8fd5ee36738aad11079e8e37478821b7f4d86a7258b78a91beed962ce",
+          "source_quote": "银纪资产股票于2017年12月21日起终止挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "834904-batch-2017-684",
+          "evidence_type": "other_official_document",
+          "source_title": "全国股转公司关于3家挂牌私募机构终止挂牌的公告（2017-684）",
+          "source_url": null,
+          "source_file": "neeq_historical_evidence/2017-684/shared/batch_announcement_2017-684.pdf",
+          "source_sha256": "aa2bf72eafa6c2c022928cf4184b9cc6bfe52a467dd38a51e10b106e8fcaf10d",
+          "source_quote": "12月21日起终止上述3家公司股票挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "source_metadata_incomplete"
+        },
+        {
+          "date_value": "2017-12-21",
+          "date_type": "planned_termination_date",
+          "date_type_category": "planned_event",
+          "source_evidence_id": "neeq-2017-684-834904-sponsor-001",
+          "evidence_type": "supplementary_termination_notice",
+          "source_title": "万联证券股份有限公司关于上海银纪资产管理股份有限公司股票恢复转让及终止挂牌的风险提示公告",
+          "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201712131065943556_1.pdf",
+          "source_file": "neeq_historical_evidence/2017-684/834904/notice.pdf",
+          "source_sha256": "470665a688827c74a778605f13a40b963219c7d45b050418d6515240ca4e25d2",
+          "source_quote": "2017年12月21日起终止挂牌",
+          "page_number": 2,
+          "assertion_review_status": "pending_manual_review",
+          "evidence_review_status": "evidence_integrity_complete_pending_manual_review"
+        }
+      ],
+      "coverage": {
+        "explicit_transfer_resumption_evidence_found": true,
+        "planned_termination_date_found": true,
+        "actual_termination_result_evidence_found": false,
+        "source_metadata_incomplete_record_count": 1,
+        "file_integrity_problem_count": 0
+      },
+      "review_flags": [
+        {
+          "code": "actual_termination_result_not_corroborated",
+          "severity": "evidence_gap",
+          "message": "已有计划终止日期，但当前登记册未找到官方结果日期或明确的实际法律生效日期证据。"
+        },
+        {
+          "code": "source_metadata_incomplete",
+          "severity": "review_required",
+          "message": "有1条证据记录缺少完整来源元数据，需补充可核验的官方来源信息。"
+        }
+      ],
+      "review_status": "pending_manual_review",
+      "confirmed_legal_fact": false,
+      "formal_lifecycle_write_allowed": false
+    }
+  ],
+  "safety": {
+    "network_downloads": 0,
+    "database_writes": 0,
+    "formal_lifecycle_writes": 0,
+    "legal_fact_confirmations": 0,
+    "automatic_date_inferences": 0,
+    "read_only": true,
+    "manual_review_required": true
+  }
+}
