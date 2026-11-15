@@ -66,6 +66,36 @@ class NEEQHistoricalEvidenceRegisterTests(unittest.TestCase):
         self.assertEqual(item["date_assertions"][0]["date_value"], "2017-12-12")
         self.assertFalse(item["confirmed_legal_fact"])
 
+    def test_accepts_distinct_transfer_suspension_and_resumption_date_types(self):
+        assertions = [
+            {
+                "date_type": "transfer_suspension_date",
+                "date_value": "2017-12-13",
+                "source_quote": "公司股票自2017年12月13日（周三）开市起暂停转让",
+                "page_number": 1,
+            },
+            {
+                "date_type": "transfer_resumption_date",
+                "date_value": "2017-12-14",
+                "source_quote": "银纪资产股票于2017年12月14日（星期四）起恢复转让",
+                "page_number": 2,
+            },
+        ]
+        result = build_neeq_historical_evidence_register(
+            self.tracker(), [self.record(date_assertions=assertions)], evidence_root=self.root
+        )
+        item = result["dossiers"][0]["evidence_records"][0]
+        self.assertTrue(all(row["date_type_valid"] for row in item["date_assertions"]))
+        self.assertEqual(item["review_status"], "evidence_integrity_complete_pending_manual_review")
+
+    def test_source_document_number_is_optional_for_un_numbered_sponsor_notice(self):
+        result = build_neeq_historical_evidence_register(
+            self.tracker(), [self.record(source_document_number=None)], evidence_root=self.root
+        )
+        item = result["dossiers"][0]["evidence_records"][0]
+        self.assertEqual(item["review_status"], "evidence_integrity_complete_pending_manual_review")
+        self.assertIsNone(item["source_document_number"])
+
     def test_detects_declared_sha256_mismatch(self):
         result = build_neeq_historical_evidence_register(
             self.tracker(), [self.record(source_sha256="0" * 64)], evidence_root=self.root
