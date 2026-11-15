@@ -49,40 +49,43 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
 
 
 def _extract_document_number(document_text: str) -> str | None:
-    """Extract a notice number only from the opening header lines.
+    """Extract a notice number from the opening header, never from body citations.
 
-    PDF text layers may put the current number on two separate lines
-    (year, then serial). Body citations are deliberately outside this window.
+    NEEQ text layers use several layouts: a bracketed number on one line,
+    year and serial on adjacent lines, or a compact PDF page header.
     """
-    lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
+    lines = [re.sub(r"\\s+", "", line).strip() for line in document_text.splitlines()]
     lines = [line for line in lines if line]
     header_lines = lines[:8]
-    header = "\n".join(header_lines)
 
-    # Standard HTML/text headers and one-line PDF header forms.
-    patterns = (
-        r"[〔［\[]?(20\d{2})[〕］\]]?[-—–](\d{1,5})(?:号)?",
-        r"股转系统公告[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?",
-        r"(?:^|[^0-9])(?:-\d+-)?(20\d{2})[-—–](\d{1,5})(?:号)?",
-    )
-    for pattern in patterns:
-        match = re.search(pattern, header)
-        if match:
-            return f"{match.group(1)}-{match.group(2)}"
-
-    # Scanned PDF text-layer layout: year and serial occupy adjacent lines.
-    # Require at least three serial digits to avoid treating date fragments
-    # and low-quality numeric extraction noise as an announcement number.
+    # Prefer the adjacent year/serial pair in the actual opening header.
+    # This must run before inline matching so a later body citation such as
+    # 2016-36 cannot override a split header such as 2017 / 701.
     for index, line in enumerate(header_lines[:-1]):
-        if not re.fullmatch(r"20\d{2}", line):
+        if not re.fullmatch(r"20\\d{2}", line):
             continue
-        serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
+        serial_match = re.fullmatch(r"(\\d{1,5})(?:号)?", header_lines[index + 1])
         if serial_match:
             return f"{line}-{serial_match.group(1)}"
 
+    # Bracketed NEEQ style: 股转系统公告〔2022〕106号 or 〔2022〕106号.
+    for line in header_lines:
+        bracketed = re.search(r"[〔［\\[]?(20\\d{2})[〕］\\]](\\d{1,5})(?:号)?", line)
+        if bracketed:
+            return f"{bracketed.group(1)}-{bracketed.group(2)}"
+
+        # Conventional one-line forms, including -1-2021-666号.
+        conventional = re.search(r"(?:^|[^0-9])(?:-\\d+-)?(20\\d{2})[-—–](\\d{1,5})(?:号)?", line)
+        if conventional:
+            return f"{conventional.group(1)}-{conventional.group(2)}"
+
+        labelled = re.search(r"股转系统公告[〔［\\[]?(20\\d{2})[〕］\\]]?(\\d{1,5})(?:号)?", line)
+        if labelled:
+            return f"{labelled.group(1)}-{labelled.group(2)}"
+
     # Compact page-header form such as "-1-2021666公司名称".
     compact_header = "".join(header_lines)
-    compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
+    compact_match = re.search(r"-\\d+-(20\\d{2})(\\d{3,5})(?=[\\u4e00-\\u9fff])", compact_header)
     if compact_match:
         return f"{compact_match.group(1)}-{compact_match.group(2)}"
     return None
