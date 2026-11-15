@@ -408,7 +408,7 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         if context_table:
             contextual_identities.extend(_extract_html_table_identities(context_table))
     return {
-        "parser": "neeq_termination_notice_parser_v9",
+        "parser": "neeq_termination_notice_parser_v10",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
         "contextual_identity_count": len(contextual_identities),
@@ -551,7 +551,7 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
 
     return {
         "schema_version": 3,
-        "parser_version": "neeq_termination_notice_parser_v9",
+        "parser_version": "neeq_termination_notice_parser_v10",
         "source": "neeq_official_termination_result_list_and_notice_attachments",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
