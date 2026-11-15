@@ -91,42 +91,13 @@ def _extract_document_number(document_text: str) -> str | None:
     return None
 
 
-def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
-    """Extract every structured company identity and simple HTML table row."""
+def _extract_html_table_identities(source: str) -> list[dict[str, str]]:
+    """Extract code/name pairs from one HTML table text section."""
     found: list[dict[str, str]] = []
     seen: set[str] = set()
-    identity_pattern = re.compile(
-        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\d{6})"
-    )
-    for match in identity_pattern.finditer(compact):
-        code = match.group("code")
-        if code in seen:
-            continue
-        prefix = compact[:match.start()]
-        # Start after the latest notice/header/title boundary. Some historical PDF
-        # text layers concatenate the page number directly with the legal name.
-        boundaries = [prefix.rfind(token) + len(token) for token in ("号", "公告", "决定", "终止")]
-        boundary = max(boundaries)
-        name_part = prefix[boundary:]
-        name_part = re.sub(r"^.*?\d(?=[\u4e00-\u9fff])", "", name_part)
-        name_match = re.search(
-            r"(?P<name>[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
-            name_part,
-        )
-        company_name = _clean(name_match.group("name")) if name_match else None
-        seen.add(code)
-        found.append({
-            "company_name": company_name,
-            "short_name": _clean(match.group("short")),
-            "security_code": code,
-            "identity_source": "structured_identity_text",
-        })
-
-    # HTML text extraction may flatten table cells onto separate lines or keep
-    # several cells on one line. Support both code/name line pairs and row triples.
-    lines = [re.sub(r"\s+", "", line.strip()) for line in original.splitlines() if line.strip()]
+    lines = [re.sub(r"\\s+", "", line.strip()) for line in source.splitlines() if line.strip()]
     for index, line in enumerate(lines):
-        code_match = re.fullmatch(r"(\d{6})", line)
+        code_match = re.fullmatch(r"(\\d{6})", line)
         if not code_match:
             continue
         code = code_match.group(1)
@@ -135,7 +106,7 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
         short = None
         if index + 1 < len(lines):
             next_line = lines[index + 1]
-            if re.fullmatch(r"[\u4e00-\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and len(re.findall(r"[\u4e00-\u9fff]", next_line)) >= 2 and not re.search(r"\d{4}", next_line) and next_line not in ("主办券商", "证券简称"):
+            if re.fullmatch(r"[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,20}", next_line) and len(re.findall(r"[\\u4e00-\\u9fff]", next_line)) >= 2 and not re.search(r"\\d{4}", next_line) and next_line not in ("主办券商", "证券简称"):
                 short = next_line
         if short is None:
             continue
@@ -147,6 +118,60 @@ def _extract_identities(compact: str, original: str) -> list[dict[str, str]]:
             "identity_source": "html_attachment_table",
         })
     return found
+
+
+def _extract_identities(compact: str, original: str, *, table_source: str | None = None) -> list[dict[str, str]]:
+    """Extract structured identities and rows only from the selected decision table."""
+    found: list[dict[str, str]] = []
+    seen: set[str] = set()
+    identity_pattern = re.compile(
+        r"[（(]证券简称[：:](?P<short>[^；;，,）)]+)[；;，,]证券代码[：:](?P<code>\\d{6})"
+    )
+    for match in identity_pattern.finditer(compact):
+        code = match.group("code")
+        if code in seen:
+            continue
+        prefix = compact[:match.start()]
+        boundaries = [prefix.rfind(token) + len(token) for token in ("号", "公告", "决定", "终止")]
+        boundary = max(boundaries)
+        name_part = prefix[boundary:]
+        name_part = re.sub(r"^.*?\\d(?=[\\u4e00-\\u9fff])", "", name_part)
+        name_match = re.search(
+            r"(?P<name>[\\u4e00-\\u9fffA-Za-z0-9（）()·-]{2,50}?(?:股份有限公司|有限责任公司|有限公司))$",
+            name_part,
+        )
+        company_name = _clean(name_match.group("name")) if name_match else None
+        seen.add(code)
+        found.append({
+            "company_name": company_name,
+            "short_name": _clean(match.group("short")),
+            "security_code": code,
+            "identity_source": "structured_identity_text",
+        })
+
+    for identity in _extract_html_table_identities(table_source if table_source is not None else original):
+        if identity["security_code"] not in seen:
+            seen.add(identity["security_code"])
+            found.append(identity)
+    return found
+
+
+def _select_decision_table_scope(original: str) -> tuple[str, str]:
+    """Separate a background appendix from the later table listing actual decisions.
+
+    Some NEEQ batch announcements first list all affected/non-compliant issuers,
+    then provide a smaller appendix containing only issuers for which a
+    termination decision was made. The earlier list is context, not a set of
+    termination notices.
+    """
+    marker_pattern = re.compile(
+        r"(?:附表\\s*[：:]?\\s*)?2\\s*[.．、]?\\s*(?:于)?20\\d{2}年"
+    )
+    matches = list(marker_pattern.finditer(original))
+    if not matches:
+        return original, ""
+    marker = matches[-1]
+    return original[marker.end():], original[:marker.start()]
 
 
 def _parse_shared_fields(block: str) -> dict[str, Any]:
@@ -222,10 +247,10 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         "notice_states_company_deregistered": deregistered,
     }
 
-def _parse_notice(block: str, index: int) -> dict[str, Any]:
+def _parse_notice(block: str, index: int, *, table_source: str | None = None) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
     shared = _parse_shared_fields(block)
-    identities = _extract_identities(compact, block)
+    identities = _extract_identities(compact, block, table_source=table_source)
     if not identities:
         identities = [{"company_name": None, "short_name": None, "security_code": None, "identity_source": "unresolved"}]
     title_match = _first(r"([^\n]{4,160}(?:公告|决定))", block)
@@ -267,12 +292,18 @@ def parse_neeq_termination_notice_text(text: str) -> dict:
         blocks = [text[start:(starts[pos + 1] if pos + 1 < len(starts) else len(text))]
                   for pos, start in enumerate(starts)] if starts else [text]
     notices = []
+    contextual_identities = []
     for index, block in enumerate(blocks):
-        notices.extend(_parse_notice(block, index))
+        decision_table, context_table = _select_decision_table_scope(block)
+        notices.extend(_parse_notice(block, index, table_source=decision_table))
+        if context_table:
+            contextual_identities.extend(_extract_html_table_identities(context_table))
     return {
-        "parser": "neeq_termination_notice_parser_v7",
+        "parser": "neeq_termination_notice_parser_v8",
         "notice_count": len(notices),
         "source_document_block_count": len(blocks),
+        "contextual_identity_count": len(contextual_identities),
+        "contextual_identities": contextual_identities,
         "notices": notices,
     }
 
@@ -396,6 +427,8 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
         item = crosscheck_neeq_notice_task(parsed, task, record)
         item["notices"] = parsed["notices"]
         item["source_document_block_count"] = parsed["source_document_block_count"]
+        item["contextual_identity_count"] = parsed.get("contextual_identity_count", 0)
+        item["contextual_identities"] = parsed.get("contextual_identities", [])
         items.append(item)
     comparisons = [c for item in items for c in item.get("comparisons", [])]
     parsed_notices = [n for item in items for n in item.get("notices", [])]
@@ -409,7 +442,7 @@ def build_neeq_notice_review_report(manifest: dict, download_state: dict, text_l
 
     return {
         "schema_version": 3,
-        "parser_version": "neeq_termination_notice_parser_v7",
+        "parser_version": "neeq_termination_notice_parser_v8",
         "source": "neeq_official_termination_result_list_and_notice_attachments",
         "generated_at": generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "attachment_count": len(items),
