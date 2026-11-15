@@ -641,5 +641,75 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(notice["announcement_date"], "2017-12-20")
 
 
+    def test_v10_parses_actual_extracted_834606_issuer_documents(self):
+        sponsor = """上海华信证券有限责任公司
+关于青岛拥湾资产管理集团股份有限公司的风险提示公告
+
+上海华信证券有限责任公司（以下简称“主办券商” ）作为青岛拥湾资产管理集团股份有限公司 （以下简称 “拥湾资产”、或“公司”） 的主办券商。根据全国中小企业股份转让系统有限责任公司于
+2017 年 10 月 27 日发布《关于挂牌私募机构自查整改相关问题的通知》（股转系统发〔2017〕1394 号），要求已挂牌的私募机构按照股转系统于2016 年5 月 27 日下发的 《关于金融类企业挂牌融资有关事项的通知》的（股转系统公告〔2016〕36 号，以下简称《通知》）要求进行自查。
+根据股转系统发布的《关于挂牌私募机构自查整改相关问题的通知》中提出的“全国股转公司对未提交、在指定披露日未披露自查整改报告或虽提交自查整改报告但经审查不符合整改条件的挂牌私募机构，将予以摘牌”。因此，拥湾资产公司股票将被全国股转系统强制摘牌，终止挂牌后，仍应严格遵守相关规定。
+上海华信证券有限责任公司
+2017 年12 月 18 日"""
+        risk = """公告编号：2017-035
+1
+
+证券代码：834606 证券简称：拥湾资产 主办券商：华信证券
+
+青岛拥湾资产管理集团股份有限公司
+关于股票被终止挂牌的风险提示性公告
+
+全国中小企业股份转让系统有限责任公司于2017 年 10 月 27 日发布《关于挂牌私募机构自查整改相关问题的通知》（股转系统发〔2017〕1394 号）。
+公司自查结果为不符合《通知》中的第一项和第五项规定，目前已接到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》（股转系统发[2017]1655号文）。按照规定公司已于2017年12月13日停牌，2017年12月14日起恢复转让，恢复转让期为5个工作日到12月20日，12月21日终止挂牌。
+特此公告。
+青岛拥湾资产管理集团股份有限公司
+董事会
+2017 年 12 月18 日"""
+        final_notice = """公告编号：2017-040
+1
+
+证券代码：834606 证券简称：拥湾资产 主办券商：华信证券
+
+青岛拥湾资产管理集团股份有限公司
+关于公司股票在全国中小企业股份转让系统
+终止挂牌的公告
+
+公司于2017 年 12 月 12 日收到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》（股转系统发[2017]1655 号文），公司股票将于2017 年 12 月 21 日起在全国中小企业股份转让系统终止挂牌。
+特此公告。
+
+青岛拥湾资产管理集团股份有限公司
+董事会
+2017 年 12 月20 日"""
+
+        sponsor_notice = parse_neeq_termination_notice_text(sponsor)["notices"][0]
+        self.assertIsNone(sponsor_notice["document_number"])
+        self.assertIsNone(sponsor_notice["security_code"])
+        self.assertEqual(sponsor_notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertEqual(sponsor_notice["short_name"], "拥湾资产")
+        self.assertEqual(sponsor_notice["announcement_date"], "2017-12-18")
+        self.assertEqual(sponsor_notice["document_signature_date"], "2017-12-18")
+
+        risk_notice = parse_neeq_termination_notice_text(risk)["notices"][0]
+        self.assertEqual(risk_notice["document_number"], "2017-035")
+        self.assertEqual(risk_notice["security_code"], "834606")
+        self.assertEqual(risk_notice["short_name"], "拥湾资产")
+        self.assertEqual(risk_notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertIsNone(risk_notice["decision_received_date"])
+        self.assertEqual(risk_notice["suspension_date"], "2017-12-13")
+        self.assertEqual(risk_notice["transfer_resumption_date"], "2017-12-14")
+        self.assertEqual(risk_notice["planned_termination_date"], "2017-12-21")
+        self.assertEqual(risk_notice["stated_termination_date"], "2017-12-21")
+        self.assertEqual(risk_notice["announcement_date"], "2017-12-18")
+
+        final = parse_neeq_termination_notice_text(final_notice)["notices"][0]
+        self.assertEqual(final["document_number"], "2017-040")
+        self.assertEqual(final["security_code"], "834606")
+        self.assertEqual(final["short_name"], "拥湾资产")
+        self.assertEqual(final["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertEqual(final["decision_received_date"], "2017-12-12")
+        self.assertEqual(final["planned_termination_date"], "2017-12-21")
+        self.assertEqual(final["stated_termination_date"], "2017-12-21")
+        self.assertEqual(final["announcement_date"], "2017-12-20")
+
+
 if __name__ == "__main__":
     unittest.main()
