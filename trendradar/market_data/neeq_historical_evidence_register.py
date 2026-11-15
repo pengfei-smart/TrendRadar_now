@@ -9,24 +9,91 @@ from urllib.parse import urlparse
 
 from trendradar.market_data.neeq_followup_evidence_tracker import FOLLOW_UP_EVIDENCE_TYPES
 
-DATE_TYPES = (
-    "batch_announcement_date",
-    "formal_decision_date",
-    "decision_received_date",
-    "reconsideration_application_date",
-    "reconsideration_acceptance_date",
-    "reconsideration_decision_date",
-    "conditional_termination_date",
-    "planned_termination_date",
-    "company_announcement_date",
-    "official_result_delisting_date",
-    "legal_termination_date",
-    "transfer_start_date",
-    "transfer_suspension_date",
-    "transfer_resumption_date",
-    "last_trading_date",
-    "other_date",
-)
+# 日期类型定义只提供分类和审核指引，不代表来源已核验或日期已成为法律事实。
+DATE_TYPE_RULES = {
+    "batch_announcement_date": {
+        "category": "announcement_metadata",
+        "description": "批量公告的发布日期，不等同于个别决定作出日或收到日。",
+        "evidence_guidance": "保留公告原文及发布主体；不得替代formal_decision_date或decision_received_date。",
+    },
+    "formal_decision_date": {
+        "category": "administrative_process",
+        "description": "监管或交易场所正式作出决定的日期。",
+        "evidence_guidance": "需要正式决定文件或可核验的官方决定记录；不得用公司收到决定日期替代。",
+    },
+    "decision_received_date": {
+        "category": "administrative_process",
+        "description": "发行人收到正式决定的日期。",
+        "evidence_guidance": "需要发行人或正式送达记录明确记载收到日期；不得自动推定为决定作出日。",
+    },
+    "reconsideration_application_date": {
+        "category": "administrative_process",
+        "description": "申请复核或复议的日期。",
+        "evidence_guidance": "需要申请文件或官方受理记录明确记载。",
+    },
+    "reconsideration_acceptance_date": {
+        "category": "administrative_process",
+        "description": "复核或复议申请被受理的日期。",
+        "evidence_guidance": "需要官方受理通知或可核验的官方记录。",
+    },
+    "reconsideration_decision_date": {
+        "category": "administrative_process",
+        "description": "复核或复议决定作出的日期。",
+        "evidence_guidance": "需要复核决定原件或官方决定记录。",
+    },
+    "conditional_termination_date": {
+        "category": "planned_event",
+        "description": "满足特定条件后才可能发生的终止日期或条件日期。",
+        "evidence_guidance": "必须保留触发条件；不得当作无条件实际终止日期。",
+    },
+    "planned_termination_date": {
+        "category": "planned_event",
+        "description": "公告或决定中预定、拟定或将于未来发生的终止挂牌日期。",
+        "evidence_guidance": "公告可支持计划日期；若要确认实际结果，另需官方结果记录或其他权威事后证据。",
+    },
+    "company_announcement_date": {
+        "category": "announcement_metadata",
+        "description": "公司公告落款或明确标注的公告日期。",
+        "evidence_guidance": "只表示公告日期，不代表决定日期、停复牌日期或终止生效日期。",
+    },
+    "official_result_delisting_date": {
+        "category": "official_result",
+        "description": "全国股转系统等官方结果名录或结果记录载明的终止挂牌日期。",
+        "evidence_guidance": "需要可追溯的官方结果页面、结果名录或官方接口原始记录；第三方转载不能单独满足。",
+    },
+    "legal_termination_date": {
+        "category": "legal_effective_event",
+        "description": "有权依据明确确认的终止挂牌法律生效日期。",
+        "evidence_guidance": "必须有明确生效表述及足以确认法律效力的权威原始证据；公告中的未来计划日期不得自动升级。",
+    },
+    "transfer_start_date": {
+        "category": "trading_status_event",
+        "description": "股票开始转让或恢复交易安排的起始日期，需结合具体语境。",
+        "evidence_guidance": "需要明确的交易场所或发行人公告；区分开始转让与恢复转让。",
+    },
+    "transfer_suspension_date": {
+        "category": "trading_status_event",
+        "description": "股票暂停转让或停牌生效日期。",
+        "evidence_guidance": "需要明确暂停转让日期或交易场所状态记录；不能仅凭公告发布日期推定。",
+    },
+    "transfer_resumption_date": {
+        "category": "trading_status_event",
+        "description": "股票实际恢复转让或复牌日期。",
+        "evidence_guidance": "需要明确写明恢复转让日期的发行人、主办券商或交易场所公告/记录；不得仅由暂停一天或下一个交易日推断。",
+    },
+    "last_trading_date": {
+        "category": "trading_status_event",
+        "description": "证券最后实际交易日期。",
+        "evidence_guidance": "需要交易场所交易状态或可核验交易记录；不得与暂停日或终止挂牌生效日混同。",
+    },
+    "other_date": {
+        "category": "other",
+        "description": "不属于已定义生命周期日期类型的其他日期。",
+        "evidence_guidance": "必须结合原文和上下文人工解释，不得自动映射为生命周期事实。",
+    },
+}
+
+DATE_TYPES = tuple(DATE_TYPE_RULES)
 
 
 def _clean(value):
@@ -68,15 +135,28 @@ def _date_assertions(rows):
         except ValueError:
             normalized = None
         date_type = _clean(row.get("date_type"))
+        rule = DATE_TYPE_RULES.get(date_type)
+        quote = _clean(row.get("source_quote"))
+        value_valid = normalized is not None
+        type_valid = rule is not None
         result.append({
             "assertion_id": _clean(row.get("assertion_id")) or f"date-{index}",
             "date_type": date_type or None,
+            "date_type_category": rule["category"] if rule else None,
+            "date_type_description": rule["description"] if rule else None,
+            "date_type_evidence_guidance": rule["evidence_guidance"] if rule else None,
             "date_value": normalized,
-            "source_quote": _clean(row.get("source_quote")) or None,
+            "source_quote": quote or None,
             "page_number": row.get("page_number"),
             "section": _clean(row.get("section")) or None,
-            "date_type_valid": date_type in DATE_TYPES,
-            "date_value_valid": normalized is not None,
+            "date_type_valid": type_valid,
+            "date_value_valid": value_valid,
+            "source_quote_present": bool(quote),
+            "assertion_review_status": (
+                "pending_manual_review"
+                if type_valid and value_valid and quote
+                else "date_assertion_incomplete_pending_review"
+            ),
             "review_status": "pending_manual_review",
             "confirmed_legal_fact": False,
             "formal_lifecycle_write_allowed": False,
