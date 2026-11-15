@@ -46,6 +46,16 @@ def _is_formal_decision(evidence: dict[str, Any]) -> bool:
     )
 
 
+def _formal_decision_key(security_code: str | None, evidence: dict[str, Any]) -> tuple[str | None, ...]:
+    """以证券代码、公告文号和决定日期去重同一正式决定的多来源佐证。"""
+    return (
+        security_code,
+        evidence.get("notice_number"),
+        evidence.get("decision_date"),
+        evidence.get("conditional_termination_date"),
+    )
+
+
 def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
     """区分背景名单、正式决定、补充线索和条件日期；保持只读。"""
     candidates = crosscheck_report.get("candidates")
@@ -54,6 +64,8 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
 
     rows: list[dict[str, Any]] = []
     status_counts: Counter[str] = Counter()
+    unique_formal_decision_keys: set[tuple[str | None, ...]] = set()
+    duplicate_formal_evidence_count = 0
     for item in candidates:
         interface_date = item.get("interface_result_date")
         create_date = _epoch_ms_to_china_date(item.get("interface_create_time_epoch_ms"))
@@ -84,6 +96,10 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
                 "reported_final_date_source_status": decision.get("reported_final_date_source_status"),
             })
         formal_evidence = [e for e in decision_evidence if _is_formal_decision(e)]
+        security_code = item.get("security_code")
+        row_decision_keys = {_formal_decision_key(security_code, e) for e in formal_evidence}
+        unique_formal_decision_keys.update(row_decision_keys)
+        duplicate_formal_evidence_count += len(formal_evidence) - len(row_decision_keys)
         background_evidence = [e for e in decision_evidence if e.get("membership_type") == "background_pending_company"]
         decision_dates = sorted({e["decision_date"] for e in formal_evidence if _parse_date(e.get("decision_date"))})
         conditional_dates = sorted({e["conditional_termination_date"] for e in formal_evidence if _parse_date(e.get("conditional_termination_date"))})
@@ -113,6 +129,17 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
             "comparison_status": comparison_status,
             "decision_evidence": decision_evidence,
             "formal_decision_evidence_count": len(formal_evidence),
+            "formal_decision_unique_count": len(row_decision_keys),
+            "formal_decision_duplicate_evidence_count": len(formal_evidence) - len(row_decision_keys),
+            "formal_decision_unique_keys": [
+                {
+                    "security_code": key[0],
+                    "notice_number": key[1],
+                    "decision_date": key[2],
+                    "conditional_termination_date": key[3],
+                }
+                for key in sorted(row_decision_keys, key=lambda value: tuple(part or "" for part in value))
+            ],
             "background_membership_evidence_count": len(background_evidence),
             "supplemental_unverified_leads": leads,
             "batch_relation_status": item.get("batch_relation_status"),
@@ -130,13 +157,16 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
 
     rows.sort(key=lambda row: (row.get("interface_result_date") or "", row.get("security_code") or ""))
     return {
-        "schema_version": 2,
-        "report_version": "neeq_datatype0_date_audit_v2",
+        "schema_version": 3,
+        "report_version": "neeq_datatype0_date_audit_v3",
         "source_report_version": crosscheck_report.get("report_version"),
         "summary": {
             "candidate_count": len(rows),
             "comparison_status_counts": dict(sorted(status_counts.items())),
             "formal_decision_evidence_candidate_count": sum(r["formal_decision_evidence_count"] > 0 for r in rows),
+            "formal_decision_evidence_record_count": sum(r["formal_decision_evidence_count"] for r in rows),
+            "formal_decision_unique_count": len(unique_formal_decision_keys),
+            "duplicate_formal_decision_evidence_count": duplicate_formal_evidence_count,
             "background_membership_only_candidate_count": sum(r["comparison_status"] == "background_membership_only" for r in rows),
             "supplemental_unverified_lead_count": sum(len(r["supplemental_unverified_leads"]) for r in rows),
             "actual_termination_dates_confirmed": 0,
@@ -157,7 +187,7 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--crosscheck-report", type=Path, default=Path("output/market/neeq_datatype0_notice_crosscheck_v2.json"))
-    parser.add_argument("--output", type=Path, default=Path("output/market/neeq_datatype0_date_audit_v2.json"))
+    parser.add_argument("--output", type=Path, default=Path("output/market/neeq_datatype0_date_audit_v3.json"))
     args = parser.parse_args()
     with args.crosscheck_report.open("r", encoding="utf-8") as handle:
         source = json.load(handle)
