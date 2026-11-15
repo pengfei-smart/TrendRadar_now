@@ -17,6 +17,29 @@ def _name(value: Any) -> str:
     return "".join(str(value or "").split()).strip("；;，,。 ")
 
 
+def _comparison_name(value: Any) -> str:
+    """Normalize common delisted-display prefixes without changing stored names."""
+    name = _name(value)
+    for prefix in ("摘牌", "终止挂牌", "退市"):
+        if name.startswith(prefix) and len(name) > len(prefix):
+            return name[len(prefix):]
+    return name
+
+
+def _classify_name_match(notice_names: set[str], candidate_names: set[str]) -> str:
+    notice_names = {name for name in notice_names if name}
+    candidate_names = {name for name in candidate_names if name}
+    if not notice_names or not candidate_names:
+        return "not_comparable"
+    if notice_names & candidate_names:
+        return "exact_name_match"
+    normalized_notice = {_comparison_name(name) for name in notice_names}
+    normalized_candidate = {_comparison_name(name) for name in candidate_names}
+    if normalized_notice & normalized_candidate:
+        return "delisted_display_name"
+    return "unresolved_name_conflict"
+
+
 def _candidate_map(candidate_manifest: dict) -> dict[str, list[dict]]:
     root = candidate_manifest.get("manifest") if isinstance(candidate_manifest.get("manifest"), dict) else candidate_manifest
     candidates = root.get("candidates") or []
@@ -90,11 +113,10 @@ def build_neeq_termination_batch_reconciliation(
             candidate_names = sorted({_name(row.get("company_name")) for row in refs if _name(row.get("company_name"))})
             notice_name = _name(notice.get("company_name"))
             notice_short = _name(notice.get("short_name"))
-            name_match = None
-            if refs and (notice_name or notice_short):
-                short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
-                comparable_names = set(candidate_names) | short_names
-                name_match = bool(({notice_name, notice_short} - {""}) & comparable_names) if comparable_names else None
+            short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
+            comparable_names = set(candidate_names) | short_names
+            name_match_type = _classify_name_match({notice_name, notice_short}, comparable_names) if refs else "no_candidate_reference"
+            name_match = name_match_type in ("exact_name_match", "delisted_display_name")
             issues = []
             if not refs:
                 issues.append("candidate_absent_from_result_manifest")
@@ -125,6 +147,7 @@ def build_neeq_termination_batch_reconciliation(
                     "attachment_url": row.get("attachment_url"),
                 } for row in refs],
                 "candidate_name_match": name_match,
+                "candidate_name_match_type": name_match_type,
                 "coverage_classification": classification or ("candidate_absent_from_manifest" if not refs else "not_classified"),
                 "issues": sorted(set(issues)),
                 "review_status": "pending_manual_review",
@@ -157,7 +180,8 @@ def build_neeq_termination_batch_reconciliation(
             short_names = {_name(row.get("company_short_name")) for row in refs if _name(row.get("company_short_name"))}
             candidate_names = {_name(row.get("company_name")) for row in refs if _name(row.get("company_name"))}
             comparable_names = candidate_names | short_names
-            name_match = (expected_short in comparable_names) if expected_short and comparable_names else None
+            name_match_type = _classify_name_match({expected_short}, comparable_names)
+            name_match = name_match_type in ("exact_name_match", "delisted_display_name")
             memberships.append({
                 "security_code": code,
                 "company_name": identity.get("company_name"),
@@ -180,6 +204,7 @@ def build_neeq_termination_batch_reconciliation(
                     "attachment_url": row.get("attachment_url"),
                 } for row in refs],
                 "candidate_name_match": name_match,
+                "candidate_name_match_type": name_match_type if refs else "no_candidate_reference",
                 "issues": ["background_membership_is_not_a_formal_decision"],
                 "review_status": "pending_manual_review",
                 "confirmed_legal_fact": False,
@@ -205,7 +230,8 @@ def build_neeq_termination_batch_reconciliation(
             "has_formal_decision_membership": "formal_decision_company" in types,
             "has_background_membership": "background_pending_company" in types,
             "batch_progression_type": "later_batch_decision_company" if code in background_codes and code in formal_codes else None,
-            "coverage_status": "matched_to_batch_notice" if code_memberships else "no_parsed_batch_membership",
+            "coverage_status": "matched_to_batch_notice" if code_memberships else "batch_coverage_not_exhaustive",
+            "parsed_batch_membership_found": bool(code_memberships),
             "review_status": "pending_manual_review",
             "confirmed_legal_fact": False,
             "formal_lifecycle_write_allowed": False,
@@ -213,8 +239,17 @@ def build_neeq_termination_batch_reconciliation(
 
     membership_counts = Counter(row["membership_type"] for row in memberships)
     progression_count = sum(row.get("batch_progression_type") == "later_batch_decision_company" for row in memberships)
-    name_conflicts = [row for row in memberships if row.get("candidate_name_match") is False]
-    candidate_without_batch = [row for row in candidate_rows if row["coverage_status"] == "no_parsed_batch_membership"]
+    name_conflicts = [row for row in memberships if row.get("candidate_name_match_type") == "unresolved_name_conflict"]
+    display_name_differences = [row for row in memberships if row.get("candidate_name_match_type") == "delisted_display_name"]
+    candidate_without_batch = [row for row in candidate_rows if not row["parsed_batch_membership_found"]]
+    date_fields = ("batch_announcement_date", "formal_decision_date", "conditional_termination_date", "stated_termination_date")
+    date_completeness = {
+        field: {
+            "present_count": sum(1 for row in memberships if row.get("membership_type") == "formal_decision_company" and row.get(field)),
+            "missing_count": sum(1 for row in memberships if row.get("membership_type") == "formal_decision_company" and not row.get(field)),
+        }
+        for field in date_fields
+    }
     return {
         "schema_version": 1,
         "audit_version": "neeq_termination_batch_reconciliation_v1",
@@ -243,6 +278,10 @@ def build_neeq_termination_batch_reconciliation(
             "candidate_without_parsed_batch_membership_count": len(candidate_without_batch),
             "candidate_without_parsed_batch_membership_security_codes": [row["security_code"] for row in candidate_without_batch],
             "candidate_name_conflict_count": len(name_conflicts),
+            "delisted_display_name_difference_count": len(display_name_differences),
+            "date_completeness": date_completeness,
+            "candidate_batch_coverage_is_exhaustive": False,
+            "candidate_batch_coverage_limitation": "Only currently parsed notice attachments are searched; absence from this report does not mean no historical batch notice exists.",
             "unresolved_identity_count": len(unresolved),
             "supplemental_notice_identity_count": sum(1 for row in memberships if not row.get("result_candidate_references")),
         },
@@ -250,6 +289,7 @@ def build_neeq_termination_batch_reconciliation(
         "candidate_coverage": candidate_rows,
         "unresolved_identities": unresolved,
         "name_conflicts": name_conflicts,
+        "display_name_differences": display_name_differences,
         "safety": {
             "database_writes": 0,
             "formal_lifecycle_writes": 0,
@@ -258,5 +298,6 @@ def build_neeq_termination_batch_reconciliation(
             "background_membership_promotions": 0,
             "manual_review_required": True,
             "read_only": True,
+            "batch_coverage_is_exhaustive": False,
         },
     }
