@@ -82,9 +82,40 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "6")
+            self.assertEqual(version, "7")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
+            )
+
+    def test_neeq_termination_ledger_schema_is_separate_and_idempotent(self):
+        MarketStorage(str(self.db_path))
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            tables = {
+                row[0] for row in connection.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                )
+            }
+            expected = {
+                "neeq_termination_case",
+                "neeq_termination_evidence",
+                "neeq_termination_procedure",
+                "neeq_termination_evidence_link",
+                "neeq_termination_review",
+            }
+            self.assertTrue(expected.issubset(tables))
+            case_foreign_keys = connection.execute(
+                "PRAGMA foreign_key_list(neeq_termination_case)"
+            ).fetchall()
+            self.assertEqual(case_foreign_keys, [])
+            evidence_foreign_keys = connection.execute(
+                "PRAGMA foreign_key_list(neeq_termination_evidence)"
+            ).fetchall()
+            self.assertEqual(evidence_foreign_keys, [])
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0
             )
 
     def test_neeq_identity_candidates_do_not_auto_create_issuer_master(self):
