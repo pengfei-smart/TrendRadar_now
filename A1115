@@ -1,0 +1,2887 @@
+C:\Users\pengfei\Desktop\2\TrendRadar_now-feature-market-opportunity-radar-v1>python -X utf8 -c "import json; from pathlib import Path; d=json.loads(Path('output/market/neeq_termination_notice_review_v8.json').read_text(encoding='utf-8')); walk=lambda x,p='$': ([(print('\n路径:',p,'\n内容:',json.dumps(x,ensure_ascii=False,indent=2)[:5000])) if any(str(x.get(k,'')) in ('2017-701','2019-984') for k in ('notice_document_number','document_number','batch_notice_number')) else None]+[(walk(v,p+'.'+str(k))) for k,v in x.items()] if isinstance(x,dict) else [(walk(v,p+'['+str(i)+']')) for i,v in enumerate(x)] if isinstance(x,list) else []); walk(d)"
+
+路径: $.items[13].comparisons[0]
+内容: {
+  "record_id": "524",
+  "security_code": "830919",
+  "candidate_company_name": "飞达股份",
+  "notice_company_name": null,
+  "notice_short_name": "飞达股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[1]
+内容: {
+  "record_id": "522",
+  "security_code": "839062",
+  "candidate_company_name": "ST承蓝",
+  "notice_company_name": null,
+  "notice_short_name": "ST承蓝",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[2]
+内容: {
+  "record_id": "528",
+  "security_code": "831528",
+  "candidate_company_name": "尚真新材",
+  "notice_company_name": null,
+  "notice_short_name": "尚真新材",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[3]
+内容: {
+  "record_id": "526",
+  "security_code": "839345",
+  "candidate_company_name": "继东华明",
+  "notice_company_name": null,
+  "notice_short_name": "继东华明",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[4]
+内容: {
+  "record_id": "495",
+  "security_code": "833129",
+  "candidate_company_name": "苏美材料",
+  "notice_company_name": null,
+  "notice_short_name": "苏美材料",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[5]
+内容: {
+  "record_id": "515",
+  "security_code": "839425",
+  "candidate_company_name": "迅傲科技",
+  "notice_company_name": null,
+  "notice_short_name": "迅傲科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[6]
+内容: {
+  "record_id": "525",
+  "security_code": "834396",
+  "candidate_company_name": "坤瑞科技",
+  "notice_company_name": null,
+  "notice_short_name": "坤瑞科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[7]
+内容: {
+  "record_id": "509",
+  "security_code": "839521",
+  "candidate_company_name": "佳华影业",
+  "notice_company_name": null,
+  "notice_short_name": "佳华影业",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[8]
+内容: {
+  "record_id": "489",
+  "security_code": "834890",
+  "candidate_company_name": "大陆农牧",
+  "notice_company_name": null,
+  "notice_short_name": "大陆农牧",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[9]
+内容: {
+  "record_id": "500",
+  "security_code": "839656",
+  "candidate_company_name": "博通影音",
+  "notice_company_name": null,
+  "notice_short_name": "博通影音",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[10]
+内容: {
+  "record_id": "501",
+  "security_code": "835025",
+  "candidate_company_name": "ST农凯",
+  "notice_company_name": null,
+  "notice_short_name": "ST农凯",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[11]
+内容: {
+  "record_id": "490",
+  "security_code": "839972",
+  "candidate_company_name": "易通技术",
+  "notice_company_name": null,
+  "notice_short_name": "易通技术",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[12]
+内容: {
+  "record_id": "504",
+  "security_code": "835165",
+  "candidate_company_name": "嘉尚传媒",
+  "notice_company_name": null,
+  "notice_short_name": "嘉尚传媒",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[13]
+内容: {
+  "record_id": "485",
+  "security_code": "870192",
+  "candidate_company_name": "银维股份",
+  "notice_company_name": null,
+  "notice_short_name": "银维股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[14]
+内容: {
+  "record_id": "517",
+  "security_code": "835176",
+  "candidate_company_name": "核新伟鸿",
+  "notice_company_name": null,
+  "notice_short_name": "核新伟鸿",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[15]
+内容: {
+  "record_id": "527",
+  "security_code": "870242",
+  "candidate_company_name": "寅酷网络",
+  "notice_company_name": null,
+  "notice_short_name": "寅酷网络",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[16]
+内容: {
+  "record_id": "493",
+  "security_code": "835434",
+  "candidate_company_name": "亿同科技",
+  "notice_company_name": null,
+  "notice_short_name": "亿同科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[17]
+内容: {
+  "record_id": "486",
+  "security_code": "870948",
+  "candidate_company_name": "数元影视",
+  "notice_company_name": null,
+  "notice_short_name": "数元影视",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[18]
+内容: {
+  "record_id": "516",
+  "security_code": "835822",
+  "candidate_company_name": "丝路林牧",
+  "notice_company_name": null,
+  "notice_short_name": "丝路林牧",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[19]
+内容: {
+  "record_id": "487",
+  "security_code": "871015",
+  "candidate_company_name": "和索信息",
+  "notice_company_name": null,
+  "notice_short_name": "和索信息",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[20]
+内容: {
+  "record_id": "508",
+  "security_code": "836271",
+  "candidate_company_name": "光大医疗",
+  "notice_company_name": null,
+  "notice_short_name": "光大医疗",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[21]
+内容: {
+  "record_id": "491",
+  "security_code": "871372",
+  "candidate_company_name": "指盟网络",
+  "notice_company_name": null,
+  "notice_short_name": "指盟网络",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[22]
+内容: {
+  "record_id": "496",
+  "security_code": "836413",
+  "candidate_company_name": "蒙生生物",
+  "notice_company_name": null,
+  "notice_short_name": "蒙生生物",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[23]
+内容: {
+  "record_id": "492",
+  "security_code": "871590",
+  "candidate_company_name": "智卓信息",
+  "notice_company_name": null,
+  "notice_short_name": "智卓信息",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[24]
+内容: {
+  "record_id": "518",
+  "security_code": "836838",
+  "candidate_company_name": "唐是文化",
+  "notice_company_name": null,
+  "notice_short_name": "唐是文化",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[25]
+内容: {
+  "record_id": "502",
+  "security_code": "871595",
+  "candidate_company_name": "耐戈友",
+  "notice_company_name": null,
+  "notice_short_name": "耐戈友",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[26]
+内容: {
+  "record_id": "513",
+  "security_code": "837197",
+  "candidate_company_name": "厚德股份",
+  "notice_company_name": null,
+  "notice_short_name": "厚德股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[27]
+内容: {
+  "record_id": "499",
+  "security_code": "871669",
+  "candidate_company_name": "华盈智能",
+  "notice_company_name": null,
+  "notice_short_name": "华盈智能",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[28]
+内容: {
+  "record_id": "498",
+  "security_code": "837412",
+  "candidate_company_name": "吉瑞节能",
+  "notice_company_name": null,
+  "notice_short_name": "吉瑞节能",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[29]
+内容: {
+  "record_id": "512",
+  "security_code": "871689",
+  "candidate_company_name": "爱刷科技",
+  "notice_company_name": null,
+  "notice_short_name": "爱刷科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[30]
+内容: {
+  "record_id": "505",
+  "security_code": "837769",
+  "candidate_company_name": "金科技",
+  "notice_company_name": null,
+  "notice_short_name": "金科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[31]
+内容: {
+  "record_id": "521",
+  "security_code": "871844",
+  "candidate_company_name": "凯美股份",
+  "notice_company_name": null,
+  "notice_short_name": "凯美股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[32]
+内容: {
+  "record_id": "494",
+  "security_code": "838008",
+  "candidate_company_name": "三泰特材",
+  "notice_company_name": null,
+  "notice_short_name": "三泰特材",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[33]
+内容: {
+  "record_id": "506",
+  "security_code": "872029",
+  "candidate_company_name": "吉祥股份",
+  "notice_company_name": null,
+  "notice_short_name": "吉祥股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[34]
+内容: {
+  "record_id": "841",
+  "security_code": "838047",
+  "candidate_company_name": "二中科技",
+  "notice_company_name": null,
+  "notice_short_name": "二中科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-09-06",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": false,
+  "result_list_date_matches_planned_date": false,
+  "date_consistency_status": "mismatch_requires_follow_up",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date",
+    "result_date_vs_notice_date_mismatch",
+    "result_date_vs_planned_date_mismatch"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[35]
+内容: {
+  "record_id": "510",
+  "security_code": "872119",
+  "candidate_company_name": "欣迪时尚",
+  "notice_company_name": null,
+  "notice_short_name": "欣迪时尚",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[36]
+内容: {
+  "record_id": "519",
+  "security_code": "838079",
+  "candidate_company_name": "达荣科技",
+  "notice_company_name": null,
+  "notice_short_name": "达荣科技",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[37]
+内容: {
+  "record_id": "497",
+  "security_code": "872306",
+  "candidate_company_name": "同强商厨",
+  "notice_company_name": null,
+  "notice_short_name": "同强商厨",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[38]
+内容: {
+  "record_id": "523",
+  "security_code": "838528",
+  "candidate_company_name": "大满文化",
+  "notice_company_name": null,
+  "notice_short_name": "大满文化",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[39]
+内容: {
+  "record_id": "511",
+  "security_code": "872463",
+  "candidate_company_name": "恒利股份",
+  "notice_company_name": null,
+  "notice_short_name": "恒利股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[40]
+内容: {
+  "record_id": "520",
+  "security_code": "838779",
+  "candidate_company_name": "军大股份",
+  "notice_company_name": null,
+  "notice_short_name": "军大股份",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[41]
+内容: {
+  "record_id": "488",
+  "security_code": "872576",
+  "candidate_company_name": "益诚嘉华",
+  "notice_company_name": null,
+  "notice_short_name": "益诚嘉华",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[42]
+内容: {
+  "record_id": "503",
+  "security_code": "838965",
+  "candidate_company_name": "上海巨乐",
+  "notice_company_name": null,
+  "notice_short_name": "上海巨乐",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[43]
+内容: {
+  "record_id": "514",
+  "security_code": "872601",
+  "candidate_company_name": "中邮展鸿",
+  "notice_company_name": null,
+  "notice_short_name": "中邮展鸿",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[44]
+内容: {
+  "record_id": "484",
+  "security_code": "839022",
+  "candidate_company_name": "天意天映",
+  "notice_company_name": null,
+  "notice_short_name": "天意天映",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].comparisons[45]
+内容: {
+  "record_id": "507",
+  "security_code": "873075",
+  "candidate_company_name": "昊能光电",
+  "notice_company_name": null,
+  "notice_short_name": "昊能光电",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2019-07-09",
+  "notice_planned_termination_date": "2019-07-09",
+  "notice_stated_termination_date": "2019-07-09",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2019-07-01",
+  "suspension_date": null,
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2019-984",
+  "issues": [
+    "missing_decision_date"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[13].notices[0]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "飞达股份",
+  "security_code": "830919",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[1]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "ST承蓝",
+  "security_code": "839062",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[2]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "尚真新材",
+  "security_code": "831528",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[3]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "继东华明",
+  "security_code": "839345",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[4]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "苏美材料",
+  "security_code": "833129",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[5]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "迅傲科技",
+  "security_code": "839425",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[6]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "坤瑞科技",
+  "security_code": "834396",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[7]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "佳华影业",
+  "security_code": "839521",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[8]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "大陆农牧",
+  "security_code": "834890",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[9]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "博通影音",
+  "security_code": "839656",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[10]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "ST农凯",
+  "security_code": "835025",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[11]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "易通技术",
+  "security_code": "839972",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[12]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "嘉尚传媒",
+  "security_code": "835165",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[13]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "银维股份",
+  "security_code": "870192",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[14]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "核新伟鸿",
+  "security_code": "835176",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[15]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "寅酷网络",
+  "security_code": "870242",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[16]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "亿同科技",
+  "security_code": "835434",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[17]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "数元影视",
+  "security_code": "870948",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[18]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "丝路林牧",
+  "security_code": "835822",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[19]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "和索信息",
+  "security_code": "871015",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[20]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "光大医疗",
+  "security_code": "836271",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[21]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "指盟网络",
+  "security_code": "871372",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[22]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "蒙生生物",
+  "security_code": "836413",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[23]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "智卓信息",
+  "security_code": "871590",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[24]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "唐是文化",
+  "security_code": "836838",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[25]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "耐戈友",
+  "security_code": "871595",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[26]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "厚德股份",
+  "security_code": "837197",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[27]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "华盈智能",
+  "security_code": "871669",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[28]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "吉瑞节能",
+  "security_code": "837412",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[29]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "爱刷科技",
+  "security_code": "871689",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[30]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "金科技",
+  "security_code": "837769",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[31]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "凯美股份",
+  "security_code": "871844",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[32]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "三泰特材",
+  "security_code": "838008",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[33]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "吉祥股份",
+  "security_code": "872029",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[34]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "二中科技",
+  "security_code": "838047",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[35]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "欣迪时尚",
+  "security_code": "872119",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[36]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "达荣科技",
+  "security_code": "838079",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[37]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "同强商厨",
+  "security_code": "872306",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[38]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "大满文化",
+  "security_code": "838528",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[39]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "恒利股份",
+  "security_code": "872463",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[40]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "军大股份",
+  "security_code": "838779",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[41]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "益诚嘉华",
+  "security_code": "872576",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[42]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "上海巨乐",
+  "security_code": "838965",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[43]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "中邮展鸿",
+  "security_code": "872601",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[44]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "天意天映",
+  "security_code": "839022",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[13].notices[45]
+内容: {
+  "notice_index": 0,
+  "document_number": "2019-984",
+  "notice_title": "股转系统公告",
+  "company_name": null,
+  "short_name": "昊能光电",
+  "security_code": "873075",
+  "identity_source": "html_attachment_table",
+  "decision_date": null,
+  "planned_termination_date": "2019-07-09",
+  "stated_termination_date": "2019-07-09",
+  "suspension_date": null,
+  "announcement_date": "2019-07-01",
+  "termination_reason": null,
+  "termination_reason_category": "failure_to_disclose_periodic_report",
+  "termination_legal_basis": "第4.5.1条第（三）项",
+  "conditional_termination": true,
+  "conditional_termination_language": true,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date"
+  ]
+}
+
+路径: $.items[22].comparisons[0]
+内容: {
+  "record_id": "52",
+  "security_code": "832168",
+  "candidate_company_name": "中科招商",
+  "notice_company_name": "中科招商投资管理集团股份有限公司",
+  "notice_short_name": "中科招商",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2017-12-26",
+  "notice_planned_termination_date": null,
+  "notice_stated_termination_date": "2017-12-26",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "other_or_unclassified",
+  "termination_legal_basis": null,
+  "conditional_termination": false,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2017-12-15",
+  "suspension_date": "2017-12-18",
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2017-701",
+  "issues": [
+    "missing_decision_date",
+    "unclassified_termination_reason"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[22].comparisons[1]
+内容: {
+  "record_id": "51",
+  "security_code": "831639",
+  "candidate_company_name": "达仁资管",
+  "notice_company_name": "达仁投资管理集团股份有限公司",
+  "notice_short_name": "达仁资管",
+  "company_code_match": true,
+  "company_name_match": true,
+  "company_full_name_exact_match": false,
+  "company_short_name_match": true,
+  "result_list_date": "2017-12-26",
+  "notice_planned_termination_date": null,
+  "notice_stated_termination_date": "2017-12-26",
+  "result_list_date_matches_notice_date": true,
+  "result_list_date_matches_planned_date": true,
+  "date_consistency_status": "matches",
+  "termination_reason_category": "other_or_unclassified",
+  "termination_legal_basis": null,
+  "conditional_termination": false,
+  "notice_states_company_deregistered": false,
+  "decision_date": null,
+  "announcement_date": "2017-12-15",
+  "suspension_date": "2017-12-18",
+  "follow_up_evidence_required": true,
+  "notice_document_number": "2017-701",
+  "issues": [
+    "missing_decision_date",
+    "unclassified_termination_reason"
+  ],
+  "review_status": "pending_manual_review",
+  "confirmed_legal_fact": false,
+  "formal_lifecycle_write_allowed": false
+}
+
+路径: $.items[22].notices[0]
+内容: {
+  "notice_index": 0,
+  "document_number": "2017-701",
+  "notice_title": "（股转系统公告",
+  "company_name": "中科招商投资管理集团股份有限公司",
+  "short_name": "中科招商",
+  "security_code": "832168",
+  "identity_source": "structured_identity_text",
+  "decision_date": null,
+  "planned_termination_date": null,
+  "stated_termination_date": "2017-12-26",
+  "suspension_date": "2017-12-18",
+  "announcement_date": "2017-12-15",
+  "termination_reason": null,
+  "termination_reason_category": "other_or_unclassified",
+  "termination_legal_basis": null,
+  "conditional_termination": false,
+  "conditional_termination_language": false,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date",
+    "unclassified_termination_reason"
+  ]
+}
+
+路径: $.items[22].notices[1]
+内容: {
+  "notice_index": 0,
+  "document_number": "2017-701",
+  "notice_title": "（股转系统公告",
+  "company_name": "达仁投资管理集团股份有限公司",
+  "short_name": "达仁资管",
+  "security_code": "831639",
+  "identity_source": "structured_identity_text",
+  "decision_date": null,
+  "planned_termination_date": null,
+  "stated_termination_date": "2017-12-26",
+  "suspension_date": "2017-12-18",
+  "announcement_date": "2017-12-15",
+  "termination_reason": null,
+  "termination_reason_category": "other_or_unclassified",
+  "termination_legal_basis": null,
+  "conditional_termination": false,
+  "conditional_termination_language": false,
+  "notice_states_company_deregistered": false,
+  "follow_up_evidence_required": true,
+  "parse_warnings": [
+    "missing_decision_date",
+    "unclassified_termination_reason"
+  ]
+}
