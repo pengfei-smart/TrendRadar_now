@@ -16,6 +16,7 @@ NEEQ_LIST_ENDPOINT = "/disclosureInfoController/companyAnnouncement.do"
 NEEQ_LIFECYCLE_TERMS = (
     "终止挂牌", "摘牌", "终止上市", "退市", "两网及退市",
     "退市板块", "终止股票挂牌", "终止转让",
+    "恢复转让", "暂停转让", "恢复交易", "暂停交易",
 )
 NEEQ_MARKET_LAYER_VALUES = frozenset({"0", "1", "3"})
 
