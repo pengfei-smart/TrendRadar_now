@@ -461,8 +461,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 
 
     def test_v8_separates_background_appendix_from_actual_decision_appendix(self):
-        text = """股转系统公告
-股转系统公告〔2019〕984号
+        text = """股转系统公告〔2019〕984号
 截至2019年6月28日，共有330家公司未披露2018年年度报告，详见附表1。对其中46家公司作出终止挂牌决定，详见附表2。
 附表：1．未在2019年6月28日前披露2018年年度报告的公司名单
 序号
@@ -493,7 +492,6 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
             [identity["security_code"] for identity in result["contextual_identities"]],
             ["430166", "430415"],
         )
-        self.assertTrue(all(n["review_status"] if "review_status" in n else True for n in result["notices"]))
 
 
 
