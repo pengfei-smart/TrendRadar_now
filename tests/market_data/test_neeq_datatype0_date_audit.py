@@ -73,7 +73,7 @@ class NeeqDataType0DateAuditTests(unittest.TestCase):
             report["candidates"][0]["comparison_status"],
             "no_parsed_decision_date_evidence",
         )
-        self.assertIn("未匹配到已解析公告不代表历史上不存在公告", report["candidates"][0]["notes"])
+        self.assertTrue(any(note.startswith("未匹配到已解析公告不代表历史上不存在公告") for note in report["candidates"][0]["notes"]))
 
     def test_safety_boundary_is_read_only(self):
         report = build_report({"candidates": [self._candidate()]})
