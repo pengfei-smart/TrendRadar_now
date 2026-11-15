@@ -711,5 +711,67 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(final["announcement_date"], "2017-12-20")
 
 
+    def test_v10_extracts_2019_984_number_after_html_preamble(self):
+        text = """关于作出终止46家未披露2018年年度报告公司股票挂牌决定的公告
+股转动态
+2019-07-01
+A -
+A +
+股转系统公告〔2019〕984号
+截至2019年6月28日，共有330家公司未披露2018年年度报告（详见附表1）。对其中46家公司（详见附表2），我司于2019年7月1日作出终止其股票挂牌的决定。
+对于未在规定期限内提交复核申请或复核申请未被受理的被摘牌公司，我司将自2019年7月9日起终止其股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2019年7月1日
+附表1
+430088
+七维航测
+东北证券
+附表2
+830919
+飞达股份
+申万宏源
+831528
+尚真新材
+财达证券"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 2)
+        self.assertEqual(result["contextual_identity_count"], 1)
+        self.assertEqual(result["notices"][0]["document_number"], "2019-984")
+        self.assertEqual(result["notices"][1]["document_number"], "2019-984")
+        self.assertEqual(result["notices"][0]["notice_title"], "关于作出终止46家未披露2018年年度报告公司股票挂牌决定的公告")
+
+    def test_v10_does_not_use_body_citation_as_2017_701_title_or_number(self):
+        text = """- 1 -
+
+2017
+701
+
+2
+
+近期，根据《关于金融类企业挂牌融资有关事项的通知》
+（股转系统公告
+2016
+36 号）与《关于挂牌私募机构自查整
+改相关问题的通知》 （股转系统发
+2017
+1394 号，以下简称
+《1394 号通知》 ） ，相关挂牌私募机构向我司提交了自查整改报
+告与主办券商核查报告。
+经进一步审查，2 家挂牌私募机构不符合整改要求， 具体包
+括：中科招商投资管理集团股份有限公司 （证券简称：中科招商；
+证券代码：832168）、达仁投资管理集团股份有限公司（证券
+简称：达仁资管；证券代码：831639）。
+根据《1394 号通知》第六条与《全国中小企业股份转让系
+统业务规则（试行）》第4.4.2条之规定，现决定于2017年12月
+18日对上述2家公司的股票暂停转让一天，12月26日起终止
+上述2家公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 2)
+        for notice in result["notices"]:
+            self.assertEqual(notice["document_number"], "2017-701")
+            self.assertIsNone(notice["notice_title"])
+
 if __name__ == "__main__":
     unittest.main()
