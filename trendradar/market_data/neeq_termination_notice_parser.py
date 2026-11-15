@@ -178,7 +178,8 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
     compact = re.sub(r"\s+", "", block)
     # PDF text layers may insert page markers (for example "-2-") inside a
     # date. Remove only isolated page-number tokens before date recognition.
-    date_compact = re.sub(r"(?<!\d)-\d+-(?!\d)", "", compact)
+    date_compact = re.sub(r"(?<=月)-\d+-(?=\d{1,2}日)", "", compact)
+    date_compact = re.sub(r"(?<!\d)-\d+-(?!\d)", "", date_compact)
     number = _extract_document_number(block)
     decision_match = _first(
         r"我司于\s*" + _DATE + r"\s*对[\s\S]{1,120}?作出终止其股票\s*挂牌的决定",
