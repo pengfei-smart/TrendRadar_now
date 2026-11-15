@@ -100,8 +100,7 @@ class NeeqDataType0NoticeCrosscheckTests(unittest.TestCase):
         self.assertEqual(by_code["430134"]["supplemental_independent_decisions"][0]["conditional_termination_date"], "2020-02-25")
         self.assertEqual(by_code["832115"]["supplemental_independent_decisions"][0]["reported_final_delisting_date"], "2021-10-21")
         self.assertEqual(by_code["833028"]["supplemental_leads"][0]["status"], "unverified_lead")
-        self.assertEqual(by_code["833292"]["supplemental_independent_decisions"][0]["evidence_status"],
-                         "third_party_notice_index_lead_not_officially_verified")
+        self.assertEqual(by_code["833292"]["supplemental_leads"][0]["status"], "unverified_lead")
 
     def test_report_is_explicitly_read_only(self):
         report = build_report({"manifest": {"candidates": [self._candidate("838047", "841")]}}, self._batch_report())
