@@ -318,7 +318,7 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
 2019年7月5日
 """ + "\n".join(rows)
         result = parse_neeq_termination_notice_text(text)
-        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v10")
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v11")
         self.assertEqual(result["notice_count"], 54)
         self.assertEqual(result["notices"][0]["document_number"], "2019-985")
         self.assertEqual(result["notices"][0]["decision_date"], "2019-07-05")
@@ -574,6 +574,30 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         report = build_neeq_notice_review_report({"tasks": []}, {"results": {}}, lambda name: "")
         self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v10")
 
+
+    def test_v11_extracts_rectification_reason_and_multiple_operating_legal_bases(self):
+        text = """- 1 -
+全国中小企业股份转让系统文件
+股转系统公告
+〔2017〕
+701 号
+关于对中科招商投资管理集团股份有限公司
+等
+2家挂牌公司强制终止挂牌的公告
+近期，根据《关于金融类企业挂牌融资有关事项的通知》（股转系统公告〔2016〕36号）与《关于挂牌私募机构自查整改相关问题的通知》（股转系统发〔2017〕1394号，以下简称《1394号通知》），相关挂牌私募机构向我司提交了自查整改报告与主办券商核查报告。
+经进一步审查，2家挂牌私募机构不符合整改要求，具体包括：中科招商投资管理集团股份有限公司（证券简称：中科招商；证券代码：832168）、达仁投资管理集团股份有限公司（证券简称：达仁资管；证券代码：831639）。
+根据《1394号通知》第六条与《全国中小企业股份转让系统业务规则（试行）》第4.4.2条之规定，现决定于2017年12月18日对上述2家公司的股票暂停转让一天，12月26日起终止上述2家公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月15日"""
+        report = parse_neeq_termination_notice_text(text)
+        self.assertEqual(report["notice_count"], 2)
+        for notice in report["notices"]:
+            self.assertEqual(notice["termination_reason"], "不符合整改要求")
+            self.assertEqual(
+                notice["termination_legal_basis"],
+                "《1394号通知》第六条；《全国中小企业股份转让系统业务规则（试行）》第4.4.2条",
+            )
+            self.assertEqual(notice["termination_reason_category"], "failure_to_meet_rectification_requirements")
 
     def test_v10_parses_sponsor_risk_warning_without_inventing_document_number(self):
         text = """上海华信证券有限责任公司
