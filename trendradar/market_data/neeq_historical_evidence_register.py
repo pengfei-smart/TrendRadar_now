@@ -49,7 +49,7 @@ DATE_TYPE_RULES = {
     "planned_termination_date": {
         "category": "planned_event",
         "description": "公告或决定中预定、拟定或将于未来发生的终止挂牌日期。",
-        "evidence_guidance": "公告可支持计划日期；若要确认实际结果，另需官方结果记录或其他权威事后证据。",
+        "evidence_guidance": "公告可支持计划日期；不得自动升级为实际终止日期；若要确认实际结果，另需官方结果记录或其他权威事后证据。",
     },
     "company_announcement_date": {
         "category": "announcement_metadata",
