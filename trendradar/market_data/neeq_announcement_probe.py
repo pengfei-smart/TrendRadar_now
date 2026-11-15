@@ -45,6 +45,8 @@ def probe_neeq_announcement_list(
     opener=None,
     callback: str = "TrendRadarAnnouncementProbe",
     omit_date_filter: bool = False,
+    omit_market_layer_filter: bool = False,
+    omit_new_three_filter: bool = False,
 ) -> dict:
     """Send exactly one allowlisted POST; return metadata only, never fetch PDF attachments."""
     if not re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", callback):
@@ -75,6 +77,10 @@ def probe_neeq_announcement_list(
     if omit_date_filter:
         params.pop("startTime", None)
         params.pop("endTime", None)
+    if omit_market_layer_filter:
+        params.pop("xxfcbj[]", None)
+    if omit_new_three_filter:
+        params.pop("isNewThree", None)
     params["sortfield"] = "xxssdq"
     params["sorttype"] = "asc"
     url = endpoint + "?" + urlencode({"callback": callback})
@@ -164,6 +170,8 @@ def probe_neeq_announcement_list(
         "request_page": page,
         "request_params": params,
         "date_filter_omitted": omit_date_filter,
+        "market_layer_filter_omitted": omit_market_layer_filter,
+        "new_three_filter_omitted": omit_new_three_filter,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "response_bytes": len(raw),
         "response_preview": raw.decode("utf-8-sig", errors="replace")[:1000],
