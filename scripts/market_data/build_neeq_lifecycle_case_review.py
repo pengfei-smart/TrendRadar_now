@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
 def main() -> int:
     parser = argparse.ArgumentParser(description="汇总NEEQ证券生命周期证据及缺口；只读，不确认法律事实。")
     parser.add_argument("--evidence-register", required=True)
+    parser.add_argument("--official-result-audit", help="可选：NEEQ官方终止挂牌结果定向审计报告")
     parser.add_argument("--security-codes", default="834502,834606,834904")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
@@ -23,7 +24,12 @@ def main() -> int:
 
     register = json.loads(Path(args.evidence_register).read_text(encoding="utf-8-sig"))
     codes = [value.strip() for value in args.security_codes.split(",") if value.strip()]
-    result = build_neeq_lifecycle_case_review(register, security_codes=codes)
+    official_audit = None
+    if args.official_result_audit:
+        official_audit = json.loads(Path(args.official_result_audit).read_text(encoding="utf-8-sig"))
+    result = build_neeq_lifecycle_case_review(
+        register, security_codes=codes, official_result_audit=official_audit
+    )
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
