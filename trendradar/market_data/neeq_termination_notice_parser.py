@@ -64,7 +64,7 @@ def _extract_document_number(document_text: str) -> str | None:
     for index, line in enumerate(header_lines[:-1]):
         if not re.fullmatch(r"20\d{2}", line):
             continue
-        serial_match = re.fullmatch(r"(\d{1,5})(?:号)?", header_lines[index + 1])
+        serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
         if serial_match:
             return f"{line}-{serial_match.group(1)}"
 
