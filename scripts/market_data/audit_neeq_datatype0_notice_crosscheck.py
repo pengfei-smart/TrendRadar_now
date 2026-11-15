@@ -1,3 +1,4 @@
+# 只读核验 NEEQ dataType=0 候选与公告批次的关系。
 # -*- coding: utf-8 -*-
 """只读核验全国股转系统 dataType=0 终止挂牌候选与已解析公告批次的关系。"""
 from __future__ import annotations
@@ -99,7 +100,6 @@ def build_report(candidate_manifest: dict[str, Any], batch_report: dict[str, Any
         else:
             relation_status = "background_membership_only_in_parsed_batches"
 
-        supplements = SUPPLEMENTAL_DECISIONS.get(code, [])
         selected.append(
             {
                 "record_id": str(item.get("record_id") or raw.get("id") or ""),
@@ -122,7 +122,7 @@ def build_report(candidate_manifest: dict[str, Any], batch_report: dict[str, Any
                     "parsed_batch_membership_found": (cov or {}).get("parsed_batch_membership_found", False),
                     "limitation": "仅覆盖当前已解析附件；未匹配不代表历史上不存在公告。",
                 },
-                "supplemental_independent_decisions": supplements,
+                "supplemental_independent_decisions": SUPPLEMENTAL_DECISIONS.get(code, []),
                 "review_status": "pending_manual_review",
                 "confirmed_legal_fact": False,
                 "formal_lifecycle_write_allowed": False,
