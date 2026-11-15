@@ -38,7 +38,7 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
-    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "不符合自查整改条件", "未完成整改")):
+    elif any(term in compact for term in ("不符合整改要求", "不符合整改条件", "不符合自查整改条件", "不符合自查整改", "未完成整改")):
         category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
@@ -56,7 +56,7 @@ def _extract_document_number(document_text: str) -> str | None:
     lines = [line for line in lines if line]
     # Keep document-number discovery close to the opening header. A sponsor
     # notice may cite older 股转系统公告 numbers much later in its body.
-    header_lines = lines[:5]
+    header_lines = lines[:8]
 
     if header_lines and "股转系统公告" in header_lines[0]:
         for index, line in enumerate(header_lines[:-1]):
@@ -69,7 +69,7 @@ def _extract_document_number(document_text: str) -> str | None:
     for line in header_lines:
         # A bracketed year/serial is only a document number when explicitly
         # labelled as an announcement number, not a cited regulatory circular.
-        if "公告编号" in line or "股转系统公告" in line:
+        if "公告编号" in line:
             bracketed = re.search(r"[〔［\[]?(20\d{2})[〕］\]](\d{1,5})(?:号)?", line)
             if bracketed:
                 return f"{bracketed.group(1)}-{bracketed.group(2)}"
@@ -82,13 +82,8 @@ def _extract_document_number(document_text: str) -> str | None:
         if labelled:
             return f"{labelled.group(1)}-{labelled.group(2)}"
 
-    compact_header = "".join(header_lines)
-    labelled_header = re.search(
-        r"(?:股转系统公告|公告编号)[：:]?[〔［\[]?(20\d{2})[〕］\]]?(\d{1,5})(?:号)?",
-        compact_header,
-    )
-    if labelled_header:
-        return f"{labelled_header.group(1)}-{labelled_header.group(2)}"
+    compact_header = "".join(header_lines[:4])
+    # Keep v9's bounded compact-PDF pattern; do not join arbitrary body lines.
     compact_match = re.search(r"-\d+-(20\d{2})(\d{3,5})(?=[\u4e00-\u9fff])", compact_header)
     if compact_match:
         return f"{compact_match.group(1)}-{compact_match.group(2)}"
@@ -273,6 +268,11 @@ def _parse_shared_fields(block: str) -> dict[str, Any]:
         r"(?:将自|将于|(?<!决定)自)\s*" + _DATE + r"\s*起?[\s\S]{0,160}?终止(?:其|上述)?(?:公司)?(?:的)?股票?(?:在[^。；;]{0,80})?挂牌",
         date_compact,
     )
+    if not planned_match:
+        planned_match = _first(
+            r"股票(?:将)?于\\s*" + _DATE + r"\\s*起?在全国中小企业股份转让系统终止挂牌",
+            date_compact,
+        )
     planned_date = _date(planned_match)
     if not planned_date:
         short_planned_match = _first(
