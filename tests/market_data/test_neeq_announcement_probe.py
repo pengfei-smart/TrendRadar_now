@@ -126,6 +126,43 @@ class NEEQAnnouncementProbeTests(unittest.TestCase):
         self.assertTrue(result["date_filter_omitted"])
         self.assertEqual(result["request_count"], 1)
 
+    def test_can_omit_market_layer_and_new_three_filters_independently(self):
+        opener = FakeOpener(FakeResponse(self._payload()))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01", end_date="2026-11-13",
+            opener=opener, omit_date_filter=True,
+            omit_market_layer_filter=True,
+        )
+        form = parse_qs(opener.request.data.decode("utf-8"))
+        self.assertNotIn("xxfcbj[]", form)
+        self.assertIn("isNewThree", form)
+        self.assertTrue(result["market_layer_filter_omitted"])
+        self.assertFalse(result["new_three_filter_omitted"])
+
+        opener = FakeOpener(FakeResponse(self._payload()))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01", end_date="2026-11-13",
+            opener=opener, omit_date_filter=True,
+            omit_new_three_filter=True,
+        )
+        form = parse_qs(opener.request.data.decode("utf-8"))
+        self.assertIn("xxfcbj[]", form)
+        self.assertNotIn("isNewThree", form)
+        self.assertFalse(result["market_layer_filter_omitted"])
+        self.assertTrue(result["new_three_filter_omitted"])
+
+        opener = FakeOpener(FakeResponse(self._payload()))
+        result = probe_neeq_announcement_list(
+            start_date="2026-11-01", end_date="2026-11-13",
+            opener=opener, omit_date_filter=True,
+            omit_market_layer_filter=True, omit_new_three_filter=True,
+        )
+        form = parse_qs(opener.request.data.decode("utf-8"))
+        self.assertNotIn("xxfcbj[]", form)
+        self.assertNotIn("isNewThree", form)
+        self.assertTrue(result["market_layer_filter_omitted"])
+        self.assertTrue(result["new_three_filter_omitted"])
+
     def test_accepts_runtime_captured_notice_and_disclosure_types(self):
         opener = FakeOpener(FakeResponse(self._payload()))
         result = probe_neeq_announcement_list(
