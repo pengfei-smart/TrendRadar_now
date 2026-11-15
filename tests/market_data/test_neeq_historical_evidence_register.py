@@ -110,6 +110,65 @@ class NEEQHistoricalEvidenceRegisterTests(unittest.TestCase):
         self.assertTrue(all(row["date_type_valid"] for row in item["date_assertions"]))
         self.assertEqual(item["review_status"], "evidence_integrity_complete_pending_manual_review")
 
+    def test_classifies_planned_and_legal_termination_dates_separately(self):
+        assertions = [
+            {
+                "date_type": "planned_termination_date",
+                "date_value": "2017-12-21",
+                "source_quote": "公司股票将于2017年12月21日起终止挂牌",
+            },
+            {
+                "date_type": "legal_termination_date",
+                "date_value": "2017-12-21",
+                "source_quote": "公司股票自2017年12月21日起终止挂牌",
+            },
+            {
+                "date_type": "official_result_delisting_date",
+                "date_value": "2017-12-21",
+                "source_quote": "终止挂牌日期：2017-12-21",
+            },
+        ]
+        result = build_neeq_historical_evidence_register(
+            self.tracker(), [self.record(date_assertions=assertions)], evidence_root=self.root
+        )
+        rows = result["dossiers"][0]["evidence_records"][0]["date_assertions"]
+        self.assertEqual(rows[0]["date_type_category"], "planned_event")
+        self.assertEqual(rows[1]["date_type_category"], "legal_effective_event")
+        self.assertEqual(rows[2]["date_type_category"], "official_result")
+        self.assertIn("不得自动升级", rows[0]["date_type_evidence_guidance"])
+        self.assertFalse(any(row["confirmed_legal_fact"] for row in rows))
+
+    def test_resumption_date_requires_explicit_evidence_not_calendar_inference(self):
+        result = build_neeq_historical_evidence_register(
+            self.tracker(),
+            [self.record(date_assertions=[{
+                "date_type": "transfer_resumption_date",
+                "date_value": "2017-12-14",
+                "source_quote": "股票于2017年12月14日起恢复转让",
+            }])],
+            evidence_root=self.root,
+        )
+        row = result["dossiers"][0]["evidence_records"][0]["date_assertions"][0]
+        self.assertEqual(row["date_type_category"], "trading_status_event")
+        self.assertIn("不得仅由暂停一天", row["date_type_evidence_guidance"])
+        self.assertEqual(row["assertion_review_status"], "pending_manual_review")
+        self.assertFalse(row["confirmed_legal_fact"])
+
+    def test_unknown_date_type_is_not_silently_classified(self):
+        result = build_neeq_historical_evidence_register(
+            self.tracker(),
+            [self.record(date_assertions=[{
+                "date_type": "inferred_resumption_date",
+                "date_value": "2017-12-14",
+                "source_quote": "暂停一天后恢复",
+            }])],
+            evidence_root=self.root,
+        )
+        row = result["dossiers"][0]["evidence_records"][0]["date_assertions"][0]
+        self.assertFalse(row["date_type_valid"])
+        self.assertIsNone(row["date_type_category"])
+        self.assertEqual(row["assertion_review_status"], "date_assertion_incomplete_pending_review")
+
     def test_source_document_number_is_optional_for_un_numbered_sponsor_notice(self):
         result = build_neeq_historical_evidence_register(
             self.tracker(), [self.record(source_document_number=None)], evidence_root=self.root
