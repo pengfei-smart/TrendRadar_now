@@ -575,5 +575,69 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         self.assertEqual(report["parser_version"], "neeq_termination_notice_parser_v9")
 
 
+    def test_v10_parses_sponsor_risk_warning_without_inventing_document_number(self):
+        text = """上海华信证券有限责任公司
+关于青岛拥湾资产管理集团股份有限公司的风险提示公告
+
+上海华信证券有限责任公司（以下简称“主办券商”）作为青岛拥湾资产管理集团股份有限公司（以下简称“拥湾资产”、或“公司”）的主办券商。根据全国中小企业股份转让系统有限责任公司于2017年10月27日发布《关于挂牌私募机构自查整改相关问题的通知》（股转系统发〔2017〕1394号），相关事项已核查。
+拥湾资产公司股票将被全国股转系统强制摘牌，终止挂牌后仍应遵守相关规定。
+上海华信证券有限责任公司
+2017年12月18日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 1)
+        notice = result["notices"][0]
+        self.assertIsNone(notice["document_number"])
+        self.assertIsNone(notice["security_code"])
+        self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertEqual(notice["short_name"], "拥湾资产")
+        self.assertEqual(notice["document_signature_date"], "2017-12-18")
+        self.assertEqual(notice["termination_reason_category"], "failure_to_disclose_periodic_report")
+
+    def test_v10_parses_issuer_risk_warning_identity_and_transfer_timeline(self):
+        text = """公告编号：2017-035
+1
+证券代码：834606 证券简称：拥湾资产 主办券商：华信证券
+青岛拥湾资产管理集团股份有限公司
+关于股票被终止挂牌的风险提示性公告
+公司已接到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》（股转系统发[2017]1655号文）。按照规定公司已于2017年12月13日停牌，2017年12月14日起恢复转让，恢复转让期为5个工作日到12月20日，12月21日终止挂牌。
+青岛拥湾资产管理集团股份有限公司
+董事会
+2017年12月18日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 1)
+        notice = result["notices"][0]
+        self.assertEqual(notice["document_number"], "2017-035")
+        self.assertEqual(notice["security_code"], "834606")
+        self.assertEqual(notice["short_name"], "拥湾资产")
+        self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertEqual(notice["decision_received_date"], "2017-12-13")
+        self.assertEqual(notice["suspension_date"], "2017-12-13")
+        self.assertEqual(notice["transfer_resumption_date"], "2017-12-14")
+        self.assertEqual(notice["planned_termination_date"], "2017-12-21")
+        self.assertEqual(notice["stated_termination_date"], "2017-12-21")
+        self.assertEqual(notice["document_signature_date"], "2017-12-18")
+
+    def test_v10_parses_final_issuer_termination_announcement(self):
+        text = """公告编号：2017-040
+证券代码：834606 证券简称：拥湾资产 主办券商：华信证券
+青岛拥湾资产管理集团股份有限公司
+关于公司股票在全国中小企业股份转让系统终止挂牌的公告
+公司于2017年12月12日收到全国中小企业股份转让系统发来的《关于终止青岛拥湾资产管理集团股份有限公司股票挂牌的决定》（股转系统发[2017]1655号文），公司股票将于2017年12月21日起在全国中小企业股份转让系统终止挂牌。
+青岛拥湾资产管理集团股份有限公司
+董事会
+2017年12月20日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["notice_count"], 1)
+        notice = result["notices"][0]
+        self.assertEqual(notice["document_number"], "2017-040")
+        self.assertEqual(notice["security_code"], "834606")
+        self.assertEqual(notice["short_name"], "拥湾资产")
+        self.assertEqual(notice["company_name"], "青岛拥湾资产管理集团股份有限公司")
+        self.assertEqual(notice["decision_received_date"], "2017-12-12")
+        self.assertEqual(notice["planned_termination_date"], "2017-12-21")
+        self.assertEqual(notice["stated_termination_date"], "2017-12-21")
+        self.assertEqual(notice["document_signature_date"], "2017-12-20")
+
+
 if __name__ == "__main__":
     unittest.main()
