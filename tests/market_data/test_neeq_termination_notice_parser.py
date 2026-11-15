@@ -494,6 +494,31 @@ class NEEQTerminationNoticeParserTests(unittest.TestCase):
         )
 
 
+    def test_v9_header_document_number_is_not_split_at_body_historical_citation(self):
+        text = """全国中小企业股份转让系统文件
+股转系统公告〔2017〕684号
+关于对上海银纪资产管理股份有限公司等3家挂牌公司强制终止挂牌的公告
+正文引用《关于金融类企业挂牌融资有关事项的通知》（股转系统公告〔2016〕36号）。
+深圳市富海银涛资产管理股份有限公司（证券简称：富海银涛；证券代码：834502）
+青岛拥湾资产管理集团股份有限公司（证券简称：拥湾资产；证券代码：834606）
+上海银纪资产管理股份有限公司（证券简称：银纪资产；证券代码：834904）
+13日对上述3家公司的股票暂停转让一天，12月21日起终止上述3家公司股票挂牌。
+全国中小企业股份转让系统有限责任公司
+2017年12月12日"""
+        result = parse_neeq_termination_notice_text(text)
+        self.assertEqual(result["parser"], "neeq_termination_notice_parser_v9")
+        self.assertEqual(result["notice_count"], 3)
+        self.assertEqual(
+            [item["security_code"] for item in result["notices"]],
+            ["834502", "834606", "834904"],
+        )
+        for notice in result["notices"]:
+            self.assertEqual(notice["document_number"], "2017-684")
+            self.assertEqual(notice["announcement_date"], "2017-12-12")
+            self.assertEqual(notice["stated_termination_date"], "2017-12-21")
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
