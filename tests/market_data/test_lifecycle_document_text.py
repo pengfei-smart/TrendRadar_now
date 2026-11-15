@@ -94,7 +94,7 @@ class LifecycleDocumentTextTests(unittest.TestCase):
                 stream, strict=strict, pages=[_FakePage("证券代码000765暂停上市公告"), _FakePage("最后交易日为2020年12月31日")]
             )
         )
-        with patch.dict(sys.modules, {"pypdf": fake}):
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": fake}):
             text = extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
         self.assertIn("000765", text)
         self.assertIn("2020年12月31日", text)
@@ -105,13 +105,47 @@ class LifecycleDocumentTextTests(unittest.TestCase):
         self.assertEqual(parsed.date_evidence[0].date_type, "last_trading_date")
         self.assertEqual(parsed.date_evidence[0].date_status, "unknown")
 
+    def test_prefers_pymupdf_plain_text_for_positioned_chinese_heading(self):
+        class FakePage:
+            def get_text(self, mode):
+                self.mode = mode
+                return "公告标题\\n正文内容"
+
+        class FakeDocument:
+            needs_pass = False
+
+            def __init__(self):
+                self.pages = [FakePage()]
+
+            def __len__(self):
+                return len(self.pages)
+
+            def __iter__(self):
+                return iter(self.pages)
+
+        fake = types.SimpleNamespace(open=lambda stream, filetype: FakeDocument())
+        with patch.dict(sys.modules, {"pymupdf": fake}):
+            text = extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+        self.assertIn("公告标题", text)
+        self.assertIn("正文内容", text)
+
+    def test_falls_back_to_pypdf_when_pymupdf_is_unavailable(self):
+        fake = types.SimpleNamespace(
+            PdfReader=lambda stream, strict=False: _FakeReader(
+                stream, strict=strict, pages=[_FakePage("证券代码000765")]
+            )
+        )
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": fake}):
+            text = extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
+        self.assertIn("000765", text)
+
     def test_rejects_scanned_pdf_without_text_layer(self):
         fake = types.SimpleNamespace(
             PdfReader=lambda stream, strict=False: _FakeReader(
                 stream, strict=strict, pages=[_FakePage(""), _FakePage(None)]
             )
         )
-        with patch.dict(sys.modules, {"pypdf": fake}):
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": fake}):
             with self.assertRaisesRegex(ValueError, "扫描版 PDF.*不执行 OCR"):
                 extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
@@ -119,7 +153,7 @@ class LifecycleDocumentTextTests(unittest.TestCase):
         encrypted = types.SimpleNamespace(
             PdfReader=lambda stream, strict=False: _FakeReader(stream, encrypted=True)
         )
-        with patch.dict(sys.modules, {"pypdf": encrypted}):
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": encrypted}):
             with self.assertRaisesRegex(ValueError, "加密 PDF"):
                 extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
@@ -129,12 +163,12 @@ class LifecycleDocumentTextTests(unittest.TestCase):
                 self.is_encrypted = False
 
         too_many = types.SimpleNamespace(PdfReader=ManyPagesReader)
-        with patch.dict(sys.modules, {"pypdf": too_many}):
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": too_many}):
             with self.assertRaisesRegex(ValueError, "页数超过安全上限"):
                 extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
     def test_rejects_missing_pdf_optional_dependency(self):
-        with patch.dict(sys.modules, {"pypdf": None}):
+        with patch.dict(sys.modules, {"pymupdf": None, "pypdf": None}):
             with self.assertRaisesRegex(ValueError, "可选依赖 pypdf"):
                 extract_lifecycle_document_text(document(b"%PDF-fake", "application/pdf"))
 
