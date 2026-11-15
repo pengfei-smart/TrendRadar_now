@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "manifest_version": "neeq_834606_official_announcement_manifest_v1",
+  "security_code": "834606",
+  "company_name": "青岛拥湾资产管理集团股份有限公司",
+  "company_short_name": "拥湾资产",
+  "notice_document_number": "2017-684",
+  "source_index": {
+    "source_name": "同花顺金融服务网公司公告索引",
+    "source_url": "https://basic.10jqka.com.cn/834606/",
+    "source_type": "secondary_index_only",
+    "verification_note": "公告标题、索引日期及下载原文链接已从公司公告列表逐项打开核对；原文链接指向全国股转系统官方域名。PDF正文尚未取得，不视为已核验原文内容。"
+  },
+  "tasks": [
+    {
+      "attachment_id": "neeq_834606_20171218_termination_risk_warning",
+      "url": "https://www.neeq.com.cn/disclosure/2017/2017-12-18/1513588286_896761.pdf",
+      "attachment_kinds_reported": [
+        "pdf"
+      ],
+      "linked_candidate_count": 1,
+      "linked_candidates": [
+        {
+          "company_code": "834606",
+          "company_name": "青岛拥湾资产管理集团股份有限公司",
+          "company_short_name": "拥湾资产",
+          "notice_document_number": "2017-684",
+          "announcement_title": "关于股票被终止挂牌的风险提示性公告",
+          "published_date": "2017-12-18",
+          "evidence_type": "transfer_or_delisting_notice",
+          "title_index_url": "https://news.10jqka.com.cn/field/sn/20171218/12782431.shtml"
+        }
+      ],
+      "source_authority_status": "official_host_url_linked_from_secondary_index_pending_pdf_verification",
+      "legal_fact_confirmed": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "attachment_id": "neeq_834606_20171218_sponsor_risk_warning",
+      "url": "https://www.neeq.com.cn/disclosure/2017/2017-12-18/1513588406_121348.pdf",
+      "attachment_kinds_reported": [
+        "pdf"
+      ],
+      "linked_candidate_count": 1,
+      "linked_candidates": [
+        {
+          "company_code": "834606",
+          "company_name": "青岛拥湾资产管理集团股份有限公司",
+          "company_short_name": "拥湾资产",
+          "notice_document_number": "2017-684",
+          "announcement_title": "上海华信证券有限责任公司关于青岛拥湾资产管理集团股份有限公司的风险提示公告",
+          "published_date": "2017-12-18",
+          "evidence_type": "transfer_or_delisting_notice",
+          "title_index_url": "https://news.10jqka.com.cn/field/sn/20171218/12782471.shtml"
+        }
+      ],
+      "source_authority_status": "official_host_url_linked_from_secondary_index_pending_pdf_verification",
+      "legal_fact_confirmed": false,
+      "formal_lifecycle_write_allowed": false
+    },
+    {
+      "attachment_id": "neeq_834606_20171220_final_termination_announcement",
+      "url": "https://www.neeq.com.cn/disclosure/2017/2017-12-20/1513777865_065274.pdf",
+      "attachment_kinds_reported": [
+        "pdf"
+      ],
+      "linked_candidate_count": 1,
+      "linked_candidates": [
+        {
+          "company_code": "834606",
+          "company_name": "青岛拥湾资产管理集团股份有限公司",
+          "company_short_name": "拥湾资产",
+          "notice_document_number": "2017-684",
+          "announcement_title": "关于公司股票在全国中小企业股份转让系统终止挂牌的公告",
+          "published_date": "2017-12-20",
+          "evidence_type": "final_termination_announcement",
+          "title_index_url": "https://news.10jqka.com.cn/field/sn/20171220/12811807.shtml"
+        }
+      ],
+      "source_authority_status": "official_host_url_linked_from_secondary_index_pending_pdf_verification",
+      "legal_fact_confirmed": false,
+      "formal_lifecycle_write_allowed": false
+    }
+  ],
+  "safety": {
+    "network_downloads_performed": 0,
+    "database_writes": 0,
+    "formal_lifecycle_writes": 0,
+    "legal_fact_confirmations": 0,
+    "manual_review_required": true
+  }
+}
