@@ -1,3 +1,4 @@
+# 测试 NEEQ dataType=0 公告批次交叉核验。
 # -*- coding: utf-8 -*-
 """测试 NEEQ dataType=0 公告批次交叉核验报告。"""
 import unittest
@@ -83,10 +84,7 @@ class NeeqDataType0NoticeCrosscheckTests(unittest.TestCase):
         )
         self.assertTrue(row["candidate_coverage"]["has_background_membership"])
         self.assertTrue(row["candidate_coverage"]["has_formal_decision_membership"])
-        self.assertEqual(
-            report["summary"]["dual_background_and_formal_membership_codes"],
-            ["838047"],
-        )
+        self.assertEqual(report["summary"]["dual_background_and_formal_membership_codes"], ["838047"])
 
     def test_keeps_unmatched_as_not_proof_of_no_notice(self):
         manifest = {"manifest": {"candidates": [self._candidate("999999", "900")]}}
@@ -115,10 +113,7 @@ class NeeqDataType0NoticeCrosscheckTests(unittest.TestCase):
         manifest = {"manifest": {"candidates": [self._candidate("836614", "842")]}}
         report = build_report(manifest, self._batch_report())
         row = report["candidates"][0]
-        self.assertEqual(
-            row["supplemental_independent_decisions"][0]["notice_number"],
-            "2019-1071",
-        )
+        self.assertEqual(row["supplemental_independent_decisions"][0]["notice_number"], "2019-1071")
         self.assertEqual(row["batch_memberships"], [])
         self.assertEqual(row["interface_result_date"], "2019-09-06")
 
