@@ -12,10 +12,12 @@ from trendradar.market_data.neeq_followup_evidence_tracker import FOLLOW_UP_EVID
 DATE_TYPES = (
     "batch_announcement_date",
     "formal_decision_date",
+    "decision_received_date",
     "reconsideration_application_date",
     "reconsideration_acceptance_date",
     "reconsideration_decision_date",
     "conditional_termination_date",
+    "planned_termination_date",
     "company_announcement_date",
     "official_result_delisting_date",
     "legal_termination_date",
