@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pdf = ["pypdf>=7.0.1,<8.0.0"]
+pdf = ["PyMuPDF>=1.24,<2.0", "pypdf>=7.0.1,<8.0.0"]
 
 [project.scripts]
 trendradar = "trendradar.__main__:main"
