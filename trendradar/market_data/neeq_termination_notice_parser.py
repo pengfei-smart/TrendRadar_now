@@ -38,7 +38,10 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
         category = "bankruptcy_liquidation"
     elif "主动解散清算" in compact or ("解散清算" in compact and "破产" not in compact):
         category = "voluntary_dissolution_liquidation"
-    elif re.search(r"不符合.{0,12}整改|未完成整改", compact):
+    elif (
+        re.search(r"不符合.{0,40}整改|未完成整改", compact)
+        or ("不符合" in compact and "自查整改" in compact)
+    ):
         category = "failure_to_meet_rectification_requirements"
     elif any(term in compact for term in ("未能按照规定时间披露", "未按规定时间披露", "未披露")):
         category = "failure_to_disclose_periodic_report"
@@ -63,7 +66,10 @@ def _extract_document_number(document_text: str) -> str | None:
         year_match = re.fullmatch(r"(20\d{2})", header_lines[index])
         serial_match = re.fullmatch(r"(\d{3,5})(?:号)?", header_lines[index + 1])
         starts_at_document_header = index == 0 or (
-            index == 1 and re.fullmatch(r"-\d+-", header_lines[0])
+            index == 1 and (
+                re.fullmatch(r"-\d+-", header_lines[0])
+                or "股转系统公告" in header_lines[0]
+            )
         )
         if year_match and serial_match and starts_at_document_header:
             return f"{year_match.group(1)}-{serial_match.group(1)}"
