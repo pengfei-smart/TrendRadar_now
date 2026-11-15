@@ -24,7 +24,7 @@ SUPPLEMENTAL_DECISIONS = {
         "notice_number": "2019-1354",
         "decision_date": "2019-08-28",
         "conditional_termination_date": "2019-09-05",
-        "source_url": "https://www.neeq.com.cn/",
+        "source_url": None,
         "evidence_status": "official_announcement_number_and_dates_crosschecked",
         "note": "已核对官方公告文号及日期；具体附件URL待补录。",
     }],
@@ -60,19 +60,11 @@ SUPPLEMENTAL_DECISIONS = {
         "evidence_status": "official_decision_and_sponsor_notice_crosschecked",
         "note": "正式决定及主办券商公告线索已核对；接口日期2020-05-13晚于条件日期，后续实际终止日期仍待核验。",
     }],
-    "833292": [{
-        "notice_number": None,
-        "decision_date": "2020-02-17",
-        "conditional_termination_date": "2020-02-25",
-        "source_url": None,
-        "evidence_status": "third_party_notice_index_lead_not_officially_verified",
-        "note": "第三方公告索引线索；不作为正式决定证据，需取得官方公告原文后升级。",
-    }],
     "832115": [{
         "notice_number": "2021-926",
         "decision_date": "2021-09-07",
         "conditional_termination_date": None,
-        "source_url": "https://www.neeq.cc/disclosure/2021/2021-09-07/2021-926.pdf",
+        "source_url": None,
         "evidence_status": "official_decision_notice_crosschecked",
         "note": "官方决定日期已核对；发行人公告所述最终摘牌日期2021-10-21另列为待核验结果线索，不当作条件终止日期。",
         "reported_final_delisting_date": "2021-10-21",
@@ -81,6 +73,13 @@ SUPPLEMENTAL_DECISIONS = {
 }
 
 SUPPLEMENTAL_LEADS = {
+    "833292": [{
+        "lead_type": "third_party_notice_index",
+        "date": "2020-02-17",
+        "source_url": None,
+        "status": "unverified_lead",
+        "note": "第三方公告索引提及决定及2020-02-25条件日期；未取得官方公告原文，不作为正式决定证据。",
+    }],
     "833028": [{
         "lead_type": "media_report",
         "date": "2021-10-21",
