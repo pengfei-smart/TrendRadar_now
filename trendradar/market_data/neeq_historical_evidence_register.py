@@ -20,6 +20,8 @@ DATE_TYPES = (
     "official_result_delisting_date",
     "legal_termination_date",
     "transfer_start_date",
+    "transfer_suspension_date",
+    "transfer_resumption_date",
     "last_trading_date",
     "other_date",
 )
@@ -128,7 +130,6 @@ def build_neeq_historical_evidence_register(
         metadata_complete = all((
             _clean(row.get("source_title")),
             url_valid,
-            _clean(row.get("source_document_number")),
             _clean(row.get("published_date")),
             bool(actual_sha),
         ))
