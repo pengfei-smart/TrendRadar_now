@@ -26,7 +26,7 @@ def main() -> int:
     result = build_neeq_followup_evidence_tracker(reconciliation, evidence)
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result["summary"], ensure_ascii=False, indent=2))
     return 0
 
