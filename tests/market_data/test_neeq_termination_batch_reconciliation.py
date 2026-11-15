@@ -152,8 +152,10 @@ class NEEQTerminationBatchReconciliationTests(unittest.TestCase):
     def test_candidate_without_batch_membership_is_reported_not_inferred(self):
         result = self.build([], [candidate("000003", "丁公司股份有限公司", "丁公司", "3")])
         row = result["candidate_coverage"][0]
-        self.assertEqual(row["coverage_status"], "no_parsed_batch_membership")
+        self.assertEqual(row["coverage_status"], "batch_coverage_not_exhaustive")
+        self.assertFalse(row["parsed_batch_membership_found"])
         self.assertFalse(row["has_formal_decision_membership"])
+        self.assertFalse(result["summary"]["candidate_batch_coverage_is_exhaustive"])
 
     def test_deduplicates_exact_same_membership_occurrence_only(self):
         item = {
@@ -167,6 +169,35 @@ class NEEQTerminationBatchReconciliationTests(unittest.TestCase):
         }
         result = self.build([item], [candidate("000004", "戊公司股份有限公司", "戊公司", "4")])
         self.assertEqual(len(result["batch_memberships"]), 1)
+
+
+    def test_delisted_display_prefix_is_classified_not_reported_as_identity_conflict(self):
+        result = self.build([{
+            "attachment_id": "a",
+            "url": "https://www.neeq.com.cn/notice.html",
+            "notices": [notice("000006", "甲公司股份有限公司", "甲公司",
+                               "2019-600", "2019-06-01", "2019-06-10")],
+            "contextual_identities": [],
+        }], [candidate("000006", "摘牌甲公司", "摘牌甲公司", "6")])
+        row = result["batch_memberships"][0]
+        self.assertEqual(row["candidate_name_match_type"], "delisted_display_name")
+        self.assertEqual(result["summary"]["candidate_name_conflict_count"], 0)
+        self.assertEqual(result["summary"]["delisted_display_name_difference_count"], 1)
+        self.assertEqual(len(result["display_name_differences"]), 1)
+
+    def test_date_completeness_keeps_missing_decision_date_missing(self):
+        result = self.build([{
+            "attachment_id": "a",
+            "url": "https://www.neeq.com.cn/notice.html",
+            "notices": [notice("000007", "乙公司股份有限公司", "乙公司",
+                               "2019-700", "2019-07-01", "2019-07-09")],
+            "contextual_identities": [],
+        }], [candidate("000007", "乙公司股份有限公司", "乙公司", "7")])
+        row = result["batch_memberships"][0]
+        self.assertEqual(row["batch_announcement_date"], "2019-07-01")
+        self.assertEqual(row["formal_decision_date"], "2019-07-01")
+        self.assertEqual(result["summary"]["date_completeness"]["formal_decision_date"]["present_count"], 1)
+        self.assertFalse(result["safety"]["batch_coverage_is_exhaustive"])
 
     def test_report_is_read_only_and_never_confirms_legal_facts(self):
         result = self.build([], [candidate("000005", "己公司股份有限公司", "己公司", "5")])
