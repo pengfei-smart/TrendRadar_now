@@ -95,6 +95,36 @@ class NeeqDataType0DateAuditTests(unittest.TestCase):
         self.assertEqual(report["summary"]["formal_decision_unique_count"], 1)
         self.assertEqual(report["summary"]["duplicate_formal_decision_evidence_count"], 1)
 
+    def test_formal_decisions_create_post_decision_follow_up_tasks(self):
+        candidate = self._candidate()
+        report = build_report({"candidates": [candidate]})
+        row = report["candidates"][0]
+        task = row["follow_up_tracking"]
+        self.assertTrue(task["follow_up_required"])
+        self.assertEqual(task["task_status"], "pending_evidence_search")
+        self.assertEqual(task["procedure_stage"], "post_decision_procedure")
+        self.assertEqual(task["review_application_status"], "unknown")
+        self.assertIsNone(task["final_termination_date"])
+        self.assertIn("final_termination_announcement", task["required_evidence_types"])
+        self.assertEqual(report["summary"]["follow_up_task_candidate_count"], 1)
+        self.assertEqual(report["summary"]["follow_up_pending_count"], 1)
+        self.assertEqual(report["report_version"], "neeq_datatype0_date_audit_v4")
+
+    def test_background_only_candidate_does_not_create_post_decision_task(self):
+        candidate = self._candidate(batch_memberships=[{
+            "membership_type": "background_pending_company",
+            "batch_notice_number": None,
+            "formal_decision_date": None,
+            "conditional_termination_date": None,
+        }])
+        row = build_report({"candidates": [candidate]})["candidates"][0]
+        self.assertFalse(row["follow_up_tracking"]["follow_up_required"])
+        self.assertEqual(
+            row["follow_up_tracking"]["task_status"],
+            "not_started_no_formal_decision_evidence",
+        )
+        self.assertEqual(row["follow_up_tracking"]["required_evidence_types"], [])
+
     def test_safety_boundary_is_read_only(self):
         report = build_report({"candidates": [self._candidate()]})
         self.assertTrue(report["safety"]["read_only"])
