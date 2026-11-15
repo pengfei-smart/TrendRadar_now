@@ -185,6 +185,26 @@ class NEEQTerminationBatchReconciliationTests(unittest.TestCase):
         self.assertEqual(result["summary"]["delisted_display_name_difference_count"], 1)
         self.assertEqual(len(result["display_name_differences"]), 1)
 
+
+    def test_delisted_abbreviated_name_is_pending_variant_not_hard_conflict(self):
+        result = self.build([{
+            "attachment_id": "a",
+            "url": "https://www.neeq.com.cn/notice.html",
+            "notices": [],
+            "contextual_identities": [{
+                "security_code": "430088",
+                "short_name": "七维航测",
+                "identity_source": "html_attachment_table",
+            }],
+        }], [candidate("430088", "摘牌七航", "摘牌七航", "1050")])
+        row = result["batch_memberships"][0]
+        self.assertEqual(row["candidate_name_match_type"], "delisted_display_name_variant_pending_review")
+        self.assertEqual(result["summary"]["candidate_name_conflict_count"], 0)
+        self.assertEqual(result["summary"]["delisted_display_name_difference_count"], 1)
+        self.assertEqual(len(result["display_name_differences"]), 1)
+        self.assertFalse(row["candidate_name_match"])
+        self.assertEqual(row["security_code"], "430088")
+
     def test_date_completeness_keeps_missing_decision_date_missing(self):
         missing_decision_notice = notice(
             "000007", "乙公司股份有限公司", "乙公司", "2019-700", "2019-07-01", "2019-07-09"
