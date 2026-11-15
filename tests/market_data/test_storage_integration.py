@@ -118,6 +118,85 @@ class MarketStorageIntegrationTests(unittest.TestCase):
                 connection.execute("SELECT COUNT(*) FROM neeq_issuer_master").fetchone()[0], 0
             )
 
+    def test_neeq_termination_ledger_write_read_idempotency_and_review_guard(self):
+        case = {
+            "case_id": "neeq-case-838047-841",
+            "company_code": "838047",
+            "company_name_snapshot": "二中科技",
+            "source_record_id": "841",
+            "source_api": "neeq_termination_result_api",
+            "interface_result_date": "2019-09-06",
+            "interface_create_at": "2020-02-21T17:23:46+08:00",
+            "raw_record": {
+                "id": 841, "companyCode": "838047",
+                "companyName": "二中科技", "delistingDate": "2019-09-06",
+            },
+        }
+        self.assertEqual(self.storage.save_neeq_termination_cases([case]), 1)
+        self.assertEqual(self.storage.save_neeq_termination_cases([case]), 1)
+        loaded = self.storage.list_neeq_termination_cases(company_code="838047")
+        self.assertEqual(len(loaded), 1)
+        self.assertEqual(loaded[0]["raw_record"]["id"], 841)
+        self.assertEqual(loaded[0]["case_status"], "pending_review")
+
+        evidence = {
+            "evidence_id": "neeq-evidence-2019-984",
+            "evidence_kind": "batch_notice",
+            "source_authority": "neeq_official",
+            "notice_number": "股转系统公告〔2019〕984号",
+            "document_title": "关于作出终止46家未披露2018年年度报告公司股票挂牌决定的公告",
+            "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+            "retrieved_at": "2026-11-15T10:00:00+08:00",
+            "evidence_status": "crosschecked",
+            "metadata": {"appendix": "Appendix 2"},
+        }
+        self.assertEqual(self.storage.save_neeq_termination_evidence([evidence]), 1)
+        self.assertEqual(self.storage.save_neeq_termination_evidence([evidence]), 1)
+        self.assertEqual(self.storage.save_neeq_termination_procedures([{
+            "procedure_id": "neeq-procedure-838047-decision",
+            "case_id": case["case_id"],
+            "procedure_type": "decision_issued",
+            "event_date": "2019-07-01",
+            "date_semantics": "decision_issued",
+            "date_status": "confirmed",
+        }]), 1)
+        self.assertEqual(self.storage.link_neeq_termination_evidence([{
+            "link_id": "neeq-link-838047-984",
+            "case_id": case["case_id"],
+            "evidence_id": evidence["evidence_id"],
+            "procedure_id": "neeq-procedure-838047-decision",
+            "relation_type": "supports_procedure",
+        }]), 1)
+        review_id = self.storage.record_neeq_termination_review({
+            "case_id": case["case_id"],
+            "evidence_id": evidence["evidence_id"],
+            "procedure_id": "neeq-procedure-838047-decision",
+            "review_status": "needs_more_evidence",
+            "conclusion_code": "decision_evidence_only",
+            "reviewer": "test-reviewer",
+            "reviewed_at": "2026-11-15T10:30:00+08:00",
+            "review_notes": "尚未找到复核及最终终止公告。",
+        })
+        self.assertGreater(review_id, 0)
+        with self.assertRaises(ValueError):
+            self.storage.record_neeq_termination_review({
+                "case_id": case["case_id"],
+                "review_status": "verified",
+                "conclusion_code": "actual_termination_confirmed",
+                "reviewer": "test-reviewer",
+                "reviewed_at": "2026-11-15T10:31:00+08:00",
+            })
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM neeq_termination_case").fetchone()[0], 1
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM neeq_termination_review").fetchone()[0], 1
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0
+            )
+
     def test_neeq_identity_candidates_do_not_auto_create_issuer_master(self):
         self.storage.save_neeq_issuer_identity_candidates([{
             "identity_candidate_id": "neeq-pdf-832480-001",
