@@ -16,6 +16,7 @@ def build_neeq_lifecycle_case_review(
     evidence_register: dict,
     *,
     security_codes=None,
+    official_result_audit: dict | None = None,
     generated_at: str | None = None,
 ) -> dict:
     """Aggregate registered evidence by security without inferring missing lifecycle events."""
@@ -26,6 +27,12 @@ def build_neeq_lifecycle_case_review(
         code = _clean(dossier.get("security_code"))
         if code in selected_set:
             dossiers_by_code.setdefault(code, []).append(dossier)
+
+    official_cases = {
+        _clean(case.get("security_code")): case
+        for case in (official_result_audit or {}).get("cases") or []
+        if _clean(case.get("security_code"))
+    }
 
     cases = []
     for code in selected:
@@ -55,6 +62,32 @@ def build_neeq_lifecycle_case_review(
                     "assertion_review_status": assertion.get("assertion_review_status"),
                     "evidence_review_status": record.get("review_status"),
                 })
+        official_case = official_cases.get(code, {})
+        official_candidates = []
+        for candidate in official_case.get("date_evidence_candidates") or []:
+            date_value = _clean(candidate.get("date_value"))
+            if not date_value:
+                continue
+            official_candidates.append({
+                "date_value": date_value,
+                "date_type": "official_result_delisting_date",
+                "date_type_category": "official_result",
+                "source_evidence_id": f"neeq-official-result-{code}-{candidate.get('raw_response_sha256', '')[:12]}",
+                "evidence_type": "official_result_api_record",
+                "source_title": "全国股转系统历史终止挂牌结果接口记录",
+                "source_url": candidate.get("source_url"),
+                "source_file": next((
+                    page.get("raw_response_file")
+                    for page in official_case.get("pages") or []
+                    if page.get("response_sha256") == candidate.get("raw_response_sha256")
+                ), None),
+                "source_sha256": candidate.get("raw_response_sha256"),
+                "source_quote": f"官方结果接口 delistingDate={date_value}",
+                "page_number": None,
+                "assertion_review_status": "candidate_pending_manual_review",
+                "evidence_review_status": "candidate_pending_manual_review",
+            })
+        observations.extend(official_candidates)
         observations.sort(key=lambda row: (row["date_value"], row["date_type"], row["source_evidence_id"] or ""))
 
         date_types = {row["date_type"] for row in observations}
@@ -113,6 +146,8 @@ def build_neeq_lifecycle_case_review(
                 if _clean(dossier.get("notice_document_number"))
             }),
             "evidence_record_count": len(evidence_records),
+            "official_result_candidate_count": len(official_candidates),
+            "official_result_evidence": official_candidates,
             "date_assertion_count": len(observations),
             "evidence_records": [
                 {
@@ -152,6 +187,7 @@ def build_neeq_lifecycle_case_review(
             "security_count": len(cases),
             "evidence_record_count": sum(case["evidence_record_count"] for case in cases),
             "date_assertion_count": sum(case["date_assertion_count"] for case in cases),
+            "official_result_candidate_count": sum(case["official_result_candidate_count"] for case in cases),
             "securities_with_explicit_resumption_evidence": sum(
                 case["coverage"]["explicit_transfer_resumption_evidence_found"] for case in cases
             ),
