@@ -47,12 +47,12 @@ def _is_formal_decision(evidence: dict[str, Any]) -> bool:
 
 
 def _formal_decision_key(security_code: str | None, evidence: dict[str, Any]) -> tuple[str | None, ...]:
-    """以证券代码、公告文号和决定日期去重同一正式决定的多来源佐证。"""
+    """以证券代码、公告文号和条件终止日期识别决定，避免缺失日期造成重复计数。"""
+    conditional_date = evidence.get("conditional_termination_date")
     return (
         security_code,
         evidence.get("notice_number"),
-        evidence.get("decision_date"),
-        evidence.get("conditional_termination_date"),
+        conditional_date or evidence.get("decision_date"),
     )
 
 
@@ -97,7 +97,18 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
             })
         formal_evidence = [e for e in decision_evidence if _is_formal_decision(e)]
         security_code = item.get("security_code")
-        row_decision_keys = {_formal_decision_key(security_code, e) for e in formal_evidence}
+        row_decision_map: dict[tuple[str | None, ...], dict[str, Any]] = {}
+        for evidence in formal_evidence:
+            key = _formal_decision_key(security_code, evidence)
+            existing = row_decision_map.setdefault(key, {
+                "security_code": security_code,
+                "notice_number": evidence.get("notice_number"),
+                "decision_date": None,
+                "conditional_termination_date": evidence.get("conditional_termination_date"),
+            })
+            if not existing["decision_date"] and evidence.get("decision_date"):
+                existing["decision_date"] = evidence.get("decision_date")
+        row_decision_keys = set(row_decision_map)
         unique_formal_decision_keys.update(row_decision_keys)
         duplicate_formal_evidence_count += len(formal_evidence) - len(row_decision_keys)
         background_evidence = [e for e in decision_evidence if e.get("membership_type") == "background_pending_company"]
@@ -152,12 +163,7 @@ def build_report(crosscheck_report: dict[str, Any]) -> dict[str, Any]:
             "formal_decision_unique_count": len(row_decision_keys),
             "formal_decision_duplicate_evidence_count": len(formal_evidence) - len(row_decision_keys),
             "formal_decision_unique_keys": [
-                {
-                    "security_code": key[0],
-                    "notice_number": key[1],
-                    "decision_date": key[2],
-                    "conditional_termination_date": key[3],
-                }
+                row_decision_map[key]
                 for key in sorted(row_decision_keys, key=lambda value: tuple(part or "" for part in value))
             ],
             "background_membership_evidence_count": len(background_evidence),
