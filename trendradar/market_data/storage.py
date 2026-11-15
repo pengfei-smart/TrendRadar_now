@@ -1,6 +1,7 @@
 # 本文件负责独立市场SQLite初始化、版本迁移、事务写入与行情/事件持久化。
 """Standalone SQLite storage and safe schema migration for market radar."""
 
+import hashlib
 import json
 import sqlite3
 from contextlib import contextmanager
@@ -995,6 +996,275 @@ class MarketStorage:
                 "SELECT * FROM neeq_issuer_master WHERE company_code=?", (company_code,)
             ).fetchone()
             return dict(row) if row else None
+
+
+    @staticmethod
+    def _neeq_sha256(value: str) -> str:
+        digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+        return digest
+
+    @staticmethod
+    def _neeq_json(value: dict) -> str:
+        return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+    def save_neeq_termination_cases(self, cases: Iterable[dict]) -> int:
+        """幂等保存NEEQ终止挂牌调查案件；原始快照哈希不一致时拒绝覆盖。"""
+        rows = []
+        for item in cases:
+            case_id = str(item.get("case_id") or "").strip()
+            code = str(item.get("company_code") or "").strip()
+            if not case_id or len(code) != 6 or not code.isdigit():
+                raise ValueError("案件必须提供case_id和六位数字company_code")
+            raw_record = item.get("raw_record")
+            if not isinstance(raw_record, dict):
+                raise ValueError("raw_record必须是JSON对象")
+            raw_json = self._neeq_json(raw_record)
+            raw_hash = self._neeq_sha256(raw_json)
+            supplied_hash = str(item.get("raw_record_sha256") or "").strip().lower()
+            if supplied_hash and supplied_hash != raw_hash:
+                raise ValueError("raw_record_sha256与原始记录内容不一致")
+            status = item.get("case_status", "pending_review")
+            self._validate_enum(
+                status,
+                {"pending_review", "evidence_gathering", "ready_for_review",
+                 "reviewed", "closed", "invalid"},
+                "case_status",
+            )
+            rows.append((
+                case_id, code, str(item.get("company_name_snapshot") or ""),
+                str(item.get("source_record_id") or ""), str(item.get("source_api") or ""),
+                str(item.get("interface_result_date") or ""),
+                str(item.get("interface_create_at") or ""), raw_json, raw_hash, status,
+            ))
+        if not rows:
+            return 0
+        with self.connect() as connection:
+            for row in rows:
+                existing = connection.execute(
+                    "SELECT raw_record_sha256 FROM neeq_termination_case WHERE case_id=?",
+                    (row[0],),
+                ).fetchone()
+                if existing and existing["raw_record_sha256"] != row[8]:
+                    raise ValueError(f"案件ID对应的原始快照发生变化，拒绝覆盖: {row[0]}")
+            connection.executemany(
+                """INSERT OR IGNORE INTO neeq_termination_case
+                (case_id,company_code,company_name_snapshot,source_record_id,source_api,
+                 interface_result_date,interface_create_at,raw_record_json,raw_record_sha256,case_status)
+                VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                rows,
+            )
+            for row in rows:
+                found = connection.execute(
+                    "SELECT raw_record_sha256 FROM neeq_termination_case WHERE case_id=?",
+                    (row[0],),
+                ).fetchone()
+                if not found or found["raw_record_sha256"] != row[8]:
+                    raise RuntimeError(f"案件提交后回读校验失败: {row[0]}")
+        return len(rows)
+
+    def save_neeq_termination_evidence(self, evidence: Iterable[dict]) -> int:
+        """幂等保存证据元数据；相同ID但内容哈希不同则拒绝覆盖。"""
+        rows = []
+        for item in evidence:
+            evidence_id = str(item.get("evidence_id") or "").strip()
+            source_url = str(item.get("source_url") or "").strip()
+            retrieved_at = str(item.get("retrieved_at") or "").strip()
+            if not evidence_id or not source_url.startswith("https://") or not retrieved_at:
+                raise ValueError("证据必须提供ID、HTTPS来源URL和采集时间")
+            self._validate_enum(item.get("evidence_kind"), {
+                "batch_notice", "formal_decision", "review_application", "review_decision",
+                "supplementary_decision", "final_termination_notice", "transfer_exit_record",
+                "issuer_notice", "sponsor_notice", "third_party_lead", "other",
+            }, "evidence_kind")
+            self._validate_enum(item.get("source_authority", "unknown"), {
+                "neeq_official", "issuer_official", "sponsor_official",
+                "government_or_registry", "reliable_secondary", "third_party", "unknown",
+            }, "source_authority")
+            self._validate_enum(item.get("evidence_status", "located"), {
+                "located", "downloaded", "extracted", "crosschecked", "unverified", "rejected",
+            }, "evidence_status")
+            content_hash = str(item.get("content_sha256") or "").lower().strip()
+            if content_hash and (
+                len(content_hash) != 64 or any(ch not in "0123456789abcdef" for ch in content_hash)
+            ):
+                raise ValueError("content_sha256必须是64位十六进制SHA-256")
+            metadata = item.get("metadata", {})
+            if not isinstance(metadata, dict):
+                raise ValueError("metadata必须是JSON对象")
+            rows.append((
+                evidence_id, item["evidence_kind"], item.get("source_authority", "unknown"),
+                str(item.get("notice_number") or ""), str(item.get("document_title") or ""),
+                source_url, str(item.get("published_date") or ""), retrieved_at, content_hash,
+                item.get("evidence_status", "located"), str(item.get("content_excerpt") or ""),
+                self._neeq_json(metadata),
+            ))
+        if not rows:
+            return 0
+        with self.connect() as connection:
+            for row in rows:
+                existing = connection.execute(
+                    "SELECT source_url,content_sha256 FROM neeq_termination_evidence WHERE evidence_id=?",
+                    (row[0],),
+                ).fetchone()
+                if existing and (
+                    existing["source_url"] != row[5] or existing["content_sha256"] != row[8]
+                ):
+                    raise ValueError(f"证据ID内容冲突，拒绝覆盖: {row[0]}")
+            connection.executemany(
+                """INSERT OR IGNORE INTO neeq_termination_evidence
+                (evidence_id,evidence_kind,source_authority,notice_number,document_title,
+                 source_url,published_date,retrieved_at,content_sha256,evidence_status,
+                 content_excerpt,metadata_json)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                rows,
+            )
+            for row in rows:
+                found = connection.execute(
+                    "SELECT source_url,content_sha256 FROM neeq_termination_evidence WHERE evidence_id=?",
+                    (row[0],),
+                ).fetchone()
+                if not found or found["source_url"] != row[5] or found["content_sha256"] != row[8]:
+                    raise RuntimeError(f"证据提交后回读校验失败: {row[0]}")
+        return len(rows)
+
+    def save_neeq_termination_procedures(self, procedures: Iterable[dict]) -> int:
+        """保存程序节点；日期语义与日期核验状态必须显式分开。"""
+        rows = []
+        for item in procedures:
+            procedure_id = str(item.get("procedure_id") or "").strip()
+            case_id = str(item.get("case_id") or "").strip()
+            if not procedure_id or not case_id:
+                raise ValueError("程序节点必须提供procedure_id和case_id")
+            self._validate_enum(item.get("procedure_type"), {
+                "decision_issued", "decision_received", "review_filed", "review_accepted",
+                "review_rejected", "supplementary_decision", "conditional_termination",
+                "final_termination", "transfer_market_entry", "transfer_exit", "other",
+            }, "procedure_type")
+            self._validate_enum(item.get("date_semantics", "unknown"), {
+                "decision_issued", "decision_received", "announcement", "conditional_termination",
+                "last_trading_day", "actual_termination", "transfer_start", "transfer_exit", "unknown",
+            }, "date_semantics")
+            self._validate_enum(item.get("date_status", "unknown"), {
+                "confirmed", "approximate", "pending", "unknown",
+            }, "date_status")
+            rows.append((
+                procedure_id, case_id, item["procedure_type"], str(item.get("event_date") or ""),
+                item.get("date_semantics", "unknown"), item.get("date_status", "unknown"),
+                str(item.get("notes") or ""),
+            ))
+        if not rows:
+            return 0
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT OR IGNORE INTO neeq_termination_procedure
+                (procedure_id,case_id,procedure_type,event_date,date_semantics,date_status,notes)
+                VALUES(?,?,?,?,?,?,?)""",
+                rows,
+            )
+            for row in rows:
+                found = connection.execute(
+                    "SELECT case_id,procedure_type,event_date,date_semantics,date_status "
+                    "FROM neeq_termination_procedure WHERE procedure_id=?",
+                    (row[0],),
+                ).fetchone()
+                if not found or tuple(found) != tuple(row[1:6]):
+                    raise ValueError(f"程序节点ID冲突或案件不存在: {row[0]}")
+        return len(rows)
+
+    def link_neeq_termination_evidence(self, links: Iterable[dict]) -> int:
+        """关联案件、证据及可选程序节点，外键约束负责拒绝孤立引用。"""
+        rows = []
+        for item in links:
+            link_id = str(item.get("link_id") or "").strip()
+            case_id = str(item.get("case_id") or "").strip()
+            evidence_id = str(item.get("evidence_id") or "").strip()
+            relation = item.get("relation_type", "supports_case")
+            if not link_id or not case_id or not evidence_id:
+                raise ValueError("证据关联必须提供link_id、case_id和evidence_id")
+            self._validate_enum(
+                relation, {"supports_case", "supports_procedure", "contradicts", "context_only"},
+                "relation_type",
+            )
+            procedure_id = str(item.get("procedure_id") or "").strip() or None
+            if relation == "supports_procedure" and not procedure_id:
+                raise ValueError("supports_procedure关联必须提供procedure_id")
+            rows.append((link_id, case_id, evidence_id, procedure_id, relation, str(item.get("notes") or "")))
+        if not rows:
+            return 0
+        with self.connect() as connection:
+            connection.executemany(
+                """INSERT OR IGNORE INTO neeq_termination_evidence_link
+                (link_id,case_id,evidence_id,procedure_id,relation_type,notes)
+                VALUES(?,?,?,?,?,?)""",
+                rows,
+            )
+            for row in rows:
+                found = connection.execute(
+                    "SELECT case_id,evidence_id,procedure_id,relation_type "
+                    "FROM neeq_termination_evidence_link WHERE link_id=?",
+                    (row[0],),
+                ).fetchone()
+                if not found or tuple(found) != tuple(row[1:5]):
+                    raise ValueError(f"证据关联ID冲突或引用不存在: {row[0]}")
+        return len(rows)
+
+    def record_neeq_termination_review(self, review: dict) -> int:
+        """追加人工审核历史，不覆盖旧审核结论。"""
+        case_id = str(review.get("case_id") or "").strip()
+        if not case_id:
+            raise ValueError("审核记录必须提供case_id")
+        self._validate_enum(review.get("review_status", "pending"), {
+            "pending", "verified", "rejected", "needs_more_evidence",
+        }, "review_status")
+        if not str(review.get("reviewer") or "").strip() or not str(review.get("reviewed_at") or "").strip():
+            raise ValueError("审核记录必须提供审核人和审核时间")
+        conclusion = str(review.get("conclusion_code") or "")
+        if conclusion == "actual_termination_confirmed":
+            raise ValueError("此台账接口不允许直接确认正式实际终止挂牌事实")
+        with self.connect() as connection:
+            cursor = connection.execute(
+                """INSERT INTO neeq_termination_review
+                (case_id,evidence_id,procedure_id,review_status,conclusion_code,
+                 reviewer,reviewed_at,review_notes)
+                VALUES(?,?,?,?,?,?,?,?)""",
+                (case_id, review.get("evidence_id"), review.get("procedure_id"),
+                 review.get("review_status", "pending"), conclusion,
+                 review["reviewer"].strip(), review["reviewed_at"].strip(),
+                 str(review.get("review_notes") or "")),
+            )
+            return int(cursor.lastrowid)
+
+    def list_neeq_termination_cases(
+        self, *, company_code: str | None = None, case_status: str | None = None,
+        limit: int = 500,
+    ) -> list[dict]:
+        if not 1 <= limit <= 5000:
+            raise ValueError("limit必须在1到5000之间")
+        clauses, params = [], []
+        if company_code is not None:
+            if len(company_code) != 6 or not company_code.isdigit():
+                raise ValueError("company_code必须是六位数字")
+            clauses.append("company_code=?")
+            params.append(company_code)
+        if case_status is not None:
+            self._validate_enum(case_status, {
+                "pending_review", "evidence_gathering", "ready_for_review",
+                "reviewed", "closed", "invalid",
+            }, "case_status")
+            clauses.append("case_status=?")
+            params.append(case_status)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            result = []
+            for row in connection.execute(
+                "SELECT * FROM neeq_termination_case" + where +
+                " ORDER BY interface_result_date,company_code,case_id LIMIT ?",
+                (*params, limit),
+            ).fetchall():
+                item = dict(row)
+                item["raw_record"] = json.loads(item.pop("raw_record_json"))
+                result.append(item)
+            return result
 
     def save_radar_run(self, run_at: str, candidate_count: int, pushed_count: int,
                        source_status: str, notes: str = "") -> None:
