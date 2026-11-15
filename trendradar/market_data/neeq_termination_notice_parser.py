@@ -55,10 +55,18 @@ def _classify_termination(compact: str, reason: str | None) -> tuple[str, str | 
 
 def _extract_document_number(document_text: str) -> str | None:
     """Extract a notice number from the opening header, never from body citations."""
-    lines = [re.sub(r"\s+", "", line).strip() for line in document_text.splitlines()]
+    # Stop header scanning at the first substantive body paragraph. This
+    # permits HTML article chrome before the notice number while preventing
+    # historical citations inside PDF/body text from becoming the document ID.
+    body_start = re.search(
+        r"(?m)^\\s*(?:截至|近期\\s*[，,]|根据|经进一步审查|经审查|我司(?:决定|于)|公司(?:于|已))",
+        document_text,
+    )
+    header_text = document_text[:body_start.start()] if body_start else document_text
+    lines = [re.sub(r"\\s+", "", line).strip() for line in header_text.splitlines()]
     lines = [line for line in lines if line]
-    header_lines = lines[:8]
-    header = "".join(header_lines[:3])
+    header_lines = lines[:40]
+    header = "".join(header_lines)
 
     # Official notices may put the year and serial on adjacent opening lines.
     # Accept this only at the start, before any body citations can occur.
@@ -411,8 +419,28 @@ def _parse_notice(block: str, index: int, *, table_source: str | None = None) ->
     identities = _extract_identities(compact, block, table_source=table_source)
     if not identities:
         identities = [{"company_name": None, "short_name": None, "security_code": None, "identity_source": "unresolved"}]
-    title_match = _first(r"([^\n]{4,160}(?:公告|决定))", block)
-    title = _clean(title_match.group(1)) if title_match else None
+    # A title must be an actual opening heading line, not a body citation
+    # such as “（股转系统公告〔2016〕36号）”.
+    source_lines = [re.sub(r"\\s+", "", line).strip() for line in block.splitlines() if line.strip()]
+    body_index = next(
+        (i for i, line in enumerate(source_lines)
+         if re.match(r"(?:截至|近期[，,]|根据|经进一步审查|经审查|我司(?:决定|于)|公司(?:于|已))", line)),
+        len(source_lines),
+    )
+    title_lines = source_lines[:body_index]
+    title = None
+    for title_index, line in enumerate(title_lines):
+        if not line.startswith("关于"):
+            continue
+        candidate = line
+        if not re.search(r"(?:公告|决定)$", candidate):
+            for next_line in title_lines[title_index + 1:title_index + 4]:
+                candidate += next_line
+                if re.search(r"(?:公告|决定)$", candidate):
+                    break
+        if re.search(r"(?:公告|决定)$", candidate) and len(candidate) <= 160:
+            title = _clean(candidate)
+            break
     results = []
     for identity in identities:
         record = {
