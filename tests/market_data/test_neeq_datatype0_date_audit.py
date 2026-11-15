@@ -95,6 +95,32 @@ class NeeqDataType0DateAuditTests(unittest.TestCase):
         self.assertEqual(report["summary"]["formal_decision_unique_count"], 1)
         self.assertEqual(report["summary"]["duplicate_formal_decision_evidence_count"], 1)
 
+    def test_same_decision_with_missing_decision_date_is_deduplicated_and_enriched(self):
+        candidate = self._candidate(
+            batch_memberships=[{
+                "membership_type": "formal_decision_company",
+                "batch_notice_number": "2019-1071",
+                "formal_decision_date": None,
+                "conditional_termination_date": "2019-07-29",
+                "source_attachment_url": "https://www.neeq.com.cn/important_news/200006332.html",
+            }],
+            supplemental_independent_decisions=[{
+                "notice_number": "2019-1071",
+                "decision_date": "2019-07-19",
+                "conditional_termination_date": "2019-07-29",
+                "source_url": "https://www.neeq.com.cn/important_news/200006332.html",
+                "evidence_status": "official_notice_identity_and_dates_crosschecked",
+            }],
+        )
+        report = build_report({"candidates": [candidate]})
+        row = report["candidates"][0]
+        self.assertEqual(row["formal_decision_evidence_count"], 2)
+        self.assertEqual(row["formal_decision_unique_count"], 1)
+        self.assertEqual(row["formal_decision_duplicate_evidence_count"], 1)
+        self.assertEqual(row["formal_decision_unique_keys"][0]["decision_date"], "2019-07-19")
+        self.assertEqual(report["summary"]["formal_decision_unique_count"], 1)
+        self.assertEqual(report["summary"]["duplicate_formal_decision_evidence_count"], 1)
+
     def test_formal_decisions_create_post_decision_follow_up_tasks(self):
         candidate = self._candidate()
         report = build_report({"candidates": [candidate]})
