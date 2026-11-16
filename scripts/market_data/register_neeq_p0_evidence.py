@@ -118,6 +118,17 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
+            "search_id": "neeq-search-836614-review-application-20261116",
+            "case_id": "neeq-result-836614-842",
+            "evidence_kind": "review_application",
+            "search_status": "searched_not_found",
+            "searched_at": retrieved_at,
+            "search_scope": scope,
+            "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
+            "reviewer": "TrendRadar research",
+        },
+        {
             "search_id": "neeq-search-836614-review-decision-20261116",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "review_decision",
@@ -136,7 +147,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "searched_at": retrieved_at,
             "search_scope": scope,
             "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
-            "source_urls": ["https://www.neeq.cn/disclosure/termination_listing.html"],
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
             "reviewer": "TrendRadar research",
         },
         {
@@ -151,6 +162,17 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
+            "search_id": "neeq-search-838047-review-application-20261116",
+            "case_id": "neeq-result-838047-841",
+            "evidence_kind": "review_application",
+            "search_status": "searched_not_found",
+            "searched_at": retrieved_at,
+            "search_scope": scope,
+            "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
+            "reviewer": "TrendRadar research",
+        },
+        {
             "search_id": "neeq-search-838047-review-decision-20261116",
             "case_id": "neeq-result-838047-841",
             "evidence_kind": "review_decision",
@@ -158,7 +180,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "searched_at": retrieved_at,
             "search_scope": scope,
             "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
-            "source_urls": ["https://www.neeq.cn/disclosure/termination_listing.html"],
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
             "reviewer": "TrendRadar research",
         },
         {
@@ -169,7 +191,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "searched_at": retrieved_at,
             "search_scope": scope,
             "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
-            "source_urls": ["https://www.neeq.cn/disclosure/termination_listing.html"],
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
             "reviewer": "TrendRadar research",
         },
         {
@@ -198,6 +220,17 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
+            "search_id": "neeq-search-430134-review-application-20261116",
+            "case_id": "neeq-result-430134-844",
+            "evidence_kind": "review_application",
+            "search_status": "searched_not_found",
+            "searched_at": retrieved_at,
+            "search_scope": scope,
+            "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
+            "reviewer": "TrendRadar research",
+        },
+        {
             "search_id": "neeq-search-430134-review-decision-20261116",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "review_decision",
@@ -205,7 +238,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "searched_at": retrieved_at,
             "search_scope": scope,
             "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
-            "source_urls": ["https://www.neeq.cn/disclosure/termination_listing.html"],
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
             "reviewer": "TrendRadar research",
         },
         {
@@ -216,7 +249,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "searched_at": retrieved_at,
             "search_scope": scope,
             "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
-            "source_urls": ["https://www.neeq.cn/disclosure/termination_listing.html"],
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
             "reviewer": "TrendRadar research",
         },
     ]
@@ -235,6 +268,31 @@ def apply_payload(storage: MarketStorage, payload: dict[str, Any]) -> dict[str, 
         }
         if found != expected_cases:
             raise ValueError(f"P0案件不完整，拒绝导入: missing={sorted(expected_cases-found)}")
+        for item in payload["searches"]:
+            if item["search_status"] != "registered":
+                continue
+            if item["evidence_kind"] == "formal_decision":
+                registered = connection.execute(
+                    """SELECT 1 FROM neeq_termination_evidence e
+                    JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
+                    WHERE l.case_id=? AND (
+                        e.evidence_kind='formal_decision'
+                        OR (e.evidence_kind='batch_notice' AND l.relation_type='supports_procedure')
+                    ) LIMIT 1""",
+                    (item["case_id"],),
+                ).fetchone()
+            else:
+                registered = connection.execute(
+                    """SELECT 1 FROM neeq_termination_evidence e
+                    JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
+                    WHERE l.case_id=? AND e.evidence_kind=? LIMIT 1""",
+                    (item["case_id"], item["evidence_kind"]),
+                ).fetchone()
+            if not registered:
+                raise ValueError(
+                    f"检索状态标记为registered，但台账中没有对应案件证据: "
+                    f"{item['case_id']}:{item['evidence_kind']}"
+                )
         evidence_count = storage.save_neeq_termination_evidence(payload["evidence"], connection=connection)
         link_count = storage.link_neeq_termination_evidence(payload["links"], connection=connection)
         search_count = sum(
