@@ -288,18 +288,19 @@ class MarketStorageTests(unittest.TestCase):
             }])
             storage.save_security_lifecycle_events([{
                 "event_id": "life-1", "security_code": "000765", "exchange": "SZ",
-                "event_type": "delisting_effective", "event_date": "2020-01-01",
+                # 此用例验证生命周期事件的 corporate_action 外键；实际终止事件另由证据门禁专项测试覆盖。
+                "event_type": "delisting_decision", "event_date": "2020-01-01",
                 "date_status": "confirmed", "evidence_grade": "official", "corporate_action_id": "ca-2",
             }])
             rows = storage.list_security_lifecycle_events(
-                security_code="000765", event_type="delisting_effective"
+                security_code="000765", event_type="delisting_decision"
             )
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0]["corporate_action_id"], "ca-2")
             with self.assertRaises(Exception):
                 storage.save_security_lifecycle_events([{
                     "event_id": "life-invalid", "security_code": "000765",
-                    "event_type": "delisting_effective", "corporate_action_id": "missing",
+                    "event_type": "delisting_decision", "corporate_action_id": "missing",
                 }])
             self.assertEqual(len(storage.list_security_lifecycle_events()), 1)
 
