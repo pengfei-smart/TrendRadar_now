@@ -38,9 +38,11 @@ def get_neeq_termination_case_timeline(
         ]
         evidence = [
             dict(row) for row in connection.execute(
-                """SELECT DISTINCT e.* FROM neeq_termination_evidence e
-                JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
-                WHERE l.case_id=?
+                """SELECT e.* FROM neeq_termination_evidence e
+                WHERE EXISTS (
+                    SELECT 1 FROM neeq_termination_evidence_link l
+                    WHERE l.evidence_id=e.evidence_id AND l.case_id=?
+                )
                 ORDER BY CASE WHEN e.published_date='' THEN e.retrieved_at
                               ELSE e.published_date END,
                          e.created_at,e.evidence_id""",
@@ -84,6 +86,7 @@ def get_neeq_termination_case_timeline(
             "description": item["notes"],
         })
     for item in evidence:
+        item["metadata"] = json.loads(item.pop("metadata_json") or "{}")
         timeline.append({
             "timeline_type": "evidence",
             "event_date": item["published_date"] or item["retrieved_at"],
@@ -138,9 +141,11 @@ def append_neeq_termination_case_review(
     if conclusion == "actual_termination_confirmed":
         raise ValueError("该复核服务不允许确认正式实际终止挂牌事实")
     try:
-        datetime.fromisoformat(reviewed_at.replace("Z", "+00:00"))
+        parsed_reviewed_at = datetime.fromisoformat(reviewed_at.replace("Z", "+00:00"))
+        if parsed_reviewed_at.tzinfo is None:
+            raise ValueError("missing timezone")
     except ValueError as exc:
-        raise ValueError("reviewed_at必须是ISO 8601日期时间") from exc
+        raise ValueError("reviewed_at必须是包含时区偏移的ISO 8601日期时间") from exc
 
     with storage.connect() as connection:
         if not connection.execute(
