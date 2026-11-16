@@ -2,9 +2,13 @@
 """Tests for the guarded NEEQ termination evidence ledger importer."""
 import hashlib
 import json
+import sqlite3
+import tempfile
 import unittest
+from pathlib import Path
 
-from scripts.market_data.import_neeq_termination_ledger import build_import_payload
+from scripts.market_data.import_neeq_termination_ledger import apply_import_payload, build_import_payload
+from trendradar.market_data.storage import MarketStorage
 
 
 class NEEQTerminationLedgerImportTests(unittest.TestCase):
@@ -97,6 +101,46 @@ class NEEQTerminationLedgerImportTests(unittest.TestCase):
             build_import_payload(
                 self.manifest, self.audit, retrieved_at="2026-11-15T12:00:00+08:00"
             )
+
+    def test_apply_is_atomic_idempotent_and_reads_back_every_table(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            storage = MarketStorage(str(Path(temp_dir) / "market.db"))
+            payload = build_import_payload(
+                self.manifest, self.audit, retrieved_at="2026-11-15T12:00:00+08:00"
+            )
+            first = apply_import_payload(storage, payload)
+            second = apply_import_payload(storage, payload)
+            self.assertEqual(first, {
+                "readback_cases": 1, "readback_evidence": 1,
+                "readback_procedures": 1, "readback_links": 1,
+            })
+            self.assertEqual(second, first)
+            with storage.connect() as connection:
+                for table in (
+                    "neeq_termination_case", "neeq_termination_evidence",
+                    "neeq_termination_procedure", "neeq_termination_evidence_link",
+                ):
+                    self.assertEqual(
+                        connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0], 1
+                    )
+
+    def test_apply_rolls_back_all_tables_when_late_step_fails(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            storage = MarketStorage(str(Path(temp_dir) / "market.db"))
+            payload = build_import_payload(
+                self.manifest, self.audit, retrieved_at="2026-11-15T12:00:00+08:00"
+            )
+            payload["links"][0]["evidence_id"] = "missing-evidence"
+            with self.assertRaises(sqlite3.IntegrityError):
+                apply_import_payload(storage, payload)
+            with storage.connect() as connection:
+                for table in (
+                    "neeq_termination_case", "neeq_termination_evidence",
+                    "neeq_termination_procedure", "neeq_termination_evidence_link",
+                ):
+                    self.assertEqual(
+                        connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0], 0
+                    )
 
     def test_background_membership_is_context_only_when_no_dates(self):
         self.audit["candidates"][0]["decision_evidence"][0].update({
