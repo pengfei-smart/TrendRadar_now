@@ -135,6 +135,41 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
             ).fetchone()[0]
             self.assertEqual(duplicate, 1)
 
+    def test_new_search_generation_preserves_prior_append_only_record(self):
+        self.storage.record_neeq_termination_evidence_search({
+            "search_id": "neeq-search-836614-formal-decision-20261116",
+            "case_id": "neeq-result-836614-842",
+            "evidence_kind": "formal_decision",
+            "search_status": "searched_not_found",
+            "searched_at": "2026-11-16T13:28:10+08:00",
+            "search_scope": "历史检索范围",
+            "search_notes": "历史检索记录，不覆盖。",
+            "source_urls": ["https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf"],
+            "reviewer": "TrendRadar research",
+        })
+        payload = build_payload("2026-11-16T16:00:00+08:00")
+        self.assertTrue(all(item["search_id"].endswith("-v2") for item in payload["searches"]))
+        result = apply_payload(self.storage, payload)
+        self.assertEqual(result["searches"], 18)
+        with self.storage.connect() as connection:
+            old = connection.execute(
+                "SELECT searched_at,search_notes FROM neeq_termination_evidence_search WHERE search_id=?",
+                ("neeq-search-836614-formal-decision-20261116",),
+            ).fetchone()
+            new = connection.execute(
+                "SELECT searched_at,search_notes FROM neeq_termination_evidence_search WHERE search_id=?",
+                ("neeq-search-836614-formal-decision-20261116-v2",),
+            ).fetchone()
+            self.assertEqual(old["searched_at"], "2026-11-16T13:28:10+08:00")
+            self.assertEqual(old["search_notes"], "历史检索记录，不覆盖。")
+            self.assertEqual(new["searched_at"], "2026-11-16T16:00:00+08:00")
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence_search").fetchone()[0],
+                19,
+            )
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0)
+
     def test_apply_rejects_unbacked_registered_search_status(self):
         payload = build_payload("2026-11-16T16:00:00+08:00")
         payload["searches"][0]["search_status"] = "registered"
