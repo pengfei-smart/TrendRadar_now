@@ -461,7 +461,9 @@ class MarketStorage:
             ).fetchall()
             return [dict(row) for row in rows]
 
-    def _validate_actual_delisting_event(\n        self, item: dict, security_code: str, *, connection: sqlite3.Connection | None = None,\n    ) -> None:
+    def _validate_actual_delisting_event(
+        self, item: dict, security_code: str, *, connection: sqlite3.Connection | None = None,
+    ) -> None:
         """实际退市事件必须绑定已审核通过且能直接证明实际日期的官方证据候选。"""
         from trendradar.market_data.neeq_termination_date_validation import (
             validate_neeq_date_mapping,
