@@ -166,9 +166,9 @@ def validate_neeq_date_mapping(
     source_semantics: str,
     target_field: str,
     *,
-    source_is_confirmed_actual: bool = False,
+    procedure_validation: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Reject unsafe promotion of candidate/procedural dates into actual-date fields."""
+    """Reject unsafe promotion unless the complete procedure/evidence validation passed."""
     source = str(source_semantics or "").strip()
     target = str(target_field or "").strip()
     actual_targets = {"actual_termination_date", "delisting_date"}
@@ -176,7 +176,12 @@ def validate_neeq_date_mapping(
     if target not in actual_targets:
         return {"valid": True, "errors": [], "source_semantics": source, "target_field": target}
 
-    if source != "actual_termination" or not source_is_confirmed_actual:
+    is_validated_actual = (
+        isinstance(procedure_validation, Mapping)
+        and procedure_validation.get("valid") is True
+        and procedure_validation.get("date_semantics") == "actual_termination"
+    )
+    if source != "actual_termination" or not is_validated_actual:
         return {
             "valid": False,
             "errors": [_issue(
