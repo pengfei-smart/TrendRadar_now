@@ -97,6 +97,12 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
         self.assertEqual(keli["evidence"][0]["evidence_id"], "evidence-430134-sponsor")
         self.assertEqual(keli["evidence"][0]["metadata"]["document_issuer"], "测试主办券商")
         self.assertEqual(keli["evidence_searches"][0]["latest_status"], "searched_not_found")
+        self.assertEqual(len(keli["evidence_search_history"]), 1)
+        self.assertEqual(
+            keli["evidence_search_history"][0]["search_notes"],
+            "本次检索范围内未找到",
+        )
+        self.assertIn("formal_decision", keli["evidence_search_status"])
 
     def test_report_does_not_write_reviews_or_lifecycle_facts(self):
         before = {}
