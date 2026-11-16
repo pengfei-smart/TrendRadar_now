@@ -94,6 +94,7 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
 
     def test_report_contains_exactly_three_p0_cases_and_mismatch_dates(self):
         report = build_report(self.storage, "2026-11-16T13:30:00+08:00")
+        self.assertEqual(report["report_version"], "v4")
         self.assertEqual(report["case_count"], 3)
         by_code = {item["company_code"]: item for item in report["cases"]}
         self.assertEqual(set(by_code), {"836614", "838047", "430134"})
