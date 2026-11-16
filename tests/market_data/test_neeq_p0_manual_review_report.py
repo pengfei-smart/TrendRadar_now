@@ -77,6 +77,17 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
             "source_urls": ["https://example.org/search"],
             "reviewer": "tester",
         })
+        self.storage.record_neeq_termination_evidence_search({
+            "search_id": "search-430134-sponsor",
+            "case_id": "neeq-result-430134-844",
+            "evidence_kind": "sponsor_notice",
+            "search_status": "found_not_registered",
+            "searched_at": "2026-11-16T13:11:00+08:00",
+            "search_scope": "测试公告检索范围",
+            "search_notes": "已定位公告，登记后应转为registered",
+            "source_urls": ["https://example.org/sponsor.pdf"],
+            "reviewer": "tester",
+        })
 
     def tearDown(self):
         self.temp_dir.cleanup()
@@ -96,12 +107,29 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
         keli = next(item for item in report["cases"] if item["company_code"] == "430134")
         self.assertEqual(keli["evidence"][0]["evidence_id"], "evidence-430134-sponsor")
         self.assertEqual(keli["evidence"][0]["metadata"]["document_issuer"], "测试主办券商")
-        self.assertEqual(keli["evidence_searches"][0]["latest_status"], "searched_not_found")
-        self.assertEqual(len(keli["evidence_search_history"]), 1)
-        self.assertEqual(
-            keli["evidence_search_history"][0]["search_notes"],
-            "本次检索范围内未找到",
+        sponsor_search = next(
+            item for item in keli["evidence_searches"]
+            if item["evidence_kind"] == "sponsor_notice"
         )
+        self.assertEqual(sponsor_search["latest_status"], "registered")
+        self.assertEqual(sponsor_search["latest_recorded_status"], "found_not_registered")
+        self.assertIn("此后该类型证据已登记", sponsor_search["search_notes"])
+        final_search = next(
+            item for item in keli["evidence_searches"]
+            if item["evidence_kind"] == "final_termination_notice"
+        )
+        self.assertEqual(final_search["latest_status"], "searched_not_found")
+        self.assertEqual(len(keli["evidence_search_history"]), 2)
+        self.assertEqual(
+            next(
+                item for item in keli["evidence_search_history"]
+                if item["evidence_kind"] == "sponsor_notice"
+            )["search_status"],
+            "found_not_registered",
+        )
+        markdown = render_markdown(report)
+        self.assertIn("检索记录原始状态：found_not_registered", markdown)
+        self.assertIn("当前有效状态：registered", markdown)
         self.assertIn("formal_decision", keli["evidence_search_status"])
 
     def test_report_does_not_write_reviews_or_lifecycle_facts(self):
