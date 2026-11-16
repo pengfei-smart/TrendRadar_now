@@ -186,6 +186,52 @@ class NEEQTerminationReviewServiceTests(unittest.TestCase):
         other = next(item for item in queue if item["case_id"] == self.other_case_id)
         self.assertIn("formal_decision", other["missing_evidence_kinds"])
 
+    def test_evidence_search_history_is_append_only_and_visible_in_queue(self):
+        self.storage.record_neeq_termination_evidence_search({
+            "search_id": "search-838047-review-not-found",
+            "case_id": self.case_id,
+            "evidence_kind": "review_decision",
+            "search_status": "searched_not_found",
+            "searched_at": "2026-11-16T15:00:00+08:00",
+            "search_scope": "全国股转系统公开公告检索",
+            "search_notes": "当前检索范围内未找到复核决定，不代表不存在。",
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
+            "reviewer": "tester",
+        })
+        self.storage.record_neeq_termination_evidence_search({
+            "search_id": "search-838047-sponsor-found",
+            "case_id": self.case_id,
+            "evidence_kind": "sponsor_notice",
+            "search_status": "found_not_registered",
+            "searched_at": "2026-11-16T15:01:00+08:00",
+            "search_scope": "主办券商公告检索",
+            "source_urls": ["https://example.org/sponsor.pdf"],
+            "reviewer": "tester",
+        })
+        dossier = get_neeq_termination_case_timeline(self.storage, self.case_id)
+        self.assertEqual(len(dossier["evidence_searches"]), 2)
+        queue = list_neeq_termination_review_queue(self.storage)
+        case = next(item for item in queue if item["case_id"] == self.case_id)
+        self.assertEqual(case["evidence_search_status"]["batch_notice"], "registered")
+        self.assertEqual(case["evidence_search_status"]["review_decision"], "searched_not_found")
+        self.assertEqual(case["evidence_search_status"]["sponsor_notice"], "found_not_registered")
+
+    def test_evidence_search_rejects_naive_datetime_and_non_https_source(self):
+        base = {
+            "search_id": "search-invalid",
+            "case_id": self.case_id,
+            "evidence_kind": "final_termination_notice",
+            "search_status": "searched_not_found",
+            "searched_at": "2026-11-16T15:00:00",
+            "source_urls": [],
+        }
+        with self.assertRaisesRegex(ValueError, "时区偏移"):
+            self.storage.record_neeq_termination_evidence_search(base)
+        base["searched_at"] = "2026-11-16T15:00:00+08:00"
+        base["source_urls"] = ["http://example.org"]
+        with self.assertRaisesRegex(ValueError, "HTTPS"):
+            self.storage.record_neeq_termination_evidence_search(base)
+
     def test_review_queue_validates_limit(self):
         with self.assertRaisesRegex(ValueError, "limit"):
             list_neeq_termination_review_queue(self.storage, limit=0)
