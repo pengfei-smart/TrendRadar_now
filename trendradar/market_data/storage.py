@@ -539,6 +539,7 @@ class MarketStorage:
                        "transfer_market_entry", "relisting", "code_change", "status_correction", "other"}
         date_statuses = {"confirmed", "approximate", "pending", "unknown"}
         evidence_grades = {"official", "reliable_secondary", "unverified", "unknown"}
+        events = list(events)
         rows = []
         for item in events:
             event_id, code, event_type = item.get("event_id"), item.get("security_code"), item.get("event_type")
