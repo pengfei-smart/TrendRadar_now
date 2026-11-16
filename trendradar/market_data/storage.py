@@ -581,6 +581,25 @@ class MarketStorage:
                     self._validate_actual_delisting_event(
                         item, item.get("security_code"), connection=connection,
                     )
+                    existing_link = connection.execute(
+                        """SELECT 1 FROM security_lifecycle_event_evidence
+                        WHERE event_id=? LIMIT 1""",
+                        (item["event_id"],),
+                    ).fetchone()
+                    if existing_link:
+                        existing_event = connection.execute(
+                            """SELECT security_code,event_type,event_date,delisting_effective_date
+                            FROM security_lifecycle_events WHERE event_id=?""",
+                            (item["event_id"],),
+                        ).fetchone()
+                        incoming_identity = (
+                            item.get("security_code"), item.get("event_type"),
+                            item.get("event_date"), item.get("delisting_effective_date"),
+                        )
+                        if existing_event is None or tuple(existing_event) != incoming_identity:
+                            raise ValueError(
+                                "已有证据关联的正式实际退市事件不可通过UPSERT修改证券身份或日期"
+                            )
             connection.executemany(
                 """INSERT INTO security_lifecycle_events
                 (event_id,security_code,exchange,event_type,event_date,decision_issued_date,
