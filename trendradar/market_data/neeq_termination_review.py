@@ -208,7 +208,8 @@ def list_neeq_termination_review_queue(
             evidence = [
                 dict(row) for row in connection.execute(
                     """SELECT DISTINCT e.evidence_id,e.evidence_kind,e.source_authority,
-                              e.evidence_status,e.source_url,e.metadata_json
+                              e.evidence_status,e.source_url,e.metadata_json,
+                              l.relation_type
                     FROM neeq_termination_evidence e
                     JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
                     WHERE l.case_id=?""",
@@ -229,7 +230,10 @@ def list_neeq_termination_review_queue(
                 item["evidence_kind"] in {"formal_decision", "supplementary_decision"}
                 or (
                     item["evidence_kind"] == "batch_notice"
-                    and item["metadata"].get("membership_type") == "formal_decision_company"
+                    and (
+                        item["relation_type"] == "supports_procedure"
+                        or item["metadata"].get("membership_type") == "formal_decision_company"
+                    )
                 )
                 for item in evidence
             )
