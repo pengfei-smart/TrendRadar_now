@@ -14,7 +14,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 7
+    SCHEMA_VERSION = 8
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path).expanduser().resolve()
@@ -1215,6 +1215,93 @@ class MarketStorage:
                 if not found or tuple(found) != tuple(row[1:5]):
                     raise ValueError(f"证据关联ID冲突或引用不存在: {row[0]}")
         return len(rows)
+
+    def record_neeq_termination_evidence_search(
+        self, search: dict, *, connection: sqlite3.Connection | None = None,
+    ) -> int:
+        """追加一次证据检索状态；不覆盖历史检索，也不确认实际终止挂牌事实。"""
+        search_id = str(search.get("search_id") or "").strip()
+        case_id = str(search.get("case_id") or "").strip()
+        evidence_kind = search.get("evidence_kind")
+        search_status = search.get("search_status")
+        searched_at = str(search.get("searched_at") or "").strip()
+        if not search_id or not case_id or not searched_at:
+            raise ValueError("检索记录必须提供search_id、case_id和searched_at")
+        self._validate_enum(evidence_kind, {
+            "batch_notice", "formal_decision", "review_application", "review_decision",
+            "supplementary_decision", "final_termination_notice", "transfer_exit_record",
+            "issuer_notice", "sponsor_notice", "third_party_lead", "other",
+        }, "evidence_kind")
+        self._validate_enum(search_status, {
+            "not_searched", "searched_not_found", "found_not_registered",
+            "registered", "manually_verified",
+        }, "search_status")
+        try:
+            parsed = datetime.fromisoformat(searched_at.replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                raise ValueError("missing timezone")
+        except ValueError as exc:
+            raise ValueError("searched_at必须是包含时区偏移的ISO 8601日期时间") from exc
+        urls = search.get("source_urls", [])
+        if not isinstance(urls, list) or any(
+            not isinstance(url, str) or not url.startswith("https://") for url in urls
+        ):
+            raise ValueError("source_urls必须是HTTPS URL数组")
+        row = (
+            search_id, case_id, evidence_kind, search_status, searched_at,
+            str(search.get("search_scope") or ""), str(search.get("search_notes") or ""),
+            self._neeq_json(urls), str(search.get("reviewer") or ""),
+        )
+        with self._connection_scope(connection) as connection:
+            connection.execute(
+                """INSERT OR IGNORE INTO neeq_termination_evidence_search
+                (search_id,case_id,evidence_kind,search_status,searched_at,search_scope,
+                 search_notes,source_urls_json,reviewer)
+                VALUES(?,?,?,?,?,?,?,?,?)""",
+                row,
+            )
+            found = connection.execute(
+                """SELECT case_id,evidence_kind,search_status,searched_at,search_scope,
+                          search_notes,source_urls_json,reviewer
+                FROM neeq_termination_evidence_search WHERE search_id=?""",
+                (search_id,),
+            ).fetchone()
+            if not found or tuple(found) != tuple(row[1:]):
+                raise ValueError(f"检索记录ID冲突或案件不存在: {search_id}")
+        return 1
+
+    def list_neeq_termination_evidence_searches(
+        self, *, case_id: str | None = None, evidence_kind: str | None = None,
+        limit: int = 500,
+    ) -> list[dict]:
+        """查询证据检索历史；结果按案件、证据类型和检索时间排序。"""
+        if not 1 <= limit <= 5000:
+            raise ValueError("limit必须在1到5000之间")
+        clauses, params = [], []
+        if case_id is not None:
+            clauses.append("case_id=?")
+            params.append(case_id)
+        if evidence_kind is not None:
+            self._validate_enum(evidence_kind, {
+                "batch_notice", "formal_decision", "review_application", "review_decision",
+                "supplementary_decision", "final_termination_notice", "transfer_exit_record",
+                "issuer_notice", "sponsor_notice", "third_party_lead", "other",
+            }, "evidence_kind")
+            clauses.append("evidence_kind=?")
+            params.append(evidence_kind)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM neeq_termination_evidence_search" + where
+                + " ORDER BY case_id,evidence_kind,searched_at,search_id LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+            result = []
+            for row in rows:
+                item = dict(row)
+                item["source_urls"] = json.loads(item.pop("source_urls_json") or "[]")
+                result.append(item)
+            return result
 
     def record_neeq_termination_review(self, review: dict) -> int:
         """追加人工审核历史，不覆盖旧审核结论。"""
