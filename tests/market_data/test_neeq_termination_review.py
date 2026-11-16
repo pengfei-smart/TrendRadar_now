@@ -8,6 +8,7 @@ from pathlib import Path
 from trendradar.market_data.neeq_termination_review import (
     append_neeq_termination_case_review,
     get_neeq_termination_case_timeline,
+    list_neeq_termination_review_queue,
 )
 from trendradar.market_data.storage import MarketStorage
 
@@ -142,6 +143,53 @@ class NEEQTerminationReviewServiceTests(unittest.TestCase):
             append_neeq_termination_case_review(
                 self.storage, self._review(reviewed_at="2026-11-16T13:00:00")
             )
+
+    def test_review_queue_prioritizes_date_mismatch_and_lists_missing_evidence(self):
+        self.storage.save_neeq_termination_procedures([{
+            "procedure_id": "neeq-procedure-838047-conditional",
+            "case_id": self.case_id,
+            "procedure_type": "conditional_termination",
+            "event_date": "2019-07-09",
+            "date_semantics": "conditional_termination",
+            "date_status": "pending",
+            "notes": "公告载明的条件终止日期。",
+        }])
+        queue = list_neeq_termination_review_queue(self.storage)
+        self.assertEqual(queue[0]["case_id"], self.case_id)
+        self.assertEqual(queue[0]["priority"], 0)
+        self.assertTrue(queue[0]["date_mismatch"])
+        self.assertEqual(queue[0]["mismatch_dates"], ["2019-07-09"])
+        self.assertIn("formal_decision", queue[0]["missing_evidence_kinds"])
+        self.assertIn("final_termination_notice", queue[0]["missing_evidence_kinds"])
+        self.assertFalse(queue[0]["actual_termination_confirmed"])
+        self.assertTrue(any("复核申请受理" in action for action in queue[0]["next_actions"]))
+
+    def test_background_batch_membership_does_not_count_as_formal_decision(self):
+        self.storage.save_neeq_termination_evidence([{
+            "evidence_id": "neeq-evidence-background",
+            "evidence_kind": "batch_notice",
+            "source_authority": "neeq_official",
+            "notice_number": "2019-984",
+            "document_title": "背景名单",
+            "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+            "published_date": "2019-07-01",
+            "retrieved_at": "2026-11-16T12:00:00+08:00",
+            "evidence_status": "crosschecked",
+            "metadata": {"membership_type": "background_pending_company"},
+        }])
+        self.storage.link_neeq_termination_evidence([{
+            "link_id": "neeq-link-background",
+            "case_id": self.other_case_id,
+            "evidence_id": "neeq-evidence-background",
+            "relation_type": "context_only",
+        }])
+        queue = list_neeq_termination_review_queue(self.storage)
+        other = next(item for item in queue if item["case_id"] == self.other_case_id)
+        self.assertIn("formal_decision", other["missing_evidence_kinds"])
+
+    def test_review_queue_validates_limit(self):
+        with self.assertRaisesRegex(ValueError, "limit"):
+            list_neeq_termination_review_queue(self.storage, limit=0)
 
     def test_missing_case_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "案件不存在"):
