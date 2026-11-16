@@ -315,6 +315,20 @@ CREATE TABLE IF NOT EXISTS security_lifecycle_events (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- v9：正式生命周期事件与审核证据候选的可追溯关联。
+CREATE TABLE IF NOT EXISTS security_lifecycle_event_evidence (
+    event_id TEXT NOT NULL,
+    candidate_id TEXT NOT NULL,
+    relation_type TEXT NOT NULL DEFAULT 'supports_procedure'
+        CHECK (relation_type IN ('supports_procedure')),
+    linked_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (event_id, candidate_id, relation_type),
+    FOREIGN KEY (event_id) REFERENCES security_lifecycle_events(event_id) ON DELETE RESTRICT,
+    FOREIGN KEY (candidate_id) REFERENCES lifecycle_evidence_candidates(candidate_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_event_evidence_candidate
+    ON security_lifecycle_event_evidence(candidate_id, event_id);
+
 CREATE TABLE IF NOT EXISTS security_relationships (
     relationship_id TEXT PRIMARY KEY,
     corporate_action_id TEXT REFERENCES corporate_actions(corporate_action_id),
