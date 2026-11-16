@@ -110,7 +110,8 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 - `neeq_termination_procedure.event_date` + `date_semantics` + `date_status`：可表达决定、收到决定、条件终止、实际终止、最后交易日、转让开始和退出登记等程序节点。
 - `neeq_termination_evidence` 与 `neeq_termination_evidence_link`：可追溯证据及其支持/反驳的程序节点。
 - `neeq_termination_evidence_search`：可保留每次检索范围和结果。
-- `security_lifecycle_events`：已有决定日期、收到日期、最后交易日、终止生效日期、证据等级及来源字段。\n- `security_lifecycle_event_evidence`（v9）：将正式生命周期事件与已审核的 `lifecycle_evidence_candidates` 通过外键持久关联，关系类型为 `supports_procedure`；写入事件与证据关联在同一事务中完成。
+- `security_lifecycle_events`：已有决定日期、收到日期、最后交易日、终止生效日期、证据等级及来源字段。
+- `security_lifecycle_event_evidence`（v9）：将正式生命周期事件与已审核的 `lifecycle_evidence_candidates` 通过外键持久关联，关系类型为 `supports_procedure`；写入事件与证据关联在同一事务中完成。
 
 发现的模型缺口/风险：
 
@@ -152,7 +153,8 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 已在开发分支增加纯函数模块及正式写入门禁：
 
 - `trendradar/market_data/neeq_termination_date_validation.py`
-- `tests/market_data/test_neeq_termination_date_validation.py`\n- `MarketStorage.save_security_lifecycle_events()`：`delisting_effective` 必须绑定已审核、日期一致的直接官方证据候选，并在同一事务中持久化事件—证据关联。
+- `tests/market_data/test_neeq_termination_date_validation.py`
+- `MarketStorage.save_security_lifecycle_events()`：`delisting_effective` 必须绑定已审核、日期一致的直接官方证据候选，并在同一事务中持久化事件—证据关联。
 
 验证器当前覆盖：
 
