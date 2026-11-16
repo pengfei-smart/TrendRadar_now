@@ -102,8 +102,13 @@ class MarketStorageIntegrationTests(unittest.TestCase):
                 "neeq_termination_evidence_link",
                 "neeq_termination_review",
                 "neeq_termination_evidence_search",
+                "security_lifecycle_event_evidence",
             }
             self.assertTrue(expected.issubset(tables))
+            lifecycle_evidence_fks = connection.execute(
+                "PRAGMA foreign_key_list(security_lifecycle_event_evidence)"
+            ).fetchall()
+            self.assertEqual(len(lifecycle_evidence_fks), 2)
             case_foreign_keys = connection.execute(
                 "PRAGMA foreign_key_list(neeq_termination_case)"
             ).fetchall()
