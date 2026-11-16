@@ -36,6 +36,18 @@ def _date_value(value: Any) -> str:
     return ""
 
 
+def _datetime_value(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, dict):
+        epoch = value.get("time")
+        if isinstance(epoch, (int, float)):
+            return datetime.fromtimestamp(epoch / 1000, tz=timezone.utc).astimezone(
+                CHINA_TZ
+            ).isoformat()
+    return ""
+
+
 def _manifest_records(payload: Any) -> list[dict]:
     if isinstance(payload, list):
         records = payload
@@ -73,7 +85,7 @@ def _manifest_records(payload: Any) -> list[dict]:
             "interface_result_date": str(entry.get("delisting_date") or entry.get("result_date") or entry.get("delistingDateISO") or _date_value(raw.get("delistingDate"))),
             "interface_create_at": str(
                 entry.get("create_time") or entry.get("create_at")
-                or _date_value(raw.get("createTime")) or ""
+                or _datetime_value(raw.get("createTime")) or ""
             ),
         })
     return normalized
