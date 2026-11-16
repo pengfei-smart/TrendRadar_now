@@ -145,7 +145,7 @@ class MarketStorageTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     connection.execute("SELECT value FROM schema_meta WHERE key='schema_version'").fetchone()[0],
-                    "7",
+                    "8",
                 )
                 self.assertEqual(connection.execute("PRAGMA quick_check").fetchone()[0], "ok")
 
