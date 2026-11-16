@@ -1,0 +1,880 @@
+{
+  "report_type": "neeq_p0_manual_evidence_review",
+  "report_version": "v3",
+  "generated_at": "2026-11-16T19:03:27+08:00",
+  "database_access": "read_only",
+  "case_count": 3,
+  "cases": [
+    {
+      "company_code": "836614",
+      "company_name": "奥其斯",
+      "case_id": "neeq-result-836614-842",
+      "case_status": "pending_review",
+      "source_record_id": "842",
+      "source_api": "neeq_termination_result_api",
+      "interface_result_date": "2019-09-06",
+      "conditional_termination_dates": [
+        "2019-07-29"
+      ],
+      "date_mismatch": true,
+      "mismatch_dates": [
+        "2019-07-29"
+      ],
+      "evidence_coverage_scope": "current_ledger_only",
+      "evidence": [
+        {
+          "evidence_id": "neeq-evidence-836614-sponsor-20190722",
+          "evidence_kind": "sponsor_notice",
+          "source_authority": "sponsor_official",
+          "notice_number": "股转系统发〔2019〕2065号（主办券商风险提示）",
+          "document_title": "关于全国中小企业股份转让系统有限责任公司对奥其斯科技股份有限公司作出终止股票挂牌决定的风险提示性公告",
+          "source_url": "https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf",
+          "published_date": "2019-07-22",
+          "retrieved_at": "2026-11-16T13:28:10+08:00",
+          "evidence_status": "located",
+          "content_sha256": "",
+          "content_excerpt": "新时代证券公告称，全国股转公司于2019年7月19日出具股转系统发〔2019〕2065号决定；若未申请复核或复核申请未获受理，自2019年7月29日起终止挂牌。",
+          "metadata": {
+            "document_is_original_neeq_decision": false,
+            "document_issuer": "新时代证券股份有限公司",
+            "hosting_domain": "notice.10jqka.com.cn",
+            "limitation": "主办券商公告转述正式决定；当前未直接取得决定原件。"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-link-836614-sponsor-20190722",
+              "case_id": "neeq-result-836614-842",
+              "evidence_id": "neeq-evidence-836614-sponsor-20190722",
+              "procedure_id": null,
+              "relation_type": "supports_case",
+              "notes": "主办券商转述正式决定及条件终止日期；不替代全国股转公司决定原件。",
+              "created_at": "2026-11-16 05:28:10"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+          "evidence_kind": "batch_notice",
+          "source_authority": "neeq_official",
+          "notice_number": "",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": null,
+            "confirmed_legal_fact": false,
+            "decision_date": null,
+            "evidence_type": "parsed_batch_membership",
+            "membership_type": "background_pending_company",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-836614-842-link-66d5007234b0-context",
+              "case_id": "neeq-result-836614-842",
+              "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+              "procedure_id": null,
+              "relation_type": "context_only",
+              "notes": "背景名单或未提供程序日期的证据，仅作上下文。",
+              "created_at": "2026-11-16 04:59:55"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-e056c60b55169df24c110f10",
+          "evidence_kind": "batch_notice",
+          "source_authority": "neeq_official",
+          "notice_number": "2019-1071",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/important_news/200006332.html",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": "2019-07-29",
+            "confirmed_legal_fact": false,
+            "decision_date": null,
+            "evidence_type": "parsed_batch_membership",
+            "membership_type": "formal_decision_company",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-836614-842-link-e056c60b5516-conditional",
+              "case_id": "neeq-result-836614-842",
+              "evidence_id": "neeq-evidence-e056c60b55169df24c110f10",
+              "procedure_id": "neeq-result-836614-842-conditional-e056c60b5516",
+              "relation_type": "supports_procedure",
+              "notes": "待人工复核；不确认实际终止挂牌日期。",
+              "created_at": "2026-11-16 04:59:55",
+              "procedure_type": "conditional_termination",
+              "event_date": "2019-07-29",
+              "date_semantics": "conditional_termination",
+              "date_status": "pending"
+            },
+            {
+              "link_id": "neeq-result-836614-842-link-e056c60b5516-decision",
+              "case_id": "neeq-result-836614-842",
+              "evidence_id": "neeq-evidence-e056c60b55169df24c110f10",
+              "procedure_id": "neeq-result-836614-842-decision-e056c60b5516",
+              "relation_type": "supports_procedure",
+              "notes": "待人工复核；仅支持程序节点，不证明实际终止挂牌日期。",
+              "created_at": "2026-11-16 04:59:55",
+              "procedure_type": "decision_issued",
+              "event_date": "2019-07-19",
+              "date_semantics": "decision_issued",
+              "date_status": "pending",
+              "support_warning": "当前证据元数据未记录决定日期；该关联不能单独证明决定日期，需核对原文。"
+            }
+          ]
+        }
+      ],
+      "evidence_searches": [
+        {
+          "evidence_kind": "final_termination_notice",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "formal_decision",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "已定位主办券商对股转系统发〔2019〕2065号决定的转述，但尚未取得全国股转公司决定原件；不代表决定不存在。",
+          "source_urls": [
+            "https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_application",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_decision",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "sponsor_notice",
+          "latest_status": "registered",
+          "latest_recorded_status": "found_not_registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "最近一次检索记录状态为found_not_registered；此后该类型证据已登记到当前案件台账，因此当前有效状态为registered。原始检索记录保留在检索历史中。",
+          "source_urls": [
+            "https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf"
+          ],
+          "history_count": 1
+        }
+      ],
+      "evidence_search_status": {
+        "batch_notice": "registered",
+        "final_termination_notice": "searched_not_found",
+        "formal_decision": "searched_not_found",
+        "review_application": "searched_not_found",
+        "review_decision": "searched_not_found",
+        "sponsor_notice": "registered"
+      },
+      "evidence_search_history": [
+        {
+          "search_id": "neeq-search-836614-final-notice-20261116",
+          "evidence_kind": "final_termination_notice",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-836614-formal-decision-20261116",
+          "evidence_kind": "formal_decision",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "已定位主办券商对股转系统发〔2019〕2065号决定的转述，但尚未取得全国股转公司决定原件；不代表决定不存在。",
+          "source_urls": [
+            "https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-836614-review-application-20261116",
+          "evidence_kind": "review_application",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-836614-review-decision-20261116",
+          "evidence_kind": "review_decision",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-836614-sponsor-notice-20261116",
+          "evidence_kind": "sponsor_notice",
+          "search_status": "found_not_registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "已定位新时代证券2019年7月22日风险提示公告，待登记后应转为registered。",
+          "source_urls": [
+            "https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf"
+          ],
+          "reviewer": "TrendRadar research"
+        }
+      ],
+      "procedures": [
+        {
+          "procedure_id": "neeq-result-836614-842-decision-e056c60b5516",
+          "case_id": "neeq-result-836614-842",
+          "procedure_type": "decision_issued",
+          "event_date": "2019-07-19",
+          "date_semantics": "decision_issued",
+          "date_status": "pending",
+          "notes": "公告解析/交叉核对所得决定日期，待人工复核。",
+          "created_at": "2026-11-16 04:59:55",
+          "updated_at": "2026-11-16 04:59:55"
+        },
+        {
+          "procedure_id": "neeq-result-836614-842-conditional-e056c60b5516",
+          "case_id": "neeq-result-836614-842",
+          "procedure_type": "conditional_termination",
+          "event_date": "2019-07-29",
+          "date_semantics": "conditional_termination",
+          "date_status": "pending",
+          "notes": "公告所载条件终止日期，不等同实际终止挂牌日期。",
+          "created_at": "2026-11-16 04:59:55",
+          "updated_at": "2026-11-16 04:59:55"
+        }
+      ],
+      "existing_reviews": [],
+      "known_context_requiring_human_check": [
+        "2019-984公告的背景名单（附件一）中出现该公司，但不在该公告正式终止挂牌名单（附件二）的46家公司之列；背景名单成员身份不能当作该公告对其作出的正式终止决定。",
+        "当前台账另将2019-1071批次公告关联至决定及条件终止程序，但该证据元数据未记录决定日期；在核对公告原文及附件中的公司名单前，不应将该关联单独作为决定日期证明。",
+        "另有2019年7月22日新时代证券主办券商公告转述全国股转公司于2019年7月19日作出股转系统发〔2019〕2065号决定，条件终止日期为2019年7月29日。该材料是主办券商转述，不是已取得的全国股转公司决定原件。",
+        "NEEQ结果接口候选日期为2019-09-06，与条件终止日期2019-07-29相差39天；当前材料不足以解释差异。"
+      ],
+      "review_focus": [
+        "继续查找股转系统发〔2019〕2065号决定原件，并核对决定对象、送达日期及复核条款。",
+        "查找复核申请受理、复核决定或补充决定。",
+        "查找最终终止挂牌公告、证券登记结算退出记录或其他能证明实际终止日期的官方材料。"
+      ],
+      "suggested_review_status": "needs_more_evidence",
+      "suggested_conclusion": "当前证据不足以确认实际终止挂牌日期；建议补充证据后再复核。",
+      "actual_termination_confirmed": false,
+      "review_record_written": false
+    },
+    {
+      "company_code": "838047",
+      "company_name": "二中科技",
+      "case_id": "neeq-result-838047-841",
+      "case_status": "pending_review",
+      "source_record_id": "841",
+      "source_api": "neeq_termination_result_api",
+      "interface_result_date": "2019-09-06",
+      "conditional_termination_dates": [
+        "2019-07-09"
+      ],
+      "date_mismatch": true,
+      "mismatch_dates": [
+        "2019-07-09"
+      ],
+      "evidence_coverage_scope": "current_ledger_only",
+      "evidence": [
+        {
+          "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+          "evidence_kind": "batch_notice",
+          "source_authority": "neeq_official",
+          "notice_number": "",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": null,
+            "confirmed_legal_fact": false,
+            "decision_date": null,
+            "evidence_type": "parsed_batch_membership",
+            "membership_type": "background_pending_company",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-838047-841-link-66d5007234b0-context",
+              "case_id": "neeq-result-838047-841",
+              "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+              "procedure_id": null,
+              "relation_type": "context_only",
+              "notes": "背景名单或未提供程序日期的证据，仅作上下文。",
+              "created_at": "2026-11-16 04:59:55"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-8a0d04a8ce18f75ba2576f29",
+          "evidence_kind": "batch_notice",
+          "source_authority": "neeq_official",
+          "notice_number": "2019-984",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": "2019-07-09",
+            "confirmed_legal_fact": false,
+            "decision_date": null,
+            "evidence_type": "parsed_batch_membership",
+            "membership_type": "formal_decision_company",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-838047-841-link-8a0d04a8ce18-conditional",
+              "case_id": "neeq-result-838047-841",
+              "evidence_id": "neeq-evidence-8a0d04a8ce18f75ba2576f29",
+              "procedure_id": "neeq-result-838047-841-conditional-8a0d04a8ce18",
+              "relation_type": "supports_procedure",
+              "notes": "待人工复核；不确认实际终止挂牌日期。",
+              "created_at": "2026-11-16 04:59:55",
+              "procedure_type": "conditional_termination",
+              "event_date": "2019-07-09",
+              "date_semantics": "conditional_termination",
+              "date_status": "pending"
+            }
+          ]
+        }
+      ],
+      "evidence_searches": [
+        {
+          "evidence_kind": "final_termination_notice",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "formal_decision",
+          "latest_status": "registered",
+          "latest_recorded_status": "registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "股转系统公告〔2019〕984号附表2已作为批次公告证据登记，并与该公司正式决定程序关联。",
+          "source_urls": [
+            "https://www.neeq.com.cn/important_news/200006230.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_application",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_decision",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        }
+      ],
+      "evidence_search_status": {
+        "batch_notice": "registered",
+        "final_termination_notice": "searched_not_found",
+        "formal_decision": "registered",
+        "review_application": "searched_not_found",
+        "review_decision": "searched_not_found"
+      },
+      "evidence_search_history": [
+        {
+          "search_id": "neeq-search-838047-final-notice-20261116",
+          "evidence_kind": "final_termination_notice",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-838047-formal-decision-20261116",
+          "evidence_kind": "formal_decision",
+          "search_status": "registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "股转系统公告〔2019〕984号附表2已作为批次公告证据登记，并与该公司正式决定程序关联。",
+          "source_urls": [
+            "https://www.neeq.com.cn/important_news/200006230.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-838047-review-application-20261116",
+          "evidence_kind": "review_application",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-838047-review-decision-20261116",
+          "evidence_kind": "review_decision",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        }
+      ],
+      "procedures": [
+        {
+          "procedure_id": "neeq-result-838047-841-conditional-8a0d04a8ce18",
+          "case_id": "neeq-result-838047-841",
+          "procedure_type": "conditional_termination",
+          "event_date": "2019-07-09",
+          "date_semantics": "conditional_termination",
+          "date_status": "pending",
+          "notes": "公告所载条件终止日期，不等同实际终止挂牌日期。",
+          "created_at": "2026-11-16 04:59:55",
+          "updated_at": "2026-11-16 04:59:55"
+        }
+      ],
+      "existing_reviews": [],
+      "known_context_requiring_human_check": [
+        "2019-984公告于2019-07-01发布；该公司列入附件二正式终止挂牌名单，公告所列计划终止挂牌日期为2019-07-09。它同时出现在附件一背景名单中，但正式名单身份来自附件二。",
+        "NEEQ结果接口候选日期为2019-09-06，与公告计划日期2019-07-09相差59天。",
+        "该公司未出现在此前核对的2019-09-06批量终止挂牌名单（10家公司）中；目前没有找到能解释日期差异的复核决定、补充决定或最终终止挂牌公告。"
+      ],
+      "review_focus": [
+        "重新核对2019-984附件二中该公司的原始名单条目及日期语义。",
+        "查找复核申请受理、复核决定或补充决定，确认是否存在程序变更。",
+        "查找最终终止挂牌公告、证券登记结算退出记录或其他官方实际终止日期凭证。"
+      ],
+      "suggested_review_status": "needs_more_evidence",
+      "suggested_conclusion": "当前证据不足以确认实际终止挂牌日期；建议补充证据后再复核。",
+      "actual_termination_confirmed": false,
+      "review_record_written": false
+    },
+    {
+      "company_code": "430134",
+      "company_name": "ST可来博",
+      "case_id": "neeq-result-430134-844",
+      "case_status": "pending_review",
+      "source_record_id": "844",
+      "source_api": "neeq_termination_result_api",
+      "interface_result_date": "2020-05-13",
+      "conditional_termination_dates": [
+        "2020-02-25"
+      ],
+      "date_mismatch": true,
+      "mismatch_dates": [
+        "2020-02-25"
+      ],
+      "evidence_coverage_scope": "current_ledger_only",
+      "evidence": [
+        {
+          "evidence_id": "neeq-evidence-430134-sponsor-20200217",
+          "evidence_kind": "sponsor_notice",
+          "source_authority": "sponsor_official",
+          "notice_number": "股转系统发〔2020〕110号（主办券商风险提示）",
+          "document_title": "ST可来博主办券商关于收到终止股票挂牌决定的风险提示性公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2020/2020-02-17/1581929765_542697.pdf",
+          "published_date": "2020-02-17",
+          "retrieved_at": "2026-11-16T13:28:10+08:00",
+          "evidence_status": "located",
+          "content_sha256": "",
+          "content_excerpt": "主办券商公告说明公司收到全国股转公司终止挂牌决定；条件终止日期为2020年2月25日。",
+          "metadata": {
+            "document_issuer": "山西证券股份有限公司",
+            "hosting_domain": "www.neeq.com.cn",
+            "retrieval_note": "原文PDF链接已定位；网页抓取返回403，尚未完成本地下载与哈希校验。"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-link-430134-sponsor-20200217",
+              "case_id": "neeq-result-430134-844",
+              "evidence_id": "neeq-evidence-430134-sponsor-20200217",
+              "procedure_id": null,
+              "relation_type": "supports_case",
+              "notes": "主办券商公告，支持收到决定及条件终止日期的调查。",
+              "created_at": "2026-11-16 05:28:10"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-430134-sponsor-20200512",
+          "evidence_kind": "sponsor_notice",
+          "source_authority": "sponsor_official",
+          "notice_number": "",
+          "document_title": "山西证券关于北京中科可来博电子科技股份有限公司的风险提示公告",
+          "source_url": "https://www.neeq.com.cn/disclosure/2020/2020-05-12/1589283254_428161.pdf",
+          "published_date": "2020-05-12",
+          "retrieved_at": "2026-11-16T13:28:10+08:00",
+          "evidence_status": "located",
+          "content_sha256": "",
+          "content_excerpt": "此前检索的公告内容显示，主办券商仍提示公司及时披露终止挂牌公告并办理后续手续；该文件不能证明2020年5月13日就是实际终止日期。",
+          "metadata": {
+            "document_issuer": "山西证券股份有限公司",
+            "hosting_domain": "www.neeq.com.cn",
+            "retrieval_note": "原文PDF链接已定位；网页抓取返回403，尚未完成本地下载与哈希校验。"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-link-430134-sponsor-20200512",
+              "case_id": "neeq-result-430134-844",
+              "evidence_id": "neeq-evidence-430134-sponsor-20200512",
+              "procedure_id": null,
+              "relation_type": "supports_case",
+              "notes": "主办券商后续风险提示；用于解释程序仍待核查，不证明实际终止日期。",
+              "created_at": "2026-11-16 05:28:10"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+          "evidence_kind": "batch_notice",
+          "source_authority": "neeq_official",
+          "notice_number": "",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/important_news/200006230.html",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": null,
+            "confirmed_legal_fact": false,
+            "decision_date": null,
+            "evidence_type": "parsed_batch_membership",
+            "membership_type": "background_pending_company",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-430134-844-link-66d5007234b0-context",
+              "case_id": "neeq-result-430134-844",
+              "evidence_id": "neeq-evidence-66d5007234b098a297580afe",
+              "procedure_id": null,
+              "relation_type": "context_only",
+              "notes": "背景名单或未提供程序日期的证据，仅作上下文。",
+              "created_at": "2026-11-16 04:59:55"
+            }
+          ]
+        },
+        {
+          "evidence_id": "neeq-evidence-ff168cfd4b6db57c9a56bd14",
+          "evidence_kind": "formal_decision",
+          "source_authority": "neeq_official",
+          "notice_number": "2020-110",
+          "document_title": "",
+          "source_url": "https://www.neeq.com.cn/uploads/1/file/public/202002/20200217153226_t75f1e2e80.pdf",
+          "published_date": "",
+          "retrieved_at": "2026-11-16T12:59:24+08:00",
+          "evidence_status": "crosschecked",
+          "content_sha256": "",
+          "content_excerpt": "",
+          "metadata": {
+            "conditional_termination_date": "2020-02-25",
+            "confirmed_legal_fact": false,
+            "decision_date": "2020-02-13",
+            "evidence_type": "supplemental_independent_decision",
+            "membership_type": "independent_formal_decision",
+            "review_status": "pending_manual_review",
+            "source": "neeq_datatype0_date_audit_v4"
+          },
+          "case_links": [
+            {
+              "link_id": "neeq-result-430134-844-link-ff168cfd4b6d-conditional",
+              "case_id": "neeq-result-430134-844",
+              "evidence_id": "neeq-evidence-ff168cfd4b6db57c9a56bd14",
+              "procedure_id": "neeq-result-430134-844-conditional-ff168cfd4b6d",
+              "relation_type": "supports_procedure",
+              "notes": "待人工复核；不确认实际终止挂牌日期。",
+              "created_at": "2026-11-16 04:59:55",
+              "procedure_type": "conditional_termination",
+              "event_date": "2020-02-25",
+              "date_semantics": "conditional_termination",
+              "date_status": "pending"
+            },
+            {
+              "link_id": "neeq-result-430134-844-link-ff168cfd4b6d-decision",
+              "case_id": "neeq-result-430134-844",
+              "evidence_id": "neeq-evidence-ff168cfd4b6db57c9a56bd14",
+              "procedure_id": "neeq-result-430134-844-decision-ff168cfd4b6d",
+              "relation_type": "supports_procedure",
+              "notes": "待人工复核；仅支持程序节点，不证明实际终止挂牌日期。",
+              "created_at": "2026-11-16 04:59:55",
+              "procedure_type": "decision_issued",
+              "event_date": "2020-02-13",
+              "date_semantics": "decision_issued",
+              "date_status": "pending"
+            }
+          ]
+        }
+      ],
+      "evidence_searches": [
+        {
+          "evidence_kind": "final_termination_notice",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "formal_decision",
+          "latest_status": "registered",
+          "latest_recorded_status": "registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "全国股转公司正式决定原文链接已定位并已存在于当前证据台账；本次不重复插入。",
+          "source_urls": [
+            "https://www.neeq.com.cn/uploads/1/file/public/202002/20200217153226_t75f1e2e80.pdf"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_application",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "review_decision",
+          "latest_status": "searched_not_found",
+          "latest_recorded_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "history_count": 1
+        },
+        {
+          "evidence_kind": "sponsor_notice",
+          "latest_status": "registered",
+          "latest_recorded_status": "found_not_registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "最近一次检索记录状态为found_not_registered；此后该类型证据已登记到当前案件台账，因此当前有效状态为registered。原始检索记录保留在检索历史中。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/2020/2020-02-17/1581929765_542697.pdf",
+            "https://www.neeq.com.cn/disclosure/2020/2020-05-12/1589283254_428161.pdf"
+          ],
+          "history_count": 1
+        }
+      ],
+      "evidence_search_status": {
+        "batch_notice": "registered",
+        "final_termination_notice": "searched_not_found",
+        "formal_decision": "registered",
+        "review_application": "searched_not_found",
+        "review_decision": "searched_not_found",
+        "sponsor_notice": "registered"
+      },
+      "evidence_search_history": [
+        {
+          "search_id": "neeq-search-430134-final-notice-20261116",
+          "evidence_kind": "final_termination_notice",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到最终终止挂牌公告或官方摘牌结果记录；不代表其不存在。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-430134-formal-decision-20261116",
+          "evidence_kind": "formal_decision",
+          "search_status": "registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "全国股转公司正式决定原文链接已定位并已存在于当前证据台账；本次不重复插入。",
+          "source_urls": [
+            "https://www.neeq.com.cn/uploads/1/file/public/202002/20200217153226_t75f1e2e80.pdf"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-430134-review-application-20261116",
+          "evidence_kind": "review_application",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请公开记录；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-430134-review-decision-20261116",
+          "evidence_kind": "review_decision",
+          "search_status": "searched_not_found",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "当前检索范围未找到复核申请/复核决定；不得据此推断公司未申请复核。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/termination_listing.html"
+          ],
+          "reviewer": "TrendRadar research"
+        },
+        {
+          "search_id": "neeq-search-430134-sponsor-notice-20261116",
+          "evidence_kind": "sponsor_notice",
+          "search_status": "found_not_registered",
+          "searched_at": "2026-11-16T13:28:10+08:00",
+          "search_scope": "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。",
+          "search_notes": "已定位2020年2月17日及5月12日两份山西证券风险提示公告，待登记后应转为registered。",
+          "source_urls": [
+            "https://www.neeq.com.cn/disclosure/2020/2020-02-17/1581929765_542697.pdf",
+            "https://www.neeq.com.cn/disclosure/2020/2020-05-12/1589283254_428161.pdf"
+          ],
+          "reviewer": "TrendRadar research"
+        }
+      ],
+      "procedures": [
+        {
+          "procedure_id": "neeq-result-430134-844-decision-ff168cfd4b6d",
+          "case_id": "neeq-result-430134-844",
+          "procedure_type": "decision_issued",
+          "event_date": "2020-02-13",
+          "date_semantics": "decision_issued",
+          "date_status": "pending",
+          "notes": "公告解析/交叉核对所得决定日期，待人工复核。",
+          "created_at": "2026-11-16 04:59:55",
+          "updated_at": "2026-11-16 04:59:55"
+        },
+        {
+          "procedure_id": "neeq-result-430134-844-conditional-ff168cfd4b6d",
+          "case_id": "neeq-result-430134-844",
+          "procedure_type": "conditional_termination",
+          "event_date": "2020-02-25",
+          "date_semantics": "conditional_termination",
+          "date_status": "pending",
+          "notes": "公告所载条件终止日期，不等同实际终止挂牌日期。",
+          "created_at": "2026-11-16 04:59:55",
+          "updated_at": "2026-11-16 04:59:55"
+        }
+      ],
+      "existing_reviews": [],
+      "known_context_requiring_human_check": [
+        "已登记的正式决定证据对应股转系统发〔2020〕110号，决定日期为2020-02-13，条件终止日期为2020-02-25；同时登记了主办券商2020-02-17及2020-05-12公告。",
+        "2020-05-12主办券商风险提示仍要求公司披露终止挂牌公告并完成终止后的登记事项。该表述提示最终公告/登记手续当时仍是待核事项，但不能单凭它认定后来实际终止日期。",
+        "NEEQ结果接口候选日期为2020-05-13，与条件终止日期2020-02-25相差78天；当前材料不足以确认该接口日期的法律含义或解释差异。"
+      ],
+      "review_focus": [
+        "核对股转系统发〔2020〕110号决定原件及送达材料。",
+        "查找复核申请受理、复核决定或补充决定。",
+        "重点追查2020-05-12之后的最终终止挂牌公告及中国结算退出/登记记录。"
+      ],
+      "suggested_review_status": "needs_more_evidence",
+      "suggested_conclusion": "当前证据不足以确认实际终止挂牌日期；建议补充证据后再复核。",
+      "actual_termination_confirmed": false,
+      "review_record_written": false
+    }
+  ],
+  "global_safety": {
+    "database_writes": false,
+    "review_records_written": false,
+    "formal_lifecycle_writes": false,
+    "security_master_writes": false,
+    "actual_termination_facts_confirmed": 0,
+    "date_semantics_warning": "NEEQ结果接口日期是official_result_api_candidate；条件终止日期、决定日期、公告日期和实际终止挂牌日期不可互相替代。",
+    "search_scope_warning": "searched_not_found仅表示当前登记的检索范围内未找到，不证明官方材料不存在；evidence_coverage_scope=current_ledger_only，不代表穷尽全部公开来源。"
+  }
+}
