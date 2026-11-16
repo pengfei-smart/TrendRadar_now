@@ -80,8 +80,8 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
 
     def test_payload_preview_contains_three_cases_and_eighteen_search_states(self):
         payload = build_payload("2026-11-16T16:00:00+08:00")
-        self.assertEqual(len(payload["evidence"]), 6)
-        self.assertEqual(len(payload["links"]), 6)
+        self.assertEqual(len(payload["evidence"]), 5)
+        self.assertEqual(len(payload["links"]), 5)
         self.assertEqual(len(payload["searches"]), 18)
         self.assertEqual(
             sum(item["evidence_kind"] == "review_application" for item in payload["searches"]),
@@ -94,7 +94,7 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
         payload = build_payload("2026-11-16T16:00:00+08:00")
         first = apply_payload(self.storage, payload)
         second = apply_payload(self.storage, payload)
-        self.assertEqual(first, {"evidence": 6, "links": 6, "searches": 18})
+        self.assertEqual(first, {"evidence": 5, "links": 5, "searches": 18})
         self.assertEqual(second, first)
         queue = list_neeq_termination_review_queue(self.storage, limit=100)
         osiqi = next(item for item in queue if item["company_code"] == "836614")
@@ -105,8 +105,8 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
         self.assertEqual(erzhong["evidence_search_status"]["formal_decision"], "registered")
         self.assertEqual(keli["evidence_search_status"]["sponsor_notice"], "registered")
         with self.storage.connect() as connection:
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence").fetchone()[0], 8)
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence_link").fetchone()[0], 8)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence").fetchone()[0], 7)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence_link").fetchone()[0], 7)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM neeq_termination_evidence_search").fetchone()[0], 18)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0)
@@ -121,18 +121,19 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
             date_sources = connection.execute(
                 """SELECT evidence_id, published_date, source_url
                 FROM neeq_termination_evidence
-                WHERE evidence_id IN (
-                    'neeq-evidence-836614-sponsor-20190719',
-                    'neeq-evidence-836614-sponsor-20190722-dfcfw'
-                )"""
+                WHERE evidence_id='neeq-evidence-836614-sponsor-20190722-dfcfw'"""
             ).fetchall()
+            self.assertEqual(len(date_sources), 1)
+            self.assertEqual(date_sources[0]["published_date"], "2019-07-22")
             self.assertEqual(
-                {row["evidence_id"]: row["published_date"] for row in date_sources},
-                {
-                    "neeq-evidence-836614-sponsor-20190719": "2019-07-19",
-                    "neeq-evidence-836614-sponsor-20190722-dfcfw": "2019-07-22",
-                },
+                date_sources[0]["source_url"],
+                "https://pdf.dfcfw.com/pdf/H2_AN201907221340608636_1.pdf",
             )
+            duplicate = connection.execute(
+                """SELECT COUNT(*) FROM neeq_termination_evidence
+                WHERE source_url='https://notice.10jqka.com.cn/api/pdf/91b688ddd44596d2.pdf'"""
+            ).fetchone()[0]
+            self.assertEqual(duplicate, 1)
 
     def test_apply_rejects_unbacked_registered_search_status(self):
         payload = build_payload("2026-11-16T16:00:00+08:00")
