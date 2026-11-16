@@ -154,6 +154,19 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
             }
             for kind, item in sorted(latest_searches.items())
         ]
+        search_history = [
+            {
+                "search_id": item["search_id"],
+                "evidence_kind": item["evidence_kind"],
+                "search_status": item["search_status"],
+                "searched_at": item["searched_at"],
+                "search_scope": item["search_scope"],
+                "search_notes": item["search_notes"],
+                "source_urls": item["source_urls"],
+                "reviewer": item["reviewer"],
+            }
+            for item in dossier["evidence_searches"]
+        ]
         cases.append({
             "company_code": code,
             "company_name": case["company_name_snapshot"],
@@ -168,6 +181,8 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
             "evidence_coverage_scope": "current_ledger_only",
             "evidence": linked_evidence,
             "evidence_searches": searches,
+            "evidence_search_status": queue_item.get("evidence_search_status", {}),
+            "evidence_search_history": search_history,
             "procedures": dossier["procedures"],
             "existing_reviews": dossier["reviews"],
             "known_context_requiring_human_check": context["known_context"],
@@ -246,15 +261,17 @@ def render_markdown(report: dict[str, Any]) -> str:
             ])
             for link in evidence["case_links"]:
                 lines.append(f"  - 案件关联：`{link['relation_type']}`；{link['notes'] or '无补充说明'}")
-        lines.extend(["", "### 检索状态（每类仅展示最近一次，完整历史保留在JSON报告）", ""])
-        if not item["evidence_searches"]:
-            lines.append("- 当前台账没有检索记录。")
-        for search in item["evidence_searches"]:
-            lines.append(
-                f"- `{search['evidence_kind']}`：**{search['latest_status']}**"
-                f"（{search['searched_at']}；历史记录{search['history_count']}条）"
-            )
-            if search["search_notes"]:
+        lines.extend(["", "### 检索状态（各类型当前状态；完整检索历史保留在JSON报告）", ""])
+        latest_by_kind = {search["evidence_kind"]: search for search in item["evidence_searches"]}
+        if not item["evidence_search_status"]:
+            lines.append("- 当前台账没有检索状态记录。")
+        for kind, status in sorted(item["evidence_search_status"].items()):
+            search = latest_by_kind.get(kind)
+            detail = ""
+            if search:
+                detail = f"（最近检索：{search['searched_at']}；历史记录{search['history_count']}条）"
+            lines.append(f"- `{kind}`：**{status}**{detail}")
+            if search and search["search_notes"]:
                 lines.append(f"  - {search['search_notes']}")
         lines.extend(["", "### 已知研究线索（需审阅人核对）", ""])
         lines.extend(f"- {note}" for note in item["known_context_requiring_human_check"])
