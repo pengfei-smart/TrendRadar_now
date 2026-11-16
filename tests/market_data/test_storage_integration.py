@@ -82,7 +82,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "7")
+            self.assertEqual(version, "8")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
             )
@@ -101,6 +101,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
                 "neeq_termination_procedure",
                 "neeq_termination_evidence_link",
                 "neeq_termination_review",
+                "neeq_termination_evidence_search",
             }
             self.assertTrue(expected.issubset(tables))
             case_foreign_keys = connection.execute(
@@ -196,6 +197,40 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_lifecycle_events").fetchone()[0], 0
             )
+
+    def test_neeq_evidence_search_history_is_append_only(self):
+        self.storage.save_neeq_termination_cases([{
+            "case_id": "neeq-result-838047-841",
+            "company_code": "838047",
+            "company_name_snapshot": "二中科技",
+            "source_record_id": "841",
+            "source_api": "neeq_termination_result_api",
+            "interface_result_date": "2019-09-06",
+            "raw_record": {"id": 841, "companyCode": "838047"},
+        }])
+        search = {
+            "search_id": "search-838047-final-not-found",
+            "case_id": "neeq-result-838047-841",
+            "evidence_kind": "final_termination_notice",
+            "search_status": "searched_not_found",
+            "searched_at": "2026-11-16T15:00:00+08:00",
+            "search_scope": "全国股转系统公开公告检索",
+            "search_notes": "检索范围内未找到，不代表公告不存在。",
+            "source_urls": ["https://www.neeq.com.cn/disclosure/termination_listing.html"],
+            "reviewer": "test-reviewer",
+        }
+        self.assertEqual(self.storage.record_neeq_termination_evidence_search(search), 1)
+        self.assertEqual(self.storage.record_neeq_termination_evidence_search(search), 1)
+        rows = self.storage.list_neeq_termination_evidence_searches(
+            case_id="neeq-result-838047-841",
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["search_status"], "searched_not_found")
+        self.assertEqual(rows[0]["source_urls"], search["source_urls"])
+        with self.assertRaises(ValueError):
+            self.storage.record_neeq_termination_evidence_search(dict(
+                search, search_id="search-invalid-case", case_id="missing-case",
+            ))
 
     def test_neeq_identity_candidates_do_not_auto_create_issuer_master(self):
         self.storage.save_neeq_issuer_identity_candidates([{
