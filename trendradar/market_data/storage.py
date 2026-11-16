@@ -529,8 +529,13 @@ class MarketStorage:
             raise ValueError(f"实际退市事件证据校验失败: {errors}")
         if candidate.get("evidence_grade") != "official":
             raise ValueError("实际退市事件证据候选的evidence_grade必须为official")
-        if not str(candidate.get("source_url") or "").startswith("https://"):
+        if item.get("date_status") != "confirmed" or item.get("evidence_grade") != "official":
+            raise ValueError("正式实际退市事件自身必须标记date_status=confirmed且evidence_grade=official")
+        candidate_url = str(candidate.get("source_url") or "")
+        if not candidate_url.startswith("https://"):
             raise ValueError("实际退市事件证据候选必须提供HTTPS官方来源URL")
+        if item.get("source_url") != candidate_url:
+            raise ValueError("正式实际退市事件source_url必须与已审核证据候选一致")
 
     def save_security_lifecycle_events(self, events: Iterable[dict]) -> int:
         """保存证券生命周期事件；外键和 CHECK 约束由 SQLite 最终兜底。"""
