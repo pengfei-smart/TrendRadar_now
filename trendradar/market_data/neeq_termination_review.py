@@ -49,6 +49,13 @@ def get_neeq_termination_case_timeline(
                 (normalized_id,),
             ).fetchall()
         ]
+        searches = [
+            dict(row) for row in connection.execute(
+                """SELECT * FROM neeq_termination_evidence_search
+                WHERE case_id=? ORDER BY searched_at,search_id""",
+                (normalized_id,),
+            ).fetchall()
+        ]
         links = [
             dict(row) for row in connection.execute(
                 """SELECT * FROM neeq_termination_evidence_link
@@ -95,6 +102,16 @@ def get_neeq_termination_case_timeline(
             "reference_id": item["evidence_id"],
             "description": item["document_title"] or item["source_url"],
         })
+    for item in searches:
+        item["source_urls"] = json.loads(item.pop("source_urls_json") or "[]")
+        timeline.append({
+            "timeline_type": "evidence_search",
+            "event_date": item["searched_at"],
+            "date_semantics": "evidence_investigation",
+            "date_status": item["search_status"],
+            "reference_id": item["search_id"],
+            "description": item["search_notes"] or item["search_scope"],
+        })
     for item in reviews:
         timeline.append({
             "timeline_type": "review",
@@ -117,6 +134,7 @@ def get_neeq_termination_case_timeline(
         "procedures": procedures,
         "evidence": evidence,
         "evidence_links": links,
+        "evidence_searches": searches,
         "reviews": reviews,
     }
 
@@ -216,6 +234,19 @@ def list_neeq_termination_review_queue(
                     (case_id,),
                 ).fetchall()
             ]
+            search_rows = [
+                dict(row) for row in connection.execute(
+                    """SELECT s.* FROM neeq_termination_evidence_search s
+                    JOIN (
+                        SELECT evidence_kind,MAX(searched_at) AS max_searched_at
+                        FROM neeq_termination_evidence_search WHERE case_id=?
+                        GROUP BY evidence_kind
+                    ) latest ON latest.evidence_kind=s.evidence_kind
+                           AND latest.max_searched_at=s.searched_at
+                    WHERE s.case_id=?""",
+                    (case_id, case_id),
+                ).fetchall()
+            ]
             latest_review = connection.execute(
                 """SELECT review_id,review_status,conclusion_code,reviewer,reviewed_at,review_notes
                 FROM neeq_termination_review WHERE case_id=?
@@ -226,6 +257,15 @@ def list_neeq_termination_review_queue(
             for item in evidence:
                 item["metadata"] = json.loads(item.pop("metadata_json") or "{}")
             evidence_kinds = {item["evidence_kind"] for item in evidence}
+            latest_search_status = {
+                item["evidence_kind"]: item["search_status"] for item in search_rows
+            }
+            evidence_search_status = {}
+            for kind in sorted(evidence_kinds | set(latest_search_status)):
+                if kind in evidence_kinds and latest_search_status.get(kind) != "manually_verified":
+                    evidence_search_status[kind] = "registered"
+                else:
+                    evidence_search_status[kind] = latest_search_status.get(kind, "not_searched")
             has_formal_decision = any(
                 item["evidence_kind"] in {"formal_decision", "supplementary_decision"}
                 or (
@@ -283,6 +323,7 @@ def list_neeq_termination_review_queue(
                 "date_mismatch": bool(mismatch_dates),
                 "mismatch_dates": mismatch_dates,
                 "evidence_kinds": sorted(evidence_kinds),
+                "evidence_search_status": evidence_search_status,
                 "missing_evidence_kinds": missing,
                 "evidence_coverage_scope": "current_ledger_only",
                 "latest_review": dict(latest_review) if latest_review else None,
