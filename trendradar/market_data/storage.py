@@ -461,7 +461,7 @@ class MarketStorage:
             ).fetchall()
             return [dict(row) for row in rows]
 
-    def _validate_actual_delisting_event(self, item: dict, security_code: str) -> None:
+    def _validate_actual_delisting_event(\n        self, item: dict, security_code: str, *, connection: sqlite3.Connection | None = None,\n    ) -> None:
         """实际退市事件必须绑定已审核通过且能直接证明实际日期的官方证据候选。"""
         from trendradar.market_data.neeq_termination_date_validation import (
             validate_neeq_date_mapping,
@@ -470,7 +470,13 @@ class MarketStorage:
         candidate_id = str(item.get("evidence_candidate_id") or "").strip()
         if not candidate_id:
             raise ValueError("delisting_effective事件必须提供evidence_candidate_id")
-        with self.connect() as connection:
+        if connection is None:
+            with self.connect() as active_connection:
+                row = active_connection.execute(
+                    "SELECT * FROM lifecycle_evidence_candidates WHERE candidate_id=?",
+                    (candidate_id,),
+                ).fetchone()
+        else:
             row = connection.execute(
                 "SELECT * FROM lifecycle_evidence_candidates WHERE candidate_id=?",
                 (candidate_id,),
@@ -553,6 +559,12 @@ class MarketStorage:
                 item.get("corporate_action_id"), item.get("notes", ""),
             ))
         with self.connect() as connection:
+            # 在正式写入事务内再次核验，避免候选审核状态在预校验后发生变化。
+            for item in events:
+                if item.get("event_type") == "delisting_effective":
+                    self._validate_actual_delisting_event(
+                        item, item.get("security_code"), connection=connection,
+                    )
             connection.executemany(
                 """INSERT INTO security_lifecycle_events
                 (event_id,security_code,exchange,event_type,event_date,decision_issued_date,
