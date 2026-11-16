@@ -284,6 +284,7 @@ def list_neeq_termination_review_queue(
                 "mismatch_dates": mismatch_dates,
                 "evidence_kinds": sorted(evidence_kinds),
                 "missing_evidence_kinds": missing,
+                "evidence_coverage_scope": "current_ledger_only",
                 "latest_review": dict(latest_review) if latest_review else None,
                 "priority": priority,
                 "next_actions": next_actions,
