@@ -208,7 +208,7 @@ def list_neeq_termination_review_queue(
             evidence = [
                 dict(row) for row in connection.execute(
                     """SELECT DISTINCT e.evidence_id,e.evidence_kind,e.source_authority,
-                              e.evidence_status,e.source_url
+                              e.evidence_status,e.source_url,e.metadata_json
                     FROM neeq_termination_evidence e
                     JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
                     WHERE l.case_id=?""",
@@ -222,7 +222,17 @@ def list_neeq_termination_review_queue(
                 (case_id,),
             ).fetchone()
 
+            for item in evidence:
+                item["metadata"] = json.loads(item.pop("metadata_json") or "{}")
             evidence_kinds = {item["evidence_kind"] for item in evidence}
+            has_formal_decision = any(
+                item["evidence_kind"] in {"formal_decision", "supplementary_decision"}
+                or (
+                    item["evidence_kind"] == "batch_notice"
+                    and item["metadata"].get("membership_type") == "formal_decision_company"
+                )
+                for item in evidence
+            )
             conditional_dates = {
                 item["event_date"] for item in procedures
                 if item["procedure_type"] == "conditional_termination" and item["event_date"]
@@ -233,9 +243,6 @@ def list_neeq_termination_review_queue(
             )
             has_final_notice = "final_termination_notice" in evidence_kinds
             has_review_decision = "review_decision" in evidence_kinds
-            has_formal_decision = bool(
-                evidence_kinds.intersection({"formal_decision", "batch_notice", "supplementary_decision"})
-            )
 
             missing: list[str] = []
             next_actions: list[str] = []
