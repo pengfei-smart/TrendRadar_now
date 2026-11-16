@@ -1,11 +1,13 @@
 # 本文件测试NEEQ P0人工审阅报告生成器的内容、只读性和安全边界。
 """Tests for the read-only NEEQ P0 manual review report builder."""
 
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
 
 from scripts.market_data.build_neeq_p0_manual_review_report import (
+    ReadOnlyMarketStorage,
     build_report,
     render_markdown,
 )
@@ -127,6 +129,18 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
         self.assertIn("searched_not_found", markdown)
         self.assertIn("实际终止挂牌日期已确认：**否**", markdown)
         self.assertIn("人工复核记录写入：否", markdown)
+
+    def test_report_runs_through_sqlite_read_only_adapter(self):
+        readonly = ReadOnlyMarketStorage(self.db_path)
+        report = build_report(readonly, "2026-11-16T13:30:00+08:00")
+        self.assertEqual(report["case_count"], 3)
+        with readonly.connect() as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM neeq_termination_case").fetchone()[0],
+                3,
+            )
+            with self.assertRaises(sqlite3.OperationalError):
+                connection.execute("DELETE FROM neeq_termination_case")
 
     def test_missing_p0_case_fails_clearly(self):
         with self.storage.connect() as connection:
