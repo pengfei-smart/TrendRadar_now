@@ -61,6 +61,29 @@ class NEEQTerminationLedgerImportTests(unittest.TestCase):
         })
         self.assertEqual(payload["links"][0]["relation_type"], "supports_procedure")
 
+    def test_nested_full_manifest_imports_only_audit_scoped_candidates(self):
+        full_manifest = {
+            "source": "neeq_official_termination_result_list",
+            "audit": {"status": "complete"},
+            "manifest": {
+                "candidate_count": 2,
+                "candidates": [
+                    self.manifest["records"][0],
+                    {
+                        "record_id": "999", "company_code": "830001",
+                        "company_name": "其他候选",
+                        "raw_record": {"id": 999, "companyCode": "830001"},
+                    },
+                ],
+            },
+            "safety": {"formal_lifecycle_write_allowed": False},
+        }
+        payload = build_import_payload(
+            full_manifest, self.audit, retrieved_at="2026-11-15T12:00:00+08:00"
+        )
+        self.assertEqual(len(payload["cases"]), 1)
+        self.assertEqual(payload["cases"][0]["source_record_id"], "841")
+
     def test_raw_record_hash_mismatch_is_rejected(self):
         self.audit["candidates"][0]["raw_record_sha256"] = "0" * 64
         with self.assertRaisesRegex(ValueError, "SHA256 mismatch"):
