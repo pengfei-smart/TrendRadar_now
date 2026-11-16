@@ -1007,7 +1007,9 @@ class MarketStorage:
     def _neeq_json(value: dict) -> str:
         return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
-    def save_neeq_termination_cases(self, cases: Iterable[dict]) -> int:
+    def save_neeq_termination_cases(
+        self, cases: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """幂等保存NEEQ终止挂牌调查案件；原始快照哈希不一致时拒绝覆盖。"""
         rows = []
         for item in cases:
@@ -1038,7 +1040,7 @@ class MarketStorage:
             ))
         if not rows:
             return 0
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             for row in rows:
                 existing = connection.execute(
                     "SELECT raw_record_sha256 FROM neeq_termination_case WHERE case_id=?",
@@ -1062,7 +1064,9 @@ class MarketStorage:
                     raise RuntimeError(f"案件提交后回读校验失败: {row[0]}")
         return len(rows)
 
-    def save_neeq_termination_evidence(self, evidence: Iterable[dict]) -> int:
+    def save_neeq_termination_evidence(
+        self, evidence: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """幂等保存证据元数据；相同ID但内容哈希不同则拒绝覆盖。"""
         rows = []
         for item in evidence:
@@ -1100,7 +1104,7 @@ class MarketStorage:
             ))
         if not rows:
             return 0
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             for row in rows:
                 existing = connection.execute(
                     "SELECT source_url,content_sha256 FROM neeq_termination_evidence WHERE evidence_id=?",
@@ -1127,7 +1131,9 @@ class MarketStorage:
                     raise RuntimeError(f"证据提交后回读校验失败: {row[0]}")
         return len(rows)
 
-    def save_neeq_termination_procedures(self, procedures: Iterable[dict]) -> int:
+    def save_neeq_termination_procedures(
+        self, procedures: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """保存程序节点；日期语义与日期核验状态必须显式分开。"""
         rows = []
         for item in procedures:
@@ -1154,7 +1160,7 @@ class MarketStorage:
             ))
         if not rows:
             return 0
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             connection.executemany(
                 """INSERT OR IGNORE INTO neeq_termination_procedure
                 (procedure_id,case_id,procedure_type,event_date,date_semantics,date_status,notes)
@@ -1171,7 +1177,9 @@ class MarketStorage:
                     raise ValueError(f"程序节点ID冲突或案件不存在: {row[0]}")
         return len(rows)
 
-    def link_neeq_termination_evidence(self, links: Iterable[dict]) -> int:
+    def link_neeq_termination_evidence(
+        self, links: Iterable[dict], *, connection: sqlite3.Connection | None = None,
+    ) -> int:
         """关联案件、证据及可选程序节点，外键约束负责拒绝孤立引用。"""
         rows = []
         for item in links:
@@ -1191,7 +1199,7 @@ class MarketStorage:
             rows.append((link_id, case_id, evidence_id, procedure_id, relation, str(item.get("notes") or "")))
         if not rows:
             return 0
-        with self.connect() as connection:
+        with self._connection_scope(connection) as connection:
             connection.executemany(
                 """INSERT OR IGNORE INTO neeq_termination_evidence_link
                 (link_id,case_id,evidence_id,procedure_id,relation_type,notes)
