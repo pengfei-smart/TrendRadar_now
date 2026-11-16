@@ -35,7 +35,7 @@ def _issue(code: str, message: str, severity: str = "error") -> dict[str, str]:
 
 def _parse_iso_date(value: Any) -> bool:
     if not isinstance(value, str) or not value.strip():
-    	return False
+        return False
     try:
         date.fromisoformat(value.strip())
     except ValueError:
