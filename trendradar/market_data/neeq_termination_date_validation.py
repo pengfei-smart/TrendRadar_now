@@ -37,10 +37,10 @@ def _parse_iso_date(value: Any) -> bool:
     if not isinstance(value, str) or not value.strip():
         return False
     try:
-        date.fromisoformat(value.strip())
+        parsed = date.fromisoformat(value.strip())
     except ValueError:
         return False
-    return len(value.strip()) == 10
+    return len(value.strip()) == 10 and parsed.isoformat() == value.strip()
 
 
 def validate_neeq_termination_procedure(
@@ -58,6 +58,14 @@ def validate_neeq_termination_procedure(
     event_date = procedure.get("event_date")
     date_status = str(procedure.get("date_status") or "unknown").strip()
 
+    known_procedure_types = {
+        "decision_issued", "decision_received", "review_filed", "review_accepted",
+        "review_rejected", "supplementary_decision", "conditional_termination",
+        "final_termination", "transfer_market_entry", "transfer_exit", "other",
+    }
+    if procedure_type not in known_procedure_types:
+        errors.append(_issue("unsupported_procedure_type", f"不支持的程序类型: {procedure_type}"))
+
     allowed_types = _PROCEDURE_SEMANTICS.get(semantics)
     if allowed_types is None:
         errors.append(_issue("unsupported_date_semantics", f"不支持的日期语义: {semantics}"))
@@ -67,7 +75,9 @@ def validate_neeq_termination_procedure(
             f"procedure_type={procedure_type} 与 date_semantics={semantics} 不匹配",
         ))
 
-    if event_date and not _parse_iso_date(event_date):
+    if semantics != "unknown" and not event_date:
+        errors.append(_issue("event_date_required", "已知日期语义必须提供event_date"))
+    elif event_date and not _parse_iso_date(event_date):
         errors.append(_issue("invalid_event_date", "event_date必须是YYYY-MM-DD格式的有效日期"))
     if date_status not in {"confirmed", "approximate", "pending", "unknown"}:
         errors.append(_issue("invalid_date_status", f"非法date_status: {date_status}"))
