@@ -228,7 +228,7 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
         })
     return {
         "report_type": "neeq_p0_manual_evidence_review",
-        "report_version": "v3",
+        "report_version": "v4",
         "generated_at": generated_at,
         "database_access": "read_only",
         "case_count": len(cases),
