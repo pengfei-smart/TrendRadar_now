@@ -579,3 +579,24 @@ CREATE INDEX IF NOT EXISTS idx_neeq_termination_review_case_time
     ON neeq_termination_review(case_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_neeq_termination_review_status
     ON neeq_termination_review(review_status, reviewed_at);
+
+-- v8 NEEQ证据调查状态历史。无记录代表not_searched；每次检索追加一条，不覆盖旧调查。
+CREATE TABLE IF NOT EXISTS neeq_termination_evidence_search (
+    search_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    evidence_kind TEXT NOT NULL CHECK (evidence_kind IN (
+        'batch_notice','formal_decision','review_application','review_decision',
+        'supplementary_decision','final_termination_notice','transfer_exit_record',
+        'issuer_notice','sponsor_notice','third_party_lead','other')),
+    search_status TEXT NOT NULL CHECK (search_status IN (
+        'not_searched','searched_not_found','found_not_registered','registered','manually_verified')),
+    searched_at TEXT NOT NULL,
+    search_scope TEXT NOT NULL DEFAULT '',
+    search_notes TEXT NOT NULL DEFAULT '',
+    source_urls_json TEXT NOT NULL DEFAULT '[]',
+    reviewer TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (case_id) REFERENCES neeq_termination_case(case_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_search_case_kind
+    ON neeq_termination_evidence_search(case_id,evidence_kind,searched_at DESC,search_id);
