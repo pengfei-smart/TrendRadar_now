@@ -142,18 +142,31 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
                 "metadata": evidence["metadata"],
                 "case_links": links_by_evidence.get(evidence["evidence_id"], []),
             })
-        searches = [
-            {
+        searches = []
+        for kind, item in sorted(latest_searches.items()):
+            recorded_status = item["search_status"]
+            effective_status = queue_item.get("evidence_search_status", {}).get(
+                kind, recorded_status
+            )
+            status_note = item["search_notes"]
+            if recorded_status != effective_status:
+                status_note = (
+                    f"最近一次检索记录状态为{recorded_status}；此后该类型证据已登记到当前案件台账，"
+                    f"因此当前有效状态为{effective_status}。原始检索记录保留在检索历史中。"
+                )
+            searches.append({
                 "evidence_kind": kind,
-                "latest_status": item["search_status"],
+                "latest_status": effective_status,
+                "latest_recorded_status": recorded_status,
                 "searched_at": item["searched_at"],
                 "search_scope": item["search_scope"],
-                "search_notes": item["search_notes"],
+                "search_notes": status_note,
                 "source_urls": item["source_urls"],
-                "history_count": sum(1 for row in dossier["evidence_searches"] if row["evidence_kind"] == kind),
-            }
-            for kind, item in sorted(latest_searches.items())
-        ]
+                "history_count": sum(
+                    1 for row in dossier["evidence_searches"]
+                    if row["evidence_kind"] == kind
+                ),
+            })
         search_history = [
             {
                 "search_id": item["search_id"],
@@ -270,6 +283,11 @@ def render_markdown(report: dict[str, Any]) -> str:
             detail = ""
             if search:
                 detail = f"（最近检索：{search['searched_at']}；历史记录{search['history_count']}条）"
+                if search["latest_recorded_status"] != search["latest_status"]:
+                    detail += (
+                        f"（检索记录原始状态：{search['latest_recorded_status']}；"
+                        f"当前有效状态：{search['latest_status']}）"
+                    )
             lines.append(f"- `{kind}`：**{status}**{detail}")
             if search and search["search_notes"]:
                 lines.append(f"  - {search['search_notes']}")
