@@ -164,7 +164,17 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 - 结果接口候选日期、条件日期、决定日期、公告日期和退出登记日期不能直接映射到 `actual_termination_date` 或 `delisting_date`；
 - 映射到正式实际日期字段时，映射函数会重新执行完整程序与证据校验；调用方不能通过单独传入布尔值或伪造验证结果绕过证据门槛。
 
-该模块不连接数据库、不执行写入，也不自动生成生命周期事件。它是服务层调用前的校验组件；尚未接入正式生命周期写入服务。
+该模块本身不执行数据库写入。现已接入 `MarketStorage.save_security_lifecycle_events()` 的 `delisting_effective` 写入路径：
+
+- 必须提供 `evidence_candidate_id`，且候选必须存在、类型为 `event`、证券代码和日期一致；
+- 候选审核状态必须为 `verified`，候选及正式事件的证据等级必须为 `official`；
+- 候选 payload 必须明确提供 `evidence_kind`、`source_authority`、`evidence_status=crosschecked`、`confirmed_legal_fact=true` 和 `date_semantics=actual_termination`；
+- 正式事件日期、HTTPS来源URL必须与候选一致；
+- 写入事务内会再次读取并校验候选，降低审核状态在预校验后变化造成的竞态风险；
+- 普通非退市生命周期事件仍沿用原写入路径；
+- 该集成不自动写入 `security_master.delisting_date`，也不改变 NEEQ 案件台账。
+
+新增测试文件 `tests/market_data/test_lifecycle_write_guard.py` 覆盖缺少证据ID、候选未审核、日期不一致、合规证据成功写入，以及普通事件兼容性。当前远端代码尚未由用户本地执行测试，不能视为测试通过。
 
 本地同步后运行：
 
