@@ -138,6 +138,10 @@ class NEEQTerminationReviewServiceTests(unittest.TestCase):
             append_neeq_termination_case_review(
                 self.storage, self._review(reviewer="")
             )
+        with self.assertRaisesRegex(ValueError, "时区偏移"):
+            append_neeq_termination_case_review(
+                self.storage, self._review(reviewed_at="2026-11-16T13:00:00")
+            )
 
     def test_missing_case_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "案件不存在"):
