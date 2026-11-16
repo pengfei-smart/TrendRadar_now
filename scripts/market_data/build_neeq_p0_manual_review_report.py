@@ -24,6 +24,7 @@ P0_CASES = {
         "name": "奥其斯",
         "known_context": [
             "2019-984公告的背景名单（附件一）中出现该公司，但不在该公告正式终止挂牌名单（附件二）的46家公司之列；背景名单成员身份不能当作该公告对其作出的正式终止决定。",
+            "当前台账另将2019-1071批次公告关联至决定及条件终止程序，但该证据元数据未记录决定日期；在核对公告原文及附件中的公司名单前，不应将该关联单独作为决定日期证明。",
             "另有2019年7月22日新时代证券主办券商公告转述全国股转公司于2019年7月19日作出股转系统发〔2019〕2065号决定，条件终止日期为2019年7月29日。该材料是主办券商转述，不是已取得的全国股转公司决定原件。",
             "NEEQ结果接口候选日期为2019-09-06，与条件终止日期2019-07-29相差39天；当前材料不足以解释差异。",
         ],
@@ -126,7 +127,27 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
         links_by_evidence: dict[str, list[dict[str, Any]]] = {}
         for link in dossier["evidence_links"]:
             links_by_evidence.setdefault(link["evidence_id"], []).append(link)
+        procedures_by_id = {item["procedure_id"]: item for item in dossier["procedures"]}
         for evidence in dossier["evidence"]:
+            case_links = []
+            for link in links_by_evidence.get(evidence["evidence_id"], []):
+                enriched_link = dict(link)
+                procedure = procedures_by_id.get(link.get("procedure_id"))
+                if procedure:
+                    enriched_link["procedure_type"] = procedure.get("procedure_type")
+                    enriched_link["event_date"] = procedure.get("event_date")
+                    enriched_link["date_semantics"] = procedure.get("date_semantics")
+                    enriched_link["date_status"] = procedure.get("date_status")
+                if (
+                    link.get("relation_type") == "supports_procedure"
+                    and procedure
+                    and procedure.get("procedure_type") == "decision_issued"
+                    and not (evidence.get("metadata") or {}).get("decision_date")
+                ):
+                    enriched_link["support_warning"] = (
+                        "当前证据元数据未记录决定日期；该关联不能单独证明决定日期，需核对原文。"
+                    )
+                case_links.append(enriched_link)
             linked_evidence.append({
                 "evidence_id": evidence["evidence_id"],
                 "evidence_kind": evidence["evidence_kind"],
@@ -140,7 +161,7 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
                 "content_sha256": evidence["content_sha256"],
                 "content_excerpt": evidence["content_excerpt"],
                 "metadata": evidence["metadata"],
-                "case_links": links_by_evidence.get(evidence["evidence_id"], []),
+                "case_links": case_links,
             })
         searches = []
         for kind, item in sorted(latest_searches.items()):
@@ -207,7 +228,7 @@ def build_report(storage: MarketStorage, generated_at: str) -> dict[str, Any]:
         })
     return {
         "report_type": "neeq_p0_manual_evidence_review",
-        "report_version": "v2",
+        "report_version": "v3",
         "generated_at": generated_at,
         "database_access": "read_only",
         "case_count": len(cases),
@@ -272,8 +293,34 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"  - 内容摘要：{evidence['content_excerpt'] or '未登记摘要'}",
                 f"  - SHA-256：{evidence['content_sha256'] or '未取得/未登记'}",
             ])
-            for link in evidence["case_links"]:
+            case_links = evidence["case_links"]
+            procedure_links = [
+                link for link in case_links
+                if link["relation_type"] == "supports_procedure"
+            ]
+            case_level_links = [
+                link for link in case_links
+                if link["relation_type"] != "supports_procedure"
+            ]
+            for link in case_level_links:
                 lines.append(f"  - 案件关联：`{link['relation_type']}`；{link['notes'] or '无补充说明'}")
+            if procedure_links:
+                procedure_labels = [
+                    f"`{link.get('procedure_type') or 'unknown'}`（{link.get('event_date') or '日期未记录'}）"
+                    for link in procedure_links
+                ]
+                lines.append(
+                    "  - 程序关联："
+                    + "；".join(procedure_labels)
+                )
+                for link in procedure_links:
+                    if link.get("support_warning"):
+                        lines.append(f"  - 关联核验提示：{link['support_warning']}")
+                distinct_notes = list(dict.fromkeys(
+                    link["notes"] for link in procedure_links if link.get("notes")
+                ))
+                for note in distinct_notes:
+                    lines.append(f"  - 关联说明：{note}")
         lines.extend(["", "### 检索状态（各类型当前状态；完整检索历史保留在JSON报告）", ""])
         latest_by_kind = {search["evidence_kind"]: search for search in item["evidence_searches"]}
         if not item["evidence_search_status"]:
