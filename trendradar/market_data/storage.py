@@ -490,10 +490,16 @@ class MarketStorage:
             raise ValueError("实际退市事件证据候选必须先审核为verified")
         if candidate.get("candidate_kind") != "event":
             raise ValueError("实际退市事件必须关联event类型证据候选")
+        if candidate.get("event_type") != "delisting_effective":
+            raise ValueError("实际退市事件必须关联delisting_effective类型证据候选")
         if candidate.get("security_code") != security_code:
             raise ValueError("实际退市事件证券代码与证据候选不一致")
-        event_date = item.get("delisting_effective_date") or item.get("event_date")
-        if not event_date or candidate.get("event_date") != event_date:
+        event_date = item.get("delisting_effective_date")
+        if not event_date:
+            raise ValueError("正式实际退市事件必须提供delisting_effective_date")
+        if item.get("event_date") and item.get("event_date") != event_date:
+            raise ValueError("delisting_effective事件的event_date必须与delisting_effective_date一致")
+        if candidate.get("event_date") != event_date:
             raise ValueError("实际退市日期必须与已审核证据候选日期完全一致")
         try:
             payload = json.loads(candidate.get("payload_json") or "{}")
@@ -770,6 +776,33 @@ class MarketStorage:
                 item.get("evidence_excerpt", ""), payload, item.get("evidence_grade", "unknown"),
             ))
         with self._connection_scope(connection) as connection:
+            # 已经支撑正式事件的证据候选视为冻结记录，防止后续更新改变历史证据含义。
+            immutable_columns = (
+                "candidate_kind", "security_code", "related_security_code", "exchange",
+                "event_type", "action_type", "relationship_type", "event_date", "date_status",
+                "source_name", "source_title", "source_url", "source_published_at",
+                "content_sha256", "evidence_excerpt", "payload_json", "evidence_grade",
+            )
+            for row in rows:
+                candidate_id = row[0]
+                existing = connection.execute(
+                    "SELECT " + ",".join(immutable_columns) +
+                    " FROM lifecycle_evidence_candidates WHERE candidate_id=?",
+                    (candidate_id,),
+                ).fetchone()
+                if existing is None:
+                    continue
+                linked = connection.execute(
+                    """SELECT 1 FROM security_lifecycle_event_evidence
+                    WHERE candidate_id=? LIMIT 1""",
+                    (candidate_id,),
+                ).fetchone()
+                incoming = (
+                    row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
+                    row[9], row[10], row[11], row[12], row[15], row[16], row[17], row[18],
+                )
+                if linked and tuple(existing) != incoming:
+                    raise ValueError("已被正式生命周期事件引用的证据候选不可修改证据内容")
             connection.executemany(
                 """INSERT INTO lifecycle_evidence_candidates
                 (candidate_id,candidate_kind,security_code,related_security_code,exchange,
@@ -846,6 +879,13 @@ class MarketStorage:
         if not candidate_id or not reviewer.strip() or not reviewed_at.strip():
             raise ValueError("candidate_id、审核人和审核时间不能为空")
         with self.connect() as connection:
+            linked = connection.execute(
+                """SELECT 1 FROM security_lifecycle_event_evidence
+                WHERE candidate_id=? LIMIT 1""",
+                (candidate_id,),
+            ).fetchone()
+            if linked and review_status != "verified":
+                raise ValueError("已被正式生命周期事件引用的证据候选不得降级或撤销verified状态")
             cursor = connection.execute(
                 """UPDATE lifecycle_evidence_candidates SET review_status=?,reviewer=?,
                 reviewed_at=?,review_notes=?,updated_at=CURRENT_TIMESTAMP
