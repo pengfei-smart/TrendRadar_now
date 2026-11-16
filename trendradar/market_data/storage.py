@@ -497,7 +497,7 @@ class MarketStorage:
         event_date = item.get("delisting_effective_date")
         if not event_date:
             raise ValueError("正式实际退市事件必须提供delisting_effective_date")
-        if item.get("event_date") and item.get("event_date") != event_date:
+        if not item.get("event_date") or item.get("event_date") != event_date:
             raise ValueError("delisting_effective事件的event_date必须与delisting_effective_date一致")
         if candidate.get("event_date") != event_date:
             raise ValueError("实际退市日期必须与已审核证据候选日期完全一致")
@@ -820,15 +820,78 @@ class MarketStorage:
                 source_published_at=excluded.source_published_at,retrieved_at=excluded.retrieved_at,
                 evidence_excerpt=excluded.evidence_excerpt,payload_json=excluded.payload_json,
                 evidence_grade=excluded.evidence_grade,
-                review_status=CASE WHEN lifecycle_evidence_candidates.content_sha256
-                    <> excluded.content_sha256 THEN 'pending'
-                    ELSE lifecycle_evidence_candidates.review_status END,
-                reviewer=CASE WHEN lifecycle_evidence_candidates.content_sha256
-                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.reviewer END,
-                reviewed_at=CASE WHEN lifecycle_evidence_candidates.content_sha256
-                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.reviewed_at END,
-                review_notes=CASE WHEN lifecycle_evidence_candidates.content_sha256
-                    <> excluded.content_sha256 THEN '' ELSE lifecycle_evidence_candidates.review_notes END,
+                review_status=CASE WHEN (lifecycle_evidence_candidates.candidate_kind IS NOT excluded.candidate_kind
+                    OR lifecycle_evidence_candidates.security_code IS NOT excluded.security_code
+                    OR lifecycle_evidence_candidates.related_security_code IS NOT excluded.related_security_code
+                    OR lifecycle_evidence_candidates.exchange IS NOT excluded.exchange
+                    OR lifecycle_evidence_candidates.event_type IS NOT excluded.event_type
+                    OR lifecycle_evidence_candidates.action_type IS NOT excluded.action_type
+                    OR lifecycle_evidence_candidates.relationship_type IS NOT excluded.relationship_type
+                    OR lifecycle_evidence_candidates.event_date IS NOT excluded.event_date
+                    OR lifecycle_evidence_candidates.date_status IS NOT excluded.date_status
+                    OR lifecycle_evidence_candidates.source_name IS NOT excluded.source_name
+                    OR lifecycle_evidence_candidates.source_title IS NOT excluded.source_title
+                    OR lifecycle_evidence_candidates.source_url IS NOT excluded.source_url
+                    OR lifecycle_evidence_candidates.source_published_at IS NOT excluded.source_published_at
+                    OR lifecycle_evidence_candidates.content_sha256 IS NOT excluded.content_sha256
+                    OR lifecycle_evidence_candidates.evidence_excerpt IS NOT excluded.evidence_excerpt
+                    OR lifecycle_evidence_candidates.payload_json IS NOT excluded.payload_json
+                    OR lifecycle_evidence_candidates.evidence_grade IS NOT excluded.evidence_grade)
+                    THEN 'pending' ELSE lifecycle_evidence_candidates.review_status END,
+                reviewer=CASE WHEN (lifecycle_evidence_candidates.candidate_kind IS NOT excluded.candidate_kind
+                    OR lifecycle_evidence_candidates.security_code IS NOT excluded.security_code
+                    OR lifecycle_evidence_candidates.related_security_code IS NOT excluded.related_security_code
+                    OR lifecycle_evidence_candidates.exchange IS NOT excluded.exchange
+                    OR lifecycle_evidence_candidates.event_type IS NOT excluded.event_type
+                    OR lifecycle_evidence_candidates.action_type IS NOT excluded.action_type
+                    OR lifecycle_evidence_candidates.relationship_type IS NOT excluded.relationship_type
+                    OR lifecycle_evidence_candidates.event_date IS NOT excluded.event_date
+                    OR lifecycle_evidence_candidates.date_status IS NOT excluded.date_status
+                    OR lifecycle_evidence_candidates.source_name IS NOT excluded.source_name
+                    OR lifecycle_evidence_candidates.source_title IS NOT excluded.source_title
+                    OR lifecycle_evidence_candidates.source_url IS NOT excluded.source_url
+                    OR lifecycle_evidence_candidates.source_published_at IS NOT excluded.source_published_at
+                    OR lifecycle_evidence_candidates.content_sha256 IS NOT excluded.content_sha256
+                    OR lifecycle_evidence_candidates.evidence_excerpt IS NOT excluded.evidence_excerpt
+                    OR lifecycle_evidence_candidates.payload_json IS NOT excluded.payload_json
+                    OR lifecycle_evidence_candidates.evidence_grade IS NOT excluded.evidence_grade)
+                    THEN '' ELSE lifecycle_evidence_candidates.reviewer END,
+                reviewed_at=CASE WHEN (lifecycle_evidence_candidates.candidate_kind IS NOT excluded.candidate_kind
+                    OR lifecycle_evidence_candidates.security_code IS NOT excluded.security_code
+                    OR lifecycle_evidence_candidates.related_security_code IS NOT excluded.related_security_code
+                    OR lifecycle_evidence_candidates.exchange IS NOT excluded.exchange
+                    OR lifecycle_evidence_candidates.event_type IS NOT excluded.event_type
+                    OR lifecycle_evidence_candidates.action_type IS NOT excluded.action_type
+                    OR lifecycle_evidence_candidates.relationship_type IS NOT excluded.relationship_type
+                    OR lifecycle_evidence_candidates.event_date IS NOT excluded.event_date
+                    OR lifecycle_evidence_candidates.date_status IS NOT excluded.date_status
+                    OR lifecycle_evidence_candidates.source_name IS NOT excluded.source_name
+                    OR lifecycle_evidence_candidates.source_title IS NOT excluded.source_title
+                    OR lifecycle_evidence_candidates.source_url IS NOT excluded.source_url
+                    OR lifecycle_evidence_candidates.source_published_at IS NOT excluded.source_published_at
+                    OR lifecycle_evidence_candidates.content_sha256 IS NOT excluded.content_sha256
+                    OR lifecycle_evidence_candidates.evidence_excerpt IS NOT excluded.evidence_excerpt
+                    OR lifecycle_evidence_candidates.payload_json IS NOT excluded.payload_json
+                    OR lifecycle_evidence_candidates.evidence_grade IS NOT excluded.evidence_grade)
+                    THEN '' ELSE lifecycle_evidence_candidates.reviewed_at END,
+                review_notes=CASE WHEN (lifecycle_evidence_candidates.candidate_kind IS NOT excluded.candidate_kind
+                    OR lifecycle_evidence_candidates.security_code IS NOT excluded.security_code
+                    OR lifecycle_evidence_candidates.related_security_code IS NOT excluded.related_security_code
+                    OR lifecycle_evidence_candidates.exchange IS NOT excluded.exchange
+                    OR lifecycle_evidence_candidates.event_type IS NOT excluded.event_type
+                    OR lifecycle_evidence_candidates.action_type IS NOT excluded.action_type
+                    OR lifecycle_evidence_candidates.relationship_type IS NOT excluded.relationship_type
+                    OR lifecycle_evidence_candidates.event_date IS NOT excluded.event_date
+                    OR lifecycle_evidence_candidates.date_status IS NOT excluded.date_status
+                    OR lifecycle_evidence_candidates.source_name IS NOT excluded.source_name
+                    OR lifecycle_evidence_candidates.source_title IS NOT excluded.source_title
+                    OR lifecycle_evidence_candidates.source_url IS NOT excluded.source_url
+                    OR lifecycle_evidence_candidates.source_published_at IS NOT excluded.source_published_at
+                    OR lifecycle_evidence_candidates.content_sha256 IS NOT excluded.content_sha256
+                    OR lifecycle_evidence_candidates.evidence_excerpt IS NOT excluded.evidence_excerpt
+                    OR lifecycle_evidence_candidates.payload_json IS NOT excluded.payload_json
+                    OR lifecycle_evidence_candidates.evidence_grade IS NOT excluded.evidence_grade)
+                    THEN '' ELSE lifecycle_evidence_candidates.review_notes END,
                 content_sha256=excluded.content_sha256,updated_at=CURRENT_TIMESTAMP""",
                 rows,
             )
