@@ -15,7 +15,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 8
+    SCHEMA_VERSION = 9
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path).expanduser().resolve()
@@ -425,6 +425,17 @@ class MarketStorage:
                 status=excluded.status,evidence_grade=excluded.evidence_grade,
                 source_title=excluded.source_title,source_url=excluded.source_url,
                 notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
+            connection.executemany(
+                """INSERT INTO security_lifecycle_event_evidence
+                (event_id,candidate_id,relation_type)
+                VALUES(?,?,'supports_procedure')
+                ON CONFLICT(event_id,candidate_id,relation_type) DO NOTHING""",
+                [
+                    (item["event_id"], str(item["evidence_candidate_id"]).strip())
+                    for item in events
+                    if item.get("event_type") == "delisting_effective"
+                ],
+            )
         return len(rows)
 
     def get_corporate_action(self, corporate_action_id: str) -> dict | None:
@@ -622,6 +633,26 @@ class MarketStorage:
                 "SELECT * FROM security_lifecycle_events" + where +
                 " ORDER BY COALESCE(event_date,'') DESC,event_id LIMIT ?",
                 (*params, limit),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
+    def list_security_lifecycle_event_evidence(
+        self, *, event_id: str | None = None, candidate_id: str | None = None,
+    ) -> list[dict]:
+        """查询正式生命周期事件与审核证据候选之间的持久化关联。"""
+        clauses, params = [], []
+        if event_id is not None:
+            clauses.append("event_id=?")
+            params.append(event_id)
+        if candidate_id is not None:
+            clauses.append("candidate_id=?")
+            params.append(candidate_id)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT * FROM security_lifecycle_event_evidence" + where +
+                " ORDER BY linked_at,event_id,candidate_id",
+                params,
             ).fetchall()
             return [dict(row) for row in rows]
 
