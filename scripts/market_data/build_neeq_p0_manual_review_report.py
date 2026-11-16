@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import sqlite3
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from trendradar.market_data.neeq_termination_review import (
     get_neeq_termination_case_timeline,
@@ -63,6 +65,35 @@ P0_CASES = {
         "suggested_review_status": "needs_more_evidence",
     },
 }
+
+
+class ReadOnlyMarketStorage:
+    """SQLite read-only adapter compatible with the review query services."""
+
+    def __init__(self, db_path: str):
+        self.db_path = Path(db_path).expanduser().resolve()
+        if not self.db_path.is_file():
+            raise FileNotFoundError(f"市场数据库不存在: {self.db_path}")
+
+    @contextmanager
+    def connect(self) -> Iterator[sqlite3.Connection]:
+        """Open SQLite in mode=ro and reject every write at the connection level."""
+        connection = sqlite3.connect(
+            self.db_path.as_uri() + "?mode=ro",
+            uri=True,
+            timeout=20,
+        )
+        try:
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA query_only=ON")
+            connection.execute("PRAGMA foreign_keys=ON")
+            connection.execute("PRAGMA busy_timeout=20000")
+            yield connection
+        except Exception:
+            connection.rollback()
+            raise
+        finally:
+            connection.close()
 
 
 def _latest_searches(searches: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -264,7 +295,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     generated_at = datetime.now().astimezone().isoformat(timespec="seconds")
-    storage = MarketStorage(args.db)
+    storage = ReadOnlyMarketStorage(args.db)
     report = build_report(storage, generated_at)
     markdown_path = Path(args.output)
     json_path = Path(args.json_output)
