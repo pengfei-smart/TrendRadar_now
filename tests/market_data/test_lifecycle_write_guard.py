@@ -18,7 +18,10 @@ class LifecycleWriteGuardTests(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def _candidate(self, *, review_status="verified", event_date="2020-02-25"):
+    def _candidate(
+        self, *, review_status="verified", event_date="2020-02-25",
+        event_type="delisting_effective",
+    ):
         candidate_id = "evidence-actual-001"
         payload = {
             "metadata": {
@@ -29,11 +32,11 @@ class LifecycleWriteGuardTests(unittest.TestCase):
                 "date_semantics": "actual_termination",
             }
         }
-        self.storage.save_lifecycle_evidence_candidates([{
+        self.candidate_payload = {
             "candidate_id": candidate_id,
             "candidate_kind": "event",
             "security_code": "430134",
-            "event_type": "delisting_effective",
+            "event_type": event_type,
             "event_date": event_date,
             "date_status": "confirmed",
             "source_name": "neeq_official",
@@ -43,7 +46,8 @@ class LifecycleWriteGuardTests(unittest.TestCase):
             "content_sha256": hashlib.sha256(candidate_id.encode()).hexdigest(),
             "evidence_grade": "official",
             "payload_json": json.dumps(payload, ensure_ascii=False),
-        }])
+        }
+        self.storage.save_lifecycle_evidence_candidates([self.candidate_payload])
         self.storage.review_lifecycle_evidence_candidate(
             candidate_id, review_status=review_status, reviewer="tester",
             reviewed_at="2026-11-16T12:01:00+08:00",
@@ -83,6 +87,23 @@ class LifecycleWriteGuardTests(unittest.TestCase):
                 self._event(evidence_candidate_id=candidate_id)
             ])
 
+    def test_actual_delisting_rejects_candidate_with_different_event_type(self):
+        candidate_id = self._candidate(event_type="trading_suspension")
+        with self.assertRaisesRegex(ValueError, "delisting_effective类型"):
+            self.storage.save_security_lifecycle_events([
+                self._event(evidence_candidate_id=candidate_id)
+            ])
+
+    def test_actual_delisting_requires_event_dates_to_match(self):
+        candidate_id = self._candidate()
+        with self.assertRaisesRegex(ValueError, "event_date必须与"):
+            self.storage.save_security_lifecycle_events([
+                self._event(
+                    evidence_candidate_id=candidate_id,
+                    event_date="2020-02-24",
+                )
+            ])
+
     def test_actual_delisting_accepts_verified_direct_official_evidence(self):
         candidate_id = self._candidate()
         saved = self.storage.save_security_lifecycle_events([
@@ -98,6 +119,29 @@ class LifecycleWriteGuardTests(unittest.TestCase):
         self.assertEqual(len(links), 1)
         self.assertEqual(links[0]["candidate_id"], candidate_id)
         self.assertEqual(links[0]["relation_type"], "supports_procedure")
+
+    def test_linked_evidence_candidate_cannot_be_modified(self):
+        candidate_id = self._candidate()
+        self.storage.save_security_lifecycle_events([
+            self._event(evidence_candidate_id=candidate_id)
+        ])
+        changed = dict(
+            self.candidate_payload,
+            source_url="https://www.neeq.com.cn/changed.pdf",
+        )
+        with self.assertRaisesRegex(ValueError, "不可修改证据内容"):
+            self.storage.save_lifecycle_evidence_candidates([changed])
+
+    def test_linked_evidence_candidate_cannot_be_downgraded(self):
+        candidate_id = self._candidate()
+        self.storage.save_security_lifecycle_events([
+            self._event(evidence_candidate_id=candidate_id)
+        ])
+        with self.assertRaisesRegex(ValueError, "不得降级"):
+            self.storage.review_lifecycle_evidence_candidate(
+                candidate_id, review_status="rejected", reviewer="tester",
+                reviewed_at="2026-11-16T12:02:00+08:00",
+            )
 
     def test_mixed_batch_is_not_partially_written_when_delisting_evidence_fails(self):
         normal_event = {
