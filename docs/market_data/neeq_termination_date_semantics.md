@@ -146,3 +146,36 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 - 本文不写入数据库，不新增正式生命周期事实。
 - 不修改 `security_master`，不改变新闻工作流、调度器或推送模板。
 - 后续所有正式化操作仍须人工审核和明确授权。
+
+## 9. 第一阶段验证器实现状态
+
+已在开发分支增加纯函数模块：
+
+- `trendradar/market_data/neeq_termination_date_validation.py`
+- `tests/market_data/test_neeq_termination_date_validation.py`
+
+验证器当前覆盖：
+
+- 程序类型与日期语义的匹配；
+- ISO `YYYY-MM-DD` 有效日期校验；
+- 已知日期语义必须提供日期；
+- 条件终止日期、最终公告发布日期、退出登记日期返回不可升级为实际日期的警告；
+- 实际终止日期必须具备 `confirmed` 状态、支持该程序节点的证据关联、允许的直接官方来源、`crosschecked` 证据状态，以及 metadata 中显式的 `confirmed_legal_fact=true` 和 `date_semantics=actual_termination`；
+- 结果接口候选日期、条件日期、决定日期、公告日期和退出登记日期不能直接映射到 `actual_termination_date` 或 `delisting_date`；
+- 映射到正式实际日期字段时，必须传入已通过完整程序与证据校验的验证结果，而不是由调用方单独传入布尔确认值。
+
+该模块不连接数据库、不执行写入，也不自动生成生命周期事件。它是服务层调用前的校验组件；尚未接入正式生命周期写入服务。
+
+本地同步后运行：
+
+```bat
+set PYTHONPATH=. && python -m unittest tests.market_data.test_neeq_termination_date_validation -v
+```
+
+预期：12项验证器单元测试全部通过。随后运行完整市场数据测试：
+
+```bat
+set PYTHONPATH=. && python -m unittest discover -s tests\\market_data -p "test_*.py"
+```
+
+预期：全部市场数据测试通过；具体数量以当前分支实际测试发现结果为准。
