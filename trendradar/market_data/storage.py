@@ -461,6 +461,71 @@ class MarketStorage:
             ).fetchall()
             return [dict(row) for row in rows]
 
+    def _validate_actual_delisting_event(self, item: dict, security_code: str) -> None:
+        """实际退市事件必须绑定已审核通过且能直接证明实际日期的官方证据候选。"""
+        from trendradar.market_data.neeq_termination_date_validation import (
+            validate_neeq_date_mapping,
+        )
+
+        candidate_id = str(item.get("evidence_candidate_id") or "").strip()
+        if not candidate_id:
+            raise ValueError("delisting_effective事件必须提供evidence_candidate_id")
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM lifecycle_evidence_candidates WHERE candidate_id=?",
+                (candidate_id,),
+            ).fetchone()
+        if row is None:
+            raise ValueError(f"实际退市事件证据候选不存在: {candidate_id}")
+        candidate = dict(row)
+        if candidate.get("review_status") != "verified":
+            raise ValueError("实际退市事件证据候选必须先审核为verified")
+        if candidate.get("candidate_kind") != "event":
+            raise ValueError("实际退市事件必须关联event类型证据候选")
+        if candidate.get("security_code") != security_code:
+            raise ValueError("实际退市事件证券代码与证据候选不一致")
+        event_date = item.get("delisting_effective_date") or item.get("event_date")
+        if not event_date or candidate.get("event_date") != event_date:
+            raise ValueError("实际退市日期必须与已审核证据候选日期完全一致")
+        try:
+            payload = json.loads(candidate.get("payload_json") or "{}")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("实际退市证据候选payload_json无效") from exc
+        metadata = payload.get("metadata") if isinstance(payload, dict) else {}
+        if not isinstance(metadata, dict):
+            metadata = {}
+        authority = str(metadata.get("source_authority") or "")
+        trusted_sources = {
+            "neeq_official": "neeq_official",
+            "issuer_official": "issuer_official",
+            "government_or_registry": "government_or_registry",
+        }
+        source_authority = trusted_sources.get(authority)
+        evidence = {
+            "evidence_kind": metadata.get("evidence_kind"),
+            "source_authority": source_authority,
+            "evidence_status": metadata.get("evidence_status"),
+            "metadata": metadata,
+        }
+        procedure = {
+            "procedure_type": "final_termination",
+            "date_semantics": metadata.get("date_semantics"),
+            "event_date": event_date,
+            "date_status": candidate.get("date_status"),
+        }
+        result = validate_neeq_date_mapping(
+            "actual_termination", "delisting_date",
+            procedure=procedure, evidence=evidence,
+            relation_type="supports_procedure",
+        )
+        if not result.get("valid"):
+            errors = "; ".join(x.get("message", "") for x in result.get("errors", []))
+            raise ValueError(f"实际退市事件证据校验失败: {errors}")
+        if candidate.get("evidence_grade") != "official":
+            raise ValueError("实际退市事件证据候选的evidence_grade必须为official")
+        if not str(candidate.get("source_url") or "").startswith("https://"):
+            raise ValueError("实际退市事件证据候选必须提供HTTPS官方来源URL")
+
     def save_security_lifecycle_events(self, events: Iterable[dict]) -> int:
         """保存证券生命周期事件；外键和 CHECK 约束由 SQLite 最终兜底。"""
         event_types = {"listing", "trading_suspension", "trading_resumption",
@@ -474,6 +539,8 @@ class MarketStorage:
             if not event_id or not code:
                 raise ValueError("event_id 和 security_code 不能为空")
             self._validate_enum(event_type, event_types, "event_type")
+            if event_type == "delisting_effective":
+                self._validate_actual_delisting_event(item, code)
             self._validate_enum(item.get("date_status", "unknown"), date_statuses, "date_status")
             self._validate_enum(item.get("evidence_grade", "unknown"), evidence_grades, "evidence_grade")
             rows.append((
