@@ -150,7 +150,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
     scope = "全国股转系统公开公告页、公告索引及可检索的主办券商公告；仅代表本次检索范围。"
     searches = [
         {
-            "search_id": "neeq-search-836614-formal-decision-20261116",
+            "search_id": "neeq-search-836614-formal-decision-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "formal_decision",
             "search_status": "searched_not_found",
@@ -161,7 +161,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-sponsor-notice-20261116",
+            "search_id": "neeq-search-836614-sponsor-notice-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "sponsor_notice",
             "search_status": "found_not_registered",
@@ -172,7 +172,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-review-application-20261116",
+            "search_id": "neeq-search-836614-review-application-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "review_application",
             "search_status": "searched_not_found",
@@ -183,7 +183,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-review-decision-20261116",
+            "search_id": "neeq-search-836614-review-decision-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "review_decision",
             "search_status": "searched_not_found",
@@ -194,7 +194,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-final-notice-20261116",
+            "search_id": "neeq-search-836614-final-notice-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "final_termination_notice",
             "search_status": "searched_not_found",
@@ -205,7 +205,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-review-application-followup-20261116",
+            "search_id": "neeq-search-836614-review-application-followup-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "review_application",
             "search_status": "searched_not_found",
@@ -220,7 +220,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-review-decision-followup-20261116",
+            "search_id": "neeq-search-836614-review-decision-followup-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "review_decision",
             "search_status": "searched_not_found",
@@ -234,7 +234,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-final-status-followup-20261116",
+            "search_id": "neeq-search-836614-final-status-followup-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "final_termination_notice",
             "search_status": "searched_not_found",
@@ -248,7 +248,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-836614-sponsor-date-reconciliation-20261116",
+            "search_id": "neeq-search-836614-sponsor-date-reconciliation-20261116-v2",
             "case_id": "neeq-result-836614-842",
             "evidence_kind": "sponsor_notice",
             "search_status": "found_not_registered",
@@ -263,7 +263,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-838047-formal-decision-20261116",
+            "search_id": "neeq-search-838047-formal-decision-20261116-v2",
             "case_id": "neeq-result-838047-841",
             "evidence_kind": "formal_decision",
             "search_status": "registered",
@@ -274,7 +274,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-838047-review-application-20261116",
+            "search_id": "neeq-search-838047-review-application-20261116-v2",
             "case_id": "neeq-result-838047-841",
             "evidence_kind": "review_application",
             "search_status": "searched_not_found",
@@ -285,7 +285,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-838047-review-decision-20261116",
+            "search_id": "neeq-search-838047-review-decision-20261116-v2",
             "case_id": "neeq-result-838047-841",
             "evidence_kind": "review_decision",
             "search_status": "searched_not_found",
@@ -296,7 +296,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-838047-final-notice-20261116",
+            "search_id": "neeq-search-838047-final-notice-20261116-v2",
             "case_id": "neeq-result-838047-841",
             "evidence_kind": "final_termination_notice",
             "search_status": "searched_not_found",
@@ -307,7 +307,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-430134-formal-decision-20261116",
+            "search_id": "neeq-search-430134-formal-decision-20261116-v2",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "formal_decision",
             "search_status": "registered",
@@ -318,7 +318,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-430134-sponsor-notice-20261116",
+            "search_id": "neeq-search-430134-sponsor-notice-20261116-v2",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "sponsor_notice",
             "search_status": "found_not_registered",
@@ -332,7 +332,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-430134-review-application-20261116",
+            "search_id": "neeq-search-430134-review-application-20261116-v2",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "review_application",
             "search_status": "searched_not_found",
@@ -343,7 +343,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-430134-review-decision-20261116",
+            "search_id": "neeq-search-430134-review-decision-20261116-v2",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "review_decision",
             "search_status": "searched_not_found",
@@ -354,7 +354,7 @@ def build_payload(retrieved_at: str) -> dict[str, Any]:
             "reviewer": "TrendRadar research",
         },
         {
-            "search_id": "neeq-search-430134-final-notice-20261116",
+            "search_id": "neeq-search-430134-final-notice-20261116-v2",
             "case_id": "neeq-result-430134-844",
             "evidence_kind": "final_termination_notice",
             "search_status": "searched_not_found",
