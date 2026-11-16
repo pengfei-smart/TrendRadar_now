@@ -140,14 +140,22 @@ class NEEQTerminationDateValidationTests(unittest.TestCase):
         )
         self.assertFalse(result["valid"])
 
-    def test_actual_date_mapping_requires_explicit_confirmation_flag(self):
+    def test_actual_date_mapping_requires_successful_procedure_evidence_validation(self):
         denied = validate_neeq_date_mapping(
             "actual_termination", "delisting_date",
-            source_is_confirmed_actual=False,
+        )
+        procedure_validation = validate_neeq_termination_procedure(
+            self._procedure(
+                procedure_type="final_termination",
+                date_semantics="actual_termination",
+                event_date="2019-09-17",
+                date_status="confirmed",
+            ),
+            self._actual_evidence(),
         )
         allowed = validate_neeq_date_mapping(
             "actual_termination", "delisting_date",
-            source_is_confirmed_actual=True,
+            procedure_validation=procedure_validation,
         )
         self.assertFalse(denied["valid"])
         self.assertTrue(allowed["valid"])
