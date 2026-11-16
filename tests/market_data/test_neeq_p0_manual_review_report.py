@@ -132,6 +132,48 @@ class NEEQP0ManualReviewReportTests(unittest.TestCase):
         self.assertIn("当前有效状态：registered", markdown)
         self.assertIn("formal_decision", keli["evidence_search_status"])
 
+    def test_decision_procedure_link_warns_when_evidence_has_no_decision_date(self):
+        self.storage.save_neeq_termination_procedures([{
+            "procedure_id": "p-836614-decision",
+            "case_id": "neeq-result-836614-842",
+            "procedure_type": "decision_issued",
+            "event_date": "2019-07-19",
+            "date_semantics": "decision_issued",
+            "date_status": "pending",
+            "notes": "待核验决定日期",
+        }])
+        self.storage.save_neeq_termination_evidence([{
+            "evidence_id": "evidence-836614-batch",
+            "evidence_kind": "batch_notice",
+            "source_authority": "neeq_official",
+            "notice_number": "2019-1071",
+            "document_title": "批次终止挂牌公告",
+            "source_url": "https://example.org/2019-1071",
+            "published_date": "",
+            "retrieved_at": "2026-11-16T13:00:00+08:00",
+            "evidence_status": "crosschecked",
+            "content_excerpt": "",
+            "metadata": {"decision_date": None},
+        }])
+        self.storage.link_neeq_termination_evidence([{
+            "link_id": "link-836614-batch-decision",
+            "case_id": "neeq-result-836614-842",
+            "evidence_id": "evidence-836614-batch",
+            "procedure_id": "p-836614-decision",
+            "relation_type": "supports_procedure",
+            "notes": "待核验原文",
+        }])
+        report = build_report(self.storage, "2026-11-16T13:30:00+08:00")
+        case = next(item for item in report["cases"] if item["company_code"] == "836614")
+        evidence = next(item for item in case["evidence"] if item["evidence_id"] == "evidence-836614-batch")
+        link = evidence["case_links"][0]
+        self.assertEqual(link["procedure_type"], "decision_issued")
+        self.assertEqual(link["event_date"], "2019-07-19")
+        self.assertIn("未记录决定日期", link["support_warning"])
+        markdown = render_markdown(report)
+        self.assertIn("关联核验提示：当前证据元数据未记录决定日期", markdown)
+        self.assertIn("程序关联：`decision_issued`（2019-07-19）", markdown)
+
     def test_report_does_not_write_reviews_or_lifecycle_facts(self):
         before = {}
         with self.storage.connect() as connection:
