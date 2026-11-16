@@ -1005,7 +1005,7 @@ class MarketStorage:
         return digest
 
     @staticmethod
-    def _neeq_json(value: dict) -> str:
+    def _neeq_json(value: object) -> str:
         return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
     def save_neeq_termination_cases(
@@ -1254,6 +1254,10 @@ class MarketStorage:
             self._neeq_json(urls), str(search.get("reviewer") or ""),
         )
         with self._connection_scope(connection) as connection:
+            if not connection.execute(
+                "SELECT 1 FROM neeq_termination_case WHERE case_id=?", (case_id,),
+            ).fetchone():
+                raise ValueError(f"NEEQ案件不存在: {case_id}")
             connection.execute(
                 """INSERT OR IGNORE INTO neeq_termination_evidence_search
                 (search_id,case_id,evidence_kind,search_status,searched_at,search_scope,
