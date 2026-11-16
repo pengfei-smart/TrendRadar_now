@@ -102,7 +102,7 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 
 **审核结论：** 分别保留决定日、收到日、条件日期及接口候选日期。2020-05-12公告与接口日期次日相邻只是调查线索，不构成因果证明；不得将2020-05-13自动写入实际终止日期。
 
-## 5. 对现有 Schema v8 的适配性审查
+## 5. Schema v9 与生命周期证据追溯
 
 现有模型已具备大部分必要结构：
 
@@ -110,14 +110,14 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 - `neeq_termination_procedure.event_date` + `date_semantics` + `date_status`：可表达决定、收到决定、条件终止、实际终止、最后交易日、转让开始和退出登记等程序节点。
 - `neeq_termination_evidence` 与 `neeq_termination_evidence_link`：可追溯证据及其支持/反驳的程序节点。
 - `neeq_termination_evidence_search`：可保留每次检索范围和结果。
-- `security_lifecycle_events`：已有决定日期、收到日期、最后交易日、终止生效日期、证据等级及来源字段。
+- `security_lifecycle_events`：已有决定日期、收到日期、最后交易日、终止生效日期、证据等级及来源字段。\n- `security_lifecycle_event_evidence`（v9）：将正式生命周期事件与已审核的 `lifecycle_evidence_candidates` 通过外键持久关联，关系类型为 `supports_procedure`；写入事件与证据关联在同一事务中完成。
 
 发现的模型缺口/风险：
 
 1. NEEQ `date_semantics` 枚举目前有 `announcement`，但没有单独的 `final_announcement`。若后续要严格区分最终公告发布日期与实际生效日，建议在下一次有明确需求时扩展枚举。
 2. 正式 `security_lifecycle_events` 主要依靠 `event_type` 区分语义，未像 NEEQ procedure 一样保存独立的 `date_semantics`。目前可以用不同事件类型表达，但应通过服务层验证事件类型与日期字段的一致性。
 3. `security_master.delisting_date` 是无独立语义/证据引用的单一字段，是最容易被错误映射的地方。未完成实际日期审核前不得写入。
-4. 目前没有证据表明需要立即新增第9版 Schema。现有 NEEQ 证据台账足以继续调查和保存候选日期；应先补齐服务层规则和测试，再决定是否扩展枚举。
+4. v9 已补齐正式生命周期事件的证据追溯关系。此前仅在写入时校验证据、却未持久保存 `evidence_candidate_id` 的缺口已修复；历史上没有关联记录的事件仍须由只读审计单独识别，不得自动补链。
 
 ## 6. 服务层应落实的禁止映射规则
 
@@ -149,10 +149,10 @@ NEEQ 结果接口返回的 `delistingDate` 当前统一保留为 `official_resul
 
 ## 9. 第一阶段验证器实现状态
 
-已在开发分支增加纯函数模块：
+已在开发分支增加纯函数模块及正式写入门禁：
 
 - `trendradar/market_data/neeq_termination_date_validation.py`
-- `tests/market_data/test_neeq_termination_date_validation.py`
+- `tests/market_data/test_neeq_termination_date_validation.py`\n- `MarketStorage.save_security_lifecycle_events()`：`delisting_effective` 必须绑定已审核、日期一致的直接官方证据候选，并在同一事务中持久化事件—证据关联。
 
 验证器当前覆盖：
 
