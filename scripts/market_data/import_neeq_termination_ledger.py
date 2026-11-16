@@ -208,6 +208,48 @@ def build_import_payload(
     }
 
 
+def apply_import_payload(storage: MarketStorage, payload: dict[str, list[dict]]) -> dict[str, int]:
+    """Atomically write all ledger rows and verify every imported primary key."""
+    expected_version = str(storage.SCHEMA_VERSION)
+    with storage.connect() as connection:
+        version_row = connection.execute(
+            "SELECT value FROM schema_meta WHERE key='schema_version'"
+        ).fetchone()
+        if not version_row or str(version_row["value"]) != expected_version:
+            raise RuntimeError(
+                f"market DB schema version mismatch: expected {expected_version}, "
+                f"found {version_row['value'] if version_row else 'missing'}"
+            )
+        storage.save_neeq_termination_cases(payload["cases"], connection=connection)
+        storage.save_neeq_termination_evidence(payload["evidence"], connection=connection)
+        storage.save_neeq_termination_procedures(payload["procedures"], connection=connection)
+        storage.link_neeq_termination_evidence(payload["links"], connection=connection)
+
+        checks = (
+            ("readback_cases", "neeq_termination_case", "case_id", "cases", "case_id"),
+            ("readback_evidence", "neeq_termination_evidence", "evidence_id", "evidence", "evidence_id"),
+            ("readback_procedures", "neeq_termination_procedure", "procedure_id", "procedures", "procedure_id"),
+            ("readback_links", "neeq_termination_evidence_link", "link_id", "links", "link_id"),
+        )
+        result = {}
+        for label, table, id_column, payload_key, item_key in checks:
+            expected_ids = {str(item[item_key]) for item in payload[payload_key]}
+            if expected_ids:
+                placeholders = ",".join("?" for _ in expected_ids)
+                rows = connection.execute(
+                    f"SELECT {id_column} FROM {table} WHERE {id_column} IN ({placeholders})",
+                    tuple(sorted(expected_ids)),
+                ).fetchall()
+                actual_ids = {str(row[id_column]) for row in rows}
+            else:
+                actual_ids = set()
+            if actual_ids != expected_ids:
+                missing = sorted(expected_ids - actual_ids)
+                raise RuntimeError(f"{label} primary-key readback mismatch; missing={missing[:10]}")
+            result[label] = len(actual_ids)
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate-manifest", type=Path, required=True)
@@ -223,13 +265,7 @@ def main() -> int:
     summary.update({"apply": args.apply, "actual_termination_facts_confirmed": 0})
     if args.apply:
         storage = MarketStorage(str(args.db))
-        storage.save_neeq_termination_cases(payload["cases"])
-        storage.save_neeq_termination_evidence(payload["evidence"])
-        storage.save_neeq_termination_procedures(payload["procedures"])
-        storage.link_neeq_termination_evidence(payload["links"])
-        summary["readback_cases"] = len(storage.list_neeq_termination_cases(limit=5000))
-        if summary["readback_cases"] < summary["cases"]:
-            raise RuntimeError("台账案件回读数量不足")
+        summary.update(apply_import_payload(storage, payload))
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
