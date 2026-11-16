@@ -150,6 +150,31 @@ class LifecycleWriteGuardTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "不可修改证据内容"):
             self.storage.save_lifecycle_evidence_candidates([changed])
 
+    def test_linked_formal_event_identity_and_date_cannot_be_rewritten(self):
+        first_candidate = self._candidate()
+        self.storage.save_security_lifecycle_events([
+            self._event(evidence_candidate_id=first_candidate)
+        ])
+        second = dict(
+            self.candidate_payload,
+            candidate_id="evidence-actual-002",
+            event_date="2020-02-26",
+            content_sha256=hashlib.sha256(b"evidence-actual-002").hexdigest(),
+        )
+        self.storage.save_lifecycle_evidence_candidates([second])
+        self.storage.review_lifecycle_evidence_candidate(
+            second["candidate_id"], review_status="verified", reviewer="tester",
+            reviewed_at="2026-11-16T12:03:00+08:00",
+        )
+        with self.assertRaisesRegex(ValueError, "不可通过UPSERT修改"):
+            self.storage.save_security_lifecycle_events([
+                self._event(
+                    evidence_candidate_id=second["candidate_id"],
+                    event_date="2020-02-26",
+                    delisting_effective_date="2020-02-26",
+                )
+            ])
+
     def test_linked_evidence_candidate_cannot_be_downgraded(self):
         candidate_id = self._candidate()
         self.storage.save_security_lifecycle_events([
