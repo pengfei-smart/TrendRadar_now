@@ -237,14 +237,16 @@ def list_neeq_termination_review_queue(
             search_rows = [
                 dict(row) for row in connection.execute(
                     """SELECT s.* FROM neeq_termination_evidence_search s
-                    JOIN (
-                        SELECT evidence_kind,MAX(searched_at) AS max_searched_at
-                        FROM neeq_termination_evidence_search WHERE case_id=?
-                        GROUP BY evidence_kind
-                    ) latest ON latest.evidence_kind=s.evidence_kind
-                           AND latest.max_searched_at=s.searched_at
-                    WHERE s.case_id=?""",
-                    (case_id, case_id),
+                    WHERE s.case_id=? AND NOT EXISTS (
+                        SELECT 1 FROM neeq_termination_evidence_search newer
+                        WHERE newer.case_id=s.case_id
+                          AND newer.evidence_kind=s.evidence_kind
+                          AND (
+                              newer.searched_at>s.searched_at
+                              OR (newer.searched_at=s.searched_at AND newer.search_id>s.search_id)
+                          )
+                    )""",
+                    (case_id,),
                 ).fetchall()
             ]
             latest_review = connection.execute(
@@ -311,6 +313,9 @@ def list_neeq_termination_review_queue(
                 next_actions.append("完成待处理的人工复核")
             elif latest_review["review_status"] == "rejected":
                 next_actions.append("复核被拒绝的原因并决定是否关闭案件或补充新证据")
+
+            for kind in missing:
+                evidence_search_status.setdefault(kind, "not_searched")
 
             priority = 0 if mismatch_dates else (1 if not has_final_notice else 2)
             queue.append({
