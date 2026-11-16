@@ -120,6 +120,24 @@ class LifecycleWriteGuardTests(unittest.TestCase):
         self.assertEqual(links[0]["candidate_id"], candidate_id)
         self.assertEqual(links[0]["relation_type"], "supports_procedure")
 
+    def test_evidence_change_with_same_hash_resets_candidate_review(self):
+        candidate_id = self._candidate()
+        changed = dict(
+            self.candidate_payload,
+            source_url="https://www.neeq.com.cn/changed-before-link.pdf",
+        )
+        self.storage.save_lifecycle_evidence_candidates([changed])
+        with self.storage.connect() as connection:
+            status = connection.execute(
+                "SELECT review_status FROM lifecycle_evidence_candidates WHERE candidate_id=?",
+                (candidate_id,),
+            ).fetchone()[0]
+        self.assertEqual(status, "pending")
+        with self.assertRaisesRegex(ValueError, "verified"):
+            self.storage.save_security_lifecycle_events([
+                self._event(evidence_candidate_id=candidate_id)
+            ])
+
     def test_linked_evidence_candidate_cannot_be_modified(self):
         candidate_id = self._candidate()
         self.storage.save_security_lifecycle_events([
