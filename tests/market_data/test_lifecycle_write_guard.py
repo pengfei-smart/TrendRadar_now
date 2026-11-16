@@ -92,6 +92,12 @@ class LifecycleWriteGuardTests(unittest.TestCase):
         rows = self.storage.list_security_lifecycle_events(security_code="430134")
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["delisting_effective_date"], "2020-02-25")
+        links = self.storage.list_security_lifecycle_event_evidence(
+            event_id="event-actual-001"
+        )
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["candidate_id"], candidate_id)
+        self.assertEqual(links[0]["relation_type"], "supports_procedure")
 
     def test_mixed_batch_is_not_partially_written_when_delisting_evidence_fails(self):
         normal_event = {
