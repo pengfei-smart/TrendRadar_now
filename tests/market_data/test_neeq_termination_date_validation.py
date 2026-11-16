@@ -144,18 +144,16 @@ class NEEQTerminationDateValidationTests(unittest.TestCase):
         denied = validate_neeq_date_mapping(
             "actual_termination", "delisting_date",
         )
-        procedure_validation = validate_neeq_termination_procedure(
-            self._procedure(
-                procedure_type="final_termination",
-                date_semantics="actual_termination",
-                event_date="2019-09-17",
-                date_status="confirmed",
-            ),
-            self._actual_evidence(),
+        actual_procedure = self._procedure(
+            procedure_type="final_termination",
+            date_semantics="actual_termination",
+            event_date="2019-09-17",
+            date_status="confirmed",
         )
         allowed = validate_neeq_date_mapping(
             "actual_termination", "delisting_date",
-            procedure_validation=procedure_validation,
+            procedure=actual_procedure,
+            evidence=self._actual_evidence(),
         )
         self.assertFalse(denied["valid"])
         self.assertTrue(allowed["valid"])
