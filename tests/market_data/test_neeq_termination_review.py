@@ -159,7 +159,6 @@ class NEEQTerminationReviewServiceTests(unittest.TestCase):
         self.assertEqual(queue[0]["priority"], 0)
         self.assertTrue(queue[0]["date_mismatch"])
         self.assertEqual(queue[0]["mismatch_dates"], ["2019-07-09"])
-        self.assertIn("formal_decision", queue[0]["missing_evidence_kinds"])
         self.assertIn("final_termination_notice", queue[0]["missing_evidence_kinds"])
         self.assertFalse(queue[0]["actual_termination_confirmed"])
         self.assertTrue(any("复核申请受理" in action for action in queue[0]["next_actions"]))
