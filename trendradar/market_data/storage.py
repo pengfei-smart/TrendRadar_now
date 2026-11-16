@@ -507,6 +507,8 @@ class MarketStorage:
             "government_or_registry": "government_or_registry",
         }
         source_authority = trusted_sources.get(authority)
+        if source_authority is None or candidate.get("source_name") != source_authority:
+            raise ValueError("证据候选source_name必须与审核确认的可信source_authority一致")
         evidence = {
             "evidence_kind": metadata.get("evidence_kind"),
             "source_authority": source_authority,
