@@ -78,7 +78,7 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def test_payload_preview_contains_three_cases_and_fourteen_search_states(self):
+    def test_payload_preview_contains_three_cases_and_eighteen_search_states(self):
         payload = build_payload("2026-11-16T16:00:00+08:00")
         self.assertEqual(len(payload["evidence"]), 6)
         self.assertEqual(len(payload["links"]), 6)
@@ -118,11 +118,20 @@ class NEEQP0EvidenceRegistrationTests(unittest.TestCase):
             self.assertEqual(followup["published_date"], "2019-08-29")
             self.assertIn("仍应于2019年8月30日前披露", followup["content_excerpt"])
             self.assertIn("程序矛盾", followup["metadata_json"])
+            date_sources = connection.execute(
+                """SELECT evidence_id, published_date, source_url
+                FROM neeq_termination_evidence
+                WHERE evidence_id IN (
+                    'neeq-evidence-836614-sponsor-20190719',
+                    'neeq-evidence-836614-sponsor-20190722-dfcfw'
+                )"""
+            ).fetchall()
             self.assertEqual(
-                connection.execute(
-                    "SELECT COUNT(*) FROM security_lifecycle_events"
-                ).fetchone()[0],
-                0,
+                {row["evidence_id"]: row["published_date"] for row in date_sources},
+                {
+                    "neeq-evidence-836614-sponsor-20190719": "2019-07-19",
+                    "neeq-evidence-836614-sponsor-20190722-dfcfw": "2019-07-22",
+                },
             )
 
     def test_apply_rejects_unbacked_registered_search_status(self):
