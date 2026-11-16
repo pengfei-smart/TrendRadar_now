@@ -425,17 +425,6 @@ class MarketStorage:
                 status=excluded.status,evidence_grade=excluded.evidence_grade,
                 source_title=excluded.source_title,source_url=excluded.source_url,
                 notes=excluded.notes,updated_at=CURRENT_TIMESTAMP""", rows)
-            connection.executemany(
-                """INSERT INTO security_lifecycle_event_evidence
-                (event_id,candidate_id,relation_type)
-                VALUES(?,?,'supports_procedure')
-                ON CONFLICT(event_id,candidate_id,relation_type) DO NOTHING""",
-                [
-                    (item["event_id"], str(item["evidence_candidate_id"]).strip())
-                    for item in events
-                    if item.get("event_type") == "delisting_effective"
-                ],
-            )
         return len(rows)
 
     def get_corporate_action(self, corporate_action_id: str) -> dict | None:
@@ -606,6 +595,17 @@ class MarketStorage:
                 source_title=excluded.source_title,source_url=excluded.source_url,
                 corporate_action_id=excluded.corporate_action_id,notes=excluded.notes,
                 updated_at=CURRENT_TIMESTAMP""", rows)
+            connection.executemany(
+                """INSERT INTO security_lifecycle_event_evidence
+                (event_id,candidate_id,relation_type)
+                VALUES(?,?,'supports_procedure')
+                ON CONFLICT(event_id,candidate_id,relation_type) DO NOTHING""",
+                [
+                    (item["event_id"], str(item["evidence_candidate_id"]).strip())
+                    for item in events
+                    if item.get("event_type") == "delisting_effective"
+                ],
+            )
         return len(rows)
 
     def list_security_lifecycle_events(self, *, security_code: str | None = None,
