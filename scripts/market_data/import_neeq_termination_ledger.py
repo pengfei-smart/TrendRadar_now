@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +21,9 @@ def _sha256(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+CHINA_TZ = timezone(timedelta(hours=8))
+
+
 def _date_value(value: Any) -> str:
     if isinstance(value, str):
         return value[:10] if value else ""
@@ -28,7 +31,7 @@ def _date_value(value: Any) -> str:
         epoch = value.get("time")
         if isinstance(epoch, (int, float)):
             return datetime.fromtimestamp(epoch / 1000, tz=timezone.utc).astimezone(
-                timezone.utc
+                CHINA_TZ
             ).date().isoformat()
     return ""
 
@@ -37,11 +40,15 @@ def _manifest_records(payload: Any) -> list[dict]:
     if isinstance(payload, list):
         records = payload
     elif isinstance(payload, dict):
-        records = next(
-            (payload[key] for key in ("records", "candidates", "items", "data")
-             if isinstance(payload.get(key), list)),
-            None,
-        )
+        nested_manifest = payload.get("manifest")
+        if isinstance(nested_manifest, dict) and isinstance(nested_manifest.get("candidates"), list):
+            records = nested_manifest["candidates"]
+        else:
+            records = next(
+                (payload[key] for key in ("records", "candidates", "items", "data")
+                 if isinstance(payload.get(key), list)),
+                None,
+            )
         if records is None:
             raise ValueError("candidate manifest must contain records/candidates/items/data list")
     else:
@@ -64,7 +71,10 @@ def _manifest_records(payload: Any) -> list[dict]:
             "raw_record": raw,
             "raw_record_sha256": str(entry.get("raw_record_sha256") or ""),
             "interface_result_date": str(entry.get("delisting_date") or entry.get("result_date") or entry.get("delistingDateISO") or _date_value(raw.get("delistingDate"))),
-            "interface_create_at": str(entry.get("create_time") or entry.get("create_at") or ""),
+            "interface_create_at": str(
+                entry.get("create_time") or entry.get("create_at")
+                or _date_value(raw.get("createTime")) or ""
+            ),
         })
     return normalized
 
@@ -81,14 +91,17 @@ def build_import_payload(
     audit_rows = date_audit.get("candidates")
     if not isinstance(audit_rows, list):
         raise ValueError("date audit must contain candidates list")
-    manifest_rows = _manifest_records(manifest)
     by_key = {(str(row.get("record_id")), str(row.get("security_code"))): row for row in audit_rows}
+    if len(by_key) != len(audit_rows):
+        raise ValueError("date audit contains duplicate record_id/security_code keys")
+    manifest_rows = _manifest_records(manifest)
+    manifest_by_key = {(row["record_id"], row["company_code"]): row for row in manifest_rows}
+    missing_keys = sorted(set(by_key) - set(manifest_by_key))
+    if missing_keys:
+        raise ValueError(f"date audit candidates missing from manifest: {missing_keys[:10]}")
     cases, evidences, procedures, links = [], {}, {}, {}
-    for source in manifest_rows:
-        key = (source["record_id"], source["company_code"])
-        audit = by_key.get(key)
-        if audit is None:
-            raise ValueError(f"candidate missing from date audit: {key}")
+    for key, audit in sorted(by_key.items()):
+        source = manifest_by_key[key]
         raw_json = _canonical_json(source["raw_record"])
         raw_hash = _sha256(raw_json)
         expected_hash = str(audit.get("raw_record_sha256") or source.get("raw_record_sha256") or "")
