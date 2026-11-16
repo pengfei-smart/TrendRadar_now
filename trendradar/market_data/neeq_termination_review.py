@@ -180,3 +180,110 @@ def append_neeq_termination_case_review(
         if row is None or row["case_id"] != case_id or row["review_status"] != status:
             raise RuntimeError("复核记录写入后回读校验失败")
         return review_id
+
+def list_neeq_termination_review_queue(
+    storage: MarketStorage, *, limit: int = 100,
+) -> list[dict[str, Any]]:
+    """Build a prioritized, read-only review queue from recorded case/evidence/procedure facts."""
+    if not 1 <= limit <= 1000:
+        raise ValueError("limit必须在1到1000之间")
+
+    with storage.connect() as connection:
+        cases = connection.execute(
+            """SELECT * FROM neeq_termination_case
+            WHERE case_status NOT IN ('closed','invalid')
+            ORDER BY interface_result_date,company_code,case_id"""
+        ).fetchall()
+        queue: list[dict[str, Any]] = []
+        for case_row in cases:
+            case = dict(case_row)
+            case_id = case["case_id"]
+            procedures = [
+                dict(row) for row in connection.execute(
+                    """SELECT * FROM neeq_termination_procedure
+                    WHERE case_id=? ORDER BY event_date,procedure_id""",
+                    (case_id,),
+                ).fetchall()
+            ]
+            evidence = [
+                dict(row) for row in connection.execute(
+                    """SELECT DISTINCT e.evidence_id,e.evidence_kind,e.source_authority,
+                              e.evidence_status,e.source_url
+                    FROM neeq_termination_evidence e
+                    JOIN neeq_termination_evidence_link l ON l.evidence_id=e.evidence_id
+                    WHERE l.case_id=?""",
+                    (case_id,),
+                ).fetchall()
+            ]
+            latest_review = connection.execute(
+                """SELECT review_id,review_status,conclusion_code,reviewer,reviewed_at,review_notes
+                FROM neeq_termination_review WHERE case_id=?
+                ORDER BY reviewed_at DESC,review_id DESC LIMIT 1""",
+                (case_id,),
+            ).fetchone()
+
+            evidence_kinds = {item["evidence_kind"] for item in evidence}
+            conditional_dates = {
+                item["event_date"] for item in procedures
+                if item["procedure_type"] == "conditional_termination" and item["event_date"]
+            }
+            mismatch_dates = sorted(
+                date for date in conditional_dates
+                if case["interface_result_date"] and date != case["interface_result_date"]
+            )
+            has_final_notice = "final_termination_notice" in evidence_kinds
+            has_review_decision = "review_decision" in evidence_kinds
+            has_formal_decision = bool(
+                evidence_kinds.intersection({"formal_decision", "batch_notice", "supplementary_decision"})
+            )
+
+            missing: list[str] = []
+            next_actions: list[str] = []
+            if not has_formal_decision:
+                missing.append("formal_decision")
+                next_actions.append("查找并核验全国股转公司正式终止挂牌决定公告")
+            if mismatch_dates:
+                if not has_review_decision:
+                    missing.append("review_decision")
+                    next_actions.append("查找复核申请受理、复核决定或补充决定，解释接口日期与条件日期差异")
+                if not has_final_notice:
+                    missing.append("final_termination_notice")
+                    next_actions.append("查找最终终止挂牌公告或官方摘牌结果记录")
+            elif not has_final_notice:
+                missing.append("final_termination_notice")
+                next_actions.append("补充最终终止挂牌公告或官方摘牌结果记录")
+            if latest_review is None:
+                next_actions.append("进行首次人工证据审阅并记录结论")
+            elif latest_review["review_status"] == "needs_more_evidence":
+                next_actions.append("按上次复核意见补齐缺失材料后再次复核")
+            elif latest_review["review_status"] == "pending":
+                next_actions.append("完成待处理的人工复核")
+            elif latest_review["review_status"] == "rejected":
+                next_actions.append("复核被拒绝的原因并决定是否关闭案件或补充新证据")
+
+            priority = 0 if mismatch_dates else (1 if not has_final_notice else 2)
+            queue.append({
+                "case_id": case_id,
+                "company_code": case["company_code"],
+                "company_name": case["company_name_snapshot"],
+                "case_status": case["case_status"],
+                "interface_result_date": case["interface_result_date"],
+                "conditional_termination_dates": sorted(conditional_dates),
+                "date_mismatch": bool(mismatch_dates),
+                "mismatch_dates": mismatch_dates,
+                "evidence_kinds": sorted(evidence_kinds),
+                "missing_evidence_kinds": missing,
+                "latest_review": dict(latest_review) if latest_review else None,
+                "priority": priority,
+                "next_actions": next_actions,
+                "actual_termination_confirmed": False,
+            })
+
+    queue.sort(key=lambda item: (
+        item["priority"],
+        0 if item["latest_review"] is None else 1,
+        item["interface_result_date"] or "",
+        item["company_code"],
+    ))
+    return queue[:limit]
+
