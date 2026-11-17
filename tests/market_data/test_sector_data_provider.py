@@ -58,7 +58,7 @@ class SectorDataUpdaterTests(unittest.TestCase):
         self.assertEqual(result.matched_security_count, 2)
         loaded = {item.code: item for item in self.storage.load_securities()}
         self.assertEqual(loaded["600000"].sectors, ("SW1:801120", "银行"))
-        self.assertEqual(loaded["000001"].sectors, ("SW1:801120",))
+        self.assertEqual(loaded["000001"].sectors, ("SW1:801120", "银行"))
         with self.storage.connect() as connection:
             row = connection.execute(
                 "SELECT provider,source_url FROM sector_master WHERE sector_code='SW1:801120'"
