@@ -93,7 +93,7 @@ def _normalize_membership_date(value: object) -> str:
     raw = _text(value)
     if not raw:
         return ""
-    iso_match = re.match(r"^(\\d{4})[-/.](\\d{2})[-/.](\\d{2})", raw)
+    iso_match = re.match(r"^(\d{4})[-/.](\d{2})[-/.](\d{2})", raw)
     if iso_match:
         return "-".join(iso_match.groups())
     digits = re.sub(r"[^0-9]", "", raw)
