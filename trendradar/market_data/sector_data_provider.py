@@ -61,7 +61,7 @@ def _text(value: object) -> str:
 
 def _industry_code(value: object) -> str:
     raw = _text(value)
-    match = re.search(r"(\\d{6})", raw)
+    match = re.search(r"(\d{6})", raw)
     if not match:
         raise ValueError(f"申万行业代码不合法: {value!r}")
     return match.group(1)
@@ -259,7 +259,7 @@ class SectorDataUpdater:
             if item.sector_code not in set(sector_codes):
                 # Parent sector records are included in the same snapshot.
                 raise SecurityMasterSourceError(f"成员关系引用未知行业: {item.sector_code}")
-            if not re.fullmatch(r"\\d{6}", item.security_code):
+            if not re.fullmatch(r"\d{6}", item.security_code):
                 raise SecurityMasterSourceError(f"行业成员证券代码非法: {item.security_code}")
             if not 0 <= item.confidence <= 1:
                 raise SecurityMasterSourceError("行业成员置信度必须在0到1之间")
