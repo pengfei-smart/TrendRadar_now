@@ -81,8 +81,9 @@ class MarketStorage:
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='sector_master'"
         ).fetchone():
             cls._add_missing_columns(connection, "sector_master", {
-                "sector_type": "TEXT NOT NULL DEFAULT 'industry'", "provider": "TEXT NOT NULL DEFAULT ''",
-                "source_url": "TEXT NOT NULL DEFAULT ''", "source_updated_at": "TEXT NOT NULL DEFAULT ''",
+                "sector_type": "TEXT NOT NULL DEFAULT 'industry'", "parent_sector_code": "TEXT NOT NULL DEFAULT ''",
+                "provider": "TEXT NOT NULL DEFAULT ''", "source_url": "TEXT NOT NULL DEFAULT ''",
+                "source_updated_at": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='sector_membership'"
