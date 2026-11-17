@@ -57,7 +57,7 @@ class SectorDataUpdaterTests(unittest.TestCase):
         self.assertEqual(result.membership_count, 2)
         self.assertEqual(result.matched_security_count, 2)
         loaded = {item.code: item for item in self.storage.load_securities()}
-        self.assertEqual(loaded["600000"].sectors, ("SW1:801120",))
+        self.assertEqual(loaded["600000"].sectors, ("SW1:801120", "银行"))
         self.assertEqual(loaded["000001"].sectors, ("SW1:801120",))
         with self.storage.connect() as connection:
             row = connection.execute(
@@ -99,7 +99,7 @@ class SectorDataUpdaterTests(unittest.TestCase):
         with self.assertRaises(SecurityMasterSourceError):
             self.updater(empty).update()
         loaded = {item.code: item for item in self.storage.load_securities()}
-        self.assertEqual(loaded["600000"].sectors, ("SW1:801120",))
+        self.assertEqual(loaded["600000"].sectors, ("SW1:801120", "银行"))
 
     def test_unmatched_membership_ratio_rejects_snapshot_without_mutation(self):
         self.updater(self.snapshot()).update()
@@ -111,7 +111,7 @@ class SectorDataUpdaterTests(unittest.TestCase):
         with self.assertRaises(SecurityMasterSourceError):
             self.updater(bad).update()
         loaded = {item.code: item for item in self.storage.load_securities()}
-        self.assertEqual(loaded["600000"].sectors, ("SW1:801120",))
+        self.assertEqual(loaded["600000"].sectors, ("SW1:801120", "银行"))
 
     def test_membership_cannot_reference_unknown_sector(self):
         bad = SectorSnapshot(
