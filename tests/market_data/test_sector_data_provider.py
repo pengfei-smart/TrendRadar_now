@@ -121,6 +121,37 @@ class SectorDataUpdaterTests(unittest.TestCase):
         self.assertEqual(row["provider"], "akshare_sw")
         self.assertTrue(row["source_url"].startswith("https://"))
 
+    def test_star_and_bj_members_are_excluded_from_quality_ratio_and_persistence(self):
+        self.storage.upsert_securities([
+            Security("688001", "科创板样本", "SH"),
+            Security("830001", "北交所样本", "BJ"),
+        ])
+        snapshot = SectorSnapshot(
+            provider="akshare_sw",
+            fetched_at="2026-11-19T00:00:00+00:00",
+            sectors=(SectorRecord("SW1:801010", "农林牧渔"),),
+            memberships=(
+                SectorMembershipRecord("600000", "SW1:801010"),
+                SectorMembershipRecord("000001", "SW1:801010"),
+                SectorMembershipRecord("688001", "SW1:801010"),
+                SectorMembershipRecord("830001", "SW1:801010"),
+            ),
+        )
+
+        result = self.updater(snapshot).update()
+
+        self.assertEqual(result.matched_security_count, 2)
+        self.assertEqual(result.unmatched_security_count, 0)
+        self.assertEqual(result.excluded_security_count, 2)
+        self.assertEqual(result.membership_count, 2)
+        with self.storage.connect() as connection:
+            stored_codes = {
+                row[0] for row in connection.execute(
+                    "SELECT DISTINCT security_code FROM sector_membership WHERE source='akshare_sw'"
+                )
+            }
+        self.assertEqual(stored_codes, {"600000", "000001"})
+
     def test_loaded_securities_include_shenwan_names_for_keyword_mapping(self):
         self.updater(self.snapshot()).update()
         with self.storage.connect() as connection:
