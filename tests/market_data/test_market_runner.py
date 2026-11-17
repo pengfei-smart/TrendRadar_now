@@ -30,9 +30,17 @@ class MarketRunnerTests(unittest.TestCase):
             db_path = str(Path(tmp) / "market.db")
             storage = MarketStorage(db_path)
             storage.upsert_securities([
-                Security("600000", "浦发银行", "SH", listing_status="active",
-                         sectors=("半导体",)),
+                Security("600000", "浦发银行", "SH", listing_status="active"),
             ])
+            with storage.connect() as connection:
+                connection.execute(
+                    "INSERT INTO sector_master(sector_code,sector_name) VALUES('半导体','半导体')"
+                )
+                connection.execute(
+                    """INSERT INTO sector_membership
+                    (security_code,sector_code,valid_from,valid_to)
+                    VALUES('600000','半导体','','')"""
+                )
             report = run_once(
                 db_path=db_path,
                 events=[MarketEvent(
