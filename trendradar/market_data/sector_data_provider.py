@@ -23,6 +23,7 @@ class SectorRecord:
     sector_code: str
     sector_name: str
     sector_type: str = "industry"
+    parent_sector_code: str = ""
     provider: str = "akshare_sw"
     source_url: str = SW_SOURCE_URL
     source_updated_at: str = ""
@@ -156,11 +157,24 @@ class AkShareShenwanProvider:
 
         sectors: dict[str, SectorRecord] = {}
         memberships: dict[tuple[str, str, str], SectorMembershipRecord] = {}
+        first_by_name = {item["name"]: item["code"] for item in first}
+        if len(first_by_name) != len(first):
+            raise SecurityMasterSourceError("申万一级行业名称重复，无法唯一解析二级行业父级")
         for level, rows in ((1, first), (2, second)):
             for item in rows:
                 key = f"SW{level}:{item['code']}"
+                parent_code = ""
+                if level == 2:
+                    parent_name = _text(item["raw"].get("上级行业", ""))
+                    parent_code = first_by_name.get(parent_name, "")
+                    if not parent_code:
+                        raise SecurityMasterSourceError(
+                            f"申万二级行业无法匹配一级行业: {item['name']}/{parent_name}"
+                        )
+                    parent_code = f"SW1:{parent_code}"
                 sectors[key] = SectorRecord(
                     sector_code=key, sector_name=item["name"],
+                    parent_sector_code=parent_code,
                     source_updated_at=fetched_at,
                 )
 
@@ -171,8 +185,6 @@ class AkShareShenwanProvider:
         )
         if component_api is None:
             raise SecurityMasterSourceError("当前AkShare缺少申万行业成分接口")
-        # The Level-2 response carries parent name; resolve it to Level-1 code.
-        first_by_name = {item["name"]: item["code"] for item in first}
         for level, rows in ((1, first), (2, second)):
             for industry in rows:
                 symbol = industry["code"]
@@ -194,17 +206,9 @@ class AkShareShenwanProvider:
                         f"申万行业成分字段变化({symbol})，"
                         f"现有字段={sorted(columns)}，需要证券代码/计入日期"
                     )
-                parent_code = ""
-                if level == 2:
-                    parent_name = _text(industry["raw"].get("上级行业", ""))
-                    parent_code = first_by_name.get(parent_name, "")
-                    if not parent_code:
-                        raise SecurityMasterSourceError(
-                            f"申万二级行业无法匹配一级行业: {industry['name']}/{parent_name}"
-                        )
                 sector_codes = [f"SW{level}:{symbol}"]
-                if parent_code:
-                    sector_codes.append(f"SW1:{parent_code}")
+                if industry.get("parent_sector_code"):
+                    sector_codes.append(industry["parent_sector_code"])
                 for _, row in frame.iterrows():
                     try:
                         code = normalize_security_code(_text(row[code_column]))
@@ -287,6 +291,23 @@ class SectorDataUpdater:
         if any(not item.sector_code or not item.sector_name.strip()
                or item.sector_type != "industry" for item in snapshot.sectors):
             raise SecurityMasterSourceError("行业快照包含非法行业记录")
+        sector_by_code = {item.sector_code: item for item in snapshot.sectors}
+        for item in snapshot.sectors:
+            if item.sector_code.startswith("SW1:"):
+                if item.parent_sector_code:
+                    raise SecurityMasterSourceError(
+                        f"申万一级行业不得设置父级行业: {item.sector_code}"
+                    )
+            elif item.sector_code.startswith("SW2:"):
+                parent = sector_by_code.get(item.parent_sector_code)
+                if not parent or not item.parent_sector_code.startswith("SW1:"):
+                    raise SecurityMasterSourceError(
+                        f"申万二级行业父级不存在或层级错误: {item.sector_code} -> {item.parent_sector_code}"
+                    )
+            elif item.parent_sector_code:
+                raise SecurityMasterSourceError(
+                    f"非申万行业不能使用申万父级字段: {item.sector_code}"
+                )
         membership_keys = set()
         for item in snapshot.memberships:
             key = (item.security_code, item.sector_code, item.valid_from)
@@ -337,9 +358,9 @@ class SectorDataUpdater:
             )
             connection.executemany(
                 """INSERT INTO sector_master
-                (sector_code,sector_name,sector_type,provider,source_url,source_updated_at)
-                VALUES(?,?,?,?,?,?)""",
-                [(item.sector_code, item.sector_name, item.sector_type,
+                (sector_code,sector_name,sector_type,parent_sector_code,provider,source_url,source_updated_at)
+                VALUES(?,?,?,?,?,?,?)""",
+                [(item.sector_code, item.sector_name, item.sector_type, item.parent_sector_code,
                   snapshot.provider, item.source_url, item.source_updated_at or snapshot.fetched_at)
                  for item in snapshot.sectors],
             )
