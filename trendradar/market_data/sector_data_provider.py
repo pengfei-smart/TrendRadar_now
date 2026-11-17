@@ -245,6 +245,17 @@ class SectorRefreshResult:
     membership_count: int
     matched_security_count: int
     unmatched_security_count: int
+    excluded_security_count: int = 0
+
+
+def _is_strategy_excluded_security(code: str) -> bool:
+    """Return whether a six-digit code belongs to an excluded STAR/BJ board.
+
+    STAR Market: 688xxx/689xxx; Beijing Stock Exchange: 4xxxxx/8xxxxx/9xxxxx.
+    This is a candidate-scope filter only; it does not remove securities from
+    the upstream snapshot or weaken validation for other unmatched codes.
+    """
+    return code.startswith(("688", "689", "4", "8", "9"))
 
 
 class SectorDataUpdater:
@@ -297,13 +308,23 @@ class SectorDataUpdater:
                 )
             }
             incoming_codes = {item.security_code for item in snapshot.memberships}
-            matched = incoming_codes & known
-            unmatched = incoming_codes - known
-            unmatched_ratio = len(unmatched) / max(1, len(incoming_codes))
+            excluded = {
+                code for code in incoming_codes
+                if _is_strategy_excluded_security(code)
+            }
+            eligible_incoming = incoming_codes - excluded
+            eligible_known = {
+                code for code in known
+                if not _is_strategy_excluded_security(code)
+            }
+            matched = eligible_incoming & eligible_known
+            unmatched = eligible_incoming - eligible_known
+            unmatched_ratio = len(unmatched) / max(1, len(eligible_incoming))
             if len(matched) < self.minimum_matched_securities or unmatched_ratio > self.maximum_unmatched_ratio:
                 raise SecurityMasterSourceError(
                     "申万成员与本地证券主数据匹配异常: "
                     f"matched={len(matched)}, unmatched={len(unmatched)}, "
+                    f"excluded={len(excluded)}, "
                     f"ratio={unmatched_ratio:.2%}"
                 )
 
@@ -328,11 +349,12 @@ class SectorDataUpdater:
                 VALUES(?,?,?,'',?,?,?)""",
                 [(item.security_code, item.sector_code, item.valid_from, snapshot.provider,
                   item.source_url, item.confidence)
-                 for item in snapshot.memberships if item.security_code in known],
+                 for item in snapshot.memberships if item.security_code in matched],
             )
 
         return SectorRefreshResult(
             provider=snapshot.provider, sector_count=len(snapshot.sectors),
             membership_count=sum(1 for item in snapshot.memberships if item.security_code in known),
             matched_security_count=len(matched), unmatched_security_count=len(unmatched),
+            excluded_security_count=len(excluded),
         )
