@@ -65,6 +65,9 @@ class AkShareShenwanProviderTests(unittest.TestCase):
 
         self.assertEqual({item.sector_code for item in snapshot.sectors},
                          {"SW1:801010", "SW2:801016"})
+        parent_by_code = {item.sector_code: item.parent_sector_code for item in snapshot.sectors}
+        self.assertEqual(parent_by_code["SW1:801010"], "")
+        self.assertEqual(parent_by_code["SW2:801016"], "SW1:801010")
         membership_pairs = {
             (item.security_code, item.sector_code, item.valid_from)
             for item in snapshot.memberships
@@ -120,6 +123,50 @@ class SectorDataUpdaterTests(unittest.TestCase):
             ).fetchone()
         self.assertEqual(row["provider"], "akshare_sw")
         self.assertTrue(row["source_url"].startswith("https://"))
+        with self.storage.connect() as connection:
+            parent_column = connection.execute(
+                "SELECT parent_sector_code FROM sector_master WHERE sector_code='SW1:801120'"
+            ).fetchone()[0]
+        self.assertEqual(parent_column, "")
+
+    def test_level_two_parent_sector_code_is_persisted(self):
+        snapshot = SectorSnapshot(
+            provider="akshare_sw",
+            fetched_at="2026-11-19T00:00:00+00:00",
+            sectors=(
+                SectorRecord("SW1:801010", "农林牧渔"),
+                SectorRecord("SW2:801016", "种植业", parent_sector_code="SW1:801010"),
+            ),
+            memberships=(
+                SectorMembershipRecord("600000", "SW1:801010"),
+                SectorMembershipRecord("600000", "SW2:801016"),
+            ),
+        )
+        self.updater(snapshot).update()
+        with self.storage.connect() as connection:
+            row = connection.execute(
+                "SELECT parent_sector_code FROM sector_master WHERE sector_code='SW2:801016'"
+            ).fetchone()
+        self.assertEqual(row[0], "SW1:801010")
+
+    def test_level_two_parent_must_exist_and_be_level_one(self):
+        for parent_code in ("", "SW2:801017", "SW1:801999"):
+            bad = SectorSnapshot(
+                provider="akshare_sw",
+                fetched_at="2026-11-19T00:00:00+00:00",
+                sectors=(
+                    SectorRecord("SW1:801010", "农林牧渔"),
+                    SectorRecord("SW2:801016", "种植业", parent_sector_code=parent_code),
+                ),
+                memberships=(SectorMembershipRecord("600000", "SW1:801010"),),
+            )
+            with self.subTest(parent_code=parent_code):
+                with self.assertRaises(SecurityMasterSourceError):
+                    self.updater(bad).update()
+        with self.storage.connect() as connection:
+            self.assertEqual(connection.execute(
+                "SELECT COUNT(*) FROM sector_master WHERE provider='akshare_sw'"
+            ).fetchone()[0], 0)
 
     def test_star_and_bj_members_are_excluded_from_quality_ratio_and_persistence(self):
         self.storage.upsert_securities([
