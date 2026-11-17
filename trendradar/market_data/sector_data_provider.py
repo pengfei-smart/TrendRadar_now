@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import re
 import time
-from typing import Protocol, Sequence
+from typing import Protocol
 
 from trendradar.market_data.security_master import normalize_security_code
 from trendradar.market_data.security_master_provider import SecurityMasterSourceError
@@ -114,12 +114,13 @@ class AkShareShenwanProvider:
     source_url = SW_SOURCE_URL
 
     def __init__(self, *, pause_seconds: float = 0.15, minimum_sectors: int = 20,
-                 minimum_memberships: int = 1000):
+                 minimum_memberships: int = 1000, minimum_unique_securities: int = 500):
         if pause_seconds < 0:
             raise ValueError("pause_seconds不能小于0")
         self.pause_seconds = pause_seconds
         self.minimum_sectors = minimum_sectors
         self.minimum_memberships = minimum_memberships
+        self.minimum_unique_securities = minimum_unique_securities
 
     def fetch_snapshot(self) -> SectorSnapshot:
         try:
@@ -131,10 +132,20 @@ class AkShareShenwanProvider:
 
         fetched_at = datetime.now(timezone.utc).isoformat()
         try:
-            first = _industry_frame_rows(
-                ak.sw_index_first_info(), code_column="行业代码", name_column="行业名称"
+            # AkShare renamed these interfaces in 1.20.45. Prefer new names,
+            # retaining compatibility with older supported releases.
+            first_info = getattr(ak, "index_first_info_sw", None) or getattr(
+                ak, "sw_index_first_info", None
             )
-            second_frame = ak.sw_index_second_info()
+            second_info = getattr(ak, "index_second_info_sw", None) or getattr(
+                ak, "sw_index_second_info", None
+            )
+            if first_info is None or second_info is None:
+                raise SecurityMasterSourceError("当前AkShare缺少申万行业分类接口")
+            first = _industry_frame_rows(
+                first_info(), code_column="行业代码", name_column="行业名称"
+            )
+            second_frame = second_info()
             second = _industry_frame_rows(
                 second_frame, code_column="行业代码", name_column="行业名称"
             )
@@ -153,24 +164,35 @@ class AkShareShenwanProvider:
                     source_updated_at=fetched_at,
                 )
 
-        # AkShare's sw_index_cons supports both Level-1 and Level-2 codes.
-        # The Level-2 response carries parent name; we resolve it to the Level-1 code.
+        # AkShare 1.20.45+ uses index_component_sw and Chinese column names.
+        # Older versions exposed sw_index_cons with English column names.
+        component_api = getattr(ak, "index_component_sw", None) or getattr(
+            ak, "sw_index_cons", None
+        )
+        if component_api is None:
+            raise SecurityMasterSourceError("当前AkShare缺少申万行业成分接口")
+        # The Level-2 response carries parent name; resolve it to Level-1 code.
         first_by_name = {item["name"]: item["code"] for item in first}
         for level, rows in ((1, first), (2, second)):
             for industry in rows:
                 symbol = industry["code"]
                 try:
-                    frame = ak.sw_index_cons(symbol=symbol)
+                    frame = component_api(symbol=symbol)
                 except Exception as exc:
                     raise SecurityMasterSourceError(
                         f"申万{level}级行业成分获取失败({symbol}): {exc}"
                     ) from exc
-                required = {"stock_code"}
-                if frame is None or not hasattr(frame, "columns") or not required.issubset(
-                    set(str(column) for column in frame.columns)
-                ):
+                columns = set(str(column) for column in frame.columns) if (
+                    frame is not None and hasattr(frame, "columns")
+                ) else set()
+                if {"证券代码", "计入日期"}.issubset(columns):
+                    code_column, date_column = "证券代码", "计入日期"
+                elif {"stock_code", "start_date"}.issubset(columns):
+                    code_column, date_column = "stock_code", "start_date"
+                else:
                     raise SecurityMasterSourceError(
-                        f"申万行业成分字段变化({symbol})，缺少stock_code"
+                        f"申万行业成分字段变化({symbol})，"
+                        f"现有字段={sorted(columns)}，需要证券代码/计入日期"
                     )
                 parent_code = ""
                 if level == 2:
@@ -185,12 +207,12 @@ class AkShareShenwanProvider:
                     sector_codes.append(f"SW1:{parent_code}")
                 for _, row in frame.iterrows():
                     try:
-                        code = normalize_security_code(_text(row["stock_code"]))
+                        code = normalize_security_code(_text(row[code_column]))
                     except ValueError as exc:
                         raise SecurityMasterSourceError(
                             f"申万成分股证券代码非法({symbol}): {exc}"
                         ) from exc
-                    start_date = _normalize_membership_date(row.get("start_date", ""))
+                    start_date = _normalize_membership_date(row.get(date_column, ""))
                     for sector_code in sector_codes:
                         key = (code, sector_code, start_date)
                         memberships[key] = SectorMembershipRecord(
@@ -205,7 +227,7 @@ class AkShareShenwanProvider:
                 f"申万行业数量异常: {len(sectors)} < {self.minimum_sectors}"
             )
         unique_members = {item.security_code for item in memberships.values()}
-        if len(memberships) < self.minimum_memberships or len(unique_members) < 500:
+        if len(memberships) < self.minimum_memberships or len(unique_members) < self.minimum_unique_securities:
             raise SecurityMasterSourceError(
                 "申万行业成分覆盖异常: "
                 f"memberships={len(memberships)}, securities={len(unique_members)}"
