@@ -172,6 +172,7 @@ class AkShareShenwanProvider:
                             f"申万二级行业无法匹配一级行业: {item['name']}/{parent_name}"
                         )
                     parent_code = f"SW1:{parent_code}"
+                item["parent_sector_code"] = parent_code
                 sectors[key] = SectorRecord(
                     sector_code=key, sector_name=item["name"],
                     parent_sector_code=parent_code,
