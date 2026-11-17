@@ -33,6 +33,15 @@ class MarketRunnerTests(unittest.TestCase):
                 Security("600000", "浦发银行", "SH", listing_status="active"),
             ])
             with storage.connect() as connection:
+                # Active listing status must carry provenance. MarketStorage
+                # intentionally downgrades unverified legacy "active" rows
+                # to "unknown" when a new storage instance initializes.
+                connection.execute(
+                    """UPDATE security_master
+                    SET listing_status_source='test_fixture',
+                        listing_status_updated_at='2026-11-17'
+                    WHERE code='600000'"""
+                )
                 connection.execute(
                     "INSERT INTO sector_master(sector_code,sector_name) VALUES('半导体','半导体')"
                 )
