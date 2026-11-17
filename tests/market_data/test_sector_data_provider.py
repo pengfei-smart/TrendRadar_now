@@ -66,6 +66,16 @@ class SectorDataUpdaterTests(unittest.TestCase):
         self.assertEqual(row["provider"], "akshare_sw")
         self.assertTrue(row["source_url"].startswith("https://"))
 
+    def test_loaded_securities_include_shenwan_names_for_keyword_mapping(self):
+        self.updater(self.snapshot()).update()
+        with self.storage.connect() as connection:
+            connection.execute(
+                "UPDATE sector_master SET sector_name='半导体' WHERE sector_code='SW1:801120'"
+            )
+        loaded = {item.code: item for item in self.storage.load_securities()}
+        self.assertIn("半导体", loaded["600000"].sectors)
+        self.assertIn("SW1:801120", loaded["600000"].sectors)
+
     def test_refresh_replaces_only_same_provider_snapshot(self):
         with self.storage.connect() as connection:
             connection.execute(
