@@ -54,12 +54,14 @@ CREATE TABLE IF NOT EXISTS sector_master (
     sector_name TEXT NOT NULL,
     sector_type TEXT NOT NULL DEFAULT 'industry'
         CHECK (sector_type IN ('industry','concept','theme','index','supply_chain','other')),
+    parent_sector_code TEXT NOT NULL DEFAULT '',
     provider TEXT NOT NULL DEFAULT '',
     source_url TEXT NOT NULL DEFAULT '',
     source_updated_at TEXT NOT NULL DEFAULT '',
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_sector_type_name ON sector_master(sector_type, sector_name);
+CREATE INDEX IF NOT EXISTS idx_sector_parent ON sector_master(parent_sector_code);
 
 CREATE TABLE IF NOT EXISTS sector_membership (
     membership_id INTEGER PRIMARY KEY AUTOINCREMENT,
