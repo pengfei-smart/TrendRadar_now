@@ -111,7 +111,17 @@ def main(argv: list[str] | None = None) -> int:
             if args.refresh_universe:
                 SecurityMasterUpdater(EastmoneySecurityMasterProvider(), storage).update()
                 ExchangeListingStatusUpdater(storage).update()
-            SectorDataUpdater(AkShareShenwanProvider(), storage).update()
+            sector_result = SectorDataUpdater(AkShareShenwanProvider(), storage).update()
+            if args.refresh_sectors and not args.refresh_universe:
+                print(json.dumps({
+                    "status": "success",
+                    "provider": sector_result.provider,
+                    "sector_count": sector_result.sector_count,
+                    "membership_count": sector_result.membership_count,
+                    "matched_security_count": sector_result.matched_security_count,
+                    "unmatched_security_count": sector_result.unmatched_security_count,
+                }, ensure_ascii=False, indent=2))
+                return 0
         events = _collect_events(args.events_limit)
         quote_fetcher = QuoteFetcher([EastmoneyBatchQuoteProvider()])
         report = run_once(
