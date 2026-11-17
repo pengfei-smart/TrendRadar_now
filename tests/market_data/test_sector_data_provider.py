@@ -1,10 +1,14 @@
 """Tests for guarded Shenwan sector master and membership refresh."""
 import tempfile
 import unittest
+from unittest.mock import patch
+
+import pandas as pd
 from pathlib import Path
 
 from trendradar.market_data.sector_data_provider import (
-    SectorDataUpdater, SectorMembershipRecord, SectorRecord, SectorSnapshot,
+    AkShareShenwanProvider, SectorDataUpdater, SectorMembershipRecord,
+    SectorRecord, SectorSnapshot,
 )
 from trendradar.market_data.security_master_provider import SecurityMasterSourceError
 from trendradar.market_data.models import Security
@@ -17,6 +21,57 @@ class FakeSectorProvider:
 
     def fetch_snapshot(self):
         return self.snapshot
+
+
+
+class AkShareShenwanProviderTests(unittest.TestCase):
+    def test_akshare_12065_interfaces_and_chinese_columns_are_supported(self):
+        first = pd.DataFrame([
+            {"行业代码": "801010.SI", "行业名称": "农林牧渔"},
+        ])
+        second = pd.DataFrame([
+            {"行业代码": "801016.SI", "行业名称": "种植业", "上级行业": "农林牧渔"},
+        ])
+        components = {
+            "801010": pd.DataFrame([
+                {"证券代码": "000998", "证券名称": "隆平高科", "计入日期": "2012-01-04"},
+                {"证券代码": "600000", "证券名称": "浦发银行", "计入日期": "2012-01-04"},
+            ]),
+            "801016": pd.DataFrame([
+                {"证券代码": "000998", "证券名称": "隆平高科", "计入日期": "2012-01-04"},
+            ]),
+        }
+
+        class FakeAkShare:
+            __version__ = "1.20.65"
+
+            @staticmethod
+            def index_first_info_sw():
+                return first
+
+            @staticmethod
+            def index_second_info_sw():
+                return second
+
+            @staticmethod
+            def index_component_sw(symbol):
+                return components[symbol]
+
+        with patch.dict("sys.modules", {"akshare": FakeAkShare}):
+            snapshot = AkShareShenwanProvider(
+                pause_seconds=0, minimum_sectors=2, minimum_memberships=1,
+                minimum_unique_securities=2,
+            ).fetch_snapshot()
+
+        self.assertEqual({item.sector_code for item in snapshot.sectors},
+                         {"SW1:801010", "SW2:801016"})
+        membership_pairs = {
+            (item.security_code, item.sector_code, item.valid_from)
+            for item in snapshot.memberships
+        }
+        self.assertIn(("000998", "SW1:801010", "2012-01-04"), membership_pairs)
+        self.assertIn(("000998", "SW2:801016", "2012-01-04"), membership_pairs)
+        self.assertIn(("600000", "SW1:801010", "2012-01-04"), membership_pairs)
 
 
 class SectorDataUpdaterTests(unittest.TestCase):
