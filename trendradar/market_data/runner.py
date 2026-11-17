@@ -27,6 +27,9 @@ from trendradar.market_data.us_event_fetcher import USEventFetcher
 from trendradar.market_data.listing_status_provider import (
     ExchangeListingStatusUpdater,
 )
+from trendradar.market_data.sector_data_provider import (
+    AkShareShenwanProvider, SectorDataUpdater,
+)
 
 
 def run_once(
@@ -97,14 +100,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-candidates", type=int, default=100)
     parser.add_argument("--push-limit", type=int, default=10)
     parser.add_argument("--refresh-universe", action="store_true",
-                        help="Refresh Eastmoney security master and official SH/SZ listing snapshots")
+                        help="Refresh security master, SH/SZ listing snapshots, and Shenwan industries")
+    parser.add_argument("--refresh-sectors", action="store_true",
+                        help="Refresh Shenwan Level-1/2 industry master and memberships only")
     args = parser.parse_args(argv)
 
     try:
-        if args.refresh_universe:
+        if args.refresh_universe or args.refresh_sectors:
             storage = MarketStorage(args.db)
-            SecurityMasterUpdater(EastmoneySecurityMasterProvider(), storage).update()
-            ExchangeListingStatusUpdater(storage).update()
+            if args.refresh_universe:
+                SecurityMasterUpdater(EastmoneySecurityMasterProvider(), storage).update()
+                ExchangeListingStatusUpdater(storage).update()
+            SectorDataUpdater(AkShareShenwanProvider(), storage).update()
         events = _collect_events(args.events_limit)
         quote_fetcher = QuoteFetcher([EastmoneyBatchQuoteProvider()])
         report = run_once(
