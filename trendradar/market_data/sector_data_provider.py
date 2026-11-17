@@ -354,7 +354,7 @@ class SectorDataUpdater:
 
         return SectorRefreshResult(
             provider=snapshot.provider, sector_count=len(snapshot.sectors),
-            membership_count=sum(1 for item in snapshot.memberships if item.security_code in known),
+            membership_count=sum(1 for item in snapshot.memberships if item.security_code in matched),
             matched_security_count=len(matched), unmatched_security_count=len(unmatched),
             excluded_security_count=len(excluded),
         )
