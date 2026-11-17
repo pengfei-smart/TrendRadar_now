@@ -343,6 +343,52 @@ class MarketStorage:
         }])
         return result[f"{exchange}_{board_scope}"]
 
+
+    def load_securities(self, *, eligible_only: bool = False) -> list[Security]:
+        """Load the persisted security universe with currently valid sector memberships.
+
+        The default returns the complete master universe so callers can inspect
+        suspended, delisted, pending and unknown records. Set eligible_only=True
+        to restrict it to active, non-risk-warning SH/SZ securities, excluding
+        the STAR Market in line with eligible_securities().
+        """
+        query = """
+            SELECT sm.code, sm.name, sm.exchange, sm.listing_status, sm.risk_flag,
+                   GROUP_CONCAT(DISTINCT sector.sector_code) AS sector_codes
+            FROM security_master AS sm
+            LEFT JOIN sector_membership AS membership
+                ON membership.security_code = sm.code
+                AND (membership.valid_from = '' OR membership.valid_from <= date('now'))
+                AND (membership.valid_to = '' OR membership.valid_to >= date('now'))
+            LEFT JOIN sector_master AS sector
+                ON sector.sector_code = membership.sector_code
+        """
+        params: tuple = ()
+        if eligible_only:
+            query += """
+                WHERE sm.exchange IN ('SH', 'SZ')
+                  AND NOT (sm.exchange = 'SH' AND sm.code GLOB '68[89]*')
+                  AND sm.listing_status = 'active'
+                  AND sm.risk_flag = 0
+            """
+        query += """
+            GROUP BY sm.code, sm.name, sm.exchange, sm.listing_status, sm.risk_flag
+            ORDER BY sm.code
+        """
+        with self.connect() as connection:
+            rows = connection.execute(query, params).fetchall()
+        return [
+            Security(
+                code=row["code"],
+                name=row["name"],
+                exchange=row["exchange"],
+                listing_status=row["listing_status"],
+                risk_flag=bool(row["risk_flag"]),
+                sectors=tuple(sorted(filter(None, (row["sector_codes"] or "").split(",")))),
+            )
+            for row in rows
+        ]
+
     def save_events(self, events: Iterable[MarketEvent]) -> int:
         rows = [(e.event_id, e.source, e.title, e.published_at, e.event_type,
                  e.direction, e.region, e.url, e.summary) for e in events]
