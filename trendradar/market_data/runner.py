@@ -120,6 +120,7 @@ def main(argv: list[str] | None = None) -> int:
                     "membership_count": sector_result.membership_count,
                     "matched_security_count": sector_result.matched_security_count,
                     "unmatched_security_count": sector_result.unmatched_security_count,
+                    "excluded_security_count": sector_result.excluded_security_count,
                 }, ensure_ascii=False, indent=2))
                 return 0
         events = _collect_events(args.events_limit)
