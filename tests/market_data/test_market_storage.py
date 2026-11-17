@@ -117,6 +117,43 @@ class MarketStorageTests(unittest.TestCase):
                     reviewed_at="2026-11-12T21:00:00+08:00",
                 )
 
+
+    def test_load_securities_includes_status_and_current_sector_memberships(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.upsert_securities([
+                Security("600000", "浦发银行", "SH", listing_status="active"),
+                Security("000001", "平安银行", "SZ", listing_status="active"),
+                Security("600002", "风险样本", "SH", listing_status="active", risk_flag=True),
+                Security("600003", "停牌样本", "SH", listing_status="suspended"),
+            ])
+            with storage.connect() as connection:
+                connection.executemany(
+                    "INSERT INTO sector_master(sector_code,sector_name) VALUES(?,?)",
+                    [("bank", "银行"), ("finance", "金融")],
+                )
+                connection.executemany(
+                    """INSERT INTO sector_membership
+                    (security_code,sector_code,valid_from,valid_to)
+                    VALUES(?,?,?,?)""",
+                    [
+                        ("600000", "bank", "", ""),
+                        ("600000", "finance", "", ""),
+                        ("000001", "bank", "", "2000-01-01"),
+                    ],
+                )
+
+            all_securities = storage.load_securities()
+            by_code = {item.code: item for item in all_securities}
+            self.assertEqual(set(by_code), {"600000", "000001", "600002", "600003"})
+            self.assertEqual(by_code["600000"].sectors, ("bank", "finance"))
+            self.assertEqual(by_code["000001"].sectors, ())
+            self.assertEqual(by_code["600003"].listing_status, "suspended")
+            self.assertTrue(by_code["600002"].risk_flag)
+
+            eligible = storage.load_securities(eligible_only=True)
+            self.assertEqual([item.code for item in eligible], ["000001", "600000"])
+
     def test_event_security_and_multi_source_quote_persistence(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
