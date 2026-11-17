@@ -354,7 +354,9 @@ class MarketStorage:
         """
         query = """
             SELECT sm.code, sm.name, sm.exchange, sm.listing_status, sm.risk_flag,
-                   GROUP_CONCAT(DISTINCT sector.sector_code) AS sector_codes
+                   GROUP_CONCAT(DISTINCT sector.sector_code) AS sector_codes,
+                   GROUP_CONCAT(DISTINCT CASE WHEN sector.provider='akshare_sw'
+                       THEN sector.sector_name END) AS sector_names
             FROM security_master AS sm
             LEFT JOIN sector_membership AS membership
                 ON membership.security_code = sm.code
@@ -384,7 +386,10 @@ class MarketStorage:
                 exchange=row["exchange"],
                 listing_status=row["listing_status"],
                 risk_flag=bool(row["risk_flag"]),
-                sectors=tuple(sorted(filter(None, (row["sector_codes"] or "").split(",")))),
+                sectors=tuple(sorted(
+                    set(filter(None, (row["sector_codes"] or "").split(",")))
+                    | set(filter(None, (row["sector_names"] or "").split(",")))
+                )),
             )
             for row in rows
         ]
