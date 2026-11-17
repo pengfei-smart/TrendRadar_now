@@ -227,7 +227,7 @@ class SectorDataUpdater:
 
     def __init__(self, provider: SectorDataProvider, storage: object,
                  minimum_sectors: int = 20, minimum_memberships: int = 1000,
-                 maximum_unmatched_ratio: float = 0.05):
+                 maximum_unmatched_ratio: float = 0.05, minimum_matched_securities: int = 500):
         if minimum_sectors < 1 or minimum_memberships < 1:
             raise ValueError("行业和成员关系最小数量必须为正数")
         if not 0 <= maximum_unmatched_ratio < 1:
@@ -237,6 +237,7 @@ class SectorDataUpdater:
         self.minimum_sectors = minimum_sectors
         self.minimum_memberships = minimum_memberships
         self.maximum_unmatched_ratio = maximum_unmatched_ratio
+        self.minimum_matched_securities = minimum_matched_securities
 
     def update(self) -> SectorRefreshResult:
         snapshot = self.provider.fetch_snapshot()
@@ -274,7 +275,7 @@ class SectorDataUpdater:
             matched = incoming_codes & known
             unmatched = incoming_codes - known
             unmatched_ratio = len(unmatched) / max(1, len(incoming_codes))
-            if len(matched) < 500 or unmatched_ratio > self.maximum_unmatched_ratio:
+            if len(matched) < self.minimum_matched_securities or unmatched_ratio > self.maximum_unmatched_ratio:
                 raise SecurityMasterSourceError(
                     "申万成员与本地证券主数据匹配异常: "
                     f"matched={len(matched)}, unmatched={len(unmatched)}, "
