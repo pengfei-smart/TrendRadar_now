@@ -55,8 +55,8 @@ def score_security_opportunity(item: SecurityOpportunityInput) -> SecurityOpport
         raise ValueError("industry_code不能为空")
     if not 0 <= item.industry_score <= 100:
         raise ValueError("industry_score必须在0到100之间")
-    if item.event_strength < 0:
-        raise ValueError("event_strength不能为负数")
+    if not 0.0 <= item.event_strength <= 1.0:
+        raise ValueError("event_strength必须在0到1之间")
 
     if not item.eligible:
         return SecurityOpportunityScore(
@@ -79,7 +79,7 @@ def score_security_opportunity(item: SecurityOpportunityInput) -> SecurityOpport
 
     industry_score = round(_clamp(item.industry_score) * 0.25, 2)
     event_score = round(
-        _scaled(item.event_strength if item.direct_event else 0.0, 0.0, 20.0, 20.0),
+        _clamp(item.event_strength if item.direct_event else 0.0) * 20.0,
         2,
     )
     price_strength_score = _scaled(item.price_change_pct, 0.0, 10.0, 20.0)
