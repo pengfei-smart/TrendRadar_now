@@ -13,7 +13,8 @@ from trendradar.market_data.event_review_models import IMPACT_DIMENSIONS, REVIEW
 from trendradar.market_data.event_review_pipeline import (
     review_persisted_market_event,
     review_persisted_market_event_with_runtime,
-)\nfrom trendradar.market_data.event_review_runtime import build_event_review_runtime
+)
+from trendradar.market_data.event_review_runtime import build_event_review_runtime
 from trendradar.market_data.event_review_repository import EventReviewRepository
 from trendradar.market_data.models import MarketEvent
 from trendradar.market_data.storage import MarketStorage
