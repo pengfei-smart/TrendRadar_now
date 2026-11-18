@@ -15,7 +15,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 10
+    SCHEMA_VERSION = 11
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path).expanduser().resolve()
@@ -118,7 +118,13 @@ class MarketStorage:
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='market_snapshots'"
         ).fetchone():
             cls._add_missing_columns(connection, "market_snapshots", {
-                "trading_date": "TEXT NOT NULL DEFAULT ''", "collected_at": "TEXT NOT NULL DEFAULT ''",
+                "trading_date": "TEXT NOT NULL DEFAULT ''",
+                "collected_at": "TEXT NOT NULL DEFAULT ''",
+                "source_timestamp": "TEXT NOT NULL DEFAULT ''",
+                "timestamp_quality": (
+                    "TEXT NOT NULL DEFAULT 'legacy_unknown' "
+                    "CHECK (timestamp_quality IN ('provider','missing','invalid','legacy_unknown'))"
+                ),
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='radar_runs'"
@@ -153,14 +159,17 @@ class MarketStorage:
             source TEXT NOT NULL DEFAULT '',
             delayed INTEGER NOT NULL DEFAULT 1 CHECK (delayed IN (0, 1)),
             collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            source_timestamp TEXT NOT NULL DEFAULT '',
+            timestamp_quality TEXT NOT NULL DEFAULT 'legacy_unknown'
+                CHECK (timestamp_quality IN ('provider','missing','invalid','legacy_unknown')),
             UNIQUE(code, timestamp, source),
             FOREIGN KEY (code) REFERENCES security_master(code) ON UPDATE CASCADE
         )""")
         connection.execute("""INSERT INTO market_snapshots
             (snapshot_id,code,timestamp,trading_date,price,change_pct,turnover,
-             volume_ratio,source,delayed,collected_at)
+             volume_ratio,source,delayed,collected_at,source_timestamp,timestamp_quality)
             SELECT snapshot_id,code,timestamp,trading_date,price,change_pct,turnover,
-                   volume_ratio,source,delayed,collected_at
+                   volume_ratio,source,delayed,collected_at,source_timestamp,timestamp_quality
             FROM market_snapshots_legacy""")
         connection.execute("DROP TABLE market_snapshots_legacy")
         connection.execute("CREATE INDEX idx_market_snapshot_time ON market_snapshots(timestamp DESC)")
@@ -466,17 +475,25 @@ class MarketStorage:
         return len(rows)
 
     def save_quotes(self, quotes: Iterable[QuoteSnapshot]) -> int:
-        rows = [(q.code, q.timestamp, q.price, q.change_pct, q.turnover,
-                 q.volume_ratio, q.source, int(q.delayed)) for q in quotes]
+        rows = [
+            (q.code, q.timestamp, q.price, q.change_pct, q.turnover,
+             q.volume_ratio, q.source, int(q.delayed), q.collected_at,
+             q.source_timestamp, q.timestamp_quality)
+            for q in quotes
+        ]
         with self.connect() as connection:
             connection.executemany(
                 """INSERT INTO market_snapshots
-                (code,timestamp,price,change_pct,turnover,volume_ratio,source,delayed)
-                VALUES(?,?,?,?,?,?,?,?)
+                (code,timestamp,price,change_pct,turnover,volume_ratio,source,delayed,
+                 collected_at,source_timestamp,timestamp_quality)
+                VALUES(?,?,?,?,?,?,?,?,
+                       COALESCE(NULLIF(?,''),CURRENT_TIMESTAMP),?,?)
                 ON CONFLICT(code,timestamp,source) DO UPDATE SET
                 price=excluded.price,change_pct=excluded.change_pct,
                 turnover=excluded.turnover,volume_ratio=excluded.volume_ratio,
-                delayed=excluded.delayed,collected_at=CURRENT_TIMESTAMP""", rows)
+                delayed=excluded.delayed,collected_at=excluded.collected_at,
+                source_timestamp=excluded.source_timestamp,
+                timestamp_quality=excluded.timestamp_quality""", rows)
         return len(rows)
 
 
