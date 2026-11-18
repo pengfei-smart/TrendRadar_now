@@ -220,6 +220,45 @@ class MarketStorageTests(unittest.TestCase):
                 self.assertEqual(connection.execute("PRAGMA quick_check").fetchone()[0], "ok")
 
 
+    def test_mapping_evidence_persists_typed_direct_and_transmission_provenance(self):
+        from trendradar.market_data.models import MappingEvidence
+
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_events([MarketEvent("mapping-event", "test", "测试新闻", "2026-01-01")])
+            direct = MappingEvidence(
+                target_code="SW2:801101", mapping_type="industry_keyword",
+                confidence=0.70, evidence="命中GPU服务器",
+                evidence_type="direct",
+            )
+            upstream = MappingEvidence(
+                target_code="SW2:801081", mapping_type="industry_keyword",
+                confidence=0.60, evidence="由计算机设备需求向上游传导",
+                evidence_type="upstream", related_sector_code="SW2:801101",
+                relation_evidence="服务器整机需求增加带动GPU芯片需求",
+            )
+            self.assertEqual(storage.save_mapping_evidence("mapping-event", [direct, upstream]), 2)
+            with storage.connect() as connection:
+                rows = connection.execute(
+                    """SELECT target_code,evidence_type,related_sector_code,relation_evidence
+                    FROM event_candidates ORDER BY target_code"""
+                ).fetchall()
+            self.assertEqual(
+                [tuple(row) for row in rows],
+                [
+                    ("SW2:801081", "upstream", "SW2:801101",
+                     "服务器整机需求增加带动GPU芯片需求"),
+                    ("SW2:801101", "direct", "", ""),
+                ],
+            )
+            invalid = MappingEvidence(
+                target_code="SW2:801081", mapping_type="industry_keyword",
+                confidence=0.6, evidence="缺少传导来源",
+                evidence_type="upstream",
+            )
+            with self.assertRaisesRegex(ValueError, "必须提供"):
+                storage.save_mapping_evidence("mapping-event", [invalid])
+
     def test_listing_status_snapshot_records_provenance_and_rejects_stale(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
