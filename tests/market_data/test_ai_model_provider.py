@@ -65,6 +65,64 @@ class AiModelProviderTests(unittest.TestCase):
         self.assertEqual(calls[0]["response_format"], {"type": "json_object"})
         self.assertEqual(calls[0]["messages"][0]["role"], "system")
 
+    def test_extracts_token_usage_when_provider_supplies_it(self):
+        raw = fake_response()
+        raw.usage = SimpleNamespace(
+            prompt_tokens=123,
+            completion_tokens=45,
+            total_tokens=168,
+        )
+        provider = LiteLLMChatProvider(completion_callable=lambda **kwargs: raw)
+        result = provider.complete(ChatModelRequest(
+            model="provider/model-x",
+            system_prompt="system",
+            user_prompt="user",
+        ))
+        self.assertEqual(result.prompt_tokens, 123)
+        self.assertEqual(result.completion_tokens, 45)
+        self.assertEqual(result.total_tokens, 168)
+
+    def test_missing_or_invalid_token_usage_remains_unknown(self):
+        raw = fake_response()
+        raw.usage = SimpleNamespace(
+            prompt_tokens=None,
+            completion_tokens=-1,
+            total_tokens=True,
+        )
+        provider = LiteLLMChatProvider(completion_callable=lambda **kwargs: raw)
+        result = provider.complete(ChatModelRequest(
+            model="provider/model-x",
+            system_prompt="system",
+            user_prompt="user",
+        ))
+        self.assertIsNone(result.prompt_tokens)
+        self.assertIsNone(result.completion_tokens)
+        self.assertIsNone(result.total_tokens)
+
+    def test_extracts_token_usage_from_mapping_response(self):
+        raw = {
+            "id": "req-map",
+            "choices": [{
+                "message": {"content": '{"ok": true}'},
+                "finish_reason": "stop",
+            }],
+            "usage": {
+                "prompt_tokens": 10,
+                "completion_tokens": 5,
+                "total_tokens": 15,
+            },
+        }
+        provider = LiteLLMChatProvider(completion_callable=lambda **kwargs: raw)
+        result = provider.complete(ChatModelRequest(
+            model="provider/model-x",
+            system_prompt="system",
+            user_prompt="user",
+        ))
+        self.assertEqual(
+            (result.prompt_tokens, result.completion_tokens, result.total_tokens),
+            (10, 5, 15),
+        )
+
     def test_retries_transient_server_error_then_succeeds(self):
         calls = []
         sleeps = []
