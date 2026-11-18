@@ -6,7 +6,7 @@ access networks, databases, schedulers, or perform opportunity scoring.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Iterable
 
 from .opportunity_input_builder import (
@@ -17,6 +17,8 @@ from .opportunity_models import (
     IndustryOpportunityInput,
     SecurityOpportunityInput,
 )
+from .opportunity_data_provider import OpportunityDataSnapshot
+from .opportunity_market_observations import calculate_industry_market_breadth
 
 
 @dataclass(frozen=True)
@@ -36,6 +38,7 @@ class IndustryOpportunityObservation:
     age_hours: float
     risk_flags: tuple[str, ...] = ()
     eligible: bool = True
+    quote_coverage_ratio: float | None = None
 
 
 @dataclass(frozen=True)
@@ -91,6 +94,7 @@ def adapt_industry_observation(
         age_hours=observation.age_hours,
         risk_flags=observation.risk_flags,
         eligible=eligible,
+        quote_coverage_ratio=observation.quote_coverage_ratio,
     )
 
 
@@ -128,13 +132,39 @@ def adapt_security_observation(
 
 def adapt_industry_observations(
     observations: Iterable[IndustryOpportunityObservation],
+    *,
+    snapshot: OpportunityDataSnapshot | None = None,
 ) -> tuple[IndustryOpportunityInput, ...]:
-    """Adapt a collection of industry observations."""
+    """Adapt industry observations, optionally replacing breadth with snapshot data.
 
-    return tuple(
-        adapt_industry_observation(observation)
-        for observation in observations
-    )
+    When a snapshot is supplied, its eligible-member breadth and quote coverage
+    are authoritative. An industry absent from the snapshot receives no usable
+    breadth and zero coverage rather than retaining an unverified caller value.
+    """
+
+    values = tuple(observations)
+    if snapshot is None:
+        return tuple(adapt_industry_observation(item) for item in values)
+
+    breadth_by_code = {
+        item.industry_code: item
+        for item in calculate_industry_market_breadth(snapshot)
+    }
+    enriched = []
+    for observation in values:
+        if not isinstance(observation, IndustryOpportunityObservation):
+            raise TypeError(
+                "observation must be an IndustryOpportunityObservation"
+            )
+        market = breadth_by_code.get(observation.industry_code.strip().upper())
+        enriched.append(replace(
+            observation,
+            breadth_ratio=market.breadth_ratio if market else None,
+            quote_coverage_ratio=(
+                market.quote_coverage_ratio if market else 0.0
+            ),
+        ))
+    return tuple(adapt_industry_observation(item) for item in enriched)
 
 
 def adapt_security_observations(
