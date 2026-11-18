@@ -190,6 +190,8 @@ class EventReviewRepositoryTests(unittest.TestCase):
         record = self.repository.get_run(review_run_id="run-incomplete")
         self.assertEqual(len(record.model_usage), 4)
         self.assertEqual(record.model_usage[-1]["request_status"], "error")
+        self.assertEqual(record.model_usage[-1]["usage_complete"], 0)
+        self.assertIsNone(record.model_usage[-1]["prompt_tokens"])
         self.assertTrue(all(item["reviewer_role"] != "chief_reviewer" for item in record.model_usage))
         with self.storage.connect() as connection:
             self.assertEqual(connection.execute(
