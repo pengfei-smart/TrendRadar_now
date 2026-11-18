@@ -9,6 +9,7 @@ from dataclasses import dataclass
 
 from .event_review_coordinator import ReviewBoardResult
 from .event_review_models import IMPACT_DIMENSIONS, REVIEWER_ROLES
+from .event_review_temporal import is_pre_event_baseline
 
 
 @dataclass(frozen=True)
@@ -31,6 +32,8 @@ class EventReviewQualityGateResult:
 
 def evaluate_event_review_quality(
     board: ReviewBoardResult,
+    *,
+    event_payload: dict | None = None,
 ) -> EventReviewQualityGateResult:
     """Evaluate whether an adjudicated event may enter downstream scoring.
 
@@ -41,6 +44,8 @@ def evaluate_event_review_quality(
     """
     if not isinstance(board, ReviewBoardResult):
         raise TypeError("board must be a ReviewBoardResult")
+    if event_payload is not None and not isinstance(event_payload, dict):
+        raise TypeError("event_payload must be a dictionary or None")
 
     reasons: list[str] = []
     if board.status != "adjudicated" or board.adjudication is None:
@@ -104,9 +109,11 @@ def evaluate_event_review_quality(
         if final_scores.get("surprise") is not None and not any(
             item.evidence_kind in {"primary", "secondary"}
             and "surprise" in item.supports_dimensions
+            and event_payload is not None
+            and is_pre_event_baseline(item, event_payload)
             for item in board.evidence
         ):
-            reasons.append("超预期评分缺少明确支持该维度的来源证据")
+            reasons.append("超预期评分缺少发布时间早于事件发生时间的可追溯预期基准")
 
     normalized_reasons = tuple(dict.fromkeys(reasons))
     passed = not normalized_reasons
