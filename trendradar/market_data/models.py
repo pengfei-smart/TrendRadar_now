@@ -38,6 +38,9 @@ class QuoteSnapshot:
     volume_ratio: Optional[float] = None
     source: str = ""
     delayed: bool = True
+    source_timestamp: str = ""
+    collected_at: str = ""
+    timestamp_quality: str = "legacy_unknown"
 
 
 @dataclass(frozen=True)
