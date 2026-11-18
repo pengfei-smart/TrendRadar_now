@@ -35,6 +35,12 @@ def _validate_unit_interval(value: float, field_name: str) -> float:
     return value
 
 
+def _validate_bool(value: bool, field_name: str) -> bool:
+    if not isinstance(value, bool):
+        raise TypeError(f"{field_name} must be a boolean")
+    return value
+
+
 def _validate_non_negative(value: float, field_name: str) -> float:
     value = float(value)
 
@@ -89,6 +95,7 @@ def build_industry_opportunity_input(
     """Build one normalized industry opportunity input."""
 
     industry_code = _normalize_code(industry_code, "industry_code")
+    eligible = _validate_bool(eligible, "eligible")
 
     event_strength = _validate_unit_interval(
         event_strength,
@@ -151,7 +158,7 @@ def build_industry_opportunity_input(
         leader_confirmation_ratio=leader_confirmation_ratio,
         age_hours=age_hours,
         risk_flags=_normalize_risk_flags(risk_flags),
-        eligible=bool(eligible),
+        eligible=eligible,
     )
 
 
@@ -174,6 +181,7 @@ def build_security_opportunity_input(
 
     security_code = _normalize_code(security_code, "security_code")
     industry_code = _normalize_code(industry_code, "industry_code")
+    eligible = _validate_bool(eligible, "eligible")
 
     industry_score = float(industry_score)
     if not 0.0 <= industry_score <= 100.0:
@@ -217,5 +225,5 @@ def build_security_opportunity_input(
         ),
         market_confirmation_ratio=market_confirmation_ratio,
         risk_flags=_normalize_risk_flags(risk_flags),
-        eligible=bool(eligible),
+        eligible=eligible,
     )
