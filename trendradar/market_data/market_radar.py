@@ -101,7 +101,7 @@ class MarketRadar:
             if quote.price is None or quote.price <= 0:
                 continue
             try:
-                quote_time = datetime.fromisoformat(quote.timestamp)
+                quote_time = datetime.fromisoformat(quote.source_timestamp)
                 if quote_time.tzinfo is None:
                     quote_time = quote_time.astimezone()
                 quote_age = (scan_time - quote_time).total_seconds()
