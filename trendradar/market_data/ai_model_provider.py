@@ -97,6 +97,8 @@ class LiteLLMChatProvider:
         retry_delay_seconds: float = 0.5,
         completion_callable: Callable[..., Any] | None = None,
         sleep_callable: Callable[[float], None] = time.sleep,
+        api_key: str = "",
+        api_base: str = "",
     ):
         if not isinstance(provider_name, str) or not provider_name.strip():
             raise ValueError("provider_name must be a non-empty string")
@@ -107,8 +109,15 @@ class LiteLLMChatProvider:
         self.provider_name = provider_name.strip()
         self.max_attempts = max_attempts
         self.retry_delay_seconds = float(retry_delay_seconds)
+        if not isinstance(api_key, str):
+            raise TypeError("api_key must be a string")
+        if not isinstance(api_base, str):
+            raise TypeError("api_base must be a string")
         self._completion_callable = completion_callable
         self._sleep = sleep_callable
+        # Secrets remain only in memory and are never included in errors.
+        self._api_key = api_key.strip()
+        self._api_base = api_base.strip()
 
     def _completion(self) -> Callable[..., Any]:
         if self._completion_callable is not None:
@@ -127,17 +136,22 @@ class LiteLLMChatProvider:
 
         for attempt in range(1, self.max_attempts + 1):
             try:
-                raw = completion(
-                    model=request.model,
-                    messages=[
+                call_kwargs = {
+                    "model": request.model,
+                    "messages": [
                         {"role": "system", "content": request.system_prompt},
                         {"role": "user", "content": request.user_prompt},
                     ],
                     timeout=request.timeout_seconds,
                     temperature=request.temperature,
                     max_tokens=request.max_tokens,
-                    response_format={"type": request.response_format},
-                )
+                    "response_format": {"type": request.response_format},
+                }
+                if self._api_key:
+                    call_kwargs["api_key"] = self._api_key
+                if self._api_base:
+                    call_kwargs["api_base"] = self._api_base
+                raw = completion(**call_kwargs)
                 content, finish_reason, request_id = _extract_content(raw)
                 return ChatModelResponse(
                     content=content,
