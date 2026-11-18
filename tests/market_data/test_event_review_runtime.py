@@ -40,6 +40,35 @@ class EventReviewRuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "AI API key"):
             build_event_review_runtime({"MODEL": "deepseek/example-model"})
 
+    def test_builds_fresh_per_event_budget_providers_with_shared_global_guard(self):
+        runtime = build_event_review_runtime({
+            "MODEL": "deepseek/example-model",
+            "API_KEY": "secret",
+        })
+        first = runtime.provider_for_event()
+        second = runtime.provider_for_event()
+        self.assertIsNot(first, second)
+        self.assertIs(first._provider, runtime.global_guard)
+        self.assertIs(second._provider, runtime.global_guard)
+        self.assertEqual(first.budget.max_model_calls, 5)
+        self.assertEqual(first.budget.max_output_tokens_per_call, 3000)
+        self.assertEqual(first.budget.max_timeout_seconds, 60.0)
+
+    def test_runtime_accepts_explicit_global_safety_limits(self):
+        runtime = build_event_review_runtime(
+            {"MODEL": "deepseek/example-model", "API_KEY": "secret"},
+            max_model_calls_per_event=4,
+            max_output_tokens_per_call=1800,
+            max_timeout_seconds=30,
+            max_concurrent_calls=2,
+            circuit_failure_threshold=3,
+            circuit_cooldown_seconds=90,
+        )
+        guarded = runtime.provider_for_event()
+        self.assertEqual(guarded.budget.max_model_calls, 4)
+        self.assertEqual(guarded.budget.max_output_tokens_per_call, 1800)
+        self.assertEqual(guarded.budget.max_timeout_seconds, 30)
+
     def test_rejects_invalid_api_base_type(self):
         with self.assertRaisesRegex(TypeError, "API base"):
             build_event_review_runtime({
