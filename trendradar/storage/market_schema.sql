@@ -623,3 +623,160 @@ CREATE TABLE IF NOT EXISTS neeq_termination_evidence_search (
 );
 CREATE INDEX IF NOT EXISTS idx_neeq_termination_evidence_search_case_kind
     ON neeq_termination_evidence_search(case_id,evidence_kind,searched_at DESC,search_id);
+
+
+-- v12：AI事件审查委员会的追加式审核运行记录与证据/裁决/质量门禁快照。
+-- 一次审核运行拥有独立review_run_id；重复审核不会覆盖历史运行。
+CREATE TABLE IF NOT EXISTS event_review_runs (
+    review_run_id TEXT PRIMARY KEY,
+    event_id TEXT NOT NULL,
+    run_status TEXT NOT NULL CHECK (
+        run_status IN ('running','incomplete','chief_error','adjudicated','failed')),
+    board_status TEXT NOT NULL CHECK (
+        board_status IN ('incomplete','ready_for_adjudication','adjudicated')),
+    rubric_version TEXT NOT NULL DEFAULT '',
+    reviewer_prompt_version TEXT NOT NULL DEFAULT '',
+    chief_prompt_version TEXT NOT NULL DEFAULT '',
+    reviewer_model TEXT NOT NULL DEFAULT '',
+    chief_model TEXT NOT NULL DEFAULT '',
+    started_at TEXT NOT NULL,
+    completed_at TEXT NOT NULL DEFAULT '',
+    error_code TEXT NOT NULL DEFAULT '',
+    error_message TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_runs_event_time
+    ON event_review_runs(event_id, started_at DESC);
+CREATE INDEX IF NOT EXISTS idx_event_review_runs_status_time
+    ON event_review_runs(run_status, started_at DESC);
+
+CREATE TABLE IF NOT EXISTS event_review_evidence (
+    review_run_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    source_url TEXT NOT NULL DEFAULT '',
+    excerpt TEXT NOT NULL,
+    evidence_kind TEXT NOT NULL CHECK (
+        evidence_kind IN ('primary','secondary','contradictory','context')),
+    published_at TEXT NOT NULL DEFAULT '',
+    captured_at TEXT NOT NULL DEFAULT '',
+    supports_dimensions_json TEXT NOT NULL DEFAULT '[]',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (review_run_id, evidence_id),
+    FOREIGN KEY (review_run_id) REFERENCES event_review_runs(review_run_id) ON DELETE RESTRICT,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_evidence_event
+    ON event_review_evidence(event_id, published_at);
+
+CREATE TABLE IF NOT EXISTS event_reviewer_assessments (
+    review_run_id TEXT NOT NULL,
+    reviewer_role TEXT NOT NULL CHECK (reviewer_role IN (
+        'fact_checker','macro_policy_analyst',
+        'industry_chain_analyst','market_expectations_analyst')),
+    event_id TEXT NOT NULL,
+    recommendation TEXT NOT NULL CHECK (
+        recommendation IN ('support','concern','abstain')),
+    completion_status TEXT NOT NULL CHECK (
+        completion_status IN ('complete','insufficient_evidence','error')),
+    dimension_scores_json TEXT NOT NULL,
+    dimension_rationales_json TEXT NOT NULL,
+    evidence_ids_json TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    summary TEXT NOT NULL,
+    concerns_json TEXT NOT NULL DEFAULT '[]',
+    model_provider TEXT NOT NULL DEFAULT '',
+    model_name TEXT NOT NULL DEFAULT '',
+    model_version TEXT NOT NULL DEFAULT '',
+    prompt_version TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (review_run_id, reviewer_role),
+    FOREIGN KEY (review_run_id) REFERENCES event_review_runs(review_run_id) ON DELETE RESTRICT,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_reviewer_assessments_event
+    ON event_reviewer_assessments(event_id, reviewer_role);
+
+CREATE TABLE IF NOT EXISTS event_review_adjudications (
+    review_run_id TEXT PRIMARY KEY,
+    event_id TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (
+        status IN ('accepted','conditional','needs_evidence','rejected')),
+    final_dimension_scores_json TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    reviewer_roles_considered_json TEXT NOT NULL,
+    dissenting_views_json TEXT NOT NULL DEFAULT '[]',
+    unresolved_issues_json TEXT NOT NULL DEFAULT '[]',
+    required_followups_json TEXT NOT NULL DEFAULT '[]',
+    chair_model_provider TEXT NOT NULL DEFAULT '',
+    chair_model_name TEXT NOT NULL DEFAULT '',
+    chair_model_version TEXT NOT NULL DEFAULT '',
+    prompt_version TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (review_run_id) REFERENCES event_review_runs(review_run_id) ON DELETE RESTRICT,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_adjudications_event
+    ON event_review_adjudications(event_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS event_review_quality_results (
+    review_run_id TEXT PRIMARY KEY,
+    event_id TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('passed','blocked')),
+    eligible_for_scoring INTEGER NOT NULL CHECK (eligible_for_scoring IN (0,1)),
+    reasons_json TEXT NOT NULL DEFAULT '[]',
+    evaluated_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (
+        (status='passed' AND eligible_for_scoring=1 AND reasons_json='[]')
+        OR (status='blocked' AND eligible_for_scoring=0)
+    ),
+    FOREIGN KEY (review_run_id) REFERENCES event_review_runs(review_run_id) ON DELETE RESTRICT,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_quality_event
+    ON event_review_quality_results(event_id, evaluated_at DESC);
+
+-- 审核历史为追加式数据：阻止常规UPDATE/DELETE意外改写历史结论。
+CREATE TRIGGER IF NOT EXISTS trg_event_review_runs_no_update
+BEFORE UPDATE ON event_review_runs BEGIN
+    SELECT RAISE(ABORT, 'event review runs are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_runs_no_delete
+BEFORE DELETE ON event_review_runs BEGIN
+    SELECT RAISE(ABORT, 'event review runs are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_evidence_no_update
+BEFORE UPDATE ON event_review_evidence BEGIN
+    SELECT RAISE(ABORT, 'event review evidence is append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_evidence_no_delete
+BEFORE DELETE ON event_review_evidence BEGIN
+    SELECT RAISE(ABORT, 'event review evidence is append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_reviewer_assessments_no_update
+BEFORE UPDATE ON event_reviewer_assessments BEGIN
+    SELECT RAISE(ABORT, 'reviewer assessments are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_reviewer_assessments_no_delete
+BEFORE DELETE ON event_reviewer_assessments BEGIN
+    SELECT RAISE(ABORT, 'reviewer assessments are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_adjudications_no_update
+BEFORE UPDATE ON event_review_adjudications BEGIN
+    SELECT RAISE(ABORT, 'review adjudications are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_adjudications_no_delete
+BEFORE DELETE ON event_review_adjudications BEGIN
+    SELECT RAISE(ABORT, 'review adjudications are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_quality_no_update
+BEFORE UPDATE ON event_review_quality_results BEGIN
+    SELECT RAISE(ABORT, 'review quality results are append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_quality_no_delete
+BEFORE DELETE ON event_review_quality_results BEGIN
+    SELECT RAISE(ABORT, 'review quality results are append-only');
+END;
