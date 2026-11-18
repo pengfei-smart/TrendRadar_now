@@ -47,8 +47,8 @@ def build_event_review_runtime(
         api_key = ""
     if not isinstance(api_key, str) or not api_key.strip():
         raise ValueError(
-            "AI API key is missing; set AI_API_KEY in the environment "
-            "or configure ai.api_key securely"
+            "AI API key is missing; set the configured API-key environment "
+            "variable or configure ai.api_key securely"
         )
 
     api_base = ai_config.get("API_BASE", ai_config.get("api_base", "")) or ""
