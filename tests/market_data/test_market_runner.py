@@ -19,6 +19,7 @@ class FakeQuoteFetcher:
                 code=item.code, timestamp=now, price=10.0,
                 change_pct=1.5, turnover=1000000.0,
                 volume_ratio=1.2, source=self.source_name,
+                source_timestamp=now, timestamp_quality="provider",
             )
             for item in securities
         ], self.source_name
