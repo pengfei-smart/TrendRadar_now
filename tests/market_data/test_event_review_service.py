@@ -102,5 +102,57 @@ class EventReviewServiceTests(unittest.TestCase):
         run_board.assert_not_called()
 
 
+    def test_completion_clock_failure_uses_marked_fallback_and_persists(self):
+        calls = iter((self.base, RuntimeError("sensitive clock internals")))
+
+        def failing_completion_clock():
+            value = next(calls)
+            if isinstance(value, Exception):
+                raise value
+            return value
+
+        execution = self._incomplete_execution()
+        with patch(
+            "trendradar.market_data.event_review_service.run_event_review_board",
+            return_value=execution,
+        ):
+            result = run_and_persist_event_review(
+                provider=object(), repository=self.repository,
+                reviewer_model="reviewer-test", chief_model="chair-test",
+                event_id="event-service", event_payload={}, evidence=(),
+                clock=failing_completion_clock,
+                review_run_id="clock-fallback-run",
+            )
+
+        self.assertEqual(result.operational_error_code, "completion_clock_failed")
+        self.assertIn("RuntimeError", result.operational_error_message)
+        self.assertNotIn("sensitive", result.operational_error_message)
+        audit = self.repository.get_run(review_run_id="clock-fallback-run")
+        self.assertIn("completion_clock_failed", audit.run["error_code"])
+        self.assertIn("UTC fallback used", audit.run["error_message"])
+        self.assertGreaterEqual(
+            datetime.fromisoformat(audit.run["completed_at"]),
+            datetime.fromisoformat(audit.run["started_at"]),
+        )
+
+    def test_start_clock_failure_stops_before_model_and_persistence(self):
+        with patch(
+            "trendradar.market_data.event_review_service.run_event_review_board"
+        ) as run_board:
+            with self.assertRaisesRegex(RuntimeError, "clock unavailable"):
+                run_and_persist_event_review(
+                    provider=object(), repository=self.repository,
+                    reviewer_model="reviewer-test", chief_model="chair-test",
+                    event_id="event-service", event_payload={}, evidence=(),
+                    clock=lambda: (_ for _ in ()).throw(RuntimeError("clock unavailable")),
+                )
+        run_board.assert_not_called()
+        with self.storage.connect() as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM event_review_runs").fetchone()[0],
+                0,
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
