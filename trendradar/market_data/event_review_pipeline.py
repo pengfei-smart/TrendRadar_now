@@ -7,6 +7,7 @@ schedule work or invoke opportunity scoring.
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 from typing import Callable
 
 from .ai_model_provider import ChatModelProvider
@@ -26,6 +27,7 @@ def review_persisted_market_event(
     event_id: str,
     clock: Callable[[], datetime] | None = None,
     review_run_id: str | None = None,
+    failure_journal_path: str | Path | None = None,
     max_mapping_evidence: int = 100,
     max_excerpt_chars: int = 4000,
     reviewer_timeout_seconds: float = 45.0,
@@ -64,6 +66,7 @@ def review_persisted_market_event(
         event_payload=prepared.event_payload,
         evidence=prepared.evidence,
         review_run_id=review_run_id,
+        failure_journal_path=failure_journal_path,
         reviewer_timeout_seconds=reviewer_timeout_seconds,
         reviewer_max_tokens=reviewer_max_tokens,
         chief_timeout_seconds=chief_timeout_seconds,
