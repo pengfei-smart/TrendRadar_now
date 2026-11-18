@@ -3,6 +3,7 @@ import unittest
 from trendradar.market_data.sector_keyword_mapper import (
     discover_industry_keyword_evidence,
     discover_industry_keyword_evidence_from_storage,
+    build_industry_keyword_coverage_report,
 )
 
 
@@ -57,6 +58,22 @@ class SectorKeywordMapperTests(unittest.TestCase):
         self.assertEqual([item.target_code for item in evidence], ["SW2:801017"])
         self.assertEqual(evidence[0].confidence, 0.70)
         self.assertIn("能繁母猪", evidence[0].evidence)
+
+    def test_coverage_report_separates_reviewed_terms_from_official_names(self):
+        sectors = self.sectors + [
+            {"sector_code": "SW2:801081", "sector_name": "半导体"},
+            {"sector_code": "SW1:801080", "sector_name": "电子"},
+        ]
+        report = build_industry_keyword_coverage_report(sectors)
+        self.assertEqual(report["total_level_two_sectors"], 8)
+        self.assertEqual(report["reviewed_terms_covered"], 7)
+        self.assertEqual(report["official_name_only"], 1)
+        semiconductor = next(
+            row for row in report["sectors"]
+            if row["sector_code"] == "SW2:801081"
+        )
+        self.assertEqual(semiconductor["coverage"], "official_name_only")
+        self.assertEqual(semiconductor["reviewed_term_count"], 0)
 
     def test_storage_adapter_uses_database_industry_codes_and_provenance(self):
         import tempfile
