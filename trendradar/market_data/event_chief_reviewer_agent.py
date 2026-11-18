@@ -45,6 +45,8 @@ class ChiefReviewerExecutionResult:
     completion_tokens: int | None = None
     total_tokens: int | None = None
     request_succeeded: bool = False
+    provider: str = ""
+    model: str = ""
 
 
 def _utc_timestamp() -> str:
@@ -279,6 +281,8 @@ def run_chief_reviewer(
             completion_tokens=response.completion_tokens,
             total_tokens=response.total_tokens,
             request_succeeded=True,
+            provider=adjudication.chair_model_provider,
+            model=adjudication.chair_model_name,
         )
     except ChatModelError as exc:
         return ChiefReviewerExecutionResult(
@@ -290,6 +294,7 @@ def run_chief_reviewer(
             completion_tokens=getattr(response, "completion_tokens", None) if response else None,
             total_tokens=getattr(response, "total_tokens", None) if response else None,
             request_succeeded=response is not None,
+            provider=str(provider_name), model=model.strip(),
         )
     except (ValueError, TypeError, KeyError) as exc:
         return ChiefReviewerExecutionResult(
