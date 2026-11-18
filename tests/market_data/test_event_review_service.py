@@ -10,6 +10,7 @@ from unittest.mock import patch
 from trendradar.market_data.event_review_board_runner import EventReviewBoardExecutionResult
 from trendradar.market_data.event_review_coordinator import assemble_event_review_board
 from trendradar.market_data.event_review_repository import EventReviewRepository
+from trendradar.market_data.models import MarketEvent
 from trendradar.market_data.event_review_service import run_and_persist_event_review
 from trendradar.market_data.storage import MarketStorage
 
@@ -19,6 +20,9 @@ class EventReviewServiceTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.storage = MarketStorage(str(Path(self.tmp.name) / "market.db"))
         self.repository = EventReviewRepository(self.storage)
+        self.storage.save_events([
+            MarketEvent(\"event-service\", \"test\", \"测试事件\", \"2026-11-18T09:00:00+08:00\")
+        ])
         self.base = datetime(2026, 11, 18, 9, 0, tzinfo=timezone.utc)
         self.ticks = iter((self.base, self.base + timedelta(seconds=5)))
 
