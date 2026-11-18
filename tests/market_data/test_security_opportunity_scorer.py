@@ -13,7 +13,7 @@ def make_input(**overrides):
         "industry_code": "SW2:801081",
         "industry_score": 100.0,
         "direct_event": True,
-        "event_strength": 20.0,
+        "event_strength": 1.0,
         "price_change_pct": 10.0,
         "volume_ratio": 2.0,
         "relative_strength_pct": 10.0,
@@ -33,6 +33,20 @@ class SecurityOpportunityScorerTests(unittest.TestCase):
         self.assertEqual(result.opportunity_level, "S")
         self.assertEqual(result.opportunity_type, "mixed")
 
+    def test_normalized_event_strength_scales_to_zero_half_and_full_points(self):
+        full = score_security_opportunity(make_input(event_strength=1.0))
+        half = score_security_opportunity(make_input(event_strength=0.5))
+        zero = score_security_opportunity(make_input(event_strength=0.0))
+        self.assertEqual(full.event_score, 20.0)
+        self.assertEqual(half.event_score, 10.0)
+        self.assertEqual(zero.event_score, 0.0)
+
+    def test_event_strength_outside_unit_interval_is_rejected(self):
+        with self.assertRaises(ValueError):
+            score_security_opportunity(make_input(event_strength=1.01))
+        with self.assertRaises(ValueError):
+            score_security_opportunity(make_input(event_strength=-0.01))
+
     def test_industry_score_contributes_twenty_five_points(self):
         result = score_security_opportunity(make_input(industry_score=0.0))
         self.assertEqual(result.industry_opportunity_score, 0.0)
@@ -40,7 +54,7 @@ class SecurityOpportunityScorerTests(unittest.TestCase):
 
     def test_no_direct_event_does_not_block_industry_driven_candidate(self):
         result = score_security_opportunity(
-            make_input(direct_event=False, event_strength=20.0)
+            make_input(direct_event=False, event_strength=1.0)
         )
         self.assertEqual(result.event_score, 0.0)
         self.assertEqual(result.opportunity_type, "industry_driven")
@@ -120,7 +134,7 @@ class SecurityOpportunityScorerTests(unittest.TestCase):
         self.assertIn("风险调整", result.explanation[-1])
 
     def test_object_wrapper_uses_same_pure_scoring_function(self):
-        item = make_input(event_strength=12.0, price_change_pct=6.0)
+        item = make_input(event_strength=0.6, price_change_pct=6.0)
         self.assertEqual(
             SecurityOpportunityScorer().score(item),
             score_security_opportunity(item),
