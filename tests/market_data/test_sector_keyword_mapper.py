@@ -103,6 +103,7 @@ class SectorKeywordMapperTests(unittest.TestCase):
 
     def test_coverage_report_separates_reviewed_terms_from_official_names(self):
         sectors = self.sectors + [
+            {"sector_code": "SW2:801012", "sector_name": "农产品加工"},
             {"sector_code": "SW2:801076", "sector_name": "轨交设备Ⅱ"},
             {"sector_code": "SW1:801080", "sector_name": "电子"},
         ]
@@ -110,12 +111,12 @@ class SectorKeywordMapperTests(unittest.TestCase):
         self.assertEqual(report["total_level_two_sectors"], 8)
         self.assertEqual(report["reviewed_terms_covered"], 7)
         self.assertEqual(report["official_name_only"], 1)
-        semiconductor = next(
+        baseline_only = next(
             row for row in report["sectors"]
             if row["sector_code"] == "SW2:801076"
         )
-        self.assertEqual(semiconductor["coverage"], "official_name_only")
-        self.assertEqual(semiconductor["reviewed_term_count"], 0)
+        self.assertEqual(baseline_only["coverage"], "official_name_only")
+        self.assertEqual(baseline_only["reviewed_term_count"], 0)
 
     def test_storage_adapter_uses_database_industry_codes_and_provenance(self):
         import tempfile
