@@ -150,8 +150,8 @@ CREATE TABLE IF NOT EXISTS event_candidates (
         CHECK (direction IN ('positive','negative','mixed','neutral','unknown')),
     verified INTEGER NOT NULL DEFAULT 0 CHECK (verified IN (0, 1)),
     evidence_hash TEXT NOT NULL DEFAULT '',
-    evidence_type TEXT NOT NULL DEFAULT 'direct'
-        CHECK (evidence_type IN ('direct','official_name','upstream','downstream')),
+    evidence_type TEXT NOT NULL DEFAULT 'legacy_unknown'
+        CHECK (evidence_type IN ('direct','official_name','upstream','downstream','legacy_unknown')),
     related_sector_code TEXT NOT NULL DEFAULT '',
     relation_evidence TEXT NOT NULL DEFAULT '',
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
