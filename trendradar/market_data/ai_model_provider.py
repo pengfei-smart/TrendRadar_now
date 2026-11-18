@@ -47,6 +47,9 @@ class ChatModelResponse:
     finish_reason: str = ""
     request_id: str = ""
     attempts: int = 1
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
 
 
 class ChatModelError(RuntimeError):
@@ -70,20 +73,37 @@ def _retryable_error(exc: Exception) -> bool:
     )
 
 
-def _extract_content(response: Any) -> tuple[str, str, str]:
-    """Extract text, finish reason and request ID from LiteLLM-like responses."""
+def _usage_count(usage: Any, name: str) -> int | None:
+    """Read a non-negative integer token count; missing/invalid values stay unknown."""
+    if usage is None:
+        return None
+    value = usage.get(name) if isinstance(usage, dict) else getattr(usage, name, None)
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        return None
+    return value
+
+
+def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | None, int | None]:
+    """Extract text, request metadata and optional token usage from LiteLLM-like responses."""
     try:
         choice = response.choices[0]
         message = choice.message
         content = message.content
         finish_reason = getattr(choice, "finish_reason", "") or ""
         request_id = getattr(response, "id", "") or ""
+        usage = getattr(response, "usage", None)
+        prompt_tokens = _usage_count(usage, "prompt_tokens")
+        completion_tokens = _usage_count(usage, "completion_tokens")
+        total_tokens = _usage_count(usage, "total_tokens")
     except (AttributeError, IndexError, KeyError, TypeError) as exc:
         raise ChatModelError("model provider returned an invalid response shape") from exc
 
     if not isinstance(content, str) or not content.strip():
         raise ChatModelError("model provider returned empty or non-text content")
-    return content.strip(), str(finish_reason), str(request_id)
+    return (
+        content.strip(), str(finish_reason), str(request_id),
+        prompt_tokens, completion_tokens, total_tokens,
+    )
 
 
 class LiteLLMChatProvider:
@@ -152,7 +172,10 @@ class LiteLLMChatProvider:
                 if self._api_base:
                     call_kwargs["api_base"] = self._api_base
                 raw = completion(**call_kwargs)
-                content, finish_reason, request_id = _extract_content(raw)
+                (
+                    content, finish_reason, request_id,
+                    prompt_tokens, completion_tokens, total_tokens,
+                ) = _extract_content(raw)
                 return ChatModelResponse(
                     content=content,
                     provider=self.provider_name,
@@ -160,6 +183,9 @@ class LiteLLMChatProvider:
                     finish_reason=finish_reason,
                     request_id=request_id,
                     attempts=attempt,
+                    prompt_tokens=prompt_tokens,
+                    completion_tokens=completion_tokens,
+                    total_tokens=total_tokens,
                 )
             except ChatModelError:
                 raise
