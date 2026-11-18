@@ -6,6 +6,7 @@ A matched category is a content label only; it is not a bullish/bearish signal.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Iterable
 
 from .models import MarketEvent
@@ -80,6 +81,14 @@ def _normalize_text(event: MarketEvent) -> str:
     return f"{event.title or ''} {event.summary or ''}".casefold()
 
 
+def _term_matches(text: str, term: str) -> bool:
+    normalized = term.casefold()
+    if normalized.isascii() and any(char.isalpha() for char in normalized):
+        pattern = rf"(?<![a-z0-9]){re.escape(normalized)}(?![a-z0-9])"
+        return re.search(pattern, text) is not None
+    return normalized in text
+
+
 def classify_market_event(event: MarketEvent) -> EventClassification:
     """Classify an event from title/summary without inferring impact or direction."""
     if not isinstance(event, MarketEvent):
@@ -89,7 +98,7 @@ def classify_market_event(event: MarketEvent) -> EventClassification:
     matches: list[tuple[str, str, float]] = []
     for category, terms, confidence in _RULES:
         for term in terms:
-            if term.casefold() in text:
+            if _term_matches(text, term):
                 matches.append((category, term, confidence))
 
     if not matches:
