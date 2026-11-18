@@ -142,6 +142,51 @@ class EventReviewPipelineTests(unittest.TestCase):
         audit = self.repository.get_run(review_run_id="guarded-runtime-run")
         self.assertEqual(audit.run["run_status"], "adjudicated")
 
+    def test_runtime_budget_exhaustion_blocks_and_persists_review(self):
+        fake = DeterministicReviewProvider(self.evidence_id)
+        runtime = build_event_review_runtime(
+            {"MODEL": "fake/reviewer", "API_KEY": "test-secret"},
+            max_model_calls_per_event=2,
+        )
+        runtime.global_guard._provider = fake
+        result = review_persisted_market_event_with_runtime(
+            storage=self.storage, repository=self.repository, runtime=runtime,
+            event_id=self.event_id, clock=lambda: next(self.ticks),
+            review_run_id="guarded-budget-exhausted-run",
+        )
+        self.assertEqual(len(fake.requests), 2)
+        self.assertEqual(result.execution.status, "incomplete")
+        self.assertEqual(result.persisted.quality_result.status, "blocked")
+        self.assertFalse(result.persisted.quality_result.eligible_for_scoring)
+        audit = self.repository.get_run(
+            review_run_id="guarded-budget-exhausted-run"
+        )
+        self.assertEqual(audit.run["run_status"], "incomplete")
+        self.assertEqual(len(audit.reviewer_assessments), 4)
+
+    def test_runtime_circuit_breaker_blocks_followup_provider_calls(self):
+        fake = UnexpectedFailureProvider()
+        runtime = build_event_review_runtime(
+            {"MODEL": "fake/reviewer", "API_KEY": "test-secret"},
+            circuit_failure_threshold=1,
+            circuit_cooldown_seconds=30,
+        )
+        runtime.global_guard._provider = fake
+        result = review_persisted_market_event_with_runtime(
+            storage=self.storage, repository=self.repository, runtime=runtime,
+            event_id=self.event_id, clock=lambda: next(self.ticks),
+            review_run_id="guarded-circuit-open-run",
+        )
+        self.assertEqual(fake.calls, 1)
+        self.assertEqual(result.execution.status, "incomplete")
+        self.assertEqual(result.persisted.quality_result.status, "blocked")
+        self.assertFalse(result.persisted.quality_result.eligible_for_scoring)
+        self.assertEqual(len(result.execution.reviewer_results), 4)
+        audit = self.repository.get_run(
+            review_run_id="guarded-circuit-open-run"
+        )
+        self.assertEqual(audit.quality_result["status"], "blocked")
+
     def test_guarded_runtime_rejects_non_runtime_argument(self):
         with self.assertRaisesRegex(TypeError, "EventReviewRuntime"):
             review_persisted_market_event_with_runtime(
@@ -170,7 +215,11 @@ class EventReviewPipelineTests(unittest.TestCase):
 class UnexpectedFailureProvider:
     provider_name = "unexpected-failure"
 
+    def __init__(self):
+        self.calls = 0
+
     def complete(self, request):
+        self.calls += 1
         raise RuntimeError("SDK internal error with sensitive request details")
 
 
