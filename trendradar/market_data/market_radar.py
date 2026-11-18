@@ -73,7 +73,10 @@ class MarketRadar:
         else:
             quote_items, quote_source = fetched, getattr(self.quote_fetcher, "source_name", "")
         quotes = {q.code: q for q in quote_items}
-        quote_data_at = max((q.timestamp for q in quote_items if q.timestamp), default="")
+        quote_data_at = max((
+            q.source_timestamp for q in quote_items
+            if q.timestamp_quality == "provider" and q.source_timestamp
+        ), default="")
 
         candidates: list[Candidate] = []
         eligible_security_count = sum(1 for code in codes if code in securities and securities[code].listing_status == "active" and not securities[code].risk_flag)
@@ -90,8 +93,12 @@ class MarketRadar:
                     confidence=0.4, evidence="由关联板块扩展得到，个股因果关联尚未证实",
                     direction="neutral", verified=False)]
             quote = quotes.get(code)
+            # Only provider-sourced timestamps may pass the production quote gate.
+            # Collection-time fallbacks and historical unknown timestamps are audit-only.
+            if quote is None or quote.timestamp_quality != "provider" or not quote.source_timestamp:
+                continue
             # A relation alone must never make a stock push-eligible: require a usable quote.
-            if quote is None or quote.price is None or quote.price <= 0:
+            if quote.price is None or quote.price <= 0:
                 continue
             try:
                 quote_time = datetime.fromisoformat(quote.timestamp)
