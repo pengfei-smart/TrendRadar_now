@@ -89,6 +89,8 @@ class EventReviewRepository:
         started_at: str,
         completed_at: str,
         review_run_id: str | None = None,
+        operational_error_code: str = "",
+        operational_error_message: str = "",
     ) -> PersistedEventReviewRun:
         if not isinstance(execution, EventReviewBoardExecutionResult):
             raise TypeError("execution must be an EventReviewBoardExecutionResult")
@@ -127,6 +129,12 @@ class EventReviewRepository:
             if board.adjudication is not None else ""
         )
         error_code, error_message = _execution_errors(execution)
+        if operational_error_code:
+            error_code = ";".join(filter(None, (error_code, operational_error_code)))
+        if operational_error_message:
+            error_message = " | ".join(filter(None, (
+                error_message, operational_error_message
+            )))[:4000]
 
         # Parent first, then all children. MarketStorage.connect commits once
         # after the block and rolls the entire batch back on any exception.
