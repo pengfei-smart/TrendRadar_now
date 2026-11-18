@@ -116,7 +116,7 @@ class EventReviewBoardRunnerTests(unittest.TestCase):
         self.assertEqual(len(provider.requests), 4)
         self.assertIn(
             "industry_chain_analyst",
-            result.board.validation_warnings[1],
+            result.board.validation_warnings[0],
         )
 
     def test_chair_failure_preserves_complete_board_without_adjudication(self):
