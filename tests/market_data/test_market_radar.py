@@ -26,7 +26,12 @@ class StubQuoteFetcher:
     def __init__(self): self.requested = []
     def fetch(self, codes):
         self.requested = [item.code for item in codes]
-        quotes = [QuoteSnapshot(code, datetime.now().astimezone().isoformat(timespec="seconds"), price=10.0, change_pct=2.0, turnover=200_000_000, volume_ratio=1.5, source="stub") for code in self.requested]
+        quotes = [QuoteSnapshot(
+            code, datetime.now().astimezone().isoformat(timespec="seconds"),
+            price=10.0, change_pct=2.0, turnover=200_000_000, volume_ratio=1.5,
+            source="stub", source_timestamp=datetime.now().astimezone().isoformat(timespec="seconds"),
+            timestamp_quality="provider",
+        ) for code in self.requested]
         return quotes, "stub"
 
 
@@ -78,7 +83,7 @@ class MarketRadarTests(unittest.TestCase):
         class PartialQuoteFetcher:
             source_name = "partial"
             def fetch(self, securities):
-                return ([QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source="partial"),
+                return ([QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source="partial", source_timestamp="2026-11-09T14:33:00+08:00", timestamp_quality="provider"),
                          QuoteSnapshot("600001", "2026-11-09T14:33:00+08:00", price=None, change_pct=2, turnover=200, source="partial")], "partial")
         radar = MarketRadar(PartialQuoteFetcher(), clock=lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00"))
         securities = {"600000": active_security("600000", "有效报价"), "600001": active_security("600001", "缺少价格") , "600002": active_security("600002", "无报价")}
@@ -88,13 +93,38 @@ class MarketRadarTests(unittest.TestCase):
         results = radar.scan([MarketEvent("e1", "rss", "event", "2026-11-09")], securities, direct_event_evidence=evidence)
         self.assertEqual([item.security.code for item in results], ["600000"])
 
+    def test_scan_excludes_missing_invalid_and_legacy_unknown_quote_timestamps(self):
+        class UntrustedTimestampQuoteFetcher:
+            source_name = "untrusted"
+            def fetch(self, securities):
+                return ([
+                    QuoteSnapshot("600000", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, timestamp_quality="missing"),
+                    QuoteSnapshot("600001", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, timestamp_quality="invalid"),
+                    QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100),
+                ], "untrusted")
+        radar = MarketRadar(
+            UntrustedTimestampQuoteFetcher(),
+            clock=lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00"),
+        )
+        securities = {code: active_security(code, code) for code in ("600000", "600001", "600002")}
+        evidence = {"e1": [
+            MappingEvidence(code, "direct_business", .9, "source", verified=True)
+            for code in securities
+        ]}
+        result = radar.scan(
+            [MarketEvent("e1", "rss", "event", "2026-11-09")],
+            securities,
+            direct_event_evidence=evidence,
+        )
+        self.assertEqual(result, [])
+
     def test_scan_excludes_stale_and_future_quotes(self):
         class TimestampQuoteFetcher:
             source_name = "timestamp"
             def fetch(self, securities):
-                return ([QuoteSnapshot("600000", "2026-11-09T14:17:00+08:00", price=10, change_pct=1, turnover=100),
-                         QuoteSnapshot("600001", "2026-11-09T14:35:30+08:00", price=10, change_pct=1, turnover=100),
-                         QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100)], "timestamp")
+                return ([QuoteSnapshot("600000", "2026-11-09T14:17:00+08:00", price=10, change_pct=1, turnover=100, source_timestamp="2026-11-09T14:17:00+08:00", timestamp_quality="provider"),
+                         QuoteSnapshot("600001", "2026-11-09T14:35:30+08:00", price=10, change_pct=1, turnover=100, source_timestamp="2026-11-09T14:35:30+08:00", timestamp_quality="provider"),
+                         QuoteSnapshot("600002", "2026-11-09T14:33:00+08:00", price=10, change_pct=1, turnover=100, source_timestamp="2026-11-09T14:33:00+08:00", timestamp_quality="provider")], "timestamp")
         fixed_clock = lambda: datetime.fromisoformat("2026-11-09T14:33:00+08:00")
         radar = MarketRadar(TimestampQuoteFetcher(), max_quote_age_seconds=900, clock=fixed_clock)
         securities = {code: active_security(code, code) for code in ("600000", "600001", "600002")}
@@ -107,7 +137,7 @@ class MarketRadarTests(unittest.TestCase):
             source_name = "partial_provider"
             def fetch(self, securities):
                 timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
-                return ([QuoteSnapshot("600000", timestamp, price=10, change_pct=1, turnover=100, source="partial_provider")], "partial_provider")
+                return ([QuoteSnapshot("600000", timestamp, price=10, change_pct=1, turnover=100, source="partial_provider", source_timestamp=timestamp, timestamp_quality="provider")], "partial_provider")
         with tempfile.TemporaryDirectory() as temp:
             store = RadarResultStore(str(Path(temp) / "market.db"))
             radar = MarketRadar(OneQuoteFetcher(), result_store=store)
