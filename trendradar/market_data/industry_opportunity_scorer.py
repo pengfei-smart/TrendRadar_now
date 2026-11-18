@@ -78,6 +78,10 @@ def score_industry_opportunity(
 
     if not item.industry_code.strip():
         raise ValueError("行业代码不能为空")
+    if not 0.0 <= item.event_strength <= 1.0:
+        raise ValueError("event_strength必须在0到1之间")
+    if not 0.0 <= item.relevance_score <= 1.0:
+        raise ValueError("relevance_score必须在0到1之间")
     if not item.eligible:
         return IndustryOpportunityScore(
             target_code=item.industry_code,
@@ -95,11 +99,6 @@ def score_industry_opportunity(
             risk_adjustment=-15.0,
             explanation=("候选行业未通过资格过滤",),
         )
-
-    if not 0.0 <= item.event_strength <= 1.0:
-        raise ValueError("event_strength必须在0到1之间")
-    if not 0.0 <= item.relevance_score <= 1.0:
-        raise ValueError("relevance_score必须在0到1之间")
 
     event_score = _clamp(item.event_strength) * 20.0
     evidence_score = _EVIDENCE_SCORE.get(item.evidence_type, 5.0)
