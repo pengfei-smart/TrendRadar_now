@@ -138,6 +138,75 @@ class SectorKeywordMapperTests(unittest.TestCase):
             {"SW2:801962", "SW2:801963"},
         )
 
+    def test_third_batch_matches_fourteen_industries_by_code(self):
+        sectors = [
+            {"sector_code": "SW2:801093", "sector_name": "汽车零部件"},
+            {"sector_code": "SW2:801095", "sector_name": "乘用车"},
+            {"sector_code": "SW2:801096", "sector_name": "商用车"},
+            {"sector_code": "SW2:801101", "sector_name": "计算机设备"},
+            {"sector_code": "SW2:801104", "sector_name": "软件开发"},
+            {"sector_code": "SW2:801072", "sector_name": "通用设备"},
+            {"sector_code": "SW2:801074", "sector_name": "专用设备"},
+            {"sector_code": "SW2:801077", "sector_name": "工程机械"},
+            {"sector_code": "SW2:801078", "sector_name": "自动化设备"},
+            {"sector_code": "SW2:801741", "sector_name": "航天装备Ⅱ"},
+            {"sector_code": "SW2:801742", "sector_name": "航空装备Ⅱ"},
+            {"sector_code": "SW2:801743", "sector_name": "地面兵装Ⅱ"},
+            {"sector_code": "SW2:801744", "sector_name": "航海装备Ⅱ"},
+            {"sector_code": "SW2:801745", "sector_name": "军工电子Ⅱ"},
+        ]
+        text = (
+            "汽车线束和空气悬架订单增长，纯电乘用车交付提升，重卡销量回暖；"
+            "GPU服务器与工业软件需求增加；数控机床、锂电制造设备和挖掘机出口增长；"
+            "工业机器人订单增加；运载火箭、航空发动机、装甲车辆、潜艇建造、"
+            "相控阵雷达项目取得进展。"
+        )
+        evidence = discover_industry_keyword_evidence(text, sectors)
+        by_code = {item.target_code: item for item in evidence}
+        self.assertEqual(set(by_code), {item["sector_code"] for item in sectors})
+        for item in evidence:
+            self.assertEqual(item.direction, "neutral")
+            self.assertFalse(item.verified)
+            self.assertGreaterEqual(item.confidence, 0.68)
+
+    def test_third_batch_avoids_broad_terms_and_keeps_adjacent_chains_distinct(self):
+        sectors = [
+            {"sector_code": "SW2:801093", "sector_name": "汽车零部件"},
+            {"sector_code": "SW2:801095", "sector_name": "乘用车"},
+            {"sector_code": "SW2:801096", "sector_name": "商用车"},
+            {"sector_code": "SW2:801101", "sector_name": "计算机设备"},
+            {"sector_code": "SW2:801102", "sector_name": "通信设备"},
+            {"sector_code": "SW2:801072", "sector_name": "通用设备"},
+            {"sector_code": "SW2:801074", "sector_name": "专用设备"},
+            {"sector_code": "SW2:801077", "sector_name": "工程机械"},
+            {"sector_code": "SW2:801078", "sector_name": "自动化设备"},
+            {"sector_code": "SW2:801741", "sector_name": "航天装备Ⅱ"},
+            {"sector_code": "SW2:801742", "sector_name": "航空装备Ⅱ"},
+            {"sector_code": "SW2:801743", "sector_name": "地面兵装Ⅱ"},
+            {"sector_code": "SW2:801744", "sector_name": "航海装备Ⅱ"},
+            {"sector_code": "SW2:801745", "sector_name": "军工电子Ⅱ"},
+        ]
+        self.assertEqual(
+            discover_industry_keyword_evidence(
+                "AI热度升温，汽车市场关注度提高，设备行业景气改善，军工订单增长",
+                sectors,
+            ),
+            [],
+        )
+        evidence = discover_industry_keyword_evidence(
+            "GPU服务器扩产，交换机需求增长；工业机器人交付，数控机床订单增加；"
+            "运载火箭发射，航空发动机交付，舰用发动机项目推进，军用雷达升级",
+            sectors,
+        )
+        self.assertEqual(
+            {item.target_code for item in evidence},
+            {
+                "SW2:801101", "SW2:801102", "SW2:801072",
+                "SW2:801078", "SW2:801741", "SW2:801742",
+                "SW2:801744", "SW2:801745",
+            },
+        )
+
     def test_reviewed_semantic_terms_keep_higher_confidence(self):
         evidence = discover_industry_keyword_evidence(
             "猪价上涨，能繁母猪存栏变化", self.sectors,
