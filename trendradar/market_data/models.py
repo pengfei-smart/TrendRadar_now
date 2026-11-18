@@ -50,6 +50,9 @@ class MappingEvidence:
     source_url: str = ""
     direction: str = "neutral"
     verified: bool = False
+    evidence_type: str = "direct"
+    related_sector_code: str = ""
+    relation_evidence: str = ""
 
 
 @dataclass
