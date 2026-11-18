@@ -28,6 +28,7 @@ class IndustryOpportunityInput:
     age_hours: float
     risk_flags: tuple[str, ...] = ()
     eligible: bool = True
+    quote_coverage_ratio: float | None = None
 
 
 @dataclass(frozen=True)
