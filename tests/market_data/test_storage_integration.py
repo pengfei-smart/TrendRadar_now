@@ -82,9 +82,85 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "10")
+            self.assertEqual(version, "11")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
+            )
+
+    def test_quote_timestamp_provenance_persists(self):
+        self.storage.upsert_securities([Security("600000", "浦发银行", "SH")])
+        quote = QuoteSnapshot(
+            code="600000",
+            timestamp="2026-11-09T14:33:00+08:00",
+            source_timestamp="2026-11-09T14:33:00+08:00",
+            collected_at="2026-11-09T14:33:02+08:00",
+            timestamp_quality="provider",
+            price=10.5,
+            source="eastmoney_ulist",
+        )
+        self.assertEqual(self.storage.save_quotes([quote]), 1)
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            row = connection.execute(
+                """SELECT timestamp,source_timestamp,collected_at,timestamp_quality
+                FROM market_snapshots WHERE code='600000'"""
+            ).fetchone()
+        self.assertEqual(row, (
+            "2026-11-09T14:33:00+08:00",
+            "2026-11-09T14:33:00+08:00",
+            "2026-11-09T14:33:02+08:00",
+            "provider",
+        ))
+
+    def test_legacy_snapshot_rebuild_preserves_rows_and_marks_provenance_unknown(self):
+        self.storage.upsert_securities([Security("600000", "浦发银行", "SH")])
+        with self.storage.connect() as connection:
+            connection.execute("DROP TABLE market_snapshots")
+            connection.execute("""CREATE TABLE market_snapshots (
+                snapshot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                code TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                trading_date TEXT NOT NULL DEFAULT '',
+                price REAL,
+                change_pct REAL,
+                turnover REAL,
+                volume_ratio REAL,
+                source TEXT NOT NULL DEFAULT '',
+                delayed INTEGER NOT NULL DEFAULT 1 CHECK (delayed IN (0, 1)),
+                collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(code, timestamp),
+                FOREIGN KEY (code) REFERENCES security_master(code) ON UPDATE CASCADE
+            )""")
+            connection.execute(
+                """INSERT INTO market_snapshots
+                (code,timestamp,trading_date,price,change_pct,turnover,volume_ratio,
+                 source,delayed,collected_at)
+                VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                ("600000", "2026-11-09T14:33:00+08:00", "2026-11-09",
+                 10.5, 1.2, 50000000, 1.1, "legacy_provider", 1,
+                 "2026-11-09T14:33:05+08:00"),
+            )
+
+        migrated = MarketStorage(str(self.db_path))
+        with migrated.connect() as connection:
+            row = connection.execute(
+                """SELECT timestamp,price,source,collected_at,source_timestamp,timestamp_quality
+                FROM market_snapshots WHERE code='600000'"""
+            ).fetchone()
+            count = connection.execute("SELECT COUNT(*) FROM market_snapshots").fetchone()[0]
+            version = connection.execute(
+                "SELECT value FROM schema_meta WHERE key='schema_version'"
+            ).fetchone()[0]
+        self.assertEqual(count, 1)
+        self.assertEqual(row, (
+            "2026-11-09T14:33:00+08:00", 10.5, "legacy_provider",
+            "2026-11-09T14:33:05+08:00", "", "legacy_unknown",
+        ))
+        self.assertEqual(version, "11")
+
+        MarketStorage(str(self.db_path))
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM market_snapshots").fetchone()[0], 1
             )
 
     def test_neeq_termination_ledger_schema_is_separate_and_idempotent(self):
