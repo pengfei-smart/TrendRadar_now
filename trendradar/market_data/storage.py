@@ -497,6 +497,150 @@ class MarketStorage:
         return len(rows)
 
 
+    def load_market_events(
+        self, *, start_published_at: str | None = None,
+        end_published_at: str | None = None, regions: Iterable[str] | None = None,
+        limit: int = 1000,
+    ) -> list[MarketEvent]:
+        """Load events in a publication-time window, newest first."""
+        if not 1 <= limit <= 10000:
+            raise ValueError("limit必须在1到10000之间")
+        clauses, params = [], []
+        if start_published_at is not None:
+            clauses.append("published_at >= ?")
+            params.append(start_published_at)
+        if end_published_at is not None:
+            clauses.append("published_at <= ?")
+            params.append(end_published_at)
+        region_values = sorted({str(value).strip() for value in (regions or ()) if str(value).strip()})
+        if region_values:
+            clauses.append("region IN (" + ",".join("?" for _ in region_values) + ")")
+            params.extend(region_values)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT event_id,source,title,published_at,event_type,direction,region,url,summary "
+                "FROM market_events" + where
+                + " ORDER BY published_at DESC,event_id DESC LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+        return [
+            MarketEvent(
+                event_id=row["event_id"], source=row["source"], title=row["title"],
+                published_at=row["published_at"], event_type=row["event_type"],
+                direction=row["direction"], region=row["region"], url=row["url"],
+                summary=row["summary"],
+            )
+            for row in rows
+        ]
+
+    def load_event_mapping_evidence(
+        self, *, event_id: str | None = None, target_code: str | None = None,
+        verified_only: bool = False, min_confidence: float = 0.0,
+        limit: int = 5000,
+    ) -> list[dict]:
+        """Load typed event-to-target evidence without promoting unverified candidates."""
+        if not 1 <= limit <= 20000:
+            raise ValueError("limit必须在1到20000之间")
+        if not 0.0 <= min_confidence <= 1.0:
+            raise ValueError("min_confidence必须在0到1之间")
+        clauses, params = ["confidence >= ?"], [min_confidence]
+        if event_id is not None:
+            clauses.append("event_id = ?")
+            params.append(event_id)
+        if target_code is not None:
+            clauses.append("target_code = ?")
+            params.append(target_code)
+        if verified_only:
+            clauses.append("verified = 1")
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT event_id,target_code,mapping_type,confidence,evidence,source,source_url,"
+                "direction,verified,evidence_type,related_sector_code,relation_evidence "
+                "FROM event_candidates WHERE " + " AND ".join(clauses)
+                + " ORDER BY confidence DESC,event_id,target_code LIMIT ?",
+                (*params, limit),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def load_latest_quotes(
+        self, codes: Iterable[str] | None = None, *, limit: int = 10000,
+    ) -> list[QuoteSnapshot]:
+        """Load the latest quote per security, accepting provider timestamps only.
+
+        This method deliberately excludes missing, invalid and legacy-unknown
+        timestamps. Freshness age limits remain the caller's responsibility.
+        """
+        if not 1 <= limit <= 20000:
+            raise ValueError("limit必须在1到20000之间")
+        code_values = sorted({str(code).strip() for code in (codes or ()) if str(code).strip()})
+        if codes is not None and not code_values:
+            return []
+        clauses = ["timestamp_quality = 'provider'", "source_timestamp <> ''"]
+        params: list = []
+        if code_values:
+            clauses.append("code IN (" + ",".join("?" for _ in code_values) + ")")
+            params.extend(code_values)
+        with self.connect() as connection:
+            rows = connection.execute(
+                """SELECT code,timestamp,price,change_pct,turnover,volume_ratio,
+                          source,delayed,source_timestamp,collected_at,timestamp_quality
+                FROM (
+                    SELECT code,timestamp,price,change_pct,turnover,volume_ratio,
+                           source,delayed,source_timestamp,collected_at,timestamp_quality,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY code
+                               ORDER BY source_timestamp DESC,collected_at DESC,snapshot_id DESC
+                           ) AS row_number
+                    FROM market_snapshots
+                    WHERE """ + " AND ".join(clauses) + """
+                ) WHERE row_number = 1
+                ORDER BY code LIMIT ?""",
+                (*params, limit),
+            ).fetchall()
+        return [
+            QuoteSnapshot(
+                code=row["code"], timestamp=row["timestamp"], price=row["price"],
+                change_pct=row["change_pct"], turnover=row["turnover"],
+                volume_ratio=row["volume_ratio"], source=row["source"],
+                delayed=bool(row["delayed"]), source_timestamp=row["source_timestamp"],
+                collected_at=row["collected_at"], timestamp_quality=row["timestamp_quality"],
+            )
+            for row in rows
+        ]
+
+    def load_security_sector_codes(
+        self, codes: Iterable[str] | None = None, *, provider: str = "akshare_sw",
+    ) -> dict[str, tuple[str, ...]]:
+        """Load current official SW industry codes per security, excluding sector names."""
+        code_values = sorted({str(code).strip() for code in (codes or ()) if str(code).strip()})
+        if codes is not None and not code_values:
+            return {}
+        clauses = [
+            "sector.provider = ?", "sector.sector_type = 'industry'",
+            "(sector.sector_code LIKE 'SW1:%' OR sector.sector_code LIKE 'SW2:%')",
+            "(membership.valid_from = '' OR membership.valid_from <= date('now'))",
+            "(membership.valid_to = '' OR membership.valid_to >= date('now'))",
+        ]
+        params: list = [provider]
+        if code_values:
+            clauses.append("membership.security_code IN (" + ",".join("?" for _ in code_values) + ")")
+            params.extend(code_values)
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT membership.security_code,sector.sector_code "
+                "FROM sector_membership AS membership "
+                "JOIN sector_master AS sector ON sector.sector_code = membership.sector_code "
+                "WHERE " + " AND ".join(clauses)
+                + " ORDER BY membership.security_code,sector.sector_code",
+                params,
+            ).fetchall()
+        result: dict[str, list[str]] = {}
+        for row in rows:
+            result.setdefault(row["security_code"], []).append(row["sector_code"])
+        return {code: tuple(sector_codes) for code, sector_codes in result.items()}
+
+
     @staticmethod
     def _validate_enum(value: str, allowed: set[str], field: str) -> None:
         if value not in allowed:
