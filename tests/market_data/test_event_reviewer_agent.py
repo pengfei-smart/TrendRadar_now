@@ -202,7 +202,8 @@ class EventReviewerAgentTests(unittest.TestCase):
             evidence_id="baseline-1", event_id="event-1",
             source="Pre-event consensus", source_url="https://example.com/consensus",
             excerpt="Consensus estimate published before the event.",
-            evidence_kind="secondary", supports_dimensions=("surprise",),
+            evidence_kind="secondary", published_at="2026-11-17T08:00:00+08:00",
+            supports_dimensions=("surprise",),
         )
         payload = json.loads(valid_payload())
         payload["evidence_ids"] = ["ev-1", "baseline-1"]
@@ -211,7 +212,7 @@ class EventReviewerAgentTests(unittest.TestCase):
         result = run_reviewer(
             provider=FakeProvider(json.dumps(payload)), model="test/model",
             role="market_expectations_analyst", event_id="event-1",
-            event_payload={}, evidence=evidence() + (baseline,),
+            event_payload={"event_time": "2026-11-17T09:00:00+08:00"}, evidence=evidence() + (baseline,),
         )
         self.assertEqual(result.assessment.completion_status, "complete")
         self.assertEqual(dict(result.assessment.dimension_scores)["surprise"], 0.75)
@@ -235,6 +236,44 @@ class EventReviewerAgentTests(unittest.TestCase):
                 role="fact_checker", event_id="event-1",
                 event_payload=[], evidence=evidence(),
             )
+
+
+    def test_surprise_score_rejects_baseline_published_after_event(self):
+        baseline = ReviewEvidence(
+            evidence_id="baseline-1", event_id="event-1",
+            source="Late report", source_url="https://example.com/late",
+            excerpt="Published after the event.", evidence_kind="secondary",
+            published_at="2026-11-17T10:00:00+08:00",
+            supports_dimensions=("surprise",),
+        )
+        payload = json.loads(valid_payload())
+        payload["evidence_ids"] = ["ev-1", "baseline-1"]
+        payload["dimension_scores"]["surprise"] = 0.75
+        result = run_reviewer(
+            provider=FakeProvider(json.dumps(payload)), model="test/model",
+            role="market_expectations_analyst", event_id="event-1",
+            event_payload={"event_time": "2026-11-17T09:00:00+08:00"},
+            evidence=evidence() + (baseline,),
+        )
+        self.assertEqual(result.assessment.completion_status, "error")
+
+    def test_surprise_score_rejects_missing_event_time(self):
+        baseline = ReviewEvidence(
+            evidence_id="baseline-1", event_id="event-1",
+            source="Consensus", source_url="https://example.com/consensus",
+            excerpt="Consensus.", evidence_kind="secondary",
+            published_at="2026-11-17T08:00:00+08:00",
+            supports_dimensions=("surprise",),
+        )
+        payload = json.loads(valid_payload())
+        payload["evidence_ids"] = ["ev-1", "baseline-1"]
+        payload["dimension_scores"]["surprise"] = 0.75
+        result = run_reviewer(
+            provider=FakeProvider(json.dumps(payload)), model="test/model",
+            role="market_expectations_analyst", event_id="event-1",
+            event_payload={}, evidence=evidence() + (baseline,),
+        )
+        self.assertEqual(result.assessment.completion_status, "error")
 
 
 if __name__ == "__main__":
