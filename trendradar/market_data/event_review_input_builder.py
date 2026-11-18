@@ -54,10 +54,21 @@ def build_event_review_input(
         raise ValueError("max_excerpt_chars must be an integer between 100 and 20000")
 
     normalized_id = event_id.strip()
-    events = storage.load_market_events(limit=10000)
-    event = next((item for item in events if item.event_id == normalized_id), None)
-    if event is None:
+    with storage.connect() as connection:
+        row = connection.execute(
+            """SELECT event_id,source,title,published_at,event_type,direction,
+                      region,url,summary
+               FROM market_events WHERE event_id=?""",
+            (normalized_id,),
+        ).fetchone()
+    if row is None:
         raise LookupError(f"market event not found: {normalized_id}")
+    event = MarketEvent(
+        event_id=row["event_id"], source=row["source"], title=row["title"],
+        published_at=row["published_at"], event_type=row["event_type"],
+        direction=row["direction"], region=row["region"], url=row["url"],
+        summary=row["summary"],
+    )
 
     source_assessment = assess_event_source(event.source)
     classification = classify_market_event(event)
