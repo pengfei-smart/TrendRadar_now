@@ -38,6 +38,26 @@ class SectorKeywordMapperTests(unittest.TestCase):
             "https://example.invalid/news",
         )
 
+    def test_official_level_two_name_provides_baseline_coverage(self):
+        sectors = self.sectors + [
+            {"sector_code": "SW2:801081", "sector_name": "半导体"},
+            {"sector_code": "SW2:801082", "sector_name": "元件"},
+        ]
+        evidence = discover_industry_keyword_evidence(
+            "半导体行业景气变化", sectors,
+        )
+        self.assertEqual([item.target_code for item in evidence], ["SW2:801081"])
+        self.assertEqual(evidence[0].confidence, 0.56)
+        self.assertIn("半导体", evidence[0].evidence)
+
+    def test_reviewed_semantic_terms_keep_higher_confidence(self):
+        evidence = discover_industry_keyword_evidence(
+            "猪价上涨，能繁母猪存栏变化", self.sectors,
+        )
+        self.assertEqual([item.target_code for item in evidence], ["SW2:801017"])
+        self.assertEqual(evidence[0].confidence, 0.70)
+        self.assertIn("能繁母猪", evidence[0].evidence)
+
     def test_storage_adapter_uses_database_industry_codes_and_provenance(self):
         import tempfile
         from pathlib import Path
