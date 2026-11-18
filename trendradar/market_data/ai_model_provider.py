@@ -1,8 +1,8 @@
 """Provider-neutral chat model adapter with strict JSON response handling.
 
-LiteLLM is imported lazily and is already an application dependency. API
-credentials are read by LiteLLM from environment/configuration; this module
-never accepts or logs secrets. No automatic approval is performed here.
+LiteLLM is imported lazily. Credentials and API base may be supplied by a
+trusted runtime configuration and are retained only in memory; they are never
+included in logs or safe error messages. No automatic approval is performed.
 """
 from __future__ import annotations
 
@@ -142,9 +142,9 @@ class LiteLLMChatProvider:
                         {"role": "system", "content": request.system_prompt},
                         {"role": "user", "content": request.user_prompt},
                     ],
-                    timeout=request.timeout_seconds,
-                    temperature=request.temperature,
-                    max_tokens=request.max_tokens,
+                    "timeout": request.timeout_seconds,
+                    "temperature": request.temperature,
+                    "max_tokens": request.max_tokens,
                     "response_format": {"type": request.response_format},
                 }
                 if self._api_key:
