@@ -118,6 +118,39 @@ class MarketStorageTests(unittest.TestCase):
                 )
 
 
+    def test_load_industry_sectors_returns_provider_industry_hierarchy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            with storage.connect() as connection:
+                connection.executemany(
+                    """INSERT INTO sector_master
+                    (sector_code,sector_name,sector_type,parent_sector_code,provider)
+                    VALUES(?,?,?,?,?)""",
+                    [
+                        ("SW1:801010", "农林牧渔", "industry", "", "akshare_sw"),
+                        ("SW2:801017", "养殖业", "industry", "SW1:801010", "akshare_sw"),
+                        ("concept:pet", "宠物经济", "concept", "", "akshare_sw"),
+                        ("OTHER:801017", "其他养殖业", "industry", "", "other_provider"),
+                    ],
+                )
+
+            sectors = storage.load_industry_sectors()
+            self.assertEqual(
+                sectors,
+                [
+                    {
+                        "sector_code": "SW1:801010",
+                        "sector_name": "农林牧渔",
+                        "parent_sector_code": "",
+                    },
+                    {
+                        "sector_code": "SW2:801017",
+                        "sector_name": "养殖业",
+                        "parent_sector_code": "SW1:801010",
+                    },
+                ],
+            )
+
     def test_load_securities_includes_status_and_current_sector_memberships(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
