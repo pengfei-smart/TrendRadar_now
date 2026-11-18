@@ -407,3 +407,64 @@ def _decode_quality(row):
 
 # Read methods are attached to the repository class below to keep the public
 # API discoverable beside save_run while preserving the append-only contract.
+
+def _decode_json_field(row, field: str):
+    try:
+        return json.loads(row[field])
+    except (KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"corrupt event-review audit JSON field: {field}"
+        ) from exc
+
+
+def _row_dict(row):
+    return dict(row) if row is not None else None
+
+
+def _decode_evidence(row):
+    item = dict(row)
+    item["supports_dimensions"] = _decode_json_field(
+        item, "supports_dimensions_json"
+    )
+    del item["supports_dimensions_json"]
+    return item
+
+
+def _decode_assessment(row):
+    item = dict(row)
+    for source, target in (
+        ("dimension_scores_json", "dimension_scores"),
+        ("dimension_rationales_json", "dimension_rationales"),
+        ("evidence_ids_json", "evidence_ids"),
+        ("concerns_json", "concerns"),
+    ):
+        item[target] = _decode_json_field(item, source)
+        del item[source]
+    return item
+
+
+def _decode_adjudication(row):
+    if row is None:
+        return None
+    item = dict(row)
+    for source, target in (
+        ("final_dimension_scores_json", "final_dimension_scores"),
+        ("reviewer_roles_considered_json", "reviewer_roles_considered"),
+        ("dissenting_views_json", "dissenting_views"),
+        ("unresolved_issues_json", "unresolved_issues"),
+        ("required_followups_json", "required_followups"),
+    ):
+        item[target] = _decode_json_field(item, source)
+        del item[source]
+    return item
+
+
+def _decode_quality(row):
+    if row is None:
+        return None
+    item = dict(row)
+    item["reasons"] = _decode_json_field(item, "reasons_json")
+    del item["reasons_json"]
+    item["eligible_for_scoring"] = bool(item["eligible_for_scoring"])
+    return item
+
