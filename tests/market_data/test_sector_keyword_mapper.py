@@ -93,6 +93,51 @@ class SectorKeywordMapperTests(unittest.TestCase):
             {"SW2:801083", "SW2:801102"},
         )
 
+    def test_second_commodity_batch_matches_eleven_industries_by_code(self):
+        sectors = [
+            {"sector_code": "SW2:801055", "sector_name": "工业金属"},
+            {"sector_code": "SW2:801056", "sector_name": "能源金属"},
+            {"sector_code": "SW2:801053", "sector_name": "贵金属"},
+            {"sector_code": "SW2:801054", "sector_name": "小金属"},
+            {"sector_code": "SW2:801043", "sector_name": "冶钢原料"},
+            {"sector_code": "SW2:801044", "sector_name": "普钢"},
+            {"sector_code": "SW2:801045", "sector_name": "特钢Ⅱ"},
+            {"sector_code": "SW2:801951", "sector_name": "煤炭开采"},
+            {"sector_code": "SW2:801961", "sector_name": "油气开采Ⅱ"},
+            {"sector_code": "SW2:801962", "sector_name": "油服工程"},
+            {"sector_code": "SW2:801963", "sector_name": "炼化及贸易"},
+        ]
+        text = (
+            "电解铝和铜价上涨，碳酸锂及硫酸镍价格走强；"
+            "国际金价创新高，氧化镨钕报价上涨；"
+            "铁矿石价格回升，螺纹钢价格上涨，轴承钢需求改善；"
+            "动力煤价格上涨，布伦特原油走强，海上钻井平台增加，炼化一体化项目投产。"
+        )
+        evidence = discover_industry_keyword_evidence(text, sectors)
+        by_code = {item.target_code: item for item in evidence}
+        self.assertEqual(set(by_code), {item["sector_code"] for item in sectors})
+        for item in evidence:
+            self.assertEqual(item.direction, "neutral")
+            self.assertFalse(item.verified)
+
+    def test_commodity_terms_keep_resource_and_service_chains_distinct(self):
+        sectors = [
+            {"sector_code": "SW2:801056", "sector_name": "能源金属"},
+            {"sector_code": "SW2:801737", "sector_name": "电池"},
+            {"sector_code": "SW2:801961", "sector_name": "油气开采Ⅱ"},
+            {"sector_code": "SW2:801962", "sector_name": "油服工程"},
+            {"sector_code": "SW2:801963", "sector_name": "炼化及贸易"},
+        ]
+        lithium = discover_industry_keyword_evidence("碳酸锂现货价格上涨", sectors)
+        self.assertEqual({item.target_code for item in lithium}, {"SW2:801056"})
+        oil = discover_industry_keyword_evidence(
+            "海上钻井平台增加，炼化一体化项目投产", sectors,
+        )
+        self.assertEqual(
+            {item.target_code for item in oil},
+            {"SW2:801962", "SW2:801963"},
+        )
+
     def test_reviewed_semantic_terms_keep_higher_confidence(self):
         evidence = discover_industry_keyword_evidence(
             "猪价上涨，能繁母猪存栏变化", self.sectors,
