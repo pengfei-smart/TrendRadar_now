@@ -11,6 +11,11 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 from .ai_model_provider import LiteLLMChatProvider
+from .event_review_guard import (
+    EventReviewBudget,
+    EventReviewBudgetProvider,
+    GlobalModelCallGuard,
+)
 
 
 @dataclass(frozen=True)
@@ -18,6 +23,12 @@ class EventReviewRuntime:
     provider: LiteLLMChatProvider
     reviewer_model: str
     chief_model: str
+    global_guard: GlobalModelCallGuard
+    event_budget: EventReviewBudget
+
+    def provider_for_event(self) -> EventReviewBudgetProvider:
+        """Create a fresh per-event budget sharing this runtime's global guard."""
+        return EventReviewBudgetProvider(self.global_guard, self.event_budget)
 
 
 def build_event_review_runtime(
@@ -26,6 +37,12 @@ def build_event_review_runtime(
     reviewer_model: str | None = None,
     chief_model: str | None = None,
     max_attempts: int = 2,
+    max_model_calls_per_event: int = 5,
+    max_output_tokens_per_call: int = 3000,
+    max_timeout_seconds: float = 60.0,
+    max_concurrent_calls: int = 1,
+    circuit_failure_threshold: int = 5,
+    circuit_cooldown_seconds: float = 60.0,
 ) -> EventReviewRuntime:
     """Create a configured provider and model pair without making API calls."""
     if not isinstance(ai_config, Mapping):
@@ -60,10 +77,23 @@ def build_event_review_runtime(
         api_base=api_base,
         max_attempts=max_attempts,
     )
+    budget = EventReviewBudget(
+        max_model_calls=max_model_calls_per_event,
+        max_output_tokens_per_call=max_output_tokens_per_call,
+        max_timeout_seconds=max_timeout_seconds,
+    )
+    global_guard = GlobalModelCallGuard(
+        provider,
+        max_concurrent_calls=max_concurrent_calls,
+        failure_threshold=circuit_failure_threshold,
+        cooldown_seconds=circuit_cooldown_seconds,
+    )
     return EventReviewRuntime(
         provider=provider,
         reviewer_model=selected_reviewer.strip(),
         chief_model=selected_chief.strip(),
+        global_guard=global_guard,
+        event_budget=budget,
     )
 
 
