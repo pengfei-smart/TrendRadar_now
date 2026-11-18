@@ -30,6 +30,9 @@ class QuoteFetcherTests(unittest.TestCase):
         provider = EastmoneyBatchQuoteProvider(session=session)
         quote = provider.fetch_quotes([Security("600000", "浦发银行", "SH")])[0]
         self.assertEqual(quote.timestamp, "2026-11-09T14:33:00+08:00")
+        self.assertEqual(quote.source_timestamp, "2026-11-09T14:33:00+08:00")
+        self.assertEqual(quote.timestamp_quality, "provider")
+        self.assertTrue(quote.collected_at)
 
     def test_fetches_batches_and_filters_candidates(self):
         session = Mock()
@@ -52,7 +55,25 @@ class QuoteFetcherTests(unittest.TestCase):
         self.assertEqual(by_code["600000"].turnover, 123456.0)
         self.assertEqual(by_code["600000"].volume_ratio, 1.2)
         self.assertTrue(by_code["600000"].delayed)
+        self.assertEqual(by_code["600000"].source_timestamp, "")
+        self.assertEqual(by_code["600000"].timestamp_quality, "missing")
+        self.assertEqual(by_code["600000"].timestamp, by_code["600000"].collected_at)
         self.assertEqual(session.get.call_count, 1)
+
+    def test_invalid_provider_timestamp_is_not_treated_as_collection_time(self):
+        session = Mock()
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"data": {"diff": [
+            {"f12": "600000", "f2": 10.25, "f3": 1.5, "f124": "not-a-timestamp"}
+        ]}}
+        session.get.return_value = response
+        quote = EastmoneyBatchQuoteProvider(session=session).fetch_quotes(
+            [Security("600000", "浦发银行", "SH")]
+        )[0]
+        self.assertEqual(quote.source_timestamp, "")
+        self.assertEqual(quote.timestamp_quality, "invalid")
+        self.assertEqual(quote.timestamp, quote.collected_at)
 
     def test_chunks_candidates_by_configured_batch_size(self):
         session = Mock()
