@@ -41,15 +41,57 @@ class SectorKeywordMapperTests(unittest.TestCase):
 
     def test_official_level_two_name_provides_baseline_coverage(self):
         sectors = self.sectors + [
-            {"sector_code": "SW2:801081", "sector_name": "半导体"},
-            {"sector_code": "SW2:801082", "sector_name": "元件"},
+            {"sector_code": "SW2:801076", "sector_name": "轨交设备Ⅱ"},
         ]
         evidence = discover_industry_keyword_evidence(
-            "半导体行业景气变化", sectors,
+            "轨交设备Ⅱ行业景气变化", sectors,
         )
-        self.assertEqual([item.target_code for item in evidence], ["SW2:801081"])
+        self.assertEqual([item.target_code for item in evidence], ["SW2:801076"])
         self.assertEqual(evidence[0].confidence, 0.56)
-        self.assertIn("半导体", evidence[0].evidence)
+        self.assertIn("轨交设备Ⅱ", evidence[0].evidence)
+
+    def test_first_technology_batch_matches_eight_industries_by_code(self):
+        sectors = [
+            {"sector_code": "SW2:801081", "sector_name": "半导体"},
+            {"sector_code": "SW2:801083", "sector_name": "元件"},
+            {"sector_code": "SW2:801084", "sector_name": "光学光电子"},
+            {"sector_code": "SW2:801085", "sector_name": "消费电子"},
+            {"sector_code": "SW2:801102", "sector_name": "通信设备"},
+            {"sector_code": "SW2:801737", "sector_name": "电池"},
+            {"sector_code": "SW2:801735", "sector_name": "光伏设备"},
+            {"sector_code": "SW2:801738", "sector_name": "电网设备"},
+        ]
+        text = (
+            "晶圆代工和HBM需求增长，PCB与MLCC订单回暖；"
+            "OLED面板、折叠屏手机出货增加，CPO光模块扩产；"
+            "固态电池、TOPCon光伏组件及特高压变压器项目推进。"
+        )
+        evidence = discover_industry_keyword_evidence(text, sectors)
+        by_code = {item.target_code: item for item in evidence}
+        self.assertEqual(set(by_code), {item["sector_code"] for item in sectors})
+        for item in evidence:
+            self.assertGreaterEqual(item.confidence, 0.68)
+            self.assertEqual(item.direction, "neutral")
+            self.assertFalse(item.verified)
+
+    def test_ambiguous_generic_words_do_not_expand_to_adjacent_industries(self):
+        sectors = [
+            {"sector_code": "SW2:801083", "sector_name": "元件"},
+            {"sector_code": "SW2:801084", "sector_name": "光学光电子"},
+            {"sector_code": "SW2:801085", "sector_name": "消费电子"},
+            {"sector_code": "SW2:801102", "sector_name": "通信设备"},
+        ]
+        self.assertEqual(
+            discover_industry_keyword_evidence("苹果价格上涨，普通服务器需求增加", sectors),
+            [],
+        )
+        evidence = discover_industry_keyword_evidence(
+            "CPO光模块订单增长，PCB厂商扩产", sectors,
+        )
+        self.assertEqual(
+            {item.target_code for item in evidence},
+            {"SW2:801083", "SW2:801102"},
+        )
 
     def test_reviewed_semantic_terms_keep_higher_confidence(self):
         evidence = discover_industry_keyword_evidence(
@@ -61,7 +103,7 @@ class SectorKeywordMapperTests(unittest.TestCase):
 
     def test_coverage_report_separates_reviewed_terms_from_official_names(self):
         sectors = self.sectors + [
-            {"sector_code": "SW2:801081", "sector_name": "半导体"},
+            {"sector_code": "SW2:801076", "sector_name": "轨交设备Ⅱ"},
             {"sector_code": "SW1:801080", "sector_name": "电子"},
         ]
         report = build_industry_keyword_coverage_report(sectors)
@@ -70,7 +112,7 @@ class SectorKeywordMapperTests(unittest.TestCase):
         self.assertEqual(report["official_name_only"], 1)
         semiconductor = next(
             row for row in report["sectors"]
-            if row["sector_code"] == "SW2:801081"
+            if row["sector_code"] == "SW2:801076"
         )
         self.assertEqual(semiconductor["coverage"], "official_name_only")
         self.assertEqual(semiconductor["reviewed_term_count"], 0)
