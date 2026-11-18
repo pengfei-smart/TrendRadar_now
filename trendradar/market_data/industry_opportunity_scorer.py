@@ -96,9 +96,14 @@ def score_industry_opportunity(
             explanation=("候选行业未通过资格过滤",),
         )
 
-    event_score = _clamp(item.event_strength / 20.0) * 20.0
+    if not 0.0 <= item.event_strength <= 1.0:
+        raise ValueError("event_strength必须在0到1之间")
+    if not 0.0 <= item.relevance_score <= 1.0:
+        raise ValueError("relevance_score必须在0到1之间")
+
+    event_score = _clamp(item.event_strength) * 20.0
     evidence_score = _EVIDENCE_SCORE.get(item.evidence_type, 5.0)
-    relevance_score = _clamp(item.relevance_score / 15.0) * 15.0
+    relevance_score = _clamp(item.relevance_score) * 15.0
     transmission_score = max(0.0, 10.0 - min(item.transmission_distance, 3) * 3.0)
     market_confirmation_score = _market_confirmation(item)
 
@@ -118,8 +123,8 @@ def score_industry_opportunity(
     score = max(0.0, min(100.0, raw_score + risk_adjustment))
 
     confidence_parts = [
-        _clamp(item.event_strength / 20.0),
-        _clamp(item.relevance_score / 15.0),
+        _clamp(item.event_strength),
+        _clamp(item.relevance_score),
         _clamp(item.breadth_ratio or 0.0),
         _clamp(item.leader_confirmation_ratio or 0.0),
     ]
