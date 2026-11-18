@@ -69,6 +69,11 @@ class EventClassifierTests(unittest.TestCase):
         self.assertEqual(result.classification_status, "unknown")
         self.assertEqual(result.classification_confidence, 0.0)
 
+    def test_english_abbreviations_do_not_match_inside_unrelated_words(self):
+        result = classify_market_event(make_event("Happiness improves across the region"))
+
+        self.assertEqual(result.event_category, "unknown")
+
     def test_classification_does_not_change_direction_or_event(self):
         event = make_event("美联储宣布降息", direction="neutral")
         result = classify_market_event(event)
