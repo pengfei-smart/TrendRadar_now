@@ -63,6 +63,10 @@ class DeterministicReviewProvider:
             provider=self.provider_name,
             model=request.model,
             request_id=f"fake-{len(self.requests)}",
+            attempts=1,
+            prompt_tokens=100 + len(self.requests),
+            completion_tokens=20,
+            total_tokens=120 + len(self.requests),
         )
 
 
@@ -126,6 +130,11 @@ class EventReviewPipelineTests(unittest.TestCase):
         self.assertEqual(len(audit.reviewer_assessments), 4)
         self.assertEqual(audit.adjudication["status"], "accepted")
         self.assertEqual(audit.quality_result["status"], "passed")
+        self.assertEqual(len(audit.model_usage), 5)
+        self.assertTrue(all(item["usage_complete"] == 1 for item in audit.model_usage))
+        self.assertEqual(audit.model_usage[0]["prompt_tokens"], 101)
+        self.assertEqual(audit.model_usage[-1]["reviewer_role"], "chief_reviewer")
+        self.assertEqual(audit.model_usage[-1]["total_tokens"], 125)
 
     def test_guarded_runtime_pipeline_uses_per_event_budget_and_persists(self):
         fake = DeterministicReviewProvider(self.evidence_id)
