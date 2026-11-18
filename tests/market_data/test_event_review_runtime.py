@@ -15,6 +15,7 @@ class EventReviewRuntimeTests(unittest.TestCase):
         })
         self.assertEqual(runtime.reviewer_model, "deepseek/example-model")
         self.assertEqual(runtime.chief_model, "deepseek/example-model")
+        self.assertEqual(runtime.provider.max_attempts, 1)
         self.assertNotIn("runtime-secret", repr(runtime.provider))
 
     def test_supports_separate_reviewer_and_chief_models(self):
