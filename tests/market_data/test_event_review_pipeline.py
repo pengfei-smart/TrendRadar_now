@@ -10,7 +10,7 @@ import unittest
 
 from trendradar.market_data.ai_model_provider import ChatModelResponse
 from trendradar.market_data.event_review_models import IMPACT_DIMENSIONS, REVIEWER_ROLES
-from trendradar.market_data.event_review_pipeline import review_persisted_market_event
+from trendradar.market_data.event_review_pipeline import (\n    review_persisted_market_event,\n    review_persisted_market_event_with_runtime,\n)\nfrom trendradar.market_data.event_review_runtime import build_event_review_runtime
 from trendradar.market_data.event_review_repository import EventReviewRepository
 from trendradar.market_data.models import MarketEvent
 from trendradar.market_data.storage import MarketStorage
@@ -122,6 +122,28 @@ class EventReviewPipelineTests(unittest.TestCase):
         self.assertEqual(len(audit.reviewer_assessments), 4)
         self.assertEqual(audit.adjudication["status"], "accepted")
         self.assertEqual(audit.quality_result["status"], "passed")
+
+    def test_guarded_runtime_pipeline_uses_per_event_budget_and_persists(self):
+        fake = DeterministicReviewProvider(self.evidence_id)
+        runtime = build_event_review_runtime({"MODEL": "fake/reviewer", "API_KEY": "test-secret"})
+        runtime.global_guard._provider = fake
+        result = review_persisted_market_event_with_runtime(
+            storage=self.storage, repository=self.repository, runtime=runtime,
+            event_id=self.event_id, clock=lambda: next(self.ticks),
+            review_run_id="guarded-runtime-run",
+        )
+        self.assertEqual(result.execution.status, "adjudicated")
+        self.assertEqual(result.persisted.quality_result.status, "passed")
+        self.assertEqual(len(fake.requests), 5)
+        audit = self.repository.get_run(review_run_id="guarded-runtime-run")
+        self.assertEqual(audit.run["run_status"], "adjudicated")
+
+    def test_guarded_runtime_rejects_non_runtime_argument(self):
+        with self.assertRaisesRegex(TypeError, "EventReviewRuntime"):
+            review_persisted_market_event_with_runtime(
+                storage=self.storage, repository=self.repository,
+                runtime=object(), event_id=self.event_id,
+            )
 
     def test_rejects_repository_pointing_to_another_database(self):
         other_storage = MarketStorage(str(Path(self.tmp.name) / "other.db"))
