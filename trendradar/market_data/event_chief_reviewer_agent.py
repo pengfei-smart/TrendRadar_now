@@ -305,6 +305,8 @@ def run_chief_reviewer(
             prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
             completion_tokens=getattr(response, "completion_tokens", None) if response else None,
             total_tokens=getattr(response, "total_tokens", None) if response else None,
+            request_succeeded=response is not None,
+            provider=str(provider_name), model=model.strip(),
         )
     except Exception as exc:
         # Do not let unexpected SDK/provider failures bypass audit persistence.
