@@ -61,6 +61,34 @@ class MarketStorageReadInterfaceTests(unittest.TestCase):
         self.assertEqual(len(trusted), 1)
         self.assertEqual(trusted[0]["target_code"], "SW2:801101")
 
+    def test_load_event_mapping_evidence_filters_multiple_event_ids(self):
+        self.storage.save_events([
+            MarketEvent("event-a", "rss", "事件A", "2026-11-18T09:00:00+08:00"),
+            MarketEvent("event-b", "rss", "事件B", "2026-11-18T10:00:00+08:00"),
+            MarketEvent("event-c", "rss", "事件C", "2026-11-18T11:00:00+08:00"),
+        ])
+        for event_id in ("event-a", "event-b", "event-c"):
+            self.storage.save_mapping_evidence(event_id, [
+                MappingEvidence(
+                    "SW2:801081", "industry_keyword", .7,
+                    f"证据-{event_id}", evidence_type="direct",
+                )
+            ])
+
+        rows = self.storage.load_event_mapping_evidence(
+            event_ids=["event-b", "event-a", "event-missing"],
+        )
+
+        self.assertEqual({row["event_id"] for row in rows}, {"event-a", "event-b"})
+        self.assertEqual(
+            self.storage.load_event_mapping_evidence(event_ids=[]),
+            [],
+        )
+        with self.assertRaises(ValueError):
+            self.storage.load_event_mapping_evidence(
+                event_id="event-a", event_ids=["event-a"],
+            )
+
     def test_load_latest_quotes_returns_only_provider_timestamped_latest_per_code(self):
         self.storage.save_quotes([
             QuoteSnapshot(
