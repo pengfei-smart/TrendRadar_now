@@ -213,6 +213,50 @@ class EventReviewRepository:
                     ),
                 )
 
+            usage_records = [
+                (
+                    run_id, board.event_id, item.assessment.reviewer_role,
+                    "success" if item.request_succeeded else "error",
+                    item.assessment.model_provider, item.assessment.model_name,
+                    item.request_id, item.attempts,
+                    item.prompt_tokens, item.completion_tokens, item.total_tokens,
+                    int(
+                        item.prompt_tokens is not None
+                        and item.completion_tokens is not None
+                        and item.total_tokens is not None
+                    ),
+                    item.call_started_at or started_at,
+                    item.call_completed_at or completed_at,
+                    item.error_code,
+                )
+                for item in execution.reviewer_results
+            ]
+            if execution.chief_result is not None:
+                item = execution.chief_result
+                usage_records.append((
+                    run_id, board.event_id, "chief_reviewer",
+                    "success" if item.request_succeeded else "error",
+                    item.provider, item.model, item.request_id, item.attempts,
+                    item.prompt_tokens, item.completion_tokens, item.total_tokens,
+                    int(
+                        item.prompt_tokens is not None
+                        and item.completion_tokens is not None
+                        and item.total_tokens is not None
+                    ),
+                    item.call_started_at or started_at,
+                    item.call_completed_at or completed_at,
+                    item.error_code,
+                ))
+            connection.executemany(
+                """INSERT INTO event_review_model_usage (
+                    review_run_id,event_id,reviewer_role,request_status,
+                    provider,model,request_id,attempts,prompt_tokens,
+                    completion_tokens,total_tokens,usage_complete,
+                    call_started_at,call_completed_at,error_code
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                usage_records,
+            )
+
             connection.execute(
                 """INSERT INTO event_review_quality_results (
                     review_run_id,event_id,status,eligible_for_scoring,
@@ -311,6 +355,16 @@ class EventReviewRepository:
                 "SELECT * FROM event_review_quality_results WHERE review_run_id=?",
                 (run_id,),
             ).fetchone()
+            usage_rows = connection.execute(
+                """SELECT * FROM event_review_model_usage WHERE review_run_id=?
+                   ORDER BY CASE reviewer_role
+                       WHEN 'fact_checker' THEN 1
+                       WHEN 'macro_policy_analyst' THEN 2
+                       WHEN 'industry_chain_analyst' THEN 3
+                       WHEN 'market_expectations_analyst' THEN 4
+                       ELSE 5 END""",
+                (run_id,),
+            ).fetchall()
 
         if quality_row is None:
             raise RuntimeError(f"review run {run_id!r} has no quality result")
@@ -322,6 +376,7 @@ class EventReviewRepository:
             ),
             adjudication=_decode_adjudication(adjudication_row),
             quality_result=_decode_quality(quality_row),
+            model_usage=tuple(_row_dict(row) for row in usage_rows),
         )
 
 
