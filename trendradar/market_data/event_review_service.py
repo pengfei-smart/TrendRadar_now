@@ -8,7 +8,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Callable
+
+from .event_review_failure_journal import append_review_failure
 
 from .ai_model_provider import ChatModelProvider
 from .event_review_board_runner import (
@@ -32,6 +35,29 @@ class EventReviewServiceResult:
     operational_error_message: str = ""
 
 
+class EventReviewPersistenceError(RuntimeError):
+    """Primary DB persistence failed; sidecar journal outcome is explicit."""
+
+    def __init__(
+        self, *, original_error_type: str, journal_path: str,
+        journal_error_type: str = "",
+    ) -> None:
+        self.original_error_type = original_error_type
+        self.journal_path = journal_path
+        self.journal_error_type = journal_error_type
+        if journal_error_type:
+            message = (
+                "review database persistence failed and failure journal also "
+                f"failed ({original_error_type}; {journal_error_type})"
+            )
+        else:
+            message = (
+                "review database persistence failed; failure recorded in "
+                f"sidecar journal ({original_error_type})"
+            )
+        super().__init__(message)
+
+
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -47,6 +73,7 @@ def run_and_persist_event_review(
     evidence: tuple[ReviewEvidence, ...],
     clock: Callable[[], datetime] = _utc_now,
     review_run_id: str | None = None,
+    failure_journal_path: str | Path | None = None,
     reviewer_timeout_seconds: float = 45.0,
     reviewer_max_tokens: int = 2500,
     chief_timeout_seconds: float = 60.0,
@@ -108,15 +135,46 @@ def run_and_persist_event_review(
     started_at = started.isoformat()
     completed_at = completed.isoformat()
 
-    persisted = repository.save_run(
-        execution=execution,
-        event_payload=event_payload,
-        started_at=started_at,
-        completed_at=completed_at,
-        review_run_id=review_run_id,
-        operational_error_code=operational_error_code,
-        operational_error_message=operational_error_message,
-    )
+    try:
+        persisted = repository.save_run(
+            execution=execution,
+            event_payload=event_payload,
+            started_at=started_at,
+            completed_at=completed_at,
+            review_run_id=review_run_id,
+            operational_error_code=operational_error_code,
+            operational_error_message=operational_error_message,
+        )
+    except Exception as exc:
+        journal_path = (
+            Path(failure_journal_path).expanduser().resolve()
+            if failure_journal_path is not None
+            else repository.storage.db_path.with_suffix(
+                ".review-failures.jsonl"
+            )
+        )
+        record = {
+            "stage": "primary_review_database_persistence",
+            "event_id": event_id,
+            "review_run_id": review_run_id or "",
+            "started_at": started_at,
+            "completed_at": completed_at,
+            "execution_status": execution.status,
+            "database_error_type": type(exc).__name__,
+            "operational_error_code": operational_error_code,
+        }
+        try:
+            append_review_failure(journal_path=journal_path, record=record)
+        except Exception as journal_exc:
+            raise EventReviewPersistenceError(
+                original_error_type=type(exc).__name__,
+                journal_path=str(journal_path),
+                journal_error_type=type(journal_exc).__name__,
+            ) from exc
+        raise EventReviewPersistenceError(
+            original_error_type=type(exc).__name__,
+            journal_path=str(journal_path),
+        ) from exc
     return EventReviewServiceResult(
         execution=execution,
         persisted=persisted,
