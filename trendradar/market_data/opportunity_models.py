@@ -8,7 +8,12 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class IndustryOpportunityInput:
-    """Normalized inputs required to score one industry opportunity."""
+    """Normalized inputs required to score one industry opportunity.
+
+    event_strength and relevance_score are both normalized to the inclusive
+    0..1 interval; their scorer components scale these values to 20 and 15
+    points respectively.
+    """
 
     industry_code: str
     event_strength: float
@@ -27,7 +32,11 @@ class IndustryOpportunityInput:
 
 @dataclass(frozen=True)
 class SecurityOpportunityInput:
-    """Normalized inputs required to score one security opportunity."""
+    """Normalized inputs required to score one security opportunity.
+
+    event_strength is normalized to the inclusive 0..1 interval and scales
+    to a maximum direct-event contribution of 20 points.
+    """
 
     security_code: str
     industry_code: str
