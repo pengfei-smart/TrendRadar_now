@@ -76,10 +76,10 @@ class OpportunityDataSnapshot:
 
 
 class OpportunityDataProvider:
-    """Load a consistent-enough read snapshot from the MarketStorage interfaces.
+    """Assemble a best-effort snapshot from the MarketStorage read interfaces.
 
-    The provider is intentionally read-only. The supplied storage object must
-    implement the corresponding MarketStorage load methods.
+    Each storage read is independent, so this is not an atomic SQLite snapshot.
+    The provider is intentionally read-only and never invokes scoring.
     """
 
     def __init__(
