@@ -235,5 +235,21 @@ class EventChiefReviewerAgentTests(unittest.TestCase):
             )
 
 
+class UnexpectedChiefProviderFailureTests(unittest.TestCase):
+    def test_unexpected_provider_exception_becomes_safe_chief_error(self):
+        result = run_chief_reviewer(
+            provider=FakeProvider(error=RuntimeError("sensitive request payload")),
+            model="test/chair", event_id="event-1",
+            event_payload={}, evidence=(), reviewer_assessments=four_reviews(),
+        )
+        self.assertEqual(result.error_code, "unexpected_execution_error")
+        self.assertEqual(
+            result.error_message,
+            "unexpected chief-review execution error: RuntimeError",
+        )
+        self.assertNotIn("sensitive", result.error_message)
+        self.assertIsNone(result.adjudication)
+
+
 if __name__ == "__main__":
     unittest.main()
