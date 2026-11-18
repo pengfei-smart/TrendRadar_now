@@ -205,7 +205,9 @@ class EventReviewRepositoryTests(unittest.TestCase):
             review_run_id="run-older",
         )
         self.repository.save_run(
-            **base, started_at="2026-11-18T10:02:00+08:00",
+            execution=base["execution"], event_payload=base["event_payload"],
+            started_at="2026-11-18T10:02:00+08:00",
+            completed_at="2026-11-18T10:03:00+08:00",
             review_run_id="run-newer",
         )
         history = self.repository.list_runs(event_id="event-1", limit=10)
