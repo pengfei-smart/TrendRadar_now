@@ -106,8 +106,11 @@ def evaluate_event_review_quality(
         if adjudication.dissenting_views:
             reasons.append("首席审查官仍记录未消解的审查分歧")
         final_scores = dict(adjudication.final_dimension_scores)
+        expectations_review = assessments_by_role.get("market_expectations_analyst")
+        cited_expectation_ids = set(expectations_review.evidence_ids) if expectations_review else set()
         if final_scores.get("surprise") is not None and not any(
-            item.evidence_kind in {"primary", "secondary"}
+            item.evidence_id in cited_expectation_ids
+            and item.evidence_kind in {"primary", "secondary"}
             and "surprise" in item.supports_dimensions
             and event_payload is not None
             and is_pre_event_baseline(item, event_payload)
