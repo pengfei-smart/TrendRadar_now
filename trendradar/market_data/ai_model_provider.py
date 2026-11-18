@@ -86,12 +86,20 @@ def _usage_count(usage: Any, name: str) -> int | None:
 def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | None, int | None]:
     """Extract text, request metadata and optional token usage from LiteLLM-like responses."""
     try:
-        choice = response.choices[0]
-        message = choice.message
-        content = message.content
-        finish_reason = getattr(choice, "finish_reason", "") or ""
-        request_id = getattr(response, "id", "") or ""
-        usage = response.get("usage") if isinstance(response, dict) else getattr(response, "usage", None)
+        if isinstance(response, dict):
+            choice = response["choices"][0]
+            message = choice["message"]
+            content = message["content"]
+            finish_reason = choice.get("finish_reason", "") or ""
+            request_id = response.get("id", "") or ""
+            usage = response.get("usage")
+        else:
+            choice = response.choices[0]
+            message = choice.message
+            content = message.content
+            finish_reason = getattr(choice, "finish_reason", "") or ""
+            request_id = getattr(response, "id", "") or ""
+            usage = getattr(response, "usage", None)
         prompt_tokens = _usage_count(usage, "prompt_tokens")
         completion_tokens = _usage_count(usage, "completion_tokens")
         total_tokens = _usage_count(usage, "total_tokens")
