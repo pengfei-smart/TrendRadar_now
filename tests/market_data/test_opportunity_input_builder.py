@@ -165,6 +165,31 @@ class OpportunityInputBuilderTests(unittest.TestCase):
                 age_hours=1,
             )
 
+    def test_quote_coverage_ratio_is_preserved_and_validated(self):
+        args = dict(
+            industry_code="SW2:801001",
+            event_strength=0.5,
+            evidence_type="direct",
+            relevance_score=0.5,
+            transmission_distance=0,
+            price_change_pct=None,
+            volume_ratio=None,
+            relative_strength_pct=None,
+            breadth_ratio=0.8,
+            leader_confirmation_ratio=None,
+            age_hours=1,
+        )
+        result = build_industry_opportunity_input(
+            **args, quote_coverage_ratio=0.75
+        )
+        self.assertEqual(result.quote_coverage_ratio, 0.75)
+        for invalid in (-0.01, 1.01):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValueError):
+                    build_industry_opportunity_input(
+                        **args, quote_coverage_ratio=invalid
+                    )
+
     def test_eligible_requires_boolean_for_both_builders(self):
         industry_args = dict(
             industry_code="SW2:801001", event_strength=0.5,
