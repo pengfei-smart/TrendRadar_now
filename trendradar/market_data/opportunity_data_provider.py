@@ -90,9 +90,13 @@ class OpportunityDataProvider:
         future_tolerance_seconds: int = 120,
         clock: Callable[[], datetime] | None = None,
     ) -> None:
-        if isinstance(max_quote_age_seconds, bool) or max_quote_age_seconds <= 0:
+        if isinstance(max_quote_age_seconds, bool) or not isinstance(max_quote_age_seconds, int):
+            raise TypeError("max_quote_age_seconds必须为整数")
+        if max_quote_age_seconds <= 0:
             raise ValueError("max_quote_age_seconds必须为正整数")
-        if isinstance(future_tolerance_seconds, bool) or future_tolerance_seconds < 0:
+        if isinstance(future_tolerance_seconds, bool) or not isinstance(future_tolerance_seconds, int):
+            raise TypeError("future_tolerance_seconds必须为整数")
+        if future_tolerance_seconds < 0:
             raise ValueError("future_tolerance_seconds不能为负数")
         self.storage = storage
         self.max_quote_age_seconds = int(max_quote_age_seconds)
