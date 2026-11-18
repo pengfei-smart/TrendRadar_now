@@ -21,7 +21,7 @@ class EventReviewServiceTests(unittest.TestCase):
         self.storage = MarketStorage(str(Path(self.tmp.name) / "market.db"))
         self.repository = EventReviewRepository(self.storage)
         self.storage.save_events([
-            MarketEvent(\"event-service\", \"test\", \"测试事件\", \"2026-11-18T09:00:00+08:00\")
+            MarketEvent("event-service", "test", "测试事件", "2026-11-18T09:00:00+08:00")
         ])
         self.base = datetime(2026, 11, 18, 9, 0, tzinfo=timezone.utc)
         self.ticks = iter((self.base, self.base + timedelta(seconds=5)))
