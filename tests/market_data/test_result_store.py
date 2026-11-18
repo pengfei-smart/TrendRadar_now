@@ -3,6 +3,7 @@
 
 import sqlite3
 import tempfile
+from contextlib import closing
 import unittest
 from pathlib import Path
 
@@ -66,7 +67,7 @@ class RadarResultStoreTests(unittest.TestCase):
 
     def test_existing_result_database_migrates_quote_timestamp_audit_columns(self):
         legacy_path = Path(self.temp.name) / "legacy.db"
-        with sqlite3.connect(legacy_path) as conn:
+        with closing(sqlite3.connect(legacy_path)) as conn:
             conn.execute("""CREATE TABLE radar_runs (
                 run_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 run_at TEXT NOT NULL,
@@ -102,6 +103,7 @@ class RadarResultStoreTests(unittest.TestCase):
                 (run_id,code,tier,score,quote_timestamp)
                 VALUES(1,'600000','B',66.5,'2026-11-09T14:33:00+08:00')"""
             )
+            conn.commit()
 
         migrated = RadarResultStore(str(legacy_path))
         row = migrated.get_run(1)["candidates"][0]
