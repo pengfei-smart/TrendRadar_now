@@ -10,6 +10,76 @@ from trendradar.market_data.models import MarketEvent, Security, QuoteSnapshot
 
 
 class MarketStorageTests(unittest.TestCase):
+
+    def test_event_review_schema_v12_is_created_and_append_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_events([MarketEvent("review-event", "test", "审查事件", "2026-11-18")])
+            with storage.connect() as connection:
+                version = connection.execute(
+                    "SELECT value FROM schema_meta WHERE key='schema_version'"
+                ).fetchone()[0]
+                self.assertEqual(version, "12")
+                expected = {
+                    "event_review_runs", "event_review_evidence",
+                    "event_reviewer_assessments", "event_review_adjudications",
+                    "event_review_quality_results",
+                }
+                actual = {
+                    row[0] for row in connection.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table'"
+                    )
+                }
+                self.assertTrue(expected.issubset(actual))
+                connection.execute(
+                    """INSERT INTO event_review_runs
+                    (review_run_id,event_id,run_status,board_status,started_at)
+                    VALUES('run-1','review-event','running','incomplete','2026-11-18T09:00:00+08:00')"""
+                )
+                connection.execute(
+                    """INSERT INTO event_review_runs
+                    (review_run_id,event_id,run_status,board_status,started_at)
+                    VALUES('run-2','review-event','running','incomplete','2026-11-18T10:00:00+08:00')"""
+                )
+                self.assertEqual(connection.execute(
+                    "SELECT COUNT(*) FROM event_review_runs WHERE event_id='review-event'"
+                ).fetchone()[0], 2)
+                with self.assertRaisesRegex(Exception, "append-only"):
+                    connection.execute(
+                        "UPDATE event_review_runs SET run_status='failed' WHERE review_run_id='run-1'"
+                    )
+                with self.assertRaisesRegex(Exception, "append-only"):
+                    connection.execute(
+                        "DELETE FROM event_review_runs WHERE review_run_id='run-1'"
+                    )
+
+    def test_event_review_schema_enforces_role_and_foreign_key_constraints(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            storage.save_events([MarketEvent("review-event", "test", "审查事件", "2026-11-18")])
+            with storage.connect() as connection:
+                connection.execute(
+                    """INSERT INTO event_review_runs
+                    (review_run_id,event_id,run_status,board_status,started_at)
+                    VALUES('run-1','review-event','running','incomplete','2026-11-18T09:00:00+08:00')"""
+                )
+                with self.assertRaises(Exception):
+                    connection.execute(
+                        """INSERT INTO event_reviewer_assessments
+                        (review_run_id,reviewer_role,event_id,recommendation,completion_status,
+                         dimension_scores_json,dimension_rationales_json,evidence_ids_json,
+                         confidence,summary)
+                        VALUES('run-1','chief_reviewer','review-event','support','complete',
+                               '{}','{}','[]',0.5,'invalid role')"""
+                    )
+                with self.assertRaises(Exception):
+                    connection.execute(
+                        """INSERT INTO event_review_runs
+                        (review_run_id,event_id,run_status,board_status,started_at)
+                        VALUES('orphan-run','missing-event','running','incomplete','2026-11-18T09:00:00+08:00')"""
+                    )
+
+
     def test_lifecycle_evidence_candidates_require_review_and_never_auto_promote(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
