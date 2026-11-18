@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,7 +12,10 @@ from trendradar.market_data.event_review_board_runner import EventReviewBoardExe
 from trendradar.market_data.event_review_coordinator import assemble_event_review_board
 from trendradar.market_data.event_review_repository import EventReviewRepository
 from trendradar.market_data.models import MarketEvent
-from trendradar.market_data.event_review_service import run_and_persist_event_review
+from trendradar.market_data.event_review_service import (
+    EventReviewPersistenceError,
+    run_and_persist_event_review,
+)
 from trendradar.market_data.storage import MarketStorage
 
 
@@ -152,6 +156,55 @@ class EventReviewServiceTests(unittest.TestCase):
                 connection.execute("SELECT COUNT(*) FROM event_review_runs").fetchone()[0],
                 0,
             )
+
+
+    def test_database_persistence_failure_is_written_to_sidecar_journal(self):
+        journal = Path(self.tmp.name) / "review-failures.jsonl"
+        execution = self._incomplete_execution()
+        with patch.object(
+            self.repository, "save_run",
+            side_effect=OSError("sensitive database path and details"),
+        ):
+            with self.assertRaises(EventReviewPersistenceError) as raised:
+                run_and_persist_event_review(
+                    provider=object(), repository=self.repository,
+                    reviewer_model="reviewer-test", chief_model="chair-test",
+                    event_id="event-service", event_payload={}, evidence=(),
+                    clock=lambda: next(self.ticks),
+                    review_run_id="db-failure-run",
+                    failure_journal_path=journal,
+                )
+
+        error = raised.exception
+        self.assertEqual(error.original_error_type, "OSError")
+        self.assertEqual(error.journal_error_type, "")
+        self.assertNotIn("sensitive", str(error))
+        record = json.loads(journal.read_text(encoding="utf-8"))
+        self.assertEqual(record["record"]["event_id"], "event-service")
+        self.assertEqual(record["record"]["review_run_id"], "db-failure-run")
+        self.assertEqual(
+            record["record"]["stage"],
+            "primary_review_database_persistence",
+        )
+        self.assertEqual(record["record"]["database_error_type"], "OSError")
+        self.assertNotIn("sensitive", journal.read_text(encoding="utf-8"))
+
+    def test_sidecar_failure_is_reported_without_claiming_durability(self):
+        journal_directory = Path(self.tmp.name) / "is-a-directory"
+        journal_directory.mkdir()
+        with patch.object(
+            self.repository, "save_run", side_effect=OSError("database down")
+        ):
+            with self.assertRaises(EventReviewPersistenceError) as raised:
+                run_and_persist_event_review(
+                    provider=object(), repository=self.repository,
+                    reviewer_model="reviewer-test", chief_model="chair-test",
+                    event_id="event-service", event_payload={}, evidence=(),
+                    clock=lambda: next(self.ticks),
+                    failure_journal_path=journal_directory,
+                )
+        self.assertEqual(raised.exception.original_error_type, "OSError")
+        self.assertTrue(raised.exception.journal_error_type)
 
 
 if __name__ == "__main__":
