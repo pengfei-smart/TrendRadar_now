@@ -82,6 +82,43 @@ def discover_industry_keyword_evidence(
         ))
     return results
 
+
+def build_industry_keyword_coverage_report(
+    sectors: Sequence[Mapping[str, str]],
+) -> dict[str, object]:
+    """Summarize reviewed-rule coverage separately from official-name coverage."""
+    reviewed_names = {
+        name.casefold(): terms
+        for name, terms, _confidence in _SECTOR_KEYWORD_RULES
+    }
+    rows: list[dict[str, object]] = []
+    seen_codes: set[str] = set()
+    for sector in sectors:
+        code = str(sector.get("sector_code", "")).strip()
+        name = str(sector.get("sector_name", "")).strip()
+        if not code.startswith("SW2:") or not name or code in seen_codes:
+            continue
+        seen_codes.add(code)
+        terms = reviewed_names.get(name.casefold(), ())
+        rows.append({
+            "sector_code": code,
+            "sector_name": name,
+            "coverage": "reviewed_terms" if terms else "official_name_only",
+            "reviewed_term_count": len(terms),
+            "reviewed_terms": list(terms),
+        })
+    rows.sort(key=lambda row: str(row["sector_code"]))
+    reviewed_count = sum(row["coverage"] == "reviewed_terms" for row in rows)
+    total = len(rows)
+    return {
+        "total_level_two_sectors": total,
+        "reviewed_terms_covered": reviewed_count,
+        "official_name_only": total - reviewed_count,
+        "reviewed_terms_coverage_ratio": round(reviewed_count / total, 4) if total else 0.0,
+        "sectors": rows,
+    }
+
+
 def discover_industry_keyword_evidence_from_storage(
     text: str,
     storage,
