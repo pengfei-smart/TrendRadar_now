@@ -35,7 +35,7 @@ class EventImpactAssessorTests(unittest.TestCase):
     def test_missing_dimensions_are_not_treated_as_zero(self):
         result = assess_event_impact(EventImpactInput(severity=0.8))
 
-        self.assertEqual(result.event_strength, 0.8)
+        self.assertAlmostEqual(result.event_strength, 0.8)
         self.assertEqual(result.assessment_confidence, 0.35)
         self.assertEqual(result.observed_dimensions, ("severity",))
         self.assertEqual(
