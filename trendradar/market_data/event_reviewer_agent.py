@@ -7,6 +7,7 @@ assessment rather than being treated as approval.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import json
 from typing import Any
 
@@ -61,6 +62,17 @@ class ReviewerExecutionResult:
     assessment: ReviewerAssessment
     error_code: str = ""
     error_message: str = ""
+    call_started_at: str = ""
+    call_completed_at: str = ""
+    request_id: str = ""
+    attempts: int = 0
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+
+
+def _utc_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _string_tuple(value: Any, field: str) -> tuple[str, ...]:
@@ -235,6 +247,9 @@ def _failure_result(
     error_message: str,
     provider: str,
     model: str,
+    call_started_at: str = "",
+    call_completed_at: str = "",
+    response: Any = None,
 ) -> ReviewerExecutionResult:
     assessment = ReviewerAssessment(
         event_id=event_id,
@@ -258,6 +273,13 @@ def _failure_result(
         assessment=assessment,
         error_code=error_code,
         error_message=error_message,
+        call_started_at=call_started_at,
+        call_completed_at=call_completed_at or _utc_timestamp(),
+        request_id=str(getattr(response, "request_id", "") or "") if response else "",
+        attempts=int(getattr(response, "attempts", 0) or 0) if response else 0,
+        prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
+        completion_tokens=getattr(response, "completion_tokens", None) if response else None,
+        total_tokens=getattr(response, "total_tokens", None) if response else None,
     )
 
 
@@ -290,6 +312,8 @@ def run_reviewer(
         raise ValueError("model must be a non-empty string")
 
     provider_name = getattr(provider, "provider_name", type(provider).__name__)
+    call_started_at = _utc_timestamp()
+    response = None
     try:
         request = ChatModelRequest(
             model=model.strip(),
@@ -314,16 +338,27 @@ def run_reviewer(
             model=response.model or model.strip(),
             event_payload=event_payload,
         )
-        return ReviewerExecutionResult(assessment=assessment)
+        return ReviewerExecutionResult(
+            assessment=assessment,
+            call_started_at=call_started_at,
+            call_completed_at=_utc_timestamp(),
+            request_id=response.request_id,
+            attempts=response.attempts,
+            prompt_tokens=response.prompt_tokens,
+            completion_tokens=response.completion_tokens,
+            total_tokens=response.total_tokens,
+        )
     except ChatModelError as exc:
         return _failure_result(
             event_id=event_id, role=role, error_code="model_error",
             error_message=str(exc), provider=str(provider_name), model=model.strip(),
+            call_started_at=call_started_at, response=response,
         )
     except (ValueError, TypeError, KeyError) as exc:
         return _failure_result(
             event_id=event_id, role=role, error_code="invalid_model_output",
             error_message=str(exc), provider=str(provider_name), model=model.strip(),
+            call_started_at=call_started_at, response=response,
         )
     except Exception as exc:
         # SDK/provider bugs must not escape and erase the review attempt.
@@ -334,4 +369,5 @@ def run_reviewer(
             error_code="unexpected_execution_error",
             error_message=f"unexpected reviewer execution error: {type(exc).__name__}",
             provider=str(provider_name), model=model.strip(),
+            call_started_at=call_started_at, response=response,
         )
