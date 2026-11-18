@@ -780,3 +780,49 @@ CREATE TRIGGER IF NOT EXISTS trg_event_review_quality_no_delete
 BEFORE DELETE ON event_review_quality_results BEGIN
     SELECT RAISE(ABORT, 'review quality results are append-only');
 END;
+
+-- v13：逐次模型调用的Token用量与请求状态审计；缺失用量保持NULL，不做估算。
+CREATE TABLE IF NOT EXISTS event_review_model_usage (
+    usage_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    review_run_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    reviewer_role TEXT NOT NULL CHECK (reviewer_role IN (
+        'fact_checker','macro_policy_analyst','industry_chain_analyst',
+        'market_expectations_analyst','chief_reviewer')),
+    request_status TEXT NOT NULL CHECK (request_status IN ('success','error')),
+    provider TEXT NOT NULL DEFAULT '',
+    model TEXT NOT NULL DEFAULT '',
+    request_id TEXT NOT NULL DEFAULT '',
+    attempts INTEGER NOT NULL DEFAULT 0 CHECK (attempts >= 0),
+    prompt_tokens INTEGER CHECK (prompt_tokens IS NULL OR prompt_tokens >= 0),
+    completion_tokens INTEGER CHECK (completion_tokens IS NULL OR completion_tokens >= 0),
+    total_tokens INTEGER CHECK (total_tokens IS NULL OR total_tokens >= 0),
+    usage_complete INTEGER NOT NULL CHECK (usage_complete IN (0,1)),
+    call_started_at TEXT NOT NULL,
+    call_completed_at TEXT NOT NULL,
+    error_code TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (call_completed_at >= call_started_at),
+    CHECK (
+        (usage_complete=1 AND prompt_tokens IS NOT NULL
+         AND completion_tokens IS NOT NULL AND total_tokens IS NOT NULL)
+        OR usage_complete=0
+    ),
+    UNIQUE(review_run_id, reviewer_role),
+    FOREIGN KEY (review_run_id) REFERENCES event_review_runs(review_run_id) ON DELETE RESTRICT,
+    FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_model_usage_event_time
+    ON event_review_model_usage(event_id, call_started_at DESC);
+CREATE INDEX IF NOT EXISTS idx_event_review_model_usage_model_time
+    ON event_review_model_usage(model, call_started_at DESC);
+
+CREATE TRIGGER IF NOT EXISTS trg_event_review_model_usage_no_update
+BEFORE UPDATE ON event_review_model_usage BEGIN
+    SELECT RAISE(ABORT, 'event review model usage is append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_model_usage_no_delete
+BEFORE DELETE ON event_review_model_usage BEGIN
+    SELECT RAISE(ABORT, 'event review model usage is append-only');
+END;
+
