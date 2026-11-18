@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+import threading
 
 from trendradar.market_data.ai_model_provider import (
     ChatModelError, ChatModelRequest, ChatModelResponse,
@@ -86,6 +87,46 @@ class GlobalModelCallGuardTests(unittest.TestCase):
         clock[0] = 15.0
         guarded.complete(request())
         self.assertEqual(fake.calls, 3)
+
+    def test_rejects_concurrent_call_without_exceeding_provider_limit(self):
+        entered = threading.Event()
+        release = threading.Event()
+
+        class BlockingProvider:
+            def __init__(self):
+                self.calls = 0
+
+            def complete(self, request):
+                self.calls += 1
+                entered.set()
+                if not release.wait(timeout=3):
+                    raise TimeoutError("test provider release timed out")
+                return ChatModelResponse("{}", "blocking", request.model)
+
+        fake = BlockingProvider()
+        guarded = GlobalModelCallGuard(fake, max_concurrent_calls=1)
+        worker_errors = []
+
+        def invoke():
+            try:
+                guarded.complete(request())
+            except Exception as exc:
+                worker_errors.append(exc)
+
+        worker = threading.Thread(target=invoke)
+        worker.start()
+        self.assertTrue(entered.wait(timeout=2))
+        try:
+            with self.assertRaisesRegex(ChatModelError, "concurrency limit"):
+                guarded.complete(request())
+            self.assertEqual(fake.calls, 1)
+        finally:
+            release.set()
+            worker.join(timeout=3)
+
+        self.assertFalse(worker.is_alive())
+        self.assertEqual(worker_errors, [])
+        self.assertEqual(fake.calls, 1)
 
     def test_success_resets_consecutive_failure_count(self):
         fake = FakeProvider([ChatModelError("one"), None, ChatModelError("two")])
