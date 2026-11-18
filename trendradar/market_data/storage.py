@@ -110,7 +110,7 @@ class MarketStorage:
         ).fetchone():
             cls._add_missing_columns(connection, "event_candidates", {
                 "evidence_hash": "TEXT NOT NULL DEFAULT ''", "updated_at": "TEXT NOT NULL DEFAULT ''",
-                "evidence_type": "TEXT NOT NULL DEFAULT 'direct'",
+                "evidence_type": "TEXT NOT NULL DEFAULT 'legacy_unknown'",
                 "related_sector_code": "TEXT NOT NULL DEFAULT ''",
                 "relation_evidence": "TEXT NOT NULL DEFAULT ''",
             })
