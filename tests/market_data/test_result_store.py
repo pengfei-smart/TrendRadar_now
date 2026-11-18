@@ -42,6 +42,26 @@ class RadarResultStoreTests(unittest.TestCase):
         self.assertIn("source_url", result["candidates"][0]["evidence_json"])
         self.assertEqual(result["candidates"][0]["pushed"], 1)
         self.assertEqual(result["candidates"][1]["pushed"], 0)
+        self.assertEqual(result["candidates"][0]["quote_timestamp_quality"], "legacy_unknown")
+        self.assertEqual(result["candidates"][0]["quote_source_timestamp"], "")
+
+    def test_candidate_persists_quote_timestamp_provenance(self):
+        run_id = self.store.start_run("2026-11-09T14:33:00+08:00")
+        candidate = self.candidate("600000")
+        candidate = Candidate(
+            security=candidate.security, tier=candidate.tier, score=candidate.score,
+            reasons=candidate.reasons, evidence=candidate.evidence,
+            quote=QuoteSnapshot(
+                "600000", "2026-11-09T14:33:00+08:00",
+                source_timestamp="2026-11-09T14:33:00+08:00",
+                timestamp_quality="provider", source="stub",
+            ),
+            causal_status=candidate.causal_status,
+        )
+        self.store.finish_run(run_id, [candidate], status="success")
+        row = self.store.get_run(run_id)["candidates"][0]
+        self.assertEqual(row["quote_source_timestamp"], "2026-11-09T14:33:00+08:00")
+        self.assertEqual(row["quote_timestamp_quality"], "provider")
 
     def test_failed_run_can_be_persisted_without_candidates(self):
         run_id = self.store.start_run("2026-11-09T14:33:00+08:00", notes="quote provider unavailable")
