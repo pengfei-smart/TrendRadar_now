@@ -28,6 +28,8 @@ class EventReviewServiceResult:
 
     execution: EventReviewBoardExecutionResult
     persisted: PersistedEventReviewRun
+    operational_error_code: str = ""
+    operational_error_message: str = ""
 
 
 def _utc_now() -> datetime:
@@ -86,9 +88,23 @@ def run_and_persist_event_review(
         chief_max_tokens=chief_max_tokens,
     )
 
-    completed = clock()
-    if not isinstance(completed, datetime) or completed.tzinfo is None:
-        raise ValueError("clock must return a timezone-aware datetime")
+    operational_error_code = ""
+    operational_error_message = ""
+    try:
+        completed = clock()
+        if not isinstance(completed, datetime) or completed.tzinfo is None:
+            raise ValueError("clock must return a timezone-aware datetime")
+    except Exception as exc:
+        # The review has already run. Preserve it using a clearly marked
+        # fallback timestamp rather than discarding the completed assessment.
+        completed = _utc_now()
+        if completed < started:
+            completed = started
+        operational_error_code = "completion_clock_failed"
+        operational_error_message = (
+            "completion clock failed; UTC fallback used "
+            f"({type(exc).__name__})"
+        )
     started_at = started.isoformat()
     completed_at = completed.isoformat()
 
@@ -98,5 +114,12 @@ def run_and_persist_event_review(
         started_at=started_at,
         completed_at=completed_at,
         review_run_id=review_run_id,
+        operational_error_code=operational_error_code,
+        operational_error_message=operational_error_message,
     )
-    return EventReviewServiceResult(execution=execution, persisted=persisted)
+    return EventReviewServiceResult(
+        execution=execution,
+        persisted=persisted,
+        operational_error_code=operational_error_code,
+        operational_error_message=operational_error_message,
+    )
