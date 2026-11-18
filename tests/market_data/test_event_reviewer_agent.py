@@ -276,5 +276,22 @@ class EventReviewerAgentTests(unittest.TestCase):
         self.assertEqual(result.assessment.completion_status, "error")
 
 
+class UnexpectedProviderFailureTests(unittest.TestCase):
+    def test_unexpected_provider_exception_becomes_safe_error_assessment(self):
+        result = run_reviewer(
+            provider=FakeProvider(error=RuntimeError("sensitive prompt and request payload")),
+            model="test/model", role="fact_checker",
+            event_id="event-1", event_payload={}, evidence=evidence(),
+        )
+        self.assertEqual(result.error_code, "unexpected_execution_error")
+        self.assertEqual(
+            result.error_message,
+            "unexpected reviewer execution error: RuntimeError",
+        )
+        self.assertNotIn("sensitive", result.error_message)
+        self.assertEqual(result.assessment.completion_status, "error")
+        self.assertEqual(result.assessment.recommendation, "abstain")
+
+
 if __name__ == "__main__":
     unittest.main()
