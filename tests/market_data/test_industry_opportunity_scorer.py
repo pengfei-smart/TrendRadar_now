@@ -19,6 +19,7 @@ def make_input(**overrides):
         "relative_strength_pct": 5.0,
         "breadth_ratio": 1.0,
         "leader_confirmation_ratio": 1.0,
+        "quote_coverage_ratio": 1.0,
         "age_hours": 0.0,
         "risk_flags": (),
     }
@@ -75,6 +76,39 @@ class IndustryOpportunityScorerTests(unittest.TestCase):
         self.assertEqual(transmitted.opportunity_type, "transmission_driven")
         self.assertGreater(direct.evidence_score, transmitted.evidence_score)
         self.assertGreater(direct.transmission_score, transmitted.transmission_score)
+
+    def test_breadth_points_require_at_least_sixty_percent_quote_coverage(self):
+        sufficient = score_industry_opportunity(
+            make_input(quote_coverage_ratio=0.60)
+        )
+        insufficient = score_industry_opportunity(
+            make_input(quote_coverage_ratio=0.59)
+        )
+        self.assertEqual(
+            sufficient.market_confirmation_score - insufficient.market_confirmation_score,
+            5.0,
+        )
+        self.assertIn("上涨广度不计入市场确认分", insufficient.explanation[1])
+
+    def test_low_coverage_reduces_breadth_confidence_without_risk_penalty(self):
+        result = score_industry_opportunity(
+            make_input(breadth_ratio=1.0, quote_coverage_ratio=0.40)
+        )
+        self.assertAlmostEqual(result.confidence, 0.85)
+        self.assertEqual(result.risk_adjustment, 0.0)
+
+    def test_missing_coverage_does_not_award_breadth_points(self):
+        result = score_industry_opportunity(
+            make_input(quote_coverage_ratio=None)
+        )
+        self.assertEqual(result.market_confirmation_score, 20.0)
+        self.assertIn("行情覆盖率不足60%", result.explanation[1])
+
+    def test_quote_coverage_outside_unit_interval_is_rejected(self):
+        with self.assertRaises(ValueError):
+            score_industry_opportunity(make_input(quote_coverage_ratio=1.01))
+        with self.assertRaises(ValueError):
+            score_industry_opportunity(make_input(quote_coverage_ratio=-0.01))
 
     def test_market_confirmation_is_zero_when_observations_are_missing(self):
         result = score_industry_opportunity(
