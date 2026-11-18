@@ -179,7 +179,7 @@ def score_industry_opportunity(
         market_confirmation_score=round(market_confirmation_score, 2),
         freshness_score=round(freshness_score, 2),
         risk_adjustment=round(risk_adjustment, 2),
-        explanation=(explanation,),
+        explanation=explanation,
     )
 
 
