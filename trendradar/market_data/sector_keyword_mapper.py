@@ -219,9 +219,10 @@ def discover_industry_keyword_evidence(
             continue
         # Exact official industry-name matches are weaker than reviewed
         # industry-specific terminology; keep both evidence terms if present.
-        match_confidence = confidence if any(
+        has_reviewed_term = any(
             term.casefold() in normalized_text for term in terms
-        ) else 0.56
+        )
+        match_confidence = confidence if has_reviewed_term else 0.56
         evidence_terms = "、".join(matched_terms)
         results.append(MappingEvidence(
             target_code=code,
@@ -232,6 +233,7 @@ def discover_industry_keyword_evidence(
             source_url=source_url,
             direction="neutral",
             verified=False,
+            evidence_type="direct" if has_reviewed_term else "official_name",
         ))
     return results
 
