@@ -2,6 +2,7 @@ import unittest
 
 from trendradar.market_data.sector_keyword_mapper import (
     discover_industry_keyword_evidence,
+    discover_industry_keyword_evidence_from_storage,
 )
 
 
