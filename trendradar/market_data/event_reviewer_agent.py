@@ -17,6 +17,7 @@ from .ai_model_provider import (
     parse_json_object,
 )
 from .event_impact_rubric import EVENT_IMPACT_RUBRIC_VERSION, get_event_impact_rubric
+from .event_review_temporal import is_pre_event_baseline
 from .event_review_models import (
     IMPACT_DIMENSIONS,
     REVIEWER_ROLES,
@@ -147,6 +148,7 @@ def _parse_assessment(
     evidence: tuple[ReviewEvidence, ...],
     provider: str,
     model: str,
+    event_payload: dict[str, Any],
 ) -> ReviewerAssessment:
     if set(payload) != _REQUIRED_KEYS:
         missing = sorted(_REQUIRED_KEYS - set(payload))
@@ -201,6 +203,7 @@ def _parse_assessment(
     has_expectation_baseline = any(
         item.evidence_kind in {"primary", "secondary"}
         and "surprise" in item.supports_dimensions
+        and is_pre_event_baseline(item, event_payload)
         for item in cited
     )
     if scores["surprise"] is not None and not has_expectation_baseline:
@@ -309,6 +312,7 @@ def run_reviewer(
             evidence=evidence,
             provider=response.provider or provider_name,
             model=response.model or model.strip(),
+            event_payload=event_payload,
         )
         return ReviewerExecutionResult(assessment=assessment)
     except ChatModelError as exc:
