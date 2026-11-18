@@ -18,6 +18,8 @@ _EVIDENCE_SCORE = {
     "legacy_unknown": 5.0,
 }
 
+_MIN_BREADTH_COVERAGE_RATIO = 0.60
+
 _LEVELS = (
     (85.0, "S"),
     (75.0, "A"),
@@ -52,7 +54,12 @@ def _market_confirmation(item: IndustryOpportunityInput) -> float:
     price = _normalized(item.price_change_pct, -3.0, 6.0) * 6.0
     volume = _normalized(item.volume_ratio, 0.7, 2.5) * 5.0
     relative = _normalized(item.relative_strength_pct, -2.0, 5.0) * 5.0
-    breadth = _clamp(item.breadth_ratio or 0.0) * 5.0
+    coverage = item.quote_coverage_ratio
+    breadth = (
+        _clamp(item.breadth_ratio or 0.0) * 5.0
+        if coverage is not None and coverage >= _MIN_BREADTH_COVERAGE_RATIO
+        else 0.0
+    )
     leaders = _clamp(item.leader_confirmation_ratio or 0.0) * 4.0
     return price + volume + relative + breadth + leaders
 
@@ -82,6 +89,11 @@ def score_industry_opportunity(
         raise ValueError("event_strength必须在0到1之间")
     if not 0.0 <= item.relevance_score <= 1.0:
         raise ValueError("relevance_score必须在0到1之间")
+    if (
+        item.quote_coverage_ratio is not None
+        and not 0.0 <= item.quote_coverage_ratio <= 1.0
+    ):
+        raise ValueError("quote_coverage_ratio必须在0到1之间")
     if not item.eligible:
         return IndustryOpportunityScore(
             target_code=item.industry_code,
@@ -121,10 +133,16 @@ def score_industry_opportunity(
     )
     score = max(0.0, min(100.0, raw_score + risk_adjustment))
 
+    breadth_confidence = (
+        _clamp(item.breadth_ratio or 0.0)
+        * _clamp(item.quote_coverage_ratio)
+        if item.quote_coverage_ratio is not None
+        else 0.0
+    )
     confidence_parts = [
         _clamp(item.event_strength),
         _clamp(item.relevance_score),
-        _clamp(item.breadth_ratio or 0.0),
+        breadth_confidence,
         _clamp(item.leader_confirmation_ratio or 0.0),
     ]
     confidence = sum(confidence_parts) / len(confidence_parts)
@@ -134,11 +152,19 @@ def score_industry_opportunity(
         if item.evidence_type in {"direct", "official_name"}
         else "transmission_driven"
     )
-    explanation = (
-        "事件证据为直接/官方名称关联"
-        if item.evidence_type in {"direct", "official_name"}
-        else "机会主要来自产业传导"
-    )
+    explanation_parts = [
+        (
+            "事件证据为直接/官方名称关联"
+            if item.evidence_type in {"direct", "official_name"}
+            else "机会主要来自产业传导"
+        )
+    ]
+    if (
+        item.quote_coverage_ratio is None
+        or item.quote_coverage_ratio < _MIN_BREADTH_COVERAGE_RATIO
+    ):
+        explanation_parts.append("行业行情覆盖率不足60%，上涨广度不计入市场确认分")
+    explanation = tuple(explanation_parts)
     return IndustryOpportunityScore(
         target_code=item.industry_code,
         score=round(score, 2),
