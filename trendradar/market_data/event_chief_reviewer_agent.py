@@ -6,6 +6,7 @@ output is strictly validated and cannot adjudicate an incomplete board.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import json
 from typing import Any
 
@@ -36,6 +37,17 @@ class ChiefReviewerExecutionResult:
     adjudication: ChiefAdjudication | None
     error_code: str = ""
     error_message: str = ""
+    call_started_at: str = ""
+    call_completed_at: str = ""
+    request_id: str = ""
+    attempts: int = 0
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+
+
+def _utc_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _build_chief_system_prompt() -> str:
@@ -225,6 +237,8 @@ def run_chief_reviewer(
         )
 
     provider_name = getattr(provider, "provider_name", type(provider).__name__)
+    call_started_at = _utc_timestamp()
+    response = None
     try:
         request = ChatModelRequest(
             model=model.strip(),
@@ -254,14 +268,35 @@ def run_chief_reviewer(
             reviewer_assessments=reviewer_assessments,
             adjudication=adjudication,
         )
-        return ChiefReviewerExecutionResult(adjudication=adjudication)
+        return ChiefReviewerExecutionResult(
+            adjudication=adjudication,
+            call_started_at=call_started_at,
+            call_completed_at=_utc_timestamp(),
+            request_id=response.request_id,
+            attempts=response.attempts,
+            prompt_tokens=response.prompt_tokens,
+            completion_tokens=response.completion_tokens,
+            total_tokens=response.total_tokens,
+        )
     except ChatModelError as exc:
         return ChiefReviewerExecutionResult(
             adjudication=None, error_code="model_error", error_message=str(exc),
+            call_started_at=call_started_at, call_completed_at=_utc_timestamp(),
+            request_id=str(getattr(response, "request_id", "") or "") if response else "",
+            attempts=int(getattr(response, "attempts", 0) or 0) if response else 0,
+            prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
+            completion_tokens=getattr(response, "completion_tokens", None) if response else None,
+            total_tokens=getattr(response, "total_tokens", None) if response else None,
         )
     except (ValueError, TypeError, KeyError) as exc:
         return ChiefReviewerExecutionResult(
             adjudication=None, error_code="invalid_model_output", error_message=str(exc),
+            call_started_at=call_started_at, call_completed_at=_utc_timestamp(),
+            request_id=str(getattr(response, "request_id", "") or "") if response else "",
+            attempts=int(getattr(response, "attempts", 0) or 0) if response else 0,
+            prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
+            completion_tokens=getattr(response, "completion_tokens", None) if response else None,
+            total_tokens=getattr(response, "total_tokens", None) if response else None,
         )
     except Exception as exc:
         # Do not let unexpected SDK/provider failures bypass audit persistence.
@@ -269,4 +304,10 @@ def run_chief_reviewer(
             adjudication=None,
             error_code="unexpected_execution_error",
             error_message=f"unexpected chief-review execution error: {type(exc).__name__}",
+            call_started_at=call_started_at, call_completed_at=_utc_timestamp(),
+            request_id=str(getattr(response, "request_id", "") or "") if response else "",
+            attempts=int(getattr(response, "attempts", 0) or 0) if response else 0,
+            prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
+            completion_tokens=getattr(response, "completion_tokens", None) if response else None,
+            total_tokens=getattr(response, "total_tokens", None) if response else None,
         )
