@@ -159,7 +159,18 @@ class EventReviewQualityGateTests(unittest.TestCase):
             published_at="2026-11-17T08:00:00+08:00",
             supports_dimensions=("surprise",),
         )
+        assessments = list(self.assessments())
+        original = assessments[-1]
+        assessments[-1] = ReviewerAssessment(
+            event_id=original.event_id, reviewer_role=original.reviewer_role,
+            recommendation=original.recommendation, completion_status=original.completion_status,
+            dimension_scores=original.dimension_scores,
+            dimension_rationales=original.dimension_rationales,
+            evidence_ids=("primary-1", "baseline-1"), confidence=original.confidence,
+            summary=original.summary,
+        )
         board = self.board(
+            assessments=tuple(assessments),
             adjudication=self.adjudication(surprise=0.75),
             evidence=self.evidence + (baseline,),
         )
