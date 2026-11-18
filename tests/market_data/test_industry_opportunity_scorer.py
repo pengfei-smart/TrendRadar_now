@@ -10,9 +10,9 @@ from trendradar.market_data.opportunity_models import IndustryOpportunityInput
 def make_input(**overrides):
     values = {
         "industry_code": "SW2:801081",
-        "event_strength": 20.0,
+        "event_strength": 1.0,
         "evidence_type": "direct",
-        "relevance_score": 15.0,
+        "relevance_score": 1.0,
         "transmission_distance": 0,
         "price_change_pct": 6.0,
         "volume_ratio": 2.5,
@@ -33,6 +33,23 @@ class IndustryOpportunityScorerTests(unittest.TestCase):
         self.assertEqual(result.score, 95.0)
         self.assertEqual(result.opportunity_level, "S")
         self.assertEqual(result.risk_adjustment, 0.0)
+
+    def test_normalized_event_and_relevance_inputs_scale_to_full_component_points(self):
+        full = score_industry_opportunity(make_input(event_strength=1.0, relevance_score=1.0))
+        half = score_industry_opportunity(make_input(event_strength=0.5, relevance_score=0.5))
+        zero = score_industry_opportunity(make_input(event_strength=0.0, relevance_score=0.0))
+        self.assertEqual(full.event_score, 20.0)
+        self.assertEqual(full.relevance_score, 15.0)
+        self.assertEqual(half.event_score, 10.0)
+        self.assertEqual(half.relevance_score, 7.5)
+        self.assertEqual(zero.event_score, 0.0)
+        self.assertEqual(zero.relevance_score, 0.0)
+
+    def test_event_and_relevance_outside_unit_interval_are_rejected(self):
+        with self.assertRaises(ValueError):
+            score_industry_opportunity(make_input(event_strength=1.01))
+        with self.assertRaises(ValueError):
+            score_industry_opportunity(make_input(relevance_score=-0.01))
 
     def test_risk_adjustment_is_applied_after_base_score(self):
         result = score_industry_opportunity(
@@ -108,7 +125,7 @@ class IndustryOpportunityScorerTests(unittest.TestCase):
         self.assertEqual(result.risk_adjustment, -15.0)
 
     def test_object_wrapper_uses_same_pure_scoring_function(self):
-        item = make_input(event_strength=12.0, age_hours=6.0)
+        item = make_input(event_strength=0.6, relevance_score=0.8, age_hours=6.0)
         self.assertEqual(
             IndustryOpportunityScorer().score(item),
             score_industry_opportunity(item),
