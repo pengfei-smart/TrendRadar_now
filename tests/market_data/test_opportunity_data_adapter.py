@@ -1,4 +1,5 @@
 import unittest
+from types import SimpleNamespace
 
 from trendradar.market_data.opportunity_data_adapter import (
     IndustryOpportunityObservation,
@@ -168,6 +169,67 @@ class OpportunityDataAdapterTests(unittest.TestCase):
             tuple(item.industry_code for item in result),
             ("SW2:801002", "SW2:801001"),
         )
+
+    def test_snapshot_market_breadth_overrides_unverified_observation_values(self):
+        snapshot = SimpleNamespace(
+            eligible_securities=tuple(
+                SimpleNamespace(code=code)
+                for code in ("600001", "600002", "600003", "600004", "600005")
+            ),
+            security_sector_codes=(
+                ("600001", ("SW2:801081",)),
+                ("600002", ("SW2:801081",)),
+                ("600003", ("SW2:801081",)),
+                ("600004", ("SW2:801081",)),
+                ("600005", ("SW2:801081",)),
+            ),
+            quotes=(
+                SimpleNamespace(code="600001", change_pct=2.0),
+                SimpleNamespace(code="600002", change_pct=-1.0),
+                SimpleNamespace(code="600003", change_pct=0.0),
+                SimpleNamespace(code="600004", change_pct=3.0),
+            ),
+            quote_freshness=(
+                SimpleNamespace(security_code="600001", status="fresh"),
+                SimpleNamespace(security_code="600002", status="fresh"),
+                SimpleNamespace(security_code="600003", status="fresh"),
+                SimpleNamespace(security_code="600004", status="stale"),
+            ),
+        )
+        result = adapt_industry_observations(
+            (industry_observation("SW2:801081"),),
+            snapshot=snapshot,
+        )[0]
+
+        self.assertAlmostEqual(result.breadth_ratio, 1 / 3)
+        self.assertEqual(result.quote_coverage_ratio, 0.6)
+
+    def test_snapshot_low_coverage_is_passed_to_scorer_input(self):
+        snapshot = SimpleNamespace(
+            eligible_securities=tuple(
+                SimpleNamespace(code=code)
+                for code in ("600001", "600002", "600003", "600004", "600005")
+            ),
+            security_sector_codes=tuple(
+                (code, ("SW2:801081",))
+                for code in ("600001", "600002", "600003", "600004", "600005")
+            ),
+            quotes=(
+                SimpleNamespace(code="600001", change_pct=2.0),
+                SimpleNamespace(code="600002", change_pct=-1.0),
+            ),
+            quote_freshness=(
+                SimpleNamespace(security_code="600001", status="fresh"),
+                SimpleNamespace(security_code="600002", status="fresh"),
+            ),
+        )
+        result = adapt_industry_observations(
+            (industry_observation("SW2:801081"),),
+            snapshot=snapshot,
+        )[0]
+
+        self.assertEqual(result.breadth_ratio, 0.5)
+        self.assertEqual(result.quote_coverage_ratio, 0.4)
 
     def test_security_collection_adapter_preserves_order(self):
         observations = (
