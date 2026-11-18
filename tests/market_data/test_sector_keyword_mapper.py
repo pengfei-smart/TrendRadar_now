@@ -37,6 +37,39 @@ class SectorKeywordMapperTests(unittest.TestCase):
             "https://example.invalid/news",
         )
 
+    def test_storage_adapter_uses_database_industry_codes_and_provenance(self):
+        import tempfile
+        from pathlib import Path
+
+        from trendradar.market_data.storage import MarketStorage
+
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+            with storage.connect() as connection:
+                connection.executemany(
+                    """INSERT INTO sector_master
+                    (sector_code,sector_name,sector_type,parent_sector_code,provider)
+                    VALUES(?,?,?,?,?)""",
+                    [
+                        ("SW1:801010", "农林牧渔", "industry", "", "akshare_sw"),
+                        ("SW2:801017", "养殖业", "industry", "SW1:801010", "akshare_sw"),
+                        ("SW2:801016", "种植业", "industry", "SW1:801010", "akshare_sw"),
+                        ("SW2:801017X", "养殖业", "industry", "", "other_provider"),
+                    ],
+                )
+
+            evidence = discover_industry_keyword_evidence_from_storage(
+                "生猪养殖价格上涨，猪周期受到关注",
+                storage,
+                source="test_news",
+                source_url="https://example.org/news/1",
+            )
+            self.assertEqual([item.target_code for item in evidence], ["SW2:801017"])
+            self.assertEqual(evidence[0].source, "test_news")
+            self.assertEqual(evidence[0].source_url, "https://example.org/news/1")
+            self.assertEqual(evidence[0].direction, "neutral")
+            self.assertFalse(evidence[0].verified)
+
     def test_does_not_emit_level_one_sector(self):
         evidence = discover_industry_keyword_evidence("种植业政策支持", self.sectors)
         self.assertEqual([item.target_code for item in evidence], ["SW2:801016"])
