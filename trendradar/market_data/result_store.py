@@ -39,11 +39,22 @@ class RadarResultStore:
                 reasons TEXT NOT NULL DEFAULT '',
                 evidence_json TEXT NOT NULL DEFAULT '[]',
                 quote_timestamp TEXT NOT NULL DEFAULT '',
+                quote_source_timestamp TEXT NOT NULL DEFAULT '',
+                quote_timestamp_quality TEXT NOT NULL DEFAULT 'legacy_unknown',
                 pushed INTEGER NOT NULL DEFAULT 0 CHECK(pushed IN (0,1)),
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY(run_id,code),
                 FOREIGN KEY(run_id) REFERENCES radar_runs(run_id) ON DELETE CASCADE
             )""")
+            columns = {row["name"] for row in conn.execute("PRAGMA table_info(radar_candidates)")}
+            if "quote_source_timestamp" not in columns:
+                conn.execute(
+                    "ALTER TABLE radar_candidates ADD COLUMN quote_source_timestamp TEXT NOT NULL DEFAULT ''"
+                )
+            if "quote_timestamp_quality" not in columns:
+                conn.execute(
+                    "ALTER TABLE radar_candidates ADD COLUMN quote_timestamp_quality TEXT NOT NULL DEFAULT 'legacy_unknown'"
+                )
             conn.execute("CREATE INDEX IF NOT EXISTS idx_radar_runs_time_status ON radar_runs(run_at DESC,status)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_radar_candidates_code_run ON radar_candidates(code,run_id DESC)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_radar_candidates_run_score ON radar_candidates(run_id,score DESC)")
@@ -97,11 +108,15 @@ class RadarResultStore:
                 raise LookupError(f"radar run {run_id} not found")
             conn.execute("DELETE FROM radar_candidates WHERE run_id=?", (run_id,))
             conn.executemany("""INSERT INTO radar_candidates
-                (run_id,code,tier,score,causal_status,reasons,evidence_json,quote_timestamp,pushed)
-                VALUES(?,?,?,?,?,?,?,?,?)""", [(
+                (run_id,code,tier,score,causal_status,reasons,evidence_json,quote_timestamp,
+                 quote_source_timestamp,quote_timestamp_quality,pushed)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?)""", [(
                 run_id, c.security.code, c.tier, float(c.score), c.causal_status,
                 " | ".join(c.reasons), self._evidence_json(c),
-                c.quote.timestamp if c.quote else "", int(c.security.code in pushed),
+                c.quote.timestamp if c.quote else "",
+                c.quote.source_timestamp if c.quote else "",
+                c.quote.timestamp_quality if c.quote else "legacy_unknown",
+                int(c.security.code in pushed),
             ) for c in candidates])
             conn.execute("""UPDATE radar_runs SET status=?,candidate_count=?,pushed_count=?,source_status=?,
                 quote_source=?,quote_data_at=?,duration_ms=?,notes=? WHERE run_id=?""",
