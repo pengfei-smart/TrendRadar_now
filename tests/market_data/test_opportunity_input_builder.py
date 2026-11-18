@@ -165,6 +165,29 @@ class OpportunityInputBuilderTests(unittest.TestCase):
                 age_hours=1,
             )
 
+    def test_eligible_requires_boolean_for_both_builders(self):
+        industry_args = dict(
+            industry_code="SW2:801001", event_strength=0.5,
+            evidence_type="direct", relevance_score=0.5,
+            transmission_distance=0, price_change_pct=None,
+            volume_ratio=None, relative_strength_pct=None,
+            breadth_ratio=None, leader_confirmation_ratio=None,
+            age_hours=1,
+        )
+        security_args = dict(
+            security_code="000001", industry_code="SW2:801001",
+            industry_score=70, direct_event=False, event_strength=0.5,
+            price_change_pct=None, volume_ratio=None,
+            relative_strength_pct=None, liquidity_ratio=None,
+            market_confirmation_ratio=None,
+        )
+        for invalid in ("false", "true", 0, 1, None):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(TypeError):
+                    build_industry_opportunity_input(**industry_args, eligible=invalid)
+                with self.assertRaises(TypeError):
+                    build_security_opportunity_input(**security_args, eligible=invalid)
+
     def test_ineligible_flag_is_preserved(self):
         result = build_security_opportunity_input(
             security_code="000001",
