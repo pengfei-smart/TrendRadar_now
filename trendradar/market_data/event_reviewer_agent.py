@@ -69,6 +69,7 @@ class ReviewerExecutionResult:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     total_tokens: int | None = None
+    request_succeeded: bool = False
 
 
 def _utc_timestamp() -> str:
@@ -280,6 +281,7 @@ def _failure_result(
         prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
         completion_tokens=getattr(response, "completion_tokens", None) if response else None,
         total_tokens=getattr(response, "total_tokens", None) if response else None,
+        request_succeeded=response is not None,
     )
 
 
@@ -347,6 +349,7 @@ def run_reviewer(
             prompt_tokens=response.prompt_tokens,
             completion_tokens=response.completion_tokens,
             total_tokens=response.total_tokens,
+            request_succeeded=True,
         )
     except ChatModelError as exc:
         return _failure_result(
