@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS schema_meta (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO schema_meta(key, value) VALUES ('schema_version', '5')
+INSERT INTO schema_meta(key, value) VALUES ('schema_version', '10')
 ON CONFLICT(key) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS data_sources (
@@ -150,6 +150,10 @@ CREATE TABLE IF NOT EXISTS event_candidates (
         CHECK (direction IN ('positive','negative','mixed','neutral','unknown')),
     verified INTEGER NOT NULL DEFAULT 0 CHECK (verified IN (0, 1)),
     evidence_hash TEXT NOT NULL DEFAULT '',
+    evidence_type TEXT NOT NULL DEFAULT 'direct'
+        CHECK (evidence_type IN ('direct','official_name','upstream','downstream')),
+    related_sector_code TEXT NOT NULL DEFAULT '',
+    relation_evidence TEXT NOT NULL DEFAULT '',
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(event_id, target_code, mapping_type),
     FOREIGN KEY (event_id) REFERENCES market_events(event_id) ON DELETE CASCADE
