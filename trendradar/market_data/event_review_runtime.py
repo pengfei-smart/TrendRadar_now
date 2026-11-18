@@ -44,7 +44,11 @@ def build_event_review_runtime(
     circuit_failure_threshold: int = 5,
     circuit_cooldown_seconds: float = 60.0,
 ) -> EventReviewRuntime:
-    """Create a guarded runtime without making API calls.\n\n    Runtime defaults to one transport attempt per role to keep the event call\n    ceiling predictable; retries can be explicitly enabled by the caller.\n    """
+    """Create a guarded runtime without making API calls.
+
+    Runtime defaults to one transport attempt per role to keep the event call
+    ceiling predictable; retries can be explicitly enabled by the caller.
+    """
     if not isinstance(ai_config, Mapping):
         raise TypeError("ai_config must be a mapping")
 
