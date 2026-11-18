@@ -140,5 +140,54 @@ class EventReviewPipelineTests(unittest.TestCase):
         self.assertEqual(provider.requests, [])
 
 
+
+class UnexpectedFailureProvider:
+    provider_name = "unexpected-failure"
+
+    def complete(self, request):
+        raise RuntimeError("SDK internal error with sensitive request details")
+
+
+class EventReviewPipelineFailurePersistenceTests(unittest.TestCase):
+    def test_unexpected_provider_failures_are_persisted_as_incomplete(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            storage = MarketStorage(str(Path(temp_dir) / "market.db"))
+            repository = EventReviewRepository(storage)
+            storage.save_events([
+                MarketEvent(
+                    event_id="provider-failure-event", source="unknown_feed",
+                    title="Test event", published_at="2026-11-18T08:00:00Z",
+                )
+            ])
+            ticks = iter((
+                datetime(2026, 11, 18, 8, 0, tzinfo=timezone.utc),
+                datetime(2026, 11, 18, 8, 1, tzinfo=timezone.utc),
+            ))
+            result = review_persisted_market_event(
+                storage=storage, repository=repository,
+                provider=UnexpectedFailureProvider(),
+                reviewer_model="fake/reviewer", chief_model="fake/chief",
+                event_id="provider-failure-event",
+                clock=lambda: next(ticks),
+                review_run_id="provider-failure-run",
+            )
+
+            self.assertEqual(result.execution.status, "incomplete")
+            self.assertEqual(result.persisted.run_status, "incomplete")
+            self.assertEqual(result.persisted.quality_result.status, "blocked")
+            self.assertEqual(len(result.execution.reviewer_results), 4)
+            self.assertTrue(all(
+                item.error_code == "unexpected_execution_error"
+                for item in result.execution.reviewer_results
+            ))
+            audit = repository.get_run(review_run_id="provider-failure-run")
+            self.assertEqual(len(audit.reviewer_assessments), 4)
+            self.assertEqual(audit.quality_result["status"], "blocked")
+            self.assertNotIn(
+                "sensitive",
+                audit.reviewer_assessments[0]["concerns"][0],
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
