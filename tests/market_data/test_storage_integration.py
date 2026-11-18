@@ -151,7 +151,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
         self.assertEqual(count, 1)
-        self.assertEqual(row, (
+        self.assertEqual(tuple(row), (
             "2026-11-09T14:33:00+08:00", 10.5, "legacy_provider",
             "2026-11-09T14:33:05+08:00", "", "legacy_unknown",
         ))
