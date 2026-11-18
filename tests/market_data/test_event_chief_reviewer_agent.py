@@ -88,7 +88,7 @@ class EventChiefReviewerAgentTests(unittest.TestCase):
         )
         prompt = provider.requests[0].system_prompt
         self.assertIn("主动寻找反证", prompt)
-        self.assertIn("不能简单平均分数", prompt)
+        self.assertIn("不能简单平均四位审查员的分数", prompt)
         self.assertIn("不能因为多数审查员意见一致就自动接受", prompt)
 
     def test_user_prompt_contains_all_four_reviews_and_evidence(self):
