@@ -263,3 +263,10 @@ def run_chief_reviewer(
         return ChiefReviewerExecutionResult(
             adjudication=None, error_code="invalid_model_output", error_message=str(exc),
         )
+    except Exception as exc:
+        # Do not let unexpected SDK/provider failures bypass audit persistence.
+        return ChiefReviewerExecutionResult(
+            adjudication=None,
+            error_code="unexpected_execution_error",
+            error_message=f"unexpected chief-review execution error: {type(exc).__name__}",
+        )
