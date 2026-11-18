@@ -176,6 +176,9 @@ CREATE TABLE IF NOT EXISTS market_snapshots (
     source TEXT NOT NULL DEFAULT '',
     delayed INTEGER NOT NULL DEFAULT 1 CHECK (delayed IN (0, 1)),
     collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    source_timestamp TEXT NOT NULL DEFAULT '',
+    timestamp_quality TEXT NOT NULL DEFAULT 'legacy_unknown'
+        CHECK (timestamp_quality IN ('provider','missing','invalid','legacy_unknown')),
     UNIQUE(code, timestamp, source),
     FOREIGN KEY (code) REFERENCES security_master(code) ON UPDATE CASCADE
 );
