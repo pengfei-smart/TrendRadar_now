@@ -150,6 +150,49 @@ class EventReviewQualityGateTests(unittest.TestCase):
         self.assertEqual(result.status, "blocked")
         self.assertTrue(any("超预期评分" in reason for reason in result.reasons))
 
+    def test_surprise_requires_timezone_aware_pre_event_baseline(self):
+        baseline = ReviewEvidence(
+            evidence_id="baseline-1", event_id="event-1",
+            source="Consensus", source_url="https://example.com/consensus",
+            excerpt="Published consensus before the event.",
+            evidence_kind="secondary",
+            published_at="2026-11-17T08:00:00+08:00",
+            supports_dimensions=("surprise",),
+        )
+        board = self.board(
+            adjudication=self.adjudication(surprise=0.75),
+            evidence=self.evidence + (baseline,),
+        )
+        missing_time = evaluate_event_review_quality(
+            board, event_payload={},
+        )
+        self.assertEqual(missing_time.status, "blocked")
+        self.assertTrue(any("发布时间早于事件发生时间" in reason for reason in missing_time.reasons))
+
+        valid_time = evaluate_event_review_quality(
+            board,
+            event_payload={"event_time": "2026-11-17T09:00:00+08:00"},
+        )
+        self.assertEqual(valid_time.status, "passed")
+
+    def test_surprise_baseline_published_after_event_is_blocked(self):
+        baseline = ReviewEvidence(
+            evidence_id="baseline-1", event_id="event-1",
+            source="Late report", source_url="https://example.com/late",
+            excerpt="Published after the event.",
+            evidence_kind="secondary",
+            published_at="2026-11-17T10:00:00+08:00",
+            supports_dimensions=("surprise",),
+        )
+        board = self.board(
+            adjudication=self.adjudication(surprise=0.75),
+            evidence=self.evidence + (baseline,),
+        )
+        result = evaluate_event_review_quality(
+            board, event_payload={"event_time": "2026-11-17T09:00:00+08:00"},
+        )
+        self.assertEqual(result.status, "blocked")
+
     def test_non_board_input_is_rejected(self):
         with self.assertRaises(TypeError):
             evaluate_event_review_quality(None)
