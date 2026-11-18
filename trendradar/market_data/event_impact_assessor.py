@@ -91,7 +91,7 @@ def assess_event_impact(item: EventImpactInput) -> EventImpactAssessment:
         )
 
     contributions = tuple(
-        (name, round(values[name] * weight / observed_weight, 6))
+        (name, values[name] * weight / observed_weight)
         for name, weight in _DIMENSION_WEIGHTS
         if values[name] is not None
     )
@@ -111,8 +111,8 @@ def assess_event_impact(item: EventImpactInput) -> EventImpactAssessment:
         explanation.append("存在未评估维度，强度分按已评估维度归一化，置信度相应降低")
 
     return EventImpactAssessment(
-        event_strength=round(max(0.0, min(1.0, strength)), 6),
-        assessment_confidence=round(observed_weight, 6),
+        event_strength=max(0.0, min(1.0, strength)),
+        assessment_confidence=observed_weight,
         observed_dimensions=observed,
         missing_dimensions=missing,
         dimension_weights=_DIMENSION_WEIGHTS,
