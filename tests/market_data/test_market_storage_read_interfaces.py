@@ -53,8 +53,11 @@ class MarketStorageReadInterfaceTests(unittest.TestCase):
             event_id="event-map", verified_only=True, min_confidence=.5,
         )
         self.assertEqual(len(all_rows), 2)
-        self.assertEqual(all_rows[0]["evidence_type"], "official_name")
-        self.assertEqual(all_rows[0]["verified"], 1)
+        rows_by_target = {row["target_code"]: row for row in all_rows}
+        self.assertEqual(rows_by_target["SW2:801081"]["evidence_type"], "direct")
+        self.assertEqual(rows_by_target["SW2:801081"]["verified"], 0)
+        self.assertEqual(rows_by_target["SW2:801101"]["evidence_type"], "official_name")
+        self.assertEqual(rows_by_target["SW2:801101"]["verified"], 1)
         self.assertEqual(len(trusted), 1)
         self.assertEqual(trusted[0]["target_code"], "SW2:801101")
 
