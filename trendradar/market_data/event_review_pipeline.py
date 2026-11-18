@@ -8,13 +8,14 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
 from .ai_model_provider import ChatModelProvider
 from .event_review_input_builder import build_event_review_input
 from .event_review_repository import EventReviewRepository
 from .event_review_service import EventReviewServiceResult, run_and_persist_event_review
 from .storage import MarketStorage
+from .event_review_runtime import EventReviewRuntime
 
 
 def review_persisted_market_event(
@@ -73,3 +74,34 @@ def review_persisted_market_event(
         chief_max_tokens=chief_max_tokens,
         **kwargs,
     )
+
+def review_persisted_market_event_with_runtime(
+    *,
+    storage: MarketStorage,
+    repository: EventReviewRepository,
+    runtime: EventReviewRuntime,
+    event_id: str,
+    **pipeline_options: Any,
+) -> EventReviewServiceResult:
+    """Run one event through a fresh per-event budget and shared global guard.
+
+    Existing callers may continue injecting a provider directly through
+    review_persisted_market_event().
+    """
+    if not isinstance(runtime, EventReviewRuntime):
+        raise TypeError("runtime must be an EventReviewRuntime")
+    return review_persisted_market_event(
+        storage=storage,
+        repository=repository,
+        provider=runtime.provider_for_event(),
+        reviewer_model=runtime.reviewer_model,
+        chief_model=runtime.chief_model,
+        event_id=event_id,
+        **pipeline_options,
+    )
+
+
+__all__ = [
+    "review_persisted_market_event",
+    "review_persisted_market_event_with_runtime",
+]
