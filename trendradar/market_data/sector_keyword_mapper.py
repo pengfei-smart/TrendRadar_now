@@ -50,23 +50,33 @@ def discover_industry_keyword_evidence(
         sector_by_name[key] = (code, name)
 
     results: list[MappingEvidence] = []
-    for canonical_name, terms, confidence in _SECTOR_KEYWORD_RULES:
-        resolved = sector_by_name.get(canonical_name.casefold())
-        if resolved is None:
-            continue
-        code, display_name = resolved
+    # Explicit, reviewed semantic terms take precedence over the generic
+    # official-name match. This gives all current SW2 industries baseline
+    # coverage without inventing broad synonyms for industries not yet reviewed.
+    rules_by_name = {
+        name.casefold(): (terms, confidence)
+        for name, terms, confidence in _SECTOR_KEYWORD_RULES
+    }
+    for key, (code, display_name) in sector_by_name.items():
+        terms, confidence = rules_by_name.get(key, ((), 0.56))
         matched_terms = [term for term in terms if term.casefold() in normalized_text]
+        if display_name.casefold() in normalized_text and display_name not in matched_terms:
+            matched_terms.append(display_name)
         if not matched_terms:
             continue
+        # Exact official industry-name matches are weaker than reviewed
+        # industry-specific terminology; keep both evidence terms if present.
+        match_confidence = confidence if any(
+            term.casefold() in normalized_text for term in terms
+        ) else 0.56
         evidence_terms = "、".join(matched_terms)
         results.append(MappingEvidence(
             target_code=code,
             mapping_type="industry_keyword",
-            confidence=confidence,
+            confidence=match_confidence,
             evidence=f"新闻文本命中关键词：{evidence_terms}；候选行业：{display_name}",
             source=source,
             source_url=source_url,
-            # Event direction is not the same as industry impact direction.
             direction="neutral",
             verified=False,
         ))
