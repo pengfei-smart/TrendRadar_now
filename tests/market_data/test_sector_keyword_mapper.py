@@ -33,6 +33,7 @@ class SectorKeywordMapperTests(unittest.TestCase):
         )
         self.assertEqual(by_code["SW2:801017"].mapping_type, "industry_keyword")
         self.assertIn("生猪养殖", by_code["SW2:801017"].evidence)
+        self.assertEqual(by_code["SW2:801017"].evidence_type, "direct")
         self.assertEqual(by_code["SW2:801017"].source, "test-news")
         self.assertEqual(
             by_code["SW2:801017"].source_url,
@@ -48,6 +49,7 @@ class SectorKeywordMapperTests(unittest.TestCase):
         )
         self.assertEqual([item.target_code for item in evidence], ["SW2:801076"])
         self.assertEqual(evidence[0].confidence, 0.56)
+        self.assertEqual(evidence[0].evidence_type, "official_name")
         self.assertIn("轨交设备Ⅱ", evidence[0].evidence)
 
     def test_first_technology_batch_matches_eight_industries_by_code(self):
