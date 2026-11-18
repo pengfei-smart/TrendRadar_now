@@ -195,6 +195,71 @@ class EventReviewRepositoryTests(unittest.TestCase):
                 "SELECT COUNT(*) FROM event_review_evidence WHERE review_run_id='run-unique'"
             ).fetchone()[0], 1)
 
+    def test_lists_event_history_newest_first_with_quality_summary(self):
+        base = dict(
+            execution=self._execution(), event_payload={},
+            completed_at="2026-11-18T09:03:00+08:00",
+        )
+        self.repository.save_run(
+            **base, started_at="2026-11-18T09:02:00+08:00",
+            review_run_id="run-older",
+        )
+        self.repository.save_run(
+            **base, started_at="2026-11-18T10:02:00+08:00",
+            review_run_id="run-newer",
+        )
+        history = self.repository.list_runs(event_id="event-1", limit=10)
+        self.assertEqual(
+            [item.review_run_id for item in history],
+            ["run-newer", "run-older"],
+        )
+        self.assertTrue(all(item.eligible_for_scoring for item in history))
+        self.assertTrue(all(item.quality_status == "passed" for item in history))
+        self.assertEqual(
+            [item.review_run_id for item in self.repository.list_runs(
+                event_id="event-1", limit=1, offset=1
+            )],
+            ["run-older"],
+        )
+
+    def test_loads_audit_record_with_decoded_evidence_reviews_and_chair(self):
+        self.repository.save_run(
+            execution=self._execution(), event_payload={},
+            started_at="2026-11-18T09:02:00+08:00",
+            completed_at="2026-11-18T09:03:00+08:00",
+            review_run_id="run-audit",
+        )
+        record = self.repository.get_run(review_run_id="run-audit")
+        self.assertIsNotNone(record)
+        self.assertEqual(record.run["event_id"], "event-1")
+        self.assertEqual(len(record.evidence), 1)
+        self.assertEqual(record.evidence[0]["supports_dimensions"], [
+            "severity", "scope", "duration"
+        ])
+        self.assertEqual(len(record.reviewer_assessments), 4)
+        fact_checker = next(
+            item for item in record.reviewer_assessments
+            if item["reviewer_role"] == "fact_checker"
+        )
+        self.assertEqual(fact_checker["evidence_ids"], ["ev-primary"])
+        self.assertEqual(
+            fact_checker["dimension_scores"]["surprise"], None
+        )
+        self.assertEqual(record.adjudication["status"], "accepted")
+        self.assertEqual(record.adjudication["reviewer_roles_considered"], list(REVIEWER_ROLES))
+        self.assertEqual(record.quality_result["status"], "passed")
+        self.assertTrue(record.quality_result["eligible_for_scoring"])
+
+    def test_audit_lookup_returns_none_for_unknown_run_and_validates_paging(self):
+        self.assertIsNone(self.repository.get_run(review_run_id="not-found"))
+        self.assertEqual(self.repository.list_runs(event_id="event-1"), ())
+        with self.assertRaisesRegex(ValueError, "limit"):
+            self.repository.list_runs(event_id="event-1", limit=0)
+        with self.assertRaisesRegex(ValueError, "offset"):
+            self.repository.list_runs(event_id="event-1", offset=-1)
+        with self.assertRaisesRegex(ValueError, "event_id"):
+            self.repository.list_runs(event_id=" ")
+
     def test_rejects_naive_or_reversed_run_timestamps_before_writing(self):
         execution = self._execution()
         with self.assertRaisesRegex(ValueError, "timezone"):
