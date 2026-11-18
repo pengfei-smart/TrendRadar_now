@@ -1,6 +1,7 @@
 # 本文件测试市场雷达运行记录与候选历史的持久化、证据序列化和推送计数。
 """Unit tests for radar result persistence."""
 
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -62,6 +63,51 @@ class RadarResultStoreTests(unittest.TestCase):
         row = self.store.get_run(run_id)["candidates"][0]
         self.assertEqual(row["quote_source_timestamp"], "2026-11-09T14:33:00+08:00")
         self.assertEqual(row["quote_timestamp_quality"], "provider")
+
+    def test_existing_result_database_migrates_quote_timestamp_audit_columns(self):
+        legacy_path = Path(self.temp.name) / "legacy.db"
+        with sqlite3.connect(legacy_path) as conn:
+            conn.execute("""CREATE TABLE radar_runs (
+                run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_at TEXT NOT NULL,
+                run_type TEXT NOT NULL DEFAULT 'snapshot',
+                status TEXT NOT NULL DEFAULT 'started',
+                candidate_count INTEGER NOT NULL DEFAULT 0,
+                pushed_count INTEGER NOT NULL DEFAULT 0,
+                source_status TEXT NOT NULL DEFAULT '',
+                quote_source TEXT NOT NULL DEFAULT '',
+                quote_data_at TEXT NOT NULL DEFAULT '',
+                duration_ms INTEGER NOT NULL DEFAULT 0,
+                notes TEXT NOT NULL DEFAULT ''
+            )""")
+            conn.execute("""CREATE TABLE radar_candidates (
+                run_id INTEGER NOT NULL,
+                code TEXT NOT NULL,
+                tier TEXT NOT NULL,
+                score REAL NOT NULL DEFAULT 0,
+                causal_status TEXT NOT NULL DEFAULT 'unverified',
+                reasons TEXT NOT NULL DEFAULT '',
+                evidence_json TEXT NOT NULL DEFAULT '[]',
+                quote_timestamp TEXT NOT NULL DEFAULT '',
+                pushed INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY(run_id,code)
+            )""")
+            conn.execute(
+                "INSERT INTO radar_runs(run_id,run_at,status,candidate_count) VALUES(1,?, 'success', 1)",
+                ("2026-11-09T14:33:00+08:00",),
+            )
+            conn.execute(
+                """INSERT INTO radar_candidates
+                (run_id,code,tier,score,quote_timestamp)
+                VALUES(1,'600000','B',66.5,'2026-11-09T14:33:00+08:00')"""
+            )
+
+        migrated = RadarResultStore(str(legacy_path))
+        row = migrated.get_run(1)["candidates"][0]
+        self.assertEqual(row["quote_timestamp"], "2026-11-09T14:33:00+08:00")
+        self.assertEqual(row["quote_source_timestamp"], "")
+        self.assertEqual(row["quote_timestamp_quality"], "legacy_unknown")
 
     def test_failed_run_can_be_persisted_without_candidates(self):
         run_id = self.store.start_run("2026-11-09T14:33:00+08:00", notes="quote provider unavailable")
