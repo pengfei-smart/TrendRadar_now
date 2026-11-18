@@ -36,7 +36,7 @@ def build_event_review_runtime(
     *,
     reviewer_model: str | None = None,
     chief_model: str | None = None,
-    max_attempts: int = 2,
+    max_attempts: int = 1,
     max_model_calls_per_event: int = 5,
     max_output_tokens_per_call: int = 3000,
     max_timeout_seconds: float = 60.0,
@@ -44,7 +44,7 @@ def build_event_review_runtime(
     circuit_failure_threshold: int = 5,
     circuit_cooldown_seconds: float = 60.0,
 ) -> EventReviewRuntime:
-    """Create a configured provider and model pair without making API calls."""
+    """Create a guarded runtime without making API calls.\n\n    Runtime defaults to one transport attempt per role to keep the event call\n    ceiling predictable; retries can be explicitly enabled by the caller.\n    """
     if not isinstance(ai_config, Mapping):
         raise TypeError("ai_config must be a mapping")
 
