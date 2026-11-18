@@ -71,3 +71,23 @@ def discover_industry_keyword_evidence(
             verified=False,
         ))
     return results
+
+def discover_industry_keyword_evidence_from_storage(
+    text: str,
+    storage,
+    *,
+    source: str = "",
+    source_url: str = "",
+    provider: str = "akshare_sw",
+) -> list[MappingEvidence]:
+    """Load the authoritative industry catalog from MarketStorage, then match text.
+
+    The storage adapter is intentionally small (load_industry_sectors), keeping
+    keyword rules independent from SQLite and making the lookup easy to test.
+    """
+    if not str(text or "").strip():
+        return []
+    sectors = storage.load_industry_sectors(provider=provider)
+    return discover_industry_keyword_evidence(
+        text, sectors, source=source, source_url=source_url,
+    )
