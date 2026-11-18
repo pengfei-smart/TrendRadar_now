@@ -345,6 +345,30 @@ class MarketStorage:
         return result[f"{exchange}_{board_scope}"]
 
 
+    def load_industry_sectors(self, *, provider: str = "akshare_sw") -> list[dict[str, str]]:
+        """Load the current provider's industry catalog for keyword mapping.
+
+        Returns both SW1 and SW2 rows so callers can validate hierarchy, while
+        keyword matching itself remains restricted to SW2 codes.
+        """
+        with self.connect() as connection:
+            rows = connection.execute(
+                """SELECT sector_code, sector_name, parent_sector_code
+                FROM sector_master
+                WHERE provider=? AND sector_type='industry'
+                  AND (sector_code LIKE 'SW1:%' OR sector_code LIKE 'SW2:%')
+                ORDER BY sector_code""",
+                (provider,),
+            ).fetchall()
+        return [
+            {
+                "sector_code": row["sector_code"],
+                "sector_name": row["sector_name"],
+                "parent_sector_code": row["parent_sector_code"],
+            }
+            for row in rows
+        ]
+
     def load_securities(self, *, eligible_only: bool = False) -> list[Security]:
         """Load the persisted security universe with currently valid sector memberships.
 
