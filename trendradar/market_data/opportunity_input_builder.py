@@ -91,6 +91,7 @@ def build_industry_opportunity_input(
     age_hours: float,
     risk_flags: Iterable[str] = (),
     eligible: bool = True,
+    quote_coverage_ratio: float | None = None,
 ) -> IndustryOpportunityInput:
     """Build one normalized industry opportunity input."""
 
@@ -136,6 +137,12 @@ def build_industry_opportunity_input(
             "leader_confirmation_ratio",
         )
 
+    if quote_coverage_ratio is not None:
+        quote_coverage_ratio = _validate_unit_interval(
+            quote_coverage_ratio,
+            "quote_coverage_ratio",
+        )
+
     return IndustryOpportunityInput(
         industry_code=industry_code,
         event_strength=event_strength,
@@ -159,6 +166,7 @@ def build_industry_opportunity_input(
         age_hours=age_hours,
         risk_flags=_normalize_risk_flags(risk_flags),
         eligible=eligible,
+        quote_coverage_ratio=quote_coverage_ratio,
     )
 
 
