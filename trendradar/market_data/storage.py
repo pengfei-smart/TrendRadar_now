@@ -535,19 +535,31 @@ class MarketStorage:
         ]
 
     def load_event_mapping_evidence(
-        self, *, event_id: str | None = None, target_code: str | None = None,
-        verified_only: bool = False, min_confidence: float = 0.0,
-        limit: int = 5000,
+        self, *, event_id: str | None = None,
+        event_ids: Iterable[str] | None = None,
+        target_code: str | None = None, verified_only: bool = False,
+        min_confidence: float = 0.0, limit: int = 5000,
     ) -> list[dict]:
-        """Load typed event-to-target evidence without promoting unverified candidates."""
+        """Load typed event evidence, optionally scoped to a set of event IDs.
+
+        Unverified candidates remain unverified; this method never promotes them.
+        """
         if not 1 <= limit <= 20000:
             raise ValueError("limit必须在1到20000之间")
         if not 0.0 <= min_confidence <= 1.0:
             raise ValueError("min_confidence必须在0到1之间")
+        if event_id is not None and event_ids is not None:
+            raise ValueError("event_id和event_ids不能同时指定")
         clauses, params = ["confidence >= ?"], [min_confidence]
         if event_id is not None:
             clauses.append("event_id = ?")
             params.append(event_id)
+        if event_ids is not None:
+            values = sorted({str(value).strip() for value in event_ids if str(value).strip()})
+            if not values:
+                return []
+            clauses.append("event_id IN (" + ",".join("?" for _ in values) + ")")
+            params.extend(values)
         if target_code is not None:
             clauses.append("target_code = ?")
             params.append(target_code)
