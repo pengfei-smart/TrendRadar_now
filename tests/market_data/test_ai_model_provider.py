@@ -175,5 +175,28 @@ class AiModelProviderTests(unittest.TestCase):
             provider.complete({"model": "model"})
 
 
+    def test_passes_explicit_api_credentials_and_base_without_exposing_them(self):
+        calls = []
+        secret = "test-secret-never-log"
+
+        def completion(**kwargs):
+            calls.append(kwargs)
+            return fake_response()
+
+        provider = LiteLLMChatProvider(
+            completion_callable=completion,
+            api_key=secret,
+            api_base="https://api.example.test/v1",
+        )
+        provider.complete(ChatModelRequest(
+            model="openai/example-model",
+            system_prompt="system",
+            user_prompt="user",
+        ))
+        self.assertEqual(calls[0]["api_key"], secret)
+        self.assertEqual(calls[0]["api_base"], "https://api.example.test/v1")
+        self.assertNotIn(secret, repr(provider))
+
+
 if __name__ == "__main__":
     unittest.main()
