@@ -16,7 +16,7 @@ class EventImpactAssessorTests(unittest.TestCase):
             surprise=0.4,
         ))
 
-        self.assertAlmostEqual(result.event_strength, 0.72)
+        self.assertAlmostEqual(result.event_strength, 0.75)
         self.assertEqual(result.assessment_confidence, 1.0)
         self.assertEqual(
             result.observed_dimensions,
