@@ -11,7 +11,7 @@ from trendradar.market_data.models import MarketEvent, Security, QuoteSnapshot
 
 class MarketStorageTests(unittest.TestCase):
 
-    def test_event_review_schema_v12_is_created_and_append_only(self):
+    def test_event_review_schema_v13_is_created_and_append_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
             storage.save_events([MarketEvent("review-event", "test", "审查事件", "2026-11-18")])
@@ -19,11 +19,11 @@ class MarketStorageTests(unittest.TestCase):
                 version = connection.execute(
                     "SELECT value FROM schema_meta WHERE key='schema_version'"
                 ).fetchone()[0]
-                self.assertEqual(version, "12")
+                self.assertEqual(version, "13")
                 expected = {
                     "event_review_runs", "event_review_evidence",
                     "event_reviewer_assessments", "event_review_adjudications",
-                    "event_review_quality_results",
+                    "event_review_quality_results", "event_review_model_usage",
                 }
                 actual = {
                     row[0] for row in connection.execute(
@@ -44,6 +44,22 @@ class MarketStorageTests(unittest.TestCase):
                 self.assertEqual(connection.execute(
                     "SELECT COUNT(*) FROM event_review_runs WHERE event_id='review-event'"
                 ).fetchone()[0], 2)
+                connection.execute(
+                    """INSERT INTO event_review_model_usage
+                    (review_run_id,event_id,reviewer_role,request_status,usage_complete,
+                     call_started_at,call_completed_at)
+                    VALUES('run-1','review-event','fact_checker','error',0,
+                           '2026-11-18T09:00:01+00:00','2026-11-18T09:00:02+00:00')"""
+                )
+                with self.assertRaisesRegex(Exception, "append-only"):
+                    connection.execute(
+                        "UPDATE event_review_model_usage SET request_status='success' "
+                        "WHERE review_run_id='run-1'"
+                    )
+                with self.assertRaisesRegex(Exception, "append-only"):
+                    connection.execute(
+                        "DELETE FROM event_review_model_usage WHERE review_run_id='run-1'"
+                    )
                 with self.assertRaisesRegex(Exception, "append-only"):
                     connection.execute(
                         "UPDATE event_review_runs SET run_status='failed' WHERE review_run_id='run-1'"
