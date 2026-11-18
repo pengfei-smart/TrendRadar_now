@@ -1,7 +1,7 @@
 """Atomic persistence for AI event-review board execution history.
 
 A review run and all of its evidence, assessments, adjudication and quality
-result are committed in one SQLite transaction. The v12 tables are append-only:
+result are committed in one SQLite transaction. The v12/v13 audit tables are append-only:
 this repository writes only terminal snapshots and never updates prior runs.
 """
 from __future__ import annotations
