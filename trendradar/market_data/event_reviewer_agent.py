@@ -325,3 +325,13 @@ def run_reviewer(
             event_id=event_id, role=role, error_code="invalid_model_output",
             error_message=str(exc), provider=str(provider_name), model=model.strip(),
         )
+    except Exception as exc:
+        # SDK/provider bugs must not escape and erase the review attempt.
+        # Keep the diagnostic safe: exception messages may contain prompts,
+        # request bodies, URLs or credentials.
+        return _failure_result(
+            event_id=event_id, role=role,
+            error_code="unexpected_execution_error",
+            error_message=f"unexpected reviewer execution error: {type(exc).__name__}",
+            provider=str(provider_name), model=model.strip(),
+        )
