@@ -407,6 +407,7 @@ class EventReviewAuditRecord:
     reviewer_assessments: tuple[dict, ...]
     adjudication: dict | None
     quality_result: dict | None
+    model_usage: tuple[dict, ...] = ()
 
 
 def _decode_json_field(row: dict, field: str):
