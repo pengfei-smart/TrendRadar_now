@@ -83,10 +83,24 @@ class EventReviewRepositoryTests(unittest.TestCase):
             reviewer_assessments=assessments, adjudication=adjudication,
         )
         reviewer_results = tuple(
-            ReviewerExecutionResult(assessment=item) for item in assessments
+            ReviewerExecutionResult(
+                assessment=item, call_started_at="2026-11-18T09:02:01+00:00",
+                call_completed_at="2026-11-18T09:02:02+00:00",
+                request_id=f"req-{item.reviewer_role}", attempts=1,
+                prompt_tokens=100, completion_tokens=20, total_tokens=120,
+                request_succeeded=True,
+            )
+            for item in assessments
         )
         chief_result = (
-            ChiefReviewerExecutionResult(adjudication=adjudication)
+            ChiefReviewerExecutionResult(
+                adjudication=adjudication,
+                call_started_at="2026-11-18T09:02:03+00:00",
+                call_completed_at="2026-11-18T09:02:04+00:00",
+                request_id="req-chief", attempts=1,
+                prompt_tokens=200, completion_tokens=30, total_tokens=230,
+                request_succeeded=True, provider="test-provider", model="chair-model",
+            )
             if adjudicated else None
         )
         return EventReviewBoardExecutionResult(
@@ -105,6 +119,16 @@ class EventReviewRepositoryTests(unittest.TestCase):
         self.assertEqual(result.run_status, "adjudicated")
         self.assertEqual(result.board_status, "adjudicated")
         self.assertEqual(result.quality_result.status, "passed")
+        record = self.repository.get_run(review_run_id="run-accepted")
+        self.assertEqual(len(record.model_usage), 5)
+        self.assertEqual(
+            [item["reviewer_role"] for item in record.model_usage],
+            [*REVIEWER_ROLES, "chief_reviewer"],
+        )
+        self.assertTrue(all(item["request_status"] == "success" for item in record.model_usage))
+        self.assertTrue(all(item["usage_complete"] == 1 for item in record.model_usage))
+        self.assertEqual(record.model_usage[0]["total_tokens"], 120)
+        self.assertEqual(record.model_usage[-1]["total_tokens"], 230)
         with self.storage.connect() as connection:
             run = connection.execute(
                 "SELECT * FROM event_review_runs WHERE review_run_id='run-accepted'"
@@ -163,6 +187,10 @@ class EventReviewRepositoryTests(unittest.TestCase):
         )
         self.assertEqual(result.run_status, "incomplete")
         self.assertEqual(result.quality_result.status, "blocked")
+        record = self.repository.get_run(review_run_id="run-incomplete")
+        self.assertEqual(len(record.model_usage), 4)
+        self.assertEqual(record.model_usage[-1]["request_status"], "error")
+        self.assertTrue(all(item["reviewer_role"] != "chief_reviewer" for item in record.model_usage))
         with self.storage.connect() as connection:
             self.assertEqual(connection.execute(
                 "SELECT COUNT(*) FROM event_review_adjudications WHERE review_run_id='run-incomplete'"
