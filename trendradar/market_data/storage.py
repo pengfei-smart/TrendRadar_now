@@ -15,7 +15,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 9
+    SCHEMA_VERSION = 10
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path).expanduser().resolve()
@@ -110,6 +110,9 @@ class MarketStorage:
         ).fetchone():
             cls._add_missing_columns(connection, "event_candidates", {
                 "evidence_hash": "TEXT NOT NULL DEFAULT ''", "updated_at": "TEXT NOT NULL DEFAULT ''",
+                "evidence_type": "TEXT NOT NULL DEFAULT 'direct'",
+                "related_sector_code": "TEXT NOT NULL DEFAULT ''",
+                "relation_evidence": "TEXT NOT NULL DEFAULT ''",
             })
         if connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='market_snapshots'"
@@ -434,17 +437,31 @@ class MarketStorage:
         return len(rows)
 
     def save_mapping_evidence(self, event_id: str, evidence: Iterable[MappingEvidence]) -> int:
+        allowed_evidence_types = {"direct", "official_name", "upstream", "downstream"}
+        items = list(evidence)
+        for item in items:
+            if item.evidence_type not in allowed_evidence_types:
+                raise ValueError(f"行业映射证据类型不合法: {item.evidence_type!r}")
+            if item.evidence_type in {"upstream", "downstream"} and not (
+                item.related_sector_code and item.relation_evidence.strip()
+            ):
+                raise ValueError("上下游传导证据必须提供关联行业代码和传导依据")
         rows = [(event_id, e.target_code, e.mapping_type, e.confidence, e.evidence,
-                 e.source, e.source_url, e.direction, int(e.verified)) for e in evidence]
+                 e.source, e.source_url, e.direction, int(e.verified), e.evidence_type,
+                 e.related_sector_code, e.relation_evidence) for e in items]
         with self.connect() as connection:
             connection.executemany(
                 """INSERT INTO event_candidates
-                (event_id,target_code,mapping_type,confidence,evidence,source,source_url,direction,verified)
-                VALUES(?,?,?,?,?,?,?,?,?)
+                (event_id,target_code,mapping_type,confidence,evidence,source,source_url,
+                 direction,verified,evidence_type,related_sector_code,relation_evidence)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
                 ON CONFLICT(event_id,target_code,mapping_type) DO UPDATE SET
                 confidence=excluded.confidence,evidence=excluded.evidence,
                 source=excluded.source,source_url=excluded.source_url,
                 direction=excluded.direction,verified=excluded.verified,
+                evidence_type=excluded.evidence_type,
+                related_sector_code=excluded.related_sector_code,
+                relation_evidence=excluded.relation_evidence,
                 updated_at=CURRENT_TIMESTAMP""", rows)
         return len(rows)
 
