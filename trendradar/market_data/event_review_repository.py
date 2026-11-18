@@ -226,6 +226,97 @@ class EventReviewRepository:
         )
 
 
+    def list_runs(
+        self,
+        *,
+        event_id: str,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> tuple["EventReviewRunSummary", ...]:
+        """List an event's immutable review history, newest first."""
+        if not isinstance(event_id, str) or not event_id.strip():
+            raise ValueError("event_id must be a non-empty string")
+        if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 500:
+            raise ValueError("limit must be an integer between 1 and 500")
+        if isinstance(offset, bool) or not isinstance(offset, int) or offset < 0:
+            raise ValueError("offset must be a non-negative integer")
+
+        with self.storage.connect() as connection:
+            rows = connection.execute(
+                """SELECT r.review_run_id,r.event_id,r.run_status,r.board_status,
+                          r.started_at,r.completed_at,r.rubric_version,
+                          r.reviewer_model,r.chief_model,r.error_code,
+                          q.status AS quality_status,
+                          COALESCE(q.eligible_for_scoring,0) AS eligible_for_scoring
+                   FROM event_review_runs AS r
+                   LEFT JOIN event_review_quality_results AS q
+                     ON q.review_run_id=r.review_run_id
+                   WHERE r.event_id=?
+                   ORDER BY julianday(r.started_at) DESC,r.created_at DESC,
+                            r.review_run_id DESC
+                   LIMIT ? OFFSET ?""",
+                (event_id.strip(), limit, offset),
+            ).fetchall()
+
+        return tuple(
+            EventReviewRunSummary(
+                review_run_id=row["review_run_id"],
+                event_id=row["event_id"],
+                run_status=row["run_status"],
+                board_status=row["board_status"],
+                started_at=row["started_at"],
+                completed_at=row["completed_at"],
+                rubric_version=row["rubric_version"],
+                reviewer_model=row["reviewer_model"],
+                chief_model=row["chief_model"],
+                quality_status=row["quality_status"],
+                eligible_for_scoring=bool(row["eligible_for_scoring"]),
+                error_code=row["error_code"],
+            )
+            for row in rows
+        )
+
+    def get_run(self, *, review_run_id: str) -> "EventReviewAuditRecord | None":
+        """Load one complete, read-only audit record with decoded JSON fields."""
+        if not isinstance(review_run_id, str) or not review_run_id.strip():
+            raise ValueError("review_run_id must be a non-empty string")
+        run_id = review_run_id.strip()
+        with self.storage.connect() as connection:
+            run = connection.execute(
+                "SELECT * FROM event_review_runs WHERE review_run_id=?", (run_id,)
+            ).fetchone()
+            if run is None:
+                return None
+            evidence_rows = connection.execute(
+                """SELECT * FROM event_review_evidence WHERE review_run_id=?
+                   ORDER BY published_at,evidence_id""", (run_id,)
+            ).fetchall()
+            assessment_rows = connection.execute(
+                """SELECT * FROM event_reviewer_assessments WHERE review_run_id=?
+                   ORDER BY reviewer_role""", (run_id,)
+            ).fetchall()
+            adjudication_row = connection.execute(
+                "SELECT * FROM event_review_adjudications WHERE review_run_id=?",
+                (run_id,),
+            ).fetchone()
+            quality_row = connection.execute(
+                "SELECT * FROM event_review_quality_results WHERE review_run_id=?",
+                (run_id,),
+            ).fetchone()
+
+        if quality_row is None:
+            raise RuntimeError(f"review run {run_id!r} has no quality result")
+        return EventReviewAuditRecord(
+            run=_row_dict(run),
+            evidence=tuple(_decode_evidence(row) for row in evidence_rows),
+            reviewer_assessments=tuple(
+                _decode_assessment(row) for row in assessment_rows
+            ),
+            adjudication=_decode_adjudication(adjudication_row),
+            quality_result=_decode_quality(quality_row),
+        )
+
+
 @dataclass(frozen=True)
 class EventReviewRunSummary:
     """Compact immutable index entry for an event's review history."""
@@ -316,98 +407,3 @@ def _decode_quality(row):
 
 # Read methods are attached to the repository class below to keep the public
 # API discoverable beside save_run while preserving the append-only contract.
-def _list_runs(
-    self: EventReviewRepository,
-    *,
-    event_id: str,
-    limit: int = 20,
-    offset: int = 0,
-) -> tuple[EventReviewRunSummary, ...]:
-    if not isinstance(event_id, str) or not event_id.strip():
-        raise ValueError("event_id must be a non-empty string")
-    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 500:
-        raise ValueError("limit must be an integer between 1 and 500")
-    if isinstance(offset, bool) or not isinstance(offset, int) or offset < 0:
-        raise ValueError("offset must be a non-negative integer")
-
-    with self.storage.connect() as connection:
-        rows = connection.execute(
-            """SELECT r.review_run_id,r.event_id,r.run_status,r.board_status,
-                      r.started_at,r.completed_at,r.rubric_version,
-                      r.reviewer_model,r.chief_model,r.error_code,
-                      q.status AS quality_status,
-                      COALESCE(q.eligible_for_scoring,0) AS eligible_for_scoring
-               FROM event_review_runs AS r
-               LEFT JOIN event_review_quality_results AS q
-                 ON q.review_run_id=r.review_run_id
-               WHERE r.event_id=?
-               ORDER BY r.started_at DESC,r.created_at DESC,r.review_run_id DESC
-               LIMIT ? OFFSET ?""",
-            (event_id.strip(), limit, offset),
-        ).fetchall()
-
-    return tuple(
-        EventReviewRunSummary(
-            review_run_id=row["review_run_id"],
-            event_id=row["event_id"],
-            run_status=row["run_status"],
-            board_status=row["board_status"],
-            started_at=row["started_at"],
-            completed_at=row["completed_at"],
-            rubric_version=row["rubric_version"],
-            reviewer_model=row["reviewer_model"],
-            chief_model=row["chief_model"],
-            quality_status=row["quality_status"],
-            eligible_for_scoring=bool(row["eligible_for_scoring"]),
-            error_code=row["error_code"],
-        )
-        for row in rows
-    )
-
-
-def _get_run(
-    self: EventReviewRepository, *, review_run_id: str
-) -> EventReviewAuditRecord | None:
-    if not isinstance(review_run_id, str) or not review_run_id.strip():
-        raise ValueError("review_run_id must be a non-empty string")
-    run_id = review_run_id.strip()
-    with self.storage.connect() as connection:
-        run = connection.execute(
-            "SELECT * FROM event_review_runs WHERE review_run_id=?", (run_id,)
-        ).fetchone()
-        if run is None:
-            return None
-        evidence_rows = connection.execute(
-            """SELECT * FROM event_review_evidence WHERE review_run_id=?
-               ORDER BY published_at,evidence_id""", (run_id,)
-        ).fetchall()
-        assessment_rows = connection.execute(
-            """SELECT * FROM event_reviewer_assessments WHERE review_run_id=?
-               ORDER BY reviewer_role""", (run_id,)
-        ).fetchall()
-        adjudication_row = connection.execute(
-            "SELECT * FROM event_review_adjudications WHERE review_run_id=?",
-            (run_id,),
-        ).fetchone()
-        quality_row = connection.execute(
-            "SELECT * FROM event_review_quality_results WHERE review_run_id=?",
-            (run_id,),
-        ).fetchone()
-
-    # A run is written atomically. Missing quality data therefore indicates
-    # database tampering/corruption, not a legitimate partial execution.
-    if quality_row is None:
-        raise RuntimeError(f"review run {run_id!r} has no quality result")
-    return EventReviewAuditRecord(
-        run=_row_dict(run),
-        evidence=tuple(_decode_evidence(row) for row in evidence_rows),
-        reviewer_assessments=tuple(
-            _decode_assessment(row) for row in assessment_rows
-        ),
-        adjudication=_decode_adjudication(adjudication_row),
-        quality_result=_decode_quality(quality_row),
-    )
-
-
-EventReviewRepository.list_runs = _list_runs
-EventReviewRepository.get_run = _get_run
