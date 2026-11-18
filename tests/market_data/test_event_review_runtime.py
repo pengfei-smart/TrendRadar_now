@@ -3,7 +3,12 @@ from __future__ import annotations
 
 import unittest
 
-from trendradar.market_data.event_review_runtime import build_event_review_runtime
+from unittest.mock import patch
+
+from trendradar.market_data.event_review_runtime import (
+    build_event_review_runtime,
+    load_event_review_runtime,
+)
 
 
 class EventReviewRuntimeTests(unittest.TestCase):
@@ -69,6 +74,35 @@ class EventReviewRuntimeTests(unittest.TestCase):
         self.assertEqual(guarded.budget.max_model_calls, 4)
         self.assertEqual(guarded.budget.max_output_tokens_per_call, 1800)
         self.assertEqual(guarded.budget.max_timeout_seconds, 30)
+
+    def test_loads_ai_section_from_existing_trendradar_config(self):
+        application_config = {
+            "AI": {
+                "MODEL": "deepseek/from-config",
+                "API_KEY": "resolved-environment-secret",
+                "API_BASE": "",
+            }
+        }
+        with patch(
+            "trendradar.core.loader.load_config",
+            return_value=application_config,
+        ) as load_config:
+            runtime = load_event_review_runtime("custom/config.yaml")
+        load_config.assert_called_once_with("custom/config.yaml")
+        self.assertEqual(runtime.reviewer_model, "deepseek/from-config")
+        self.assertNotIn("resolved-environment-secret", repr(runtime))
+
+    def test_loads_default_config_path_when_not_supplied(self):
+        with patch(
+            "trendradar.core.loader.load_config",
+            return_value={"AI": {
+                "MODEL": "deepseek/default",
+                "API_KEY": "resolved-secret",
+            }},
+        ) as load_config:
+            runtime = load_event_review_runtime()
+        load_config.assert_called_once_with(None)
+        self.assertEqual(runtime.chief_model, "deepseek/default")
 
     def test_rejects_invalid_api_base_type(self):
         with self.assertRaisesRegex(TypeError, "API base"):
