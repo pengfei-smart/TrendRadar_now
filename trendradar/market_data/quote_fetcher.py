@@ -54,17 +54,22 @@ def _parse_number(value: object, *, allow_zero: bool = True) -> float | None:
     return parsed
 
 
-def _provider_timestamp(value: object, fallback: str) -> str:
-    """Convert provider Unix seconds/milliseconds to local ISO timestamp."""
+def _provider_timestamp(value: object) -> tuple[str, str]:
+    """Return a trustworthy provider timestamp and its quality classification."""
+    if value is None or value == "" or value == "-" or value == "—":
+        return "", "missing"
     parsed = _parse_number(value, allow_zero=False)
     if parsed is None:
-        return fallback
+        return "", "invalid"
     try:
         if parsed > 10_000_000_000:
             parsed /= 1000
-        return datetime.fromtimestamp(parsed, timezone.utc).astimezone(pytz.timezone("Asia/Shanghai")).isoformat(timespec="seconds")
+        timestamp = datetime.fromtimestamp(
+            parsed, timezone.utc
+        ).astimezone(pytz.timezone("Asia/Shanghai")).isoformat(timespec="seconds")
+        return timestamp, "provider"
     except (OverflowError, OSError, ValueError):
-        return fallback
+        return "", "invalid"
 
 
 def _diff_records(diff: object) -> list[Mapping[str, object]]:
@@ -161,9 +166,13 @@ class EastmoneyBatchQuoteProvider:
                     # zero/missing latest price may indicate suspension or a
                     # provider anomaly. It is omitted; callers can flag missing.
                     continue
+                source_timestamp, timestamp_quality = _provider_timestamp(record.get("f124"))
                 output.append(QuoteSnapshot(
                     code=code,
-                    timestamp=_provider_timestamp(record.get("f124"), collected_at),
+                    timestamp=source_timestamp or collected_at,
+                    source_timestamp=source_timestamp,
+                    collected_at=collected_at,
+                    timestamp_quality=timestamp_quality,
                     price=price,
                     change_pct=change_pct,
                     turnover=turnover,
