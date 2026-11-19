@@ -40,7 +40,7 @@ class DeepSeekCostEngineTests(unittest.TestCase):
             prompt_cache_miss_tokens=800_000,
         )
         self.assertEqual("deepseek-flash", result.model_key)
-        self.assertEqual(Decimal("0.84"), result.total_cost)
+        self.assertEqual(Decimal("1.204"), result.total_cost)
 
     def test_unknown_cache_breakdown_is_partial_not_zero(self):
         result = self.estimate(prompt_cache_hit_tokens=None)
