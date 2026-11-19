@@ -11,7 +11,7 @@ from trendradar.market_data.models import MarketEvent, Security, QuoteSnapshot
 
 class MarketStorageTests(unittest.TestCase):
 
-    def test_event_review_schema_v13_is_created_and_append_only(self):
+    def test_event_review_schema_v14_is_created_and_append_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
             storage.save_events([MarketEvent("review-event", "test", "审查事件", "2026-11-18")])
@@ -19,11 +19,11 @@ class MarketStorageTests(unittest.TestCase):
                 version = connection.execute(
                     "SELECT value FROM schema_meta WHERE key='schema_version'"
                 ).fetchone()[0]
-                self.assertEqual(version, "13")
+                self.assertEqual(version, "14")
                 expected = {
                     "event_review_runs", "event_review_evidence",
                     "event_reviewer_assessments", "event_review_adjudications",
-                    "event_review_quality_results", "event_review_model_usage",
+                    "event_review_quality_results", "event_review_model_usage",\n                    "event_review_model_pricing",
                 }
                 actual = {
                     row[0] for row in connection.execute(
