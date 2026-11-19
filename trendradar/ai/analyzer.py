@@ -65,7 +65,7 @@ class AIAnalyzer:
         self.debug = debug
 
         # 创建 AI 客户端（基于 LiteLLM）
-        self.client = AIClient(ai_config)
+        self.client = AIClient(ai_config, feature="analysis")
 
         # 验证配置
         valid, error = self.client.validate_config()
