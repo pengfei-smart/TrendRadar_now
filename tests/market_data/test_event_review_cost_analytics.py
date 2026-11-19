@@ -76,8 +76,9 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
         usd = next(item for item in report.totals_by_currency if item.currency == "USD")
         unknown_currency = next(item for item in report.totals_by_currency if item.currency is None)
         totals = usd.totals
-        self.assertEqual(totals.calls, 3)
-        self.assertEqual(unknown_currency.totals.calls, 2)
+        self.assertEqual(totals.calls, 2)
+        self.assertEqual(unknown_currency.totals.calls, 3)
+        self.assertEqual(unknown_currency.totals.missing_usage_calls, 1)
         self.assertEqual(unknown_currency.totals.missing_pricing_calls, 1)
         self.assertEqual(unknown_currency.totals.unresolved_provider_calls, 1)
         self.assertEqual(totals.calculated_calls, 1)
