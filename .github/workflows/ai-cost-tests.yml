@@ -1,0 +1,27 @@
+# AI usage ledger and cost-engine unit tests; no external API calls are made.
+name: AI Cost Tests
+
+on:
+  pull_request:
+    paths:
+      - "trendradar/ai/**"
+      - "tests/ai/**"
+      - ".github/workflows/ai-cost-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ai-cost-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Run AI cost unit tests
+        run: python -m unittest discover -s tests/ai -p "test_*.py" -v
