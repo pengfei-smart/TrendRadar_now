@@ -84,6 +84,7 @@ class EventReviewerAgentTests(unittest.TestCase):
         self.assertEqual(assessment.model_name, "test/model")
         self.assertEqual(assessment.prompt_version, REVIEWER_PROMPT_VERSION)
         self.assertEqual(assessment.evidence_ids, ("ev-1",))
+        self.assertEqual(provider.requests[0].usage_operation, "reviewer:fact_checker")
 
     def test_each_role_receives_distinct_role_specific_system_prompt(self):
         prompts = []
