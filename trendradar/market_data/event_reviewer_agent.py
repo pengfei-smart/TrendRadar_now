@@ -69,6 +69,8 @@ class ReviewerExecutionResult:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     total_tokens: int | None = None
+    prompt_cache_hit_tokens: int | None = None
+    prompt_cache_miss_tokens: int | None = None
     request_succeeded: bool = False
 
 
@@ -281,6 +283,8 @@ def _failure_result(
         prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
         completion_tokens=getattr(response, "completion_tokens", None) if response else None,
         total_tokens=getattr(response, "total_tokens", None) if response else None,
+        prompt_cache_hit_tokens=getattr(response, "prompt_cache_hit_tokens", None) if response else None,
+        prompt_cache_miss_tokens=getattr(response, "prompt_cache_miss_tokens", None) if response else None,
         request_succeeded=response is not None,
     )
 
@@ -328,6 +332,7 @@ def run_reviewer(
             timeout_seconds=timeout_seconds,
             temperature=0.0,
             max_tokens=max_tokens,
+            usage_operation=f"reviewer:{role}",
         )
         response = provider.complete(request)
         payload = parse_json_object(response.content)
@@ -349,6 +354,8 @@ def run_reviewer(
             prompt_tokens=response.prompt_tokens,
             completion_tokens=response.completion_tokens,
             total_tokens=response.total_tokens,
+            prompt_cache_hit_tokens=response.prompt_cache_hit_tokens,
+            prompt_cache_miss_tokens=response.prompt_cache_miss_tokens,
             request_succeeded=True,
         )
     except ChatModelError as exc:
