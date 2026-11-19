@@ -203,10 +203,15 @@ class LiteLLMChatProvider:
                     prompt_tokens, completion_tokens, total_tokens,
                     cache_hit, cache_miss,
                 ) = _extract_content(raw)
+                actual_model = (
+                    raw.get("model") if isinstance(raw, dict)
+                    else getattr(raw, "model", None)
+                ) or request.model
+                actual_model = str(actual_model)
                 self._append_usage(
                     request=request, status="success", started_at=started_at,
                     completed_at=datetime.now(timezone.utc), request_id=request_id,
-                    model=request.model, attempts=attempt,
+                    model=actual_model, attempts=attempt,
                     prompt_tokens=prompt_tokens, completion_tokens=completion_tokens,
                     total_tokens=total_tokens, prompt_cache_hit_tokens=cache_hit,
                     prompt_cache_miss_tokens=cache_miss,
@@ -214,7 +219,7 @@ class LiteLLMChatProvider:
                 return ChatModelResponse(
                     content=content,
                     provider=self.provider_name,
-                    model=request.model,
+                    model=actual_model,
                     finish_reason=finish_reason,
                     request_id=request_id,
                     attempts=attempt,
