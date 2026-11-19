@@ -43,6 +43,7 @@ class CostTotals:
     missing_pricing_calls: int
     unresolved_provider_calls: int
     ambiguous_pricing_calls: int
+    invalid_timestamp_calls: int
     known_cost: Decimal
     complete_cost: Decimal
 
@@ -93,13 +94,17 @@ def _cost_status(row, billing_provider: str, pricing_repo: EventReviewPricingRep
     completion = row["completion_tokens"]
     if prompt is None and completion is None:
         return "missing_usage", None, None, None, ""
+    if parse_aware_datetime(row["call_started_at"]) is None:
+        return "invalid_timestamp", None, None, None, ""
     if not billing_provider:
         return "unresolved_provider", None, None, None, ""
     try:
         price = pricing_repo.find_price(
             provider=billing_provider, model=row["model"], at=row["call_started_at"]
         )
-    except RuntimeError:
+    except RuntimeError as exc:
+        if "ambiguous overlapping prices" not in str(exc):
+            raise
         return "ambiguous_pricing", None, None, None, ""
     if price is None:
         return "missing_pricing", None, None, None, ""
@@ -132,6 +137,8 @@ def _totals(lines: list[EventReviewCallCost]) -> CostTotals:
             counts["unresolved_provider_calls"] += 1
         elif line.cost_status == "ambiguous_pricing":
             counts["ambiguous_pricing_calls"] += 1
+        elif line.cost_status == "invalid_timestamp":
+            counts["invalid_timestamp_calls"] += 1
         if line.known_cost is not None:
             known += line.known_cost
         if line.complete_cost is not None:
@@ -144,6 +151,7 @@ def _totals(lines: list[EventReviewCallCost]) -> CostTotals:
         missing_pricing_calls=counts["missing_pricing_calls"],
         unresolved_provider_calls=counts["unresolved_provider_calls"],
         ambiguous_pricing_calls=counts["ambiguous_pricing_calls"],
+        invalid_timestamp_calls=counts["invalid_timestamp_calls"],
         known_cost=known,
         complete_cost=complete,
     )
@@ -178,7 +186,8 @@ def get_event_review_cost_report(
     values are the actual billing-provider identifiers used in the price catalog.
     Missing mappings are reported as unresolved_provider, never guessed.
     Date filtering is start-inclusive/end-exclusive. Currency totals are kept
-    separate; no foreign-exchange conversion is attempted.
+    separate; no foreign-exchange conversion is attempted. The limit caps each
+    grouped breakdown, not the report totals or per-call audit lines.
     """
     if not isinstance(storage, MarketStorage):
         raise TypeError("storage must be a MarketStorage instance")
