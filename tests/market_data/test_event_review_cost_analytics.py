@@ -120,6 +120,32 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
         self.assertEqual(len(report.lines), 5)
         self.assertEqual(len(report.by_role), 1)
 
+    def test_invalid_call_timestamp_is_not_priced(self):
+        with self.storage.connect() as connection:
+            connection.execute(
+                """INSERT INTO event_review_runs
+                (review_run_id,event_id,run_status,board_status,started_at,completed_at)
+                VALUES('run-invalid-time','event-a','incomplete','incomplete',
+                       '2026-11-19T09:00:00+08:00','2026-11-19T09:01:00+08:00')"""
+            )
+            connection.execute(
+                """INSERT INTO event_review_model_usage
+                (review_run_id,event_id,reviewer_role,request_status,provider,model,
+                 prompt_tokens,completion_tokens,total_tokens,usage_complete,
+                 call_started_at,call_completed_at,error_code)
+                VALUES('run-invalid-time','event-a','fact_checker','success','litellm',
+                       'openai/model-x',100,20,120,1,
+                       '2026-11-19T09:00:10','2026-11-19T09:00:11','')"""
+            )
+        report = get_event_review_cost_report(
+            self.storage, self.pricing,
+            provider_mapping={("litellm", "openai/model-x"): "openai"},
+        )
+        invalid = next(line for line in report.lines if line.cost_status == "invalid_timestamp")
+        self.assertIsNone(invalid.complete_cost)
+        usd = next(item for item in report.totals_by_currency if item.currency == "USD")
+        self.assertEqual(usd.totals.invalid_timestamp_calls, 1)
+
     def test_rejects_invalid_provider_mapping_filters_and_repository(self):
         with self.assertRaisesRegex(ValueError, "provider_mapping"):
             get_event_review_cost_report(
