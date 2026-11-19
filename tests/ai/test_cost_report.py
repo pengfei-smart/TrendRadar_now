@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime, timezone
 from decimal import Decimal
 
 from trendradar.ai.cost_report import build_cost_report, estimate_usage_record
@@ -34,7 +33,8 @@ class CostReportTests(unittest.TestCase):
         second = self.record(
             usage_id=2,
             feature="translation",
-            started_at="2026-11-19T03:00:00+00:00",
+            # 12:00 Beijing is off-peak.
+            started_at="2026-11-19T04:00:00+00:00",
         )
         report = build_cost_report([first, second])
         self.assertEqual(2, report.aggregate.calculated_count)
