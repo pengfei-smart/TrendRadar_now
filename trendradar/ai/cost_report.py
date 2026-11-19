@@ -88,6 +88,21 @@ def estimate_usage_record(
     )
 
 
+def build_cost_report_from_ledger(
+    ledger,
+    *,
+    batch_size: int = 500,
+    calendar_path=None,
+) -> UsageCostReport:
+    """Build a report directly from an AIUsageLedger consistent read snapshot."""
+    if not hasattr(ledger, "iter_records"):
+        raise TypeError("ledger must provide iter_records(batch_size=...)")
+    return build_cost_report(
+        ledger.iter_records(batch_size=batch_size),
+        calendar_path=calendar_path,
+    )
+
+
 def build_cost_report(
     records: Iterable[dict[str, Any]],
     *,
@@ -138,5 +153,6 @@ __all__ = [
     "UsageCostReport",
     "UsageCostRow",
     "build_cost_report",
+    "build_cost_report_from_ledger",
     "estimate_usage_record",
 ]
