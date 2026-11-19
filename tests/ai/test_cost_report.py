@@ -1,7 +1,15 @@
+import tempfile
 import unittest
+from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
 
-from trendradar.ai.cost_report import build_cost_report, estimate_usage_record
+from trendradar.ai.cost_report import (
+    build_cost_report,
+    build_cost_report_from_ledger,
+    estimate_usage_record,
+)
+from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
 
 
 class CostReportTests(unittest.TestCase):
@@ -60,6 +68,26 @@ class CostReportTests(unittest.TestCase):
     def test_rejects_naive_ledger_timestamp(self):
         with self.assertRaises(ValueError):
             estimate_usage_record(self.record(started_at="2026-11-19T09:00:00"))
+
+    def test_builds_report_directly_from_sqlite_ledger(self):
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = AIUsageLedger(Path(directory) / "usage.db")
+            ledger.append(AIUsageRecord(
+                feature="event_review",
+                operation="review",
+                provider="litellm",
+                model="deepseek/deepseek-v4-pro",
+                request_status="success",
+                prompt_tokens=1_000_000,
+                completion_tokens=100_000,
+                prompt_cache_hit_tokens=200_000,
+                prompt_cache_miss_tokens=800_000,
+                started_at=datetime(2026, 11, 19, 1, tzinfo=timezone.utc),
+                completed_at=datetime(2026, 11, 19, 1, 0, 1, tzinfo=timezone.utc),
+            ))
+            report = build_cost_report_from_ledger(ledger, batch_size=1)
+        self.assertEqual(1, report.aggregate.calculated_count)
+        self.assertEqual(Decimal("9.96"), report.aggregate.total_cost)
 
     def test_empty_report_is_zero_and_well_formed(self):
         report = build_cost_report([])
