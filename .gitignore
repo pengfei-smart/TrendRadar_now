@@ -1,0 +1,12 @@
+# Local data and databases
+data/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
