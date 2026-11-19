@@ -1,5 +1,7 @@
+import io
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -8,6 +10,7 @@ from trendradar.ai.cost_report import (
     build_cost_report,
     build_cost_report_from_ledger,
     estimate_usage_record,
+    main,
 )
 from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
 
@@ -112,6 +115,36 @@ class CostReportTests(unittest.TestCase):
                 start_date=date(2026, 11, 20),
                 end_date=date(2026, 11, 19),
             )
+
+    def test_cli_prints_date_filtered_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            db_path = str(Path(directory) / "usage.db")
+            ledger = AIUsageLedger(db_path)
+            ledger.append(AIUsageRecord(
+                feature="event_review",
+                operation="review",
+                provider="litellm",
+                model="deepseek/deepseek-v4-pro",
+                request_status="success",
+                prompt_tokens=1_000_000,
+                completion_tokens=100_000,
+                prompt_cache_hit_tokens=200_000,
+                prompt_cache_miss_tokens=800_000,
+                started_at=datetime(2026, 11, 19, 1, tzinfo=timezone.utc),
+                completed_at=datetime(2026, 11, 19, 1, 0, 1, tzinfo=timezone.utc),
+            ))
+            output = io.StringIO()
+            with redirect_stdout(output):
+                exit_code = main([
+                    "--period", "all",
+                    "--start-date", "2026-11-19",
+                    "--end-date", "2026-11-19",
+                    "--db", db_path,
+                ])
+        self.assertEqual(0, exit_code)
+        self.assertIn("Calculated: 1", output.getvalue())
+        self.assertIn("Estimated total: CNY 9.960000", output.getvalue())
+        self.assertIn("By model:", output.getvalue())
 
     def test_empty_report_is_zero_and_well_formed(self):
         report = build_cost_report([])
