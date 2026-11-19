@@ -73,9 +73,13 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
             provider_mapping={("litellm", "openai/model-x"): "openai"},
         )
         self.assertEqual(len(report.lines), 5)
-        self.assertEqual(report.totals_by_currency[0].currency, "USD")
-        totals = report.totals_by_currency[0].totals
-        self.assertEqual(totals.calls, 5)
+        usd = next(item for item in report.totals_by_currency if item.currency == "USD")
+        unknown_currency = next(item for item in report.totals_by_currency if item.currency is None)
+        totals = usd.totals
+        self.assertEqual(totals.calls, 3)
+        self.assertEqual(unknown_currency.totals.calls, 2)
+        self.assertEqual(unknown_currency.totals.missing_pricing_calls, 1)
+        self.assertEqual(unknown_currency.totals.unresolved_provider_calls, 1)
         self.assertEqual(totals.calculated_calls, 1)
         self.assertEqual(totals.partial_usage_calls, 1)
         self.assertEqual(totals.missing_usage_calls, 1)
@@ -116,7 +120,7 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
             provider_mapping={("litellm", "openai/model-x"): "openai"},
             limit=1,
         )
-        self.assertEqual(report.totals_by_currency[0].totals.calls, 5)
+        self.assertEqual(sum(item.totals.calls for item in report.totals_by_currency), 5)
         self.assertEqual(len(report.lines), 5)
         self.assertEqual(len(report.by_role), 1)
 
