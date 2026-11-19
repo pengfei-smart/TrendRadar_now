@@ -1,6 +1,6 @@
 import tempfile
 import unittest
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 
@@ -88,6 +88,30 @@ class CostReportTests(unittest.TestCase):
             report = build_cost_report_from_ledger(ledger, batch_size=1)
         self.assertEqual(1, report.aggregate.calculated_count)
         self.assertEqual(Decimal("9.96"), report.aggregate.total_cost)
+
+    def test_date_range_filters_using_beijing_local_date(self):
+        previous_utc_date_but_same_beijing_day = self.record(
+            started_at="2026-11-18T16:30:00+00:00"
+        )
+        next_day = self.record(
+            usage_id=2,
+            started_at="2026-11-19T16:30:00+00:00",
+        )
+        report = build_cost_report(
+            [previous_utc_date_but_same_beijing_day, next_day],
+            start_date=date(2026, 11, 19),
+            end_date=__import__("datetime").date(2026, 11, 19),
+        )
+        self.assertEqual(1, len(report.rows))
+        self.assertEqual("2026-11-19", report.rows[0].local_date.isoformat())
+
+    def test_rejects_reversed_date_range(self):
+        with self.assertRaises(ValueError):
+            build_cost_report(
+                [],
+                start_date=date(2026, 11, 20),
+                end_date=date(2026, 11, 19),
+            )
 
     def test_empty_report_is_zero_and_well_formed(self):
         report = build_cost_report([])
