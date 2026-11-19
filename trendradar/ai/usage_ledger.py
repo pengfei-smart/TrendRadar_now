@@ -146,6 +146,27 @@ class AIUsageLedger:
             )
             return int(cursor.lastrowid)
 
+    def iter_records(self, *, batch_size: int = 500):
+        """Yield all rows in ascending ID order from one consistent read snapshot.
+
+        The SQLite cursor is streamed in bounded batches. A single read
+        transaction prevents concurrent appends from shifting offset pages.
+        """
+        if isinstance(batch_size, bool) or not 1 <= batch_size <= 500:
+            raise ValueError("batch_size must be between 1 and 500")
+        with closing(self._connect()) as connection:
+            connection.row_factory = sqlite3.Row
+            connection.execute("BEGIN")
+            cursor = connection.execute(
+                "SELECT * FROM ai_usage_records ORDER BY usage_id ASC"
+            )
+            while True:
+                batch = cursor.fetchmany(batch_size)
+                if not batch:
+                    break
+                for row in batch:
+                    yield dict(row)
+
     def list_records(self, *, limit: int = 100, offset: int = 0) -> tuple[dict[str, Any], ...]:
         if isinstance(limit, bool) or not 1 <= limit <= 500:
             raise ValueError("limit must be between 1 and 500")
