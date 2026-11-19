@@ -5,10 +5,12 @@ aggregates. It never mutates the append-only usage ledger.
 """
 from __future__ import annotations
 
+import argparse
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
+import json
 from typing import Any, Iterable
 
 from trendradar.ai.cost_engine import AICostEstimate, estimate_deepseek_cost
@@ -88,17 +90,29 @@ def estimate_usage_record(
     )
 
 
+def _validate_date_range(start_date: date | None, end_date: date | None) -> None:
+    for value, name in ((start_date, "start_date"), (end_date, "end_date")):
+        if value is not None and (not isinstance(value, date) or isinstance(value, datetime)):
+            raise TypeError(f"{name} must be a date or None")
+    if start_date and end_date and start_date > end_date:
+        raise ValueError("start_date must not be after end_date")
+
+
 def build_cost_report_from_ledger(
     ledger,
     *,
     batch_size: int = 500,
+    start_date: date | None = None,
+    end_date: date | None = None,
     calendar_path=None,
 ) -> UsageCostReport:
-    """Build a report directly from an AIUsageLedger consistent read snapshot."""
+    """Build a date-filtered report from a consistent ledger read snapshot."""
     if not hasattr(ledger, "iter_records"):
         raise TypeError("ledger must provide iter_records(batch_size=...)")
     return build_cost_report(
         ledger.iter_records(batch_size=batch_size),
+        start_date=start_date,
+        end_date=end_date,
         calendar_path=calendar_path,
     )
 
@@ -106,13 +120,22 @@ def build_cost_report_from_ledger(
 def build_cost_report(
     records: Iterable[dict[str, Any]],
     *,
+    start_date: date | None = None,
+    end_date: date | None = None,
     calendar_path=None,
 ) -> UsageCostReport:
     """Estimate and aggregate records; partial/unsupported rows never add cost."""
-    rows = tuple(
-        estimate_usage_record(record, calendar_path=calendar_path)
-        for record in records
-    )
+    _validate_date_range(start_date, end_date)
+    selected = []
+    for record in records:
+        # Filter by Beijing-local calendar date, not the host machine timezone.
+        local_date = _parse_timestamp(record.get("started_at")).astimezone(BEIJING_TZ).date()
+        if start_date is not None and local_date < start_date:
+            continue
+        if end_date is not None and local_date > end_date:
+            continue
+        selected.append(estimate_usage_record(record, calendar_path=calendar_path))
+    rows = tuple(selected)
     calculated = partial = unsupported = 0
     total = Decimal("0")
     by_day: dict[str, Decimal] = defaultdict(Decimal)
@@ -148,6 +171,70 @@ def build_cost_report(
     )
 
 
+def _parse_cli_date(value: str) -> date:
+    try:
+        return date.fromisoformat(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("date must use YYYY-MM-DD") from exc
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Print a human-readable cost report for a selected Beijing-local period."""
+    parser = argparse.ArgumentParser(description="TrendRadar AI API cost report")
+    parser.add_argument("--period", choices=("today", "month", "all"), default="month")
+    parser.add_argument("--start-date", type=_parse_cli_date)
+    parser.add_argument("--end-date", type=_parse_cli_date)
+    parser.add_argument("--db", help="SQLite ledger path (defaults to AI_USAGE_DB_PATH or data/ai_usage.db)")
+    parser.add_argument("--batch-size", type=int, default=500)
+    args = parser.parse_args(argv)
+
+    if args.period != "all" and (args.start_date or args.end_date):
+        parser.error("--start-date/--end-date can only be combined with --period all")
+    if args.period == "today":
+        today = datetime.now(BEIJING_TZ).date()
+        start_date = end_date = today
+    elif args.period == "month":
+        today = datetime.now(BEIJING_TZ).date()
+        start_date = today.replace(day=1)
+        end_date = today
+    else:
+        start_date, end_date = args.start_date, args.end_date
+    if args.batch_size < 1 or args.batch_size > 500:
+        parser.error("--batch-size must be between 1 and 500")
+
+    from trendradar.ai.usage_ledger import AIUsageLedger
+
+    ledger = AIUsageLedger(args.db)
+    report = build_cost_report_from_ledger(
+        ledger,
+        batch_size=args.batch_size,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    summary = report.aggregate
+    print(f"AI usage cost report ({args.period})")
+    print(f"Range: {start_date or 'beginning'} to {end_date or 'latest'} (Asia/Shanghai)")
+    print(f"Records: {len(report.rows)}")
+    print(f"Calculated: {summary.calculated_count}")
+    print(f"Partial: {summary.partial_count}")
+    print(f"Unsupported: {summary.unsupported_count}")
+    print(f"Estimated total: CNY {summary.total_cost:.6f}")
+    print("\\nBy model:")
+    for key, amount in summary.by_model.items():
+        print(f"  {key}: CNY {amount:.6f}")
+    print("\\nBy feature:")
+    for key, amount in summary.by_feature.items():
+        print(f"  {key}: CNY {amount:.6f}")
+    print("\\nBy day:")
+    for key, amount in summary.by_day.items():
+        print(f"  {key}: CNY {amount:.6f}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
 __all__ = [
     "CostAggregate",
     "UsageCostReport",
@@ -155,4 +242,5 @@ __all__ = [
     "build_cost_report",
     "build_cost_report_from_ledger",
     "estimate_usage_record",
+    "main",
 ]
