@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 import uuid
+from urllib.parse import urlsplit
 
 from .event_review_temporal import parse_aware_datetime
 from .storage import MarketStorage
@@ -115,7 +116,8 @@ class EventReviewPricingRepository:
             if valid_until_dt <= valid_from_dt:
                 raise ValueError("valid_until must be later than valid_from")
         source_value = _required_text(source_url, "source_url")
-        if not source_value.startswith(("https://", "http://")):
+        parsed_source = urlsplit(source_value)
+        if parsed_source.scheme not in {"https", "http"} or not parsed_source.netloc:
             raise ValueError("source_url must be an absolute HTTP(S) URL")
         checked_text, _ = _timestamp(source_checked_at, "source_checked_at")
         identifier = pricing_id or str(uuid.uuid4())
@@ -133,6 +135,8 @@ class EventReviewPricingRepository:
             for row in existing:
                 old_start = parse_aware_datetime(row["valid_from"])
                 old_end = parse_aware_datetime(row["valid_until"]) if row["valid_until"] else None
+                if row["valid_until"] and old_end is None:
+                    raise RuntimeError("pricing catalog contains an invalid valid_until timestamp")
                 new_end = valid_until_dt
                 if old_start is None:
                     raise RuntimeError("pricing catalog contains an invalid valid_from timestamp")
@@ -195,6 +199,8 @@ class EventReviewPricingRepository:
         for row in rows:
             start = parse_aware_datetime(row["valid_from"])
             end = parse_aware_datetime(row["valid_until"]) if row["valid_until"] else None
+            if row["valid_until"] and end is None:
+                raise RuntimeError("pricing catalog contains an invalid valid_until timestamp")
             if start is None:
                 raise RuntimeError("pricing catalog contains an invalid valid_from timestamp")
             if start <= at_dt and (end is None or at_dt < end):
