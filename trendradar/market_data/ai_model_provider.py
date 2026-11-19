@@ -7,9 +7,12 @@ included in logs or safe error messages. No automatic approval is performed.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import json
 import time
 from typing import Any, Callable, Protocol
+
+from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
 
 
 @dataclass(frozen=True)
@@ -21,6 +24,7 @@ class ChatModelRequest:
     temperature: float = 0.0
     max_tokens: int = 2500
     response_format: str = "json_object"
+    usage_operation: str = "chat"
 
     def __post_init__(self):
         if not isinstance(self.model, str) or not self.model.strip():
@@ -35,6 +39,8 @@ class ChatModelRequest:
             raise ValueError("temperature must be between 0 and 2")
         if isinstance(self.max_tokens, bool) or self.max_tokens < 1:
             raise ValueError("max_tokens must be positive")
+        if not isinstance(self.usage_operation, str) or not self.usage_operation.strip():
+            raise ValueError("usage_operation must be a non-empty string")
         if self.response_format != "json_object":
             raise ValueError("only json_object response format is supported")
 
@@ -50,6 +56,8 @@ class ChatModelResponse:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     total_tokens: int | None = None
+    prompt_cache_hit_tokens: int | None = None
+    prompt_cache_miss_tokens: int | None = None
 
 
 class ChatModelError(RuntimeError):
@@ -83,7 +91,7 @@ def _usage_count(usage: Any, name: str) -> int | None:
     return value
 
 
-def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | None, int | None]:
+def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | None, int | None, int | None, int | None]:
     """Extract text, request metadata and optional token usage from LiteLLM-like responses."""
     try:
         if isinstance(response, dict):
@@ -103,6 +111,11 @@ def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | No
         prompt_tokens = _usage_count(usage, "prompt_tokens")
         completion_tokens = _usage_count(usage, "completion_tokens")
         total_tokens = _usage_count(usage, "total_tokens")
+        details = usage.get("prompt_tokens_details") if isinstance(usage, dict) else getattr(usage, "prompt_tokens_details", None)
+        cache_hit = _usage_count(usage, "prompt_cache_hit_tokens")
+        if cache_hit is None:
+            cache_hit = _usage_count(details, "cached_tokens")
+        cache_miss = _usage_count(usage, "prompt_cache_miss_tokens")
     except (AttributeError, IndexError, KeyError, TypeError) as exc:
         raise ChatModelError("model provider returned an invalid response shape") from exc
 
@@ -110,7 +123,7 @@ def _extract_content(response: Any) -> tuple[str, str, str, int | None, int | No
         raise ChatModelError("model provider returned empty or non-text content")
     return (
         content.strip(), str(finish_reason), str(request_id),
-        prompt_tokens, completion_tokens, total_tokens,
+        prompt_tokens, completion_tokens, total_tokens, cache_hit, cache_miss,
     )
 
 
@@ -127,6 +140,8 @@ class LiteLLMChatProvider:
         sleep_callable: Callable[[float], None] = time.sleep,
         api_key: str = "",
         api_base: str = "",
+        usage_ledger: AIUsageLedger | None = None,
+        usage_ledger_enabled: bool = False,
     ):
         if not isinstance(provider_name, str) or not provider_name.strip():
             raise ValueError("provider_name must be a non-empty string")
@@ -146,6 +161,8 @@ class LiteLLMChatProvider:
         # Secrets remain only in memory and are never included in errors.
         self._api_key = api_key.strip()
         self._api_base = api_base.strip()
+        self._usage_ledger = usage_ledger
+        self._usage_ledger_enabled = bool(usage_ledger_enabled or usage_ledger is not None)
 
     def _completion(self) -> Callable[..., Any]:
         if self._completion_callable is not None:
@@ -161,6 +178,7 @@ class LiteLLMChatProvider:
             raise TypeError("request must be a ChatModelRequest")
         completion = self._completion()
         last_error: Exception | None = None
+        started_at = datetime.now(timezone.utc)
 
         for attempt in range(1, self.max_attempts + 1):
             try:
@@ -183,7 +201,16 @@ class LiteLLMChatProvider:
                 (
                     content, finish_reason, request_id,
                     prompt_tokens, completion_tokens, total_tokens,
+                    cache_hit, cache_miss,
                 ) = _extract_content(raw)
+                self._append_usage(
+                    request=request, status="success", started_at=started_at,
+                    completed_at=datetime.now(timezone.utc), request_id=request_id,
+                    model=request.model, attempts=attempt,
+                    prompt_tokens=prompt_tokens, completion_tokens=completion_tokens,
+                    total_tokens=total_tokens, prompt_cache_hit_tokens=cache_hit,
+                    prompt_cache_miss_tokens=cache_miss,
+                )
                 return ChatModelResponse(
                     content=content,
                     provider=self.provider_name,
@@ -194,9 +221,12 @@ class LiteLLMChatProvider:
                     prompt_tokens=prompt_tokens,
                     completion_tokens=completion_tokens,
                     total_tokens=total_tokens,
+                    prompt_cache_hit_tokens=cache_hit,
+                    prompt_cache_miss_tokens=cache_miss,
                 )
-            except ChatModelError:
-                raise
+            except ChatModelError as exc:
+                last_error = exc
+                break
             except Exception as exc:
                 last_error = exc
                 if attempt >= self.max_attempts or not _retryable_error(exc):
@@ -206,9 +236,53 @@ class LiteLLMChatProvider:
         # Do not include the raw exception: SDK errors can contain request data
         # or provider details that should not be copied into ordinary logs.
         error_type = type(last_error).__name__ if last_error is not None else "UnknownError"
+        self._append_usage(
+            request=request, status="error", started_at=started_at,
+            completed_at=datetime.now(timezone.utc), model=request.model,
+            attempts=attempt, error_code=error_type,
+        )
         raise ChatModelError(
             f"chat model request failed after {attempt} attempt(s): {error_type}"
         ) from last_error
+
+
+    def _append_usage(
+        self, *, request: ChatModelRequest, status: str,
+        started_at: datetime, completed_at: datetime, model: str,
+        attempts: int, request_id: str = "", error_code: str = "",
+        prompt_tokens: int | None = None,
+        completion_tokens: int | None = None,
+        total_tokens: int | None = None,
+        prompt_cache_hit_tokens: int | None = None,
+        prompt_cache_miss_tokens: int | None = None,
+    ) -> None:
+        """Best-effort unified usage recording; never interrupts a review."""
+        if not self._usage_ledger_enabled:
+            return
+        try:
+            if self._usage_ledger is None:
+                self._usage_ledger = AIUsageLedger()
+            self._usage_ledger.append(AIUsageRecord(
+                feature="event_review",
+                operation=request.usage_operation,
+                provider=self.provider_name,
+                model=model,
+                request_status=status,
+                request_id=request_id,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                total_tokens=total_tokens,
+                prompt_cache_hit_tokens=prompt_cache_hit_tokens,
+                prompt_cache_miss_tokens=prompt_cache_miss_tokens,
+                attempts=attempts,
+                attempts_known=True,
+                started_at=started_at,
+                completed_at=completed_at,
+                error_code=error_code,
+            ))
+        except Exception:
+            # Missing telemetry is not zero usage and must not break adjudication.
+            return
 
 
 def parse_json_object(content: str) -> dict[str, Any]:
