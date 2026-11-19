@@ -78,6 +78,7 @@ class EventChiefReviewerAgentTests(unittest.TestCase):
         self.assertEqual(result.adjudication.chair_model_name, "test/chair")
         self.assertEqual(result.adjudication.prompt_version, CHIEF_REVIEWER_PROMPT_VERSION)
         self.assertEqual(set(result.adjudication.reviewer_roles_considered), set(REVIEWER_ROLES))
+        self.assertEqual(provider.requests[0].usage_operation, "chief_reviewer")
 
     def test_prompt_requires_counterevidence_and_rejects_majority_vote(self):
         provider = FakeProvider(chief_payload())
