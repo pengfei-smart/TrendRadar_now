@@ -80,6 +80,7 @@ def build_event_review_runtime(
         api_key=api_key,
         api_base=api_base,
         max_attempts=max_attempts,
+        usage_ledger_enabled=True,
     )
     budget = EventReviewBudget(
         max_model_calls=max_model_calls_per_event,
