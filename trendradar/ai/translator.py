@@ -54,7 +54,7 @@ class AITranslator:
         self.scope = translation_config.get("SCOPE", {"HOTLIST": True, "RSS": True, "STANDALONE": True})
 
         # 创建 AI 客户端（基于 LiteLLM）
-        self.client = AIClient(ai_config)
+        self.client = AIClient(ai_config, feature="translation")
 
         # 加载提示词模板
         self.system_prompt, self.user_prompt_template = self._load_prompt_template(
