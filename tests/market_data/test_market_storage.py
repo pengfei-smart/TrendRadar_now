@@ -23,7 +23,8 @@ class MarketStorageTests(unittest.TestCase):
                 expected = {
                     "event_review_runs", "event_review_evidence",
                     "event_reviewer_assessments", "event_review_adjudications",
-                    "event_review_quality_results", "event_review_model_usage",\n                    "event_review_model_pricing",
+                    "event_review_quality_results", "event_review_model_usage",
+                    "event_review_model_pricing",
                 }
                 actual = {
                     row[0] for row in connection.execute(
