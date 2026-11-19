@@ -88,6 +88,18 @@ class AIUsageLedgerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.record(prompt_tokens=-1)
 
+    def test_iter_records_streams_in_ascending_id_order(self):
+        first = self.ledger.append(self.record())
+        second = self.ledger.append(self.record(operation="translate"))
+        rows = list(self.ledger.iter_records(batch_size=1))
+        self.assertEqual([first, second], [row["usage_id"] for row in rows])
+
+    def test_iter_records_rejects_invalid_batch_size(self):
+        with self.assertRaises(ValueError):
+            list(self.ledger.iter_records(batch_size=0))
+        with self.assertRaises(ValueError):
+            list(self.ledger.iter_records(batch_size=501))
+
     def test_pagination_is_bounded(self):
         with self.assertRaises(ValueError):
             self.ledger.list_records(limit=501)
