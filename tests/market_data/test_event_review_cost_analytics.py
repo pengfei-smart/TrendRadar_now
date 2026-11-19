@@ -125,6 +125,28 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
         self.assertEqual(len(report.lines), 5)
         self.assertEqual(len(report.by_role), 1)
 
+    def test_ambiguous_overlapping_catalog_entries_are_not_priced(self):
+        with self.storage.connect() as connection:
+            connection.execute(
+                """INSERT INTO event_review_model_pricing
+                (pricing_id,provider,model,currency,input_price_per_million,
+                 output_price_per_million,valid_from,valid_until,source_url,source_checked_at)
+                VALUES('price-overlap','openai','openai/model-x','USD','99','99',
+                       '2026-11-15T00:00:00Z',NULL,
+                       'https://provider.example/other-pricing','2026-11-19T00:00:00Z')"""
+            )
+        report = get_event_review_cost_report(
+            self.storage, self.pricing,
+            provider_mapping={("litellm", "openai/model-x"): "openai"},
+        )
+        overlapping = [
+            line for line in report.lines
+            if line.model == "openai/model-x" and line.prompt_tokens is not None
+        ]
+        self.assertTrue(overlapping)
+        self.assertTrue(all(line.cost_status == "ambiguous_pricing" for line in overlapping))
+        self.assertTrue(all(line.complete_cost is None for line in overlapping))
+
     def test_invalid_call_timestamp_is_not_priced(self):
         with self.storage.connect() as connection:
             connection.execute(
