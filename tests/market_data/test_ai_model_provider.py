@@ -1,5 +1,9 @@
 import unittest
+import tempfile
+from pathlib import Path
 from types import SimpleNamespace
+
+from trendradar.ai.usage_ledger import AIUsageLedger
 
 from trendradar.market_data.ai_model_provider import (
     ChatModelError,
@@ -122,6 +126,74 @@ class AiModelProviderTests(unittest.TestCase):
             (result.prompt_tokens, result.completion_tokens, result.total_tokens),
             (10, 5, 15),
         )
+
+
+    def test_records_event_review_usage_and_cache_breakdown_in_unified_ledger(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+            raw = fake_response(request_id="req-review")
+            raw.usage = SimpleNamespace(
+                prompt_tokens=100,
+                completion_tokens=25,
+                total_tokens=125,
+                prompt_tokens_details=SimpleNamespace(cached_tokens=30),
+                prompt_cache_miss_tokens=70,
+            )
+            provider = LiteLLMChatProvider(
+                completion_callable=lambda **kwargs: raw,
+                usage_ledger=ledger,
+            )
+            response = provider.complete(ChatModelRequest(
+                model="deepseek/deepseek-v4-pro",
+                system_prompt="private system prompt",
+                user_prompt="private user prompt",
+                usage_operation="reviewer:fact_checker",
+            ))
+
+            self.assertEqual(response.prompt_cache_hit_tokens, 30)
+            self.assertEqual(response.prompt_cache_miss_tokens, 70)
+            rows = ledger.list_records()
+            self.assertEqual(len(rows), 1)
+            row = rows[0]
+            self.assertEqual(row["feature"], "event_review")
+            self.assertEqual(row["operation"], "reviewer:fact_checker")
+            self.assertEqual(row["model"], "deepseek/deepseek-v4-pro")
+            self.assertEqual(row["request_id"], "req-review")
+            self.assertEqual(row["prompt_cache_hit_tokens"], 30)
+            self.assertEqual(row["prompt_cache_miss_tokens"], 70)
+            self.assertEqual(row["attempts"], 1)
+            self.assertEqual(row["attempts_known"], 1)
+            self.assertNotIn("private system prompt", str(row))
+            self.assertNotIn("private user prompt", str(row))
+
+    def test_failed_event_review_request_is_recorded_without_token_estimates(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+            provider = LiteLLMChatProvider(
+                completion_callable=lambda **kwargs: (_ for _ in ()).throw(
+                    ConnectionError("private transport detail")
+                ),
+                max_attempts=2,
+                retry_delay_seconds=0,
+                sleep_callable=lambda _: None,
+                usage_ledger=ledger,
+            )
+            with self.assertRaises(ChatModelError):
+                provider.complete(ChatModelRequest(
+                    model="deepseek/deepseek-v4-pro",
+                    system_prompt="system",
+                    user_prompt="user",
+                    usage_operation="chief_reviewer",
+                ))
+            row = ledger.list_records()[0]
+            self.assertEqual(row["request_status"], "error")
+            self.assertEqual(row["operation"], "chief_reviewer")
+            self.assertEqual(row["attempts"], 2)
+            self.assertEqual(row["attempts_known"], 1)
+            self.assertIsNone(row["prompt_tokens"])
+            self.assertIsNone(row["prompt_cache_hit_tokens"])
+            self.assertEqual(row["error_code"], "ConnectionError")
+            self.assertNotIn("private transport detail", str(row))
 
     def test_retries_transient_server_error_then_succeeds(self):
         calls = []
