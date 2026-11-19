@@ -132,6 +132,7 @@ class AiModelProviderTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
             raw = fake_response(request_id="req-review")
+            raw.model = "deepseek/deepseek-v4-pro-0813"
             raw.usage = SimpleNamespace(
                 prompt_tokens=100,
                 completion_tokens=25,
@@ -150,6 +151,7 @@ class AiModelProviderTests(unittest.TestCase):
                 usage_operation="reviewer:fact_checker",
             ))
 
+            self.assertEqual(response.model, "deepseek/deepseek-v4-pro-0813")
             self.assertEqual(response.prompt_cache_hit_tokens, 30)
             self.assertEqual(response.prompt_cache_miss_tokens, 70)
             rows = ledger.list_records()
@@ -157,7 +159,7 @@ class AiModelProviderTests(unittest.TestCase):
             row = rows[0]
             self.assertEqual(row["feature"], "event_review")
             self.assertEqual(row["operation"], "reviewer:fact_checker")
-            self.assertEqual(row["model"], "deepseek/deepseek-v4-pro")
+            self.assertEqual(row["model"], "deepseek/deepseek-v4-pro-0813")
             self.assertEqual(row["request_id"], "req-review")
             self.assertEqual(row["prompt_cache_hit_tokens"], 30)
             self.assertEqual(row["prompt_cache_miss_tokens"], 70)
