@@ -841,7 +841,7 @@ CREATE TABLE IF NOT EXISTS event_review_model_pricing (
     source_url TEXT NOT NULL CHECK (length(trim(source_url)) > 0),
     source_checked_at TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CHECK (valid_until IS NULL OR valid_until > valid_from)
+    CHECK (valid_until IS NULL OR julianday(valid_until) > julianday(valid_from))
 );
 CREATE INDEX IF NOT EXISTS idx_event_review_model_pricing_lookup
     ON event_review_model_pricing(provider, model, valid_from DESC);
