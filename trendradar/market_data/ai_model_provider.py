@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Protocol
 
 from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
+from trendradar.ai.usage_ledger_factory import get_ai_usage_ledger
 
 
 logger = logging.getLogger(__name__)
@@ -145,7 +146,7 @@ class LiteLLMChatProvider:
         api_key: str = "",
         api_base: str = "",
         usage_ledger: AIUsageLedger | None = None,
-        usage_ledger_enabled: bool = False,
+        usage_ledger_enabled: bool = True,
     ):
         if not isinstance(provider_name, str) or not provider_name.strip():
             raise ValueError("provider_name must be a non-empty string")
@@ -270,7 +271,7 @@ class LiteLLMChatProvider:
             return
         try:
             if self._usage_ledger is None:
-                self._usage_ledger = AIUsageLedger()
+                self._usage_ledger = get_ai_usage_ledger()
             self._usage_ledger.append(AIUsageRecord(
                 feature="event_review",
                 operation=request.usage_operation,

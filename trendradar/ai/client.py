@@ -15,6 +15,7 @@ from litellm import completion
 
 from .usage_ledger import AIUsageLedger, AIUsageRecord
 
+from .usage_ledger_factory import get_ai_usage_ledger
 
 logger = logging.getLogger(__name__)
 
@@ -164,7 +165,7 @@ class AIClient:
         """Best-effort persistence; telemetry failures never break AI features."""
         try:
             if self._usage_ledger is None:
-                self._usage_ledger = AIUsageLedger()
+                self._usage_ledger = get_ai_usage_ledger()
             self._usage_ledger.append(AIUsageRecord(
                 feature=self.feature, operation=operation, provider="litellm",
                 model=model, request_status=status, request_id=request_id,

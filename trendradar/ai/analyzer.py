@@ -334,7 +334,10 @@ class AIAnalyzer:
         last_content = ""
 
         for attempt in range(1, max_attempts + 1):
-            content = self.client.chat(messages)
+            content = self.client.chat(
+                messages,
+                usage_operation="news_analysis",
+            )
             last_content = content or ""
 
             if last_content.strip():
@@ -511,7 +514,10 @@ class AIAnalyzer:
         ]
 
         try:
-            response = self.client.chat(messages)
+            response = self.client.chat(
+                messages,
+                usage_operation="news_analysis",
+            )
             repaired_result = self._parse_response(response)
             if not repaired_result.success:
                 print(f"[AI] 修复响应仍未通过校验：{repaired_result.error}")
