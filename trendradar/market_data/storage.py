@@ -15,7 +15,7 @@ from trendradar.market_data.models import MarketEvent, MappingEvidence, QuoteSna
 class MarketStorage:
     """Local market DB storage with explicit transactions and compatibility migration."""
 
-    SCHEMA_VERSION = 13
+    SCHEMA_VERSION = 14
 
     def __init__(self, db_path: str = "output/market/market.db"):
         self.db_path = Path(db_path).expanduser().resolve()
