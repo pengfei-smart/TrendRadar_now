@@ -7,15 +7,45 @@ AI 客户端模块
 """
 
 import os
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from litellm import completion
+
+from .usage_ledger import AIUsageLedger, AIUsageRecord
+
+
+def _read_value(value: Any, name: str) -> Any:
+    return value.get(name) if isinstance(value, dict) else getattr(value, name, None)
+
+
+def _reported_count(value: Any) -> int | None:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        return None
+    return value
+
+
+def _response_usage(response: Any) -> dict:
+    usage = _read_value(response, "usage")
+    details = _read_value(usage, "prompt_tokens_details")
+    hit = _read_value(usage, "prompt_cache_hit_tokens")
+    if hit is None:
+        hit = _read_value(details, "cached_tokens")
+    return {
+        "prompt_tokens": _reported_count(_read_value(usage, "prompt_tokens")),
+        "completion_tokens": _reported_count(_read_value(usage, "completion_tokens")),
+        "total_tokens": _reported_count(_read_value(usage, "total_tokens")),
+        "prompt_cache_hit_tokens": _reported_count(hit),
+        "prompt_cache_miss_tokens": _reported_count(
+            _read_value(usage, "prompt_cache_miss_tokens")
+        ),
+    }
 
 
 class AIClient:
     """统一的 AI 客户端（基于 LiteLLM）"""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], *, feature: str = "application", usage_ledger: AIUsageLedger | None = None):
         """
         初始化 AI 客户端
 
@@ -38,10 +68,14 @@ class AIClient:
         self.timeout = config.get("TIMEOUT", 120)
         self.num_retries = config.get("NUM_RETRIES", 2)
         self.fallback_models = config.get("FALLBACK_MODELS", [])
+        self.feature = feature
+        self._usage_ledger = usage_ledger
 
     def chat(
         self,
         messages: List[Dict[str, str]],
+        *,
+        usage_operation: str = "chat",
         **kwargs
     ) -> str:
         """
@@ -88,8 +122,24 @@ class AIClient:
             if key not in params:
                 params[key] = value
 
-        # 调用 LiteLLM
-        response = completion(**params)
+        # 只记录请求元数据和供应商返回的用量，不保存 prompt、响应正文或密钥。
+        started_at = datetime.now(timezone.utc)
+        try:
+            response = completion(**params)
+        except Exception as exc:
+            self._append_usage(
+                operation=usage_operation, model=self.model, status="error",
+                started_at=started_at, error_code=type(exc).__name__,
+            )
+            raise
+        completed_at = datetime.now(timezone.utc)
+        actual_model = _read_value(response, "model") or self.model
+        self._append_usage(
+            operation=usage_operation, model=str(actual_model), status="success",
+            started_at=started_at, completed_at=completed_at,
+            request_id=str(_read_value(response, "id") or ""),
+            **_response_usage(response),
+        )
 
         # 提取响应内容
         # 某些模型/提供商返回 list（内容块）而非 str，统一转为 str
@@ -100,6 +150,28 @@ class AIClient:
                 for item in content
             )
         return content or ""
+
+
+    def _append_usage(
+        self, *, operation: str, model: str, status: str,
+        started_at: datetime, completed_at: datetime | None = None,
+        request_id: str = "", error_code: str = "", **usage: Any,
+    ) -> None:
+        """Best-effort persistence; telemetry failures never break AI features."""
+        try:
+            if self._usage_ledger is None:
+                self._usage_ledger = AIUsageLedger()
+            self._usage_ledger.append(AIUsageRecord(
+                feature=self.feature, operation=operation, provider="litellm",
+                model=model, request_status=status, request_id=request_id,
+                started_at=started_at,
+                completed_at=completed_at or datetime.now(timezone.utc),
+                error_code=error_code, attempts=None, attempts_known=False,
+                **usage,
+            ))
+        except Exception:
+            # Missing telemetry is not zero usage; do not disrupt the core workflow.
+            return
 
     def validate_config(self) -> tuple[bool, str]:
         """
