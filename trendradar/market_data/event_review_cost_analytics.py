@@ -149,16 +149,16 @@ def _totals(lines: list[EventReviewCallCost]) -> CostTotals:
     )
 
 
-def _breakdown(lines: tuple[EventReviewCallCost, ...], field: str):
+def _breakdown(lines: tuple[EventReviewCallCost, ...], field: str, limit: int):
     buckets: dict[tuple[str, str | None], list[EventReviewCallCost]] = defaultdict(list)
     for line in lines:
         key = getattr(line, field)
         buckets[(key, line.currency)].append(line)
     return tuple(
         CostBreakdown(key=key, currency=currency, totals=_totals(items))
-        for (key, currency), items in sorted(
+        for (key, currency), items in list(sorted(
             buckets.items(), key=lambda item: (item[0][0], item[0][1] or "")
-        )
+        ))[:limit]
     )
 
 
@@ -256,30 +256,42 @@ def get_event_review_cost_report(
             call_started_at=row["call_started_at"],
         ))
 
-    limited = tuple(lines[:limit])
+    all_lines = tuple(lines)
     currency_groups: dict[str | None, list[EventReviewCallCost]] = defaultdict(list)
-    for line in limited:
+    for line in all_lines:
         currency_groups[line.currency].append(line)
     totals_by_currency = tuple(
         CurrencyCostTotals(currency=currency, totals=_totals(items))
         for currency, items in sorted(currency_groups.items(), key=lambda item: item[0] or "")
     )
+    day_lines = tuple(
+        EventReviewCallCost(
+            usage_id=line.usage_id,
+            event_id=line.call_started_at[:10],
+            reviewer_role=line.reviewer_role,
+            recorded_provider=line.recorded_provider,
+            billing_provider=line.billing_provider,
+            model=line.model,
+            request_status=line.request_status,
+            cost_status=line.cost_status,
+            currency=line.currency,
+            pricing_id=line.pricing_id,
+            prompt_tokens=line.prompt_tokens,
+            completion_tokens=line.completion_tokens,
+            known_cost=line.known_cost,
+            complete_cost=line.complete_cost,
+            call_started_at=line.call_started_at,
+        )
+        for line in all_lines
+    )
     return EventReviewCostReport(
         start_at=start, end_at=end, event_id=event_id.strip(),
         totals_by_currency=totals_by_currency,
-        by_role=_breakdown(limited, "reviewer_role"),
-        by_model=_breakdown(limited, "model"),
-        by_event=_breakdown(limited, "event_id"),
-        by_day=_breakdown(
-            tuple(
-                EventReviewCallCost(**{
-                    **line.__dict__,
-                    "event_id": line.call_started_at[:10],
-                }) for line in limited
-            ),
-            "event_id",
-        ),
-        lines=limited,
+        by_role=_breakdown(all_lines, "reviewer_role", limit),
+        by_model=_breakdown(all_lines, "model", limit),
+        by_event=_breakdown(all_lines, "event_id", limit),
+        by_day=_breakdown(day_lines, "event_id", limit),
+        lines=all_lines,
     )
 
 
