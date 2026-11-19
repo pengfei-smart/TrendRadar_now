@@ -7,7 +7,7 @@ classification; this module deliberately does not guess Chinese holidays.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 from typing import Literal
 
 PRICE_SOURCE = "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/"
