@@ -143,8 +143,8 @@ class EventReviewCostAnalyticsTests(unittest.TestCase):
         )
         invalid = next(line for line in report.lines if line.cost_status == "invalid_timestamp")
         self.assertIsNone(invalid.complete_cost)
-        usd = next(item for item in report.totals_by_currency if item.currency == "USD")
-        self.assertEqual(usd.totals.invalid_timestamp_calls, 1)
+        unknown_currency = next(item for item in report.totals_by_currency if item.currency is None)
+        self.assertEqual(unknown_currency.totals.invalid_timestamp_calls, 1)
 
     def test_rejects_invalid_provider_mapping_filters_and_repository(self):
         with self.assertRaisesRegex(ValueError, "provider_mapping"):
