@@ -64,15 +64,17 @@ class AIClientUsageTests(unittest.TestCase):
         self.assertNotIn("secret", str(row))
 
     def test_nested_cached_tokens_are_supported(self):
-        response = {
-            "model": "deepseek/deepseek-v4-pro",
-            "id": "req-456",
-            "usage": {
+        response = SimpleNamespace(
+            model="deepseek/deepseek-v4-pro",
+            id="req-456",
+            usage={
                 "prompt_tokens": 80, "completion_tokens": 10, "total_tokens": 90,
                 "prompt_tokens_details": {"cached_tokens": 25},
             },
-            "choices": [{"message": {"content": "ok"}}],
-        }
+            choices=[SimpleNamespace(
+                message=SimpleNamespace(content="ok")
+            )],
+        )
         client = AIClient(self.config, usage_ledger=self.ledger)
         with patch("trendradar.ai.client.completion", return_value=response):
             client.chat([{"role": "user", "content": "hello"}])
