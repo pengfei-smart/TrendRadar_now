@@ -44,6 +44,8 @@ class ChiefReviewerExecutionResult:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     total_tokens: int | None = None
+    prompt_cache_hit_tokens: int | None = None
+    prompt_cache_miss_tokens: int | None = None
     request_succeeded: bool = False
     provider: str = ""
     model: str = ""
@@ -255,6 +257,7 @@ def run_chief_reviewer(
             timeout_seconds=timeout_seconds,
             temperature=0.0,
             max_tokens=max_tokens,
+            usage_operation="chief_reviewer",
         )
         response = provider.complete(request)
         payload = parse_json_object(response.content)
@@ -280,6 +283,8 @@ def run_chief_reviewer(
             prompt_tokens=response.prompt_tokens,
             completion_tokens=response.completion_tokens,
             total_tokens=response.total_tokens,
+            prompt_cache_hit_tokens=response.prompt_cache_hit_tokens,
+            prompt_cache_miss_tokens=response.prompt_cache_miss_tokens,
             request_succeeded=True,
             provider=adjudication.chair_model_provider,
             model=adjudication.chair_model_name,
@@ -293,6 +298,8 @@ def run_chief_reviewer(
             prompt_tokens=getattr(response, "prompt_tokens", None) if response else None,
             completion_tokens=getattr(response, "completion_tokens", None) if response else None,
             total_tokens=getattr(response, "total_tokens", None) if response else None,
+            prompt_cache_hit_tokens=getattr(response, "prompt_cache_hit_tokens", None) if response else None,
+            prompt_cache_miss_tokens=getattr(response, "prompt_cache_miss_tokens", None) if response else None,
             request_succeeded=response is not None,
             provider=str(provider_name), model=model.strip(),
         )
