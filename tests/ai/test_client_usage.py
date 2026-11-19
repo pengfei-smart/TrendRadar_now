@@ -93,12 +93,31 @@ class AIClientUsageTests(unittest.TestCase):
             usage=None,
             choices=[SimpleNamespace(message=SimpleNamespace(content="ok"))],
         )
-        client = AIClient(self.config, usage_ledger=BrokenLedger())
-        with patch("trendradar.ai.client.completion", return_value=response):
-            self.assertEqual("ok", client.chat(
-                [{"role": "user", "content": "hello"}]
-            ))
+        client = AIClient(
+            self.config,
+            feature="translation",
+            usage_ledger=BrokenLedger(),
+        )
 
+        with self.assertLogs(
+            "trendradar.ai.client", level="WARNING"
+        ) as captured:
+            with patch(
+                "trendradar.ai.client.completion",
+                return_value=response,
+            ):
+                self.assertEqual("ok", client.chat(
+                    [{"role": "user", "content": "hello"}],
+                    usage_operation="translate_batch",
+                ))
+
+        log_text = "\n".join(captured.output)
+        self.assertIn("feature=translation", log_text)
+        self.assertIn("operation=translate_batch", log_text)
+        self.assertIn("error_type=OSError", log_text)
+        self.assertNotIn("disk failure", log_text)
+        self.assertNotIn("test-key", log_text)
+        self.assertNotIn("hello", log_text)
 
 if __name__ == "__main__":
     unittest.main()

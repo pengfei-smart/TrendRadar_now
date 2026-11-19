@@ -6,13 +6,17 @@ included in logs or safe error messages. No automatic approval is performed.
 """
 from __future__ import annotations
 
+import json
+import logging
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
-import json
-import time
 from typing import Any, Callable, Protocol
 
 from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -285,9 +289,12 @@ class LiteLLMChatProvider:
                 completed_at=completed_at,
                 error_code=error_code,
             ))
-        except Exception:
-            # Missing telemetry is not zero usage and must not break adjudication.
-            return
+        except Exception as exc:
+            logger.warning(
+                "AI usage ledger append failed: feature=event_review operation=%s error_type=%s",
+                request.usage_operation,
+                type(exc).__name__,
+            )
 
 
 def parse_json_object(content: str) -> dict[str, Any]:

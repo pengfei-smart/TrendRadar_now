@@ -6,6 +6,7 @@ AI 客户端模块
 支持 100+ AI 提供商（OpenAI、DeepSeek、Gemini、Claude、国内模型等）
 """
 
+import logging
 import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List
@@ -13,6 +14,9 @@ from typing import Any, Dict, List
 from litellm import completion
 
 from .usage_ledger import AIUsageLedger, AIUsageRecord
+
+
+logger = logging.getLogger(__name__)
 
 
 def _read_value(value: Any, name: str) -> Any:
@@ -169,9 +173,13 @@ class AIClient:
                 error_code=error_code, attempts=None, attempts_known=False,
                 **usage,
             ))
-        except Exception:
-            # Missing telemetry is not zero usage; do not disrupt the core workflow.
-            return
+        except Exception as exc:
+            logger.warning(
+                "AI usage ledger append failed: feature=%s operation=%s error_type=%s",
+                self.feature,
+                operation,
+                type(exc).__name__,
+            )
 
     def validate_config(self) -> tuple[bool, str]:
         """

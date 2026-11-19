@@ -168,6 +168,41 @@ class AiModelProviderTests(unittest.TestCase):
             self.assertNotIn("private system prompt", str(row))
             self.assertNotIn("private user prompt", str(row))
 
+    def test_ledger_failure_logs_safely_without_breaking_review_response(self):
+        class BrokenLedger:
+            def append(self, record):
+                raise OSError("private disk failure")
+
+        provider = LiteLLMChatProvider(
+            completion_callable=lambda **kwargs: fake_response(
+                content='{"approved": true}',
+                request_id="req-ledger-failure",
+            ),
+            usage_ledger=BrokenLedger(),
+        )
+
+        with self.assertLogs(
+            "trendradar.market_data.ai_model_provider",
+            level="WARNING",
+        ) as captured:
+            response = provider.complete(ChatModelRequest(
+                model="deepseek/deepseek-v4-pro",
+                system_prompt="private system prompt",
+                user_prompt="private user prompt",
+                usage_operation="reviewer:fact_checker",
+            ))
+
+        self.assertEqual(response.content, '{"approved": true}')
+
+        log_text = "\n".join(captured.output)
+        self.assertIn("feature=event_review", log_text)
+        self.assertIn("operation=reviewer:fact_checker", log_text)
+        self.assertIn("error_type=OSError", log_text)
+        self.assertNotIn("private disk failure", log_text)
+        self.assertNotIn("private system prompt", log_text)
+        self.assertNotIn("private user prompt", log_text)
+
+
     def test_failed_event_review_request_is_recorded_without_token_estimates(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
