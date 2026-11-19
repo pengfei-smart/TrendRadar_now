@@ -1,4 +1,5 @@
 import sqlite3
+from contextlib import closing
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -60,7 +61,7 @@ class AIUsageLedgerTests(unittest.TestCase):
         self.assertIsNone(row["total_tokens"])
 
     def test_prompt_and_response_are_not_columns(self):
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             columns = {
                 row[1] for row in connection.execute("PRAGMA table_info(ai_usage_records)")
             }
@@ -70,7 +71,7 @@ class AIUsageLedgerTests(unittest.TestCase):
 
     def test_records_are_append_only(self):
         usage_id = self.ledger.append(self.record())
-        with sqlite3.connect(self.path) as connection:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
             with self.assertRaises(sqlite3.IntegrityError):
                 connection.execute(
                     "UPDATE ai_usage_records SET model='changed' WHERE usage_id=?",
