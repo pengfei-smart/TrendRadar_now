@@ -826,3 +826,31 @@ BEFORE DELETE ON event_review_model_usage BEGIN
     SELECT RAISE(ABORT, 'event review model usage is append-only');
 END;
 
+
+
+-- v14：模型供应商价格版本目录。价格记录只追加，不覆盖历史版本。
+CREATE TABLE IF NOT EXISTS event_review_model_pricing (
+    pricing_id TEXT PRIMARY KEY,
+    provider TEXT NOT NULL CHECK (length(trim(provider)) > 0),
+    model TEXT NOT NULL CHECK (length(trim(model)) > 0),
+    currency TEXT NOT NULL CHECK (currency GLOB '[A-Z][A-Z][A-Z]'),
+    input_price_per_million TEXT NOT NULL,
+    output_price_per_million TEXT NOT NULL,
+    valid_from TEXT NOT NULL,
+    valid_until TEXT,
+    source_url TEXT NOT NULL CHECK (length(trim(source_url)) > 0),
+    source_checked_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CHECK (valid_until IS NULL OR valid_until > valid_from)
+);
+CREATE INDEX IF NOT EXISTS idx_event_review_model_pricing_lookup
+    ON event_review_model_pricing(provider, model, valid_from DESC);
+
+CREATE TRIGGER IF NOT EXISTS trg_event_review_model_pricing_no_update
+BEFORE UPDATE ON event_review_model_pricing BEGIN
+    SELECT RAISE(ABORT, 'event review model pricing is append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS trg_event_review_model_pricing_no_delete
+BEFORE DELETE ON event_review_model_pricing BEGIN
+    SELECT RAISE(ABORT, 'event review model pricing is append-only');
+END;
