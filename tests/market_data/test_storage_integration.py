@@ -82,7 +82,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             version = connection.execute(
                 "SELECT value FROM schema_meta WHERE key='schema_version'"
             ).fetchone()[0]
-            self.assertEqual(version, "12")
+            self.assertEqual(version, "13")
             self.assertEqual(
                 connection.execute("SELECT COUNT(*) FROM security_master").fetchone()[0], 0
             )
@@ -155,7 +155,7 @@ class MarketStorageIntegrationTests(unittest.TestCase):
             "2026-11-09T14:33:00+08:00", 10.5, "legacy_provider",
             "2026-11-09T14:33:05+08:00", "", "legacy_unknown",
         ))
-        self.assertEqual(version, "12")
+        self.assertEqual(version, "13")
 
         MarketStorage(str(self.db_path))
         with closing(sqlite3.connect(self.db_path)) as connection:
