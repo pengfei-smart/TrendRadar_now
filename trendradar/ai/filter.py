@@ -42,7 +42,7 @@ class AIFilter:
         get_time_func: Callable,
         debug: bool = False,
     ):
-        self.client = AIClient(ai_config)
+        self.client = AIClient(ai_config, feature="filter")
         self.filter_config = filter_config
         self.batch_size = filter_config.get("BATCH_SIZE", 200)
         self.get_time_func = get_time_func
