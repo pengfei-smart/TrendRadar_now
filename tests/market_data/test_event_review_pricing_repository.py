@@ -9,6 +9,7 @@ from trendradar.market_data.event_review_pricing_repository import (
     EventReviewPricingRepository,
 )
 from trendradar.market_data.storage import MarketStorage
+from trendradar.market_data.models import MarketEvent
 
 
 class EventReviewPricingRepositoryTests(unittest.TestCase):
@@ -104,6 +105,32 @@ class EventReviewPricingRepositoryTests(unittest.TestCase):
             self.add(valid_until="2026-10-01T00:00:00Z")
         with self.assertRaisesRegex(ValueError, "HTTP"):
             self.add(source_url="provider-pricing-page")
+
+    def test_v13_database_migrates_without_losing_existing_events(self):
+        self.storage.save_events([
+            MarketEvent("existing-event", "test", "Existing event", "2026-11-19"),
+        ])
+        with self.storage.connect() as connection:
+            connection.execute("DROP TABLE event_review_model_pricing")
+            connection.execute(
+                "UPDATE schema_meta SET value='13' WHERE key='schema_version'"
+            )
+
+        migrated = MarketStorage(str(Path(self.tmp.name) / "market.db"))
+        with migrated.connect() as connection:
+            version = connection.execute(
+                "SELECT value FROM schema_meta WHERE key='schema_version'"
+            ).fetchone()[0]
+            event_count = connection.execute(
+                "SELECT COUNT(*) FROM market_events WHERE event_id='existing-event'"
+            ).fetchone()[0]
+            pricing_table = connection.execute(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' "
+                "AND name='event_review_model_pricing'"
+            ).fetchone()[0]
+        self.assertEqual(version, "14")
+        self.assertEqual(event_count, 1)
+        self.assertEqual(pricing_table, 1)
 
     def test_pricing_history_is_append_only(self):
         self.add()
