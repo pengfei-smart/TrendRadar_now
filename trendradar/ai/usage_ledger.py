@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import os
 from pathlib import Path
 import sqlite3
+from contextlib import closing
 from typing import Any
 
 
@@ -80,7 +81,7 @@ class AIUsageLedger:
         return connection
 
     def _initialize(self) -> None:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection, connection:
             connection.execute("""
                 CREATE TABLE IF NOT EXISTS ai_usage_records (
                     usage_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,7 +127,7 @@ class AIUsageLedger:
         started_at = _aware_iso(record.started_at, "started_at")
         completed_at = _aware_iso(record.completed_at, "completed_at")
         created_at = datetime.now(timezone.utc).isoformat()
-        with self._connect() as connection:
+        with closing(self._connect()) as connection, connection:
             cursor = connection.execute(
                 """INSERT INTO ai_usage_records (
                     feature,operation,provider,model,request_status,request_id,
@@ -150,7 +151,7 @@ class AIUsageLedger:
             raise ValueError("limit must be between 1 and 500")
         if isinstance(offset, bool) or offset < 0:
             raise ValueError("offset must be non-negative")
-        with self._connect() as connection:
+        with closing(self._connect()) as connection, connection:
             connection.row_factory = sqlite3.Row
             rows = connection.execute(
                 """SELECT * FROM ai_usage_records
