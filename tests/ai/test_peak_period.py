@@ -1,17 +1,10 @@
-import tempfile
 import unittest
 from datetime import datetime, timezone
-from pathlib import Path
 
 from trendradar.ai.peak_period import classify_peak_period
 
 
 class PeakPeriodTests(unittest.TestCase):
-    def beijing(self, year, month, day, hour, minute=0):
-        return datetime(year, month, day, hour, minute, tzinfo=timezone.utc).replace(
-            year=year, month=month, day=day
-        )
-
     def test_weekday_morning_peak(self):
         # 2026-11-19 09:00 Beijing == 01:00 UTC.
         value = datetime(2026, 11, 19, 1, 0, tzinfo=timezone.utc)
