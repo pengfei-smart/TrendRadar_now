@@ -10,7 +10,6 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
-import json
 from typing import Any, Iterable
 
 from trendradar.ai.cost_engine import AICostEstimate, estimate_deepseek_cost
@@ -219,13 +218,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Partial: {summary.partial_count}")
     print(f"Unsupported: {summary.unsupported_count}")
     print(f"Estimated total: CNY {summary.total_cost:.6f}")
-    print("\\nBy model:")
+    print("\nBy model:")
     for key, amount in summary.by_model.items():
         print(f"  {key}: CNY {amount:.6f}")
-    print("\\nBy feature:")
+    print("\nBy feature:")
     for key, amount in summary.by_feature.items():
         print(f"  {key}: CNY {amount:.6f}")
-    print("\\nBy day:")
+    print("\nBy day:")
     for key, amount in summary.by_day.items():
         print(f"  {key}: CNY {amount:.6f}")
     return 0
