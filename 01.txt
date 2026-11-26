@@ -1,0 +1,521 @@
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ python - <<'PY'
+from pathlib import Path
+from datetime import datetime
+import shutil
+
+manager_path = Path("trendradar/storage/manager.py")
+context_path = Path("trendradar/context.py")
+
+manager_old = '''    def cleanup(self) -> None:
+        """清理资源"""
+        if self._backend:
+            self._backend.cleanup()
+        if self._remote_backend:
+            self._remote_backend.cleanup()
+'''
+
+manager_new = '''    def cleanup(self) -> None:
+        """分别清理本地和远程后端，避免单个后端失败影响另一个。"""
+        errors = []
+
+        for backend in (self._backend, self._remote_backend):
+            if backend is None:
+                continue
+            try:
+PYint("两个清理方法已修改。")ext_old, context_new, 1), encoding="utf-8"amp}.bak"
+备份：trendradar\storage\manager.py.before_cleanup_isolation_20261126_134430.bak
+备份：trendradar\context.py.before_cleanup_isolation_20261126_134430.bak
+两个清理方法已修改。
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ cat > tests/storage/test_storage_manager_cleanup.py <<'PY'
+import unittest
+from unittest.mock import Mock
+
+from trendradar.storage.manager import StorageManager
+
+
+class StorageManagerCleanupTests(unittest.TestCase):
+    def make_manager(self, local, remote):
+        manager = StorageManager.__new__(StorageManager)
+        manager._backend = local
+        manager._remote_backend = remote
+        return manager
+
+    def test_remote_cleanup_runs_when_local_cleanup_fails(self):
+        local = Mock()
+        remote = Mock()
+        local.cleanup.side_effect = OSError("local cleanup failed")
+
+        manager = self.make_manager(local, remote)
+
+        with self.assertRaisesRegex(OSError, "local cleanup failed"):
+            manager.cleanup()
+
+PY  unittest.main()ain__":ert_called_once()emote).exception.__cause__))
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ cat > tests/core/test_context_cleanup.py <<'PY'
+import unittest
+from unittest.mock import Mock
+
+from trendradar.context import AppContext
+
+
+class AppContextCleanupTests(unittest.TestCase):
+    def make_context(self, manager):
+        context = AppContext.__new__(AppContext)
+        context._storage_manager = manager
+        return context
+
+    def test_resource_cleanup_runs_when_retention_cleanup_fails(self):
+        manager = Mock()
+        manager.cleanup_old_data.side_effect = OSError("retention failed")
+        context = self.make_context(manager)
+
+        with self.assertRaisesRegex(OSError, "retention failed"):
+            context.cleanup()
+
+        manager.cleanup.assert_called_once()
+        self.assertIsNone(context._storage_manager)
+
+PY  unittest.main()ain__":nce(caught.exception.__cause__, OSError)use__))t:):
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ python -m unittest tests.storage.test_storage_manager_cleanup -v
+python -m unittest tests.core.test_context_cleanup -v
+test_both_cleanup_errors_are_preserved (tests.storage.test_storage_manager_cleanup.StorageManagerCleanupTests.test_both_cleanup_errors_are_preserved) ... ok
+test_none_backend_is_ignored (tests.storage.test_storage_manager_cleanup.StorageManagerCleanupTests.test_none_backend_is_ignored) ... ok
+test_remote_cleanup_runs_when_local_cleanup_fails (tests.storage.test_storage_manager_cleanup.StorageManagerCleanupTests.test_remote_cleanup_runs_when_local_cleanup_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+test_both_cleanup_errors_are_preserved (tests.core.test_context_cleanup.AppContextCleanupTests.test_both_cleanup_errors_are_preserved) ... ok
+test_manager_reference_is_kept_when_resource_cleanup_fails (tests.core.test_context_cleanup.AppContextCleanupTests.test_manager_reference_is_kept_when_resource_cleanup_fails) ... ok
+test_original_business_exception_is_preserved (tests.core.test_context_cleanup.AppContextCleanupTests.test_original_business_exception_is_preserved) ... ok
+test_resource_cleanup_runs_when_retention_cleanup_fails (tests.core.test_context_cleanup.AppContextCleanupTests.test_resource_cleanup_runs_when_retention_cleanup_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ python -m unittest tests.storage.test_remote_batch -v
+python -m unittest tests.core.test_ai_filter_guard -v
+test_all_failed_tasks_are_retained (tests.storage.test_remote_batch.RemoteBatchTests.test_all_failed_tasks_are_retained) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+ok
+test_begin_batch_preserves_previous_failed_tasks (tests.storage.test_remote_batch.RemoteBatchTests.test_begin_batch_preserves_previous_failed_tasks) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+ok
+test_cleanup_preserves_temp_dir_when_dirty (tests.storage.test_remote_batch.RemoteBatchTests.test_cleanup_preserves_temp_dir_when_dirty) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+ok
+test_cleanup_removes_temp_dir_when_queue_is_empty (tests.storage.test_remote_batch.RemoteBatchTests.test_cleanup_removes_temp_dir_when_queue_is_empty) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+ok
+test_failed_task_can_be_retried (tests.storage.test_remote_batch.RemoteBatchTests.test_failed_task_can_be_retried) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+ok
+test_failed_upload_keeps_dirty_task (tests.storage.test_remote_batch.RemoteBatchTests.test_failed_upload_keeps_dirty_task) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+ok
+test_old_failed_and_new_tasks_can_upload_together (tests.storage.test_remote_batch.RemoteBatchTests.test_old_failed_and_new_tasks_can_upload_together) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+ok
+test_one_exception_does_not_skip_other_tasks (tests.storage.test_remote_batch.RemoteBatchTests.test_one_exception_does_not_skip_other_tasks) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 批量上传异常 ('2026-11-26', 'news'): OSError: simulated upload failure
+ok
+test_partial_success_keeps_only_failed_task (tests.storage.test_remote_batch.RemoteBatchTests.test_partial_success_keeps_only_failed_task) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+ok
+test_repeated_begin_preserves_queued_tasks (tests.storage.test_remote_batch.RemoteBatchTests.test_repeated_begin_preserves_queued_tasks) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+ok
+test_success_clears_dirty_queue (tests.storage.test_remote_batch.RemoteBatchTests.test_success_clears_dirty_queue) ... [远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.014s
+
+OK
+test_batch_cleanup_when_news_query_raises (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_batch_cleanup_when_news_query_raises) ... [AI筛选] 使用 1 个 标签
+ok
+test_batch_cleanup_when_prompt_hash_read_raises (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_batch_cleanup_when_prompt_hash_read_raises) ... ok
+test_batch_end_failure_does_not_retry (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_batch_end_failure_does_not_retry) ... ok
+test_business_and_batch_cleanup_failures_are_both_preserved (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_business_and_batch_cleanup_failures_are_both_preserved) ... [AI筛选] 批处理结束失败: OSError: 模拟远程上传失败
+ok
+test_fallback_extract_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_fallback_extract_guard_denied) ... [AI筛选] AI 标签更新失败，回退到 重新提取
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+test_first_run_cleans_old_tags_and_analyzed_news_before_saving (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_first_run_cleans_old_tags_and_analyzed_news_before_saving) ... [AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] 废弃 3 个旧标签, 保存 2 个新标签 (版本 2)
+[AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 0 条, 已分析跳过 0 条, 本次发送AI分析 0 条
+[AI筛选] 没有新增新闻需要分类
+ok
+test_first_run_extract_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_first_run_extract_guard_denied) ... [AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+test_full_reclassify_extract_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_full_reclassify_extract_guard_denied) ... [AI筛选] 兴趣文件变更: ai_interests.txt (AI change_ratio=0.90 >= threshold=0.60 → 全量重分类)
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+test_guard_denial_cleanup_failure_is_reported (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_guard_denial_cleanup_failure_is_reported) ... [AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] Guard 拒绝，批处理清理异常: 模拟远程上传失败
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口; 批处理结束失败: OSError: 模拟远程上传失败
+ok
+test_hotlist_classify_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_hotlist_classify_guard_denied) ... [AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 1 条, 已分析跳过 0 条, 本次发送AI分析 1 条
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+test_rss_classify_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_rss_classify_guard_denied) ... [AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 0 条, 已分析跳过 0 条, 本次发送AI分析 0 条
+[AI筛选] RSS: 总计 1 条, 已分析跳过 0 条, 本次发送AI分析 1 条
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+test_update_tags_guard_denied (tests.core.test_ai_filter_guard.AIFilterGuardTests.test_update_tags_guard_denied) ... [AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.021s
+
+OK
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ python -m unittest discover -s tests -p "test_*.py"
+[AI] 警告: AI 返回空响应，重试 1/3
+[AI] 警告: AI 返回空响应，重试 2/3
+.[AI] 警告: AI 返回空响应，重试 1/3
+[AI] 警告: AI 返回空响应，重试 2/3
+[AI] 警告: AI 返回空响应，重试 3/3
+...................................................................................[AI筛选] 使用 1 个标签
+...[AI筛选] 批处理结束失败: OSError: 模拟远程上传失败
+.[AI筛选] AI 标签更新失败，回退到重新提取
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.[AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] 废弃 3 个旧标签, 保存 2 个新标签 (版本 2)
+[AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 0 条, 已分析跳过 0 条, 本次发送AI分析 0 条
+[AI筛选] 没有新增新闻需要分类
+.[AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.[AI筛选] 兴趣文件变更: ai_interests.txt (AI change_ratio=0.90 >= threshold=0.60 → 全量重分类)
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.[AI筛选] 首次运行 (ai_interests.txt)，提取标签...
+[AI筛选] Guard 拒绝，批处理清理异常: 模拟远程上传失败
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口; 批处理结束失败: OSError: 模拟远程上传失败
+.[AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 1 条, 已分析跳过 0 条, 本次发送AI分析 1 条
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.[AI筛选] 使用 1 个标签
+[AI筛选] 热榜: 总计 0 条, 已分析跳过 0 条, 本次发送AI分析 0 条
+[AI筛选] RSS: 总计 1 条, 已分析跳过 0 条, 本次发送AI分析 1 条
+[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.[AI筛选] AI 请求被时间窗口守卫拒绝: AI 请求不在允许时间窗口
+.................................................................................Unable to remove temporary database file: C:\Users\pengfei\AppData\Local\Temp\tmphetpszx2\first.tmp
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\database_snapshot.py", line 207, in _cleanup_temporary_files
+    path.unlink(missing_ok=True)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_database_snapshot.py", line 37, in tracked_unlink
+    raise PermissionError("simulated file lock")
+PermissionError: simulated file lock
+..............................................................................................................................................................................................................................................................................Failed to record exchange listing refresh failure
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\listing_status_provider.py", line 274, in update
+    self.sse_provider.fetch_snapshot(),
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_listing_status_provider.py", line 66, in fetch_snapshot
+    raise self.error
+trendradar.market_data.security_master_provider.SecurityMasterSourceError: 原始 采集错误
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\listing_status_provider.py", line 313, in update
+    self.storage.mark_data_source_failure(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        EXCHANGE_LISTING_SOURCE_ID,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        str(exc),
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_listing_status_provider.py", line 227, in fail_recording
+    raise RuntimeError("状态记录失败")
+RuntimeError: 状态记录失败
+.................Failed to persist radar failure status for run 1
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\market_radar.py", line 190, in scan_and_persist_with_run
+    ranked, actual_source, actual_data_at, quality_status = self._scan(
+                                                            ~~~~~~~~~~^
+        events,
+        ^^^^^^^
+    ...<3 lines>...
+        limit_results=False,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_market_radar.py", line 298, in failing_scan
+    raise RuntimeError("original quote scan failure")
+RuntimeError: original quote scan failure
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\market_radar.py", line 225, in scan_and_persist_with_run
+    self.result_store.finish_run(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        run_id,
+        ^^^^^^^
+    ...<9 lines>...
+        notes=f"{notes} | {type(exc).__name__}: {exc}".strip(" |"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_market_radar.py", line 301, in failing_finish_run
+    raise OSError("finish_run persistence failure")
+OSError: finish_run persistence failure
+.........................................................................................................................................................................................................................................................................................................................................................................................................................{
+  "universe_refresh": {}
+}
+{
+  "status": "success",
+  "run_id": 1,
+  "event_count": 0,
+  "security_count": 0,
+  "candidate_count": 0,
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpaah18k9n\\report.json"
+}
+.{
+  "universe_refresh": {
+    "security_master": {
+      "status": "partial",
+      "business_data_status": "success",
+      "status_recording_status": "failed",
+      "error_type": "DataSourceStatusRecordingError",
+      "error": "成功状态记录失败"
+    },
+    "listing_status": {
+      "status": "success"
+    }
+  }
+}
+{
+  "status": "success",
+  "run_id": 1,
+  "event_count": 0,
+  "security_count": 0,
+  "candidate_count": 0,
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmp9ljuqk_n\\report.json"
+}
+.{
+  "universe_refresh": {
+    "security_master": {
+      "status": "failed"
+    },
+    "listing_status": {
+      "status": "success"
+    }
+  }
+}
+{
+  "status": "success",
+  "run_id": 1,
+  "event_count": 0,
+  "security_count": 0,
+  "candidate_count": 0,
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpivwb1qvt\\report.json"
+}
+.{
+  "universe_refresh": {
+    "security_master": {
+      "status": "partial",
+      "business_data_status": "success",
+      "status_recording_status": "failed"
+    }
+  }
+}
+{
+  "status": "success",
+  "run_id": 1,
+  "event_count": 0,
+  "security_count": 0,
+  "candidate_count": 0,
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpiauiwica\\report.json"
+}
+.{
+  "status": "success",
+  "provider": "test",
+  "sector_count": 10,
+  "membership_count": 20,
+  "matched_security_count": 18,
+  "unmatched_security_count": 2,
+  "excluded_security_count": 0,
+  "database": {
+    "status": "success",
+    "persistence": "local_only",
+    "db_path": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpcrpug0xs\\market.db"
+  }
+}
+.{
+  "status": "failed",
+  "error_type": "RuntimeError",
+  "error": "forced refresh failed"
+}
+.{
+  "status": "success",
+  "run_id": 1,
+  "event_count": 0,
+  "security_count": 0,
+  "candidate_count": 0,
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpzs4snt_t\\report.json"
+}
+.{
+  "status": "failed",
+  "error_type": "MarketDatabaseLockError",
+  "error": "Market database is locked: C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmpz55geokp\\market.db.workflow.lock. Check whether another workflow is running. Do not delete the lock until its owner is confirmed stopped."
+}
+.{
+  "universe_refresh": {}
+}
+{
+  "status": "failed",
+  "error_type": "RuntimeError",
+  "error": "event collection failed"
+}
+.{
+  "universe_refresh": {}
+}
+{
+  "status": "partial",
+  "database_status": "success",
+  "report_status": "failed",
+  "report": "C:\\Users\\pengfei\\AppData\\Local\\Temp\\tmp0r1ue6a4\\report.json",
+  "error_type": "OSError",
+  "error": "report write failed"
+}
+...............................................Failed to record security master refresh failure
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\security_master_provider.py", line 264, in update
+    raise SecurityMasterSourceError(
+        f"证券主数据数量异常({fetched_count}<{self.min_expected_count})，拒绝写 库"
+    )
+trendradar.market_data.security_master_provider.SecurityMasterSourceError: 证券 主数据数量异常(1<2)，拒绝写库
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\security_master_provider.py", line 304, in update
+    self.storage.mark_data_source_failure(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        SECURITY_MASTER_SOURCE_ID,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        str(exc),
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_security_master_provider.py", line 147, in fail_recording
+    raise RuntimeError("状态记录失败")
+RuntimeError: 状态记录失败
+...................................Market workflow failed
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\workflow.py", line 468, in run_market_workflow
+    finish_result = lifecycle.finish()
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+RuntimeError: database finish failed
+.Market workflow failed
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\workflow.py", line 265, in run_market_workflow
+    start_result = lifecycle.start()
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+RuntimeError: database start failed
+.Event Review failed for event event-001
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\workflow.py", line 184, in _review_events
+    review_persisted_market_event_with_runtime(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        storage=storage,
+        ^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        event_id=event.event_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+RuntimeError: review failed
+.Market event collection failed: us_events
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\workflow.py", line 81, in _collect_events
+    events = fetcher.fetch(limit_per_feed=limit_per_feed)
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\tests\market_data\test_workflow.py", line 23, in fetch
+    raise self.error
+RuntimeError: US feed unavailable
+.Market radar scan failed
+Traceback (most recent call last):
+  File "C:\Users\pengfei\Desktop\3\TrendRadar_dev\trendradar\market_data\workflow.py", line 404, in run_market_workflow
+    selected, radar_run_id = radar.scan_and_persist_with_run(
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        events,
+        ^^^^^^^
+    ...<2 lines>...
+        run_type=run_type,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "F:\Python_3.13.11\Lib\unittest\mock.py", line 1228, in _execute_mock_call
+    raise effect
+RuntimeError: radar scan failed
+....................[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 批量上传异常 ('2026-11-26', 'news'): OSError: simulated upload failure
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+.[远程存储] 初始化完成，存储桶: test，签名版本: s3v4
+[远程存储] 临时目录已清理: test_remote_batch_tmp
+....
+----------------------------------------------------------------------
+Ran 1001 tests in 12.057s
+
+OK
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$
