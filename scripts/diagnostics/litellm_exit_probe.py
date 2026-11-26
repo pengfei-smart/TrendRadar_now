@@ -90,6 +90,75 @@ def diagnose():
         log(f"diagnostic_error={type(exc).__name__}")
 
 
+
+def install_cleanup_probe():
+    """监控 LiteLLM 异步客户端清理前后的状态。"""
+    prefix = "[LiteLLM清理监控]"
+
+    def log(message):
+        print(f"{prefix} {message}", file=sys.stderr, flush=True)
+
+    def snapshot(stage):
+        try:
+            cache = getattr(litellm, "in_memory_llm_clients_cache", None)
+            cache_dict = getattr(cache, "cache_dict", {}) if cache else {}
+            handlers = list(cache_dict.values())
+
+            log(f"{stage}.handler_count={len(handlers)}")
+
+            for index, handler in enumerate(handlers):
+                client = getattr(handler, "client", None)
+                if client is None:
+                    client = getattr(handler, "_client", None)
+
+                if client is None:
+                    continue
+
+                log(
+                    f"{stage}.handler[{index}].client_closed="
+                    f"{getattr(client, 'is_closed', 'unknown')}"
+                )
+
+                transport = getattr(client, "_transport", None)
+                if transport is not None:
+                    log(
+                        f"{stage}.handler[{index}].transport="
+                        f"{type(transport).__name__}"
+                    )
+
+                    session = getattr(transport, "client", None)
+                    if session is not None and not callable(session):
+                        log(
+                            f"{stage}.handler[{index}].session_closed="
+                            f"{getattr(session, 'closed', 'unknown')}"
+                        )
+        except Exception as exc:
+            log(f"{stage}.snapshot_error={type(exc).__name__}")
+
+    try:
+        import litellm.llms.custom_httpx.async_client_cleanup as cleanup_module
+
+        original_cleanup = cleanup_module.close_litellm_async_clients
+
+        async def observed_cleanup():
+            log("cleanup_started")
+            snapshot("before")
+
+            try:
+                await original_cleanup()
+            except BaseException as exc:
+                log(f"cleanup_exception={type(exc).__name__}")
+                raise
+            finally:
+                snapshot("after")
+                log("cleanup_finished")
+
+        cleanup_module.close_litellm_async_clients = observed_cleanup
+        log("cleanup_probe_installed")
+
+    except Exception as exc:
+        log(f"cleanup_probe_install_error={type(exc).__name__}")
+
 def main():
     api_key = os.environ.get("AI_API_KEY", "").strip()
     model = os.environ.get("AI_MODEL", "").strip()
@@ -128,6 +197,7 @@ def main():
     finally:
         # 首次请求可能触发 LiteLLM 注册退出清理回调。
         # 在请求结束后注册，确保诊断回调优先执行。
+        install_cleanup_probe()
         atexit.register(diagnose)
 
     if not response.choices:
