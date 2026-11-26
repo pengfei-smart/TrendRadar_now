@@ -1,0 +1,1356 @@
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ echo "========== 1. StorageManager 测试文件 =========="
+find tests -type f -iname "*storage*test*.py" -o -iname "test_storage*.py"
+
+echo
+echo "========== 2. StorageManager 初始化部分 =========="
+sed -n '1,180p' trendradar/storage/manager.py
+
+echo
+echo "========== 3. AppContext 测试文件 =========="
+find tests -type f -iname "*context*.py"
+
+echo
+echo "========== 4. 现有 Context 测试 =========="
+grep -R -n -A8 -B5 "AppContext\|cleanup" tests/core tests
+========== 1. StorageManager 测试文件 ==========
+tests/market_data/test_storage_integration.py
+
+========== 2. StorageManager 初始化部分 ==========
+# coding=utf-8
+"""
+存储管理器 - 统一管理存储后端
+
+根据环境和配置自动选择合适的存储后端
+"""
+
+import os
+from typing import Optional
+
+from trendradar.storage.base import StorageBackend, NewsData, RSSData
+from trendradar.utils.time import DEFAULT_TIMEZONE
+
+
+# 存储管理器单例
+_storage_manager: Optional["StorageManager"] = None
+
+
+class StorageManager:
+    """
+    存储管理器
+
+    功能：
+    - 自动检测运行环境（GitHub Actions / Docker / 本地）
+    - 根据配置选择存储后端（local / remote / auto）
+    - 提供统一的存储接口
+    - 支持从远程拉取数据到本地
+    """
+
+    def __init__(
+        self,
+        backend_type: str = "auto",
+        data_dir: str = "output",
+        enable_txt: bool = True,
+        enable_html: bool = True,
+        remote_config: Optional[dict] = None,
+        local_retention_days: int = 0,
+        remote_retention_days: int = 0,
+        pull_enabled: bool = False,
+        pull_days: int = 0,
+        timezone: str = DEFAULT_TIMEZONE,
+    ):
+        """
+        初始化存储管理器
+
+        Args:
+            backend_type: 存储后端类型 (local / remote / auto)
+            data_dir: 本地数据目录
+            enable_txt: 是否启用 TXT 快照
+            enable_html: 是否启用 HTML 报告
+            remote_config: 远程存储配置（endpoint_url, bucket_name, access_key_id 等）
+            local_retention_days: 本地数据保留天数（0 = 无限制）
+            remote_retention_days: 远程数据保留天数（0 = 无限制）
+            pull_enabled: 是否启用启动时自动拉取
+            pull_days: 拉取最近 N 天的数据
+            timezone: 时区配置
+        """
+        self.backend_type = backend_type
+        self.data_dir = data_dir
+        self.enable_txt = enable_txt
+        self.enable_html = enable_html
+        self.remote_config = remote_config or {}
+        self.local_retention_days = local_retention_days
+        self.remote_retention_days = remote_retention_days
+        self.pull_enabled = pull_enabled
+        self.pull_days = pull_days
+        self.timezone = timezone
+
+        self._backend: Optional[StorageBackend] = None
+        self._remote_backend: Optional[StorageBackend] = None
+
+    @staticmethod
+    def is_github_actions() -> bool:
+        """检测是否在 GitHub Actions 环境中运行"""
+        return os.environ.get("GITHUB_ACTIONS") == "true"
+
+    @staticmethod
+    def is_docker() -> bool:
+        """检测是否在 Docker 容器中运行"""
+        # 方法1: 检查 /.dockerenv 文件
+        if os.path.exists("/.dockerenv"):
+            return True
+
+        # 方法2: 检查 cgroup（Linux）
+        try:
+            with open("/proc/1/cgroup", "r") as f:
+                return "docker" in f.read()
+        except (FileNotFoundError, PermissionError):
+            pass
+
+        # 方法3: 检查环境变量
+        return os.environ.get("DOCKER_CONTAINER") == "true"
+
+    def _resolve_backend_type(self) -> str:
+        """解析实际使用的后端类型"""
+        if self.backend_type == "auto":
+            if self.is_github_actions():
+                # GitHub Actions 环境，检查是否配置了远程存储
+                if self._has_remote_config():
+                    return "remote"
+                else:
+                    print("[存储管理器] GitHub Actions 环境但未配置远程存储，使用本地存储")
+                    return "local"
+            else:
+                return "local"
+        return self.backend_type
+
+    def _has_remote_config(self) -> bool:
+        """检查是否有有效的远程存储配置"""
+        # 检查配置或环境变量
+        bucket_name = self.remote_config.get("bucket_name") or os.environ.get("S3_BUCKET_NAME")
+        access_key = self.remote_config.get("access_key_id") or os.environ.get("S3_ACCESS_KEY_ID")
+        secret_key = self.remote_config.get("secret_access_key") or os.environ.get("S3_SECRET_ACCESS_KEY")
+        endpoint = self.remote_config.get("endpoint_url") or os.environ.get("S3_ENDPOINT_URL")
+
+        # 调试日志
+        has_config = bool(bucket_name and access_key and secret_key and endpoint)
+        if not has_config:
+            print(f"[存储管理器] 远程存储配置检查失败:")
+            print(f"  - bucket_name: {'已配置' if bucket_name else '未配置'}")
+            print(f"  - access_key_id: {'已配置' if access_key else '未配置'}")
+            print(f"  - secret_access_key: {'已配置' if secret_key else '未配置'}")
+            print(f"  - endpoint_url: {'已配置' if endpoint else '未配置'}")
+
+        return has_config
+
+    def _create_remote_backend(self) -> Optional[StorageBackend]:
+        """创建远程存储后端"""
+        try:
+            from trendradar.storage.remote import RemoteStorageBackend
+
+            return RemoteStorageBackend(
+                bucket_name=self.remote_config.get("bucket_name") or os.environ.get("S3_BUCKET_NAME", ""),
+                access_key_id=self.remote_config.get("access_key_id") or os.environ.get("S3_ACCESS_KEY_ID", ""),
+                secret_access_key=self.remote_config.get("secret_access_key") or os.environ.get("S3_SECRET_ACCESS_KEY", ""),
+                endpoint_url=self.remote_config.get("endpoint_url") or os.environ.get("S3_ENDPOINT_URL", ""),
+                region=self.remote_config.get("region") or os.environ.get("S3_REGION", ""),
+                enable_txt=self.enable_txt,
+                enable_html=self.enable_html,
+                timezone=self.timezone,
+            )
+        except ImportError as e:
+            print(f"[存储管理器] 远程后端导入失败: {e}")
+            print("[存储管理器] 请确保已安装 boto3: pip install boto3")
+            return None
+        except Exception as e:
+            print(f"[存储管理器] 远程后端初始化失败: {e}")
+            return None
+
+    def get_backend(self) -> StorageBackend:
+        """获取存储后端实例"""
+        if self._backend is None:
+            resolved_type = self._resolve_backend_type()
+
+            if resolved_type == "remote":
+                self._backend = self._create_remote_backend()
+                if self._backend:
+                    print(f"[存储管理器] 使用远程存储后端")
+                else:
+                    print("[存储管理器] 回退到本地存储")
+                    resolved_type = "local"
+
+            if resolved_type == "local" or self._backend is None:
+                from trendradar.storage.local import LocalStorageBackend
+
+                self._backend = LocalStorageBackend(
+                    data_dir=self.data_dir,
+                    enable_txt=self.enable_txt,
+                    enable_html=self.enable_html,
+                    timezone=self.timezone,
+                )
+                print(f"[存储管理器] 使用本地存储后端 (数据目录: {self.data_dir})")
+
+        return self._backend
+
+    def pull_from_remote(self) -> int:
+        """
+        从远程拉取数据到本地
+
+        Returns:
+
+========== 3. AppContext 测试文件 ==========
+tests/market_data/test_workflow_context.py
+
+========== 4. 现有 Context 测试 ==========
+tests/core/test_ai_filter_guard.py-1-import unittest
+tests/core/test_ai_filter_guard.py-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py-3-
+tests/core/test_ai_filter_guard.py:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py-6-
+tests/core/test_ai_filter_guard.py-7-
+tests/core/test_ai_filter_guard.py-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py-15-        ]
+tests/core/test_ai_filter_guard.py-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py-19-
+tests/core/test_ai_filter_guard.py:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py-27-            },
+tests/core/test_ai_filter_guard.py-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py-191-
+tests/core/test_ai_filter_guard.py-192-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-193-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py-194-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py-195-
+tests/core/test_ai_filter_guard.py:196:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py-197-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py-198-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py-199-
+tests/core/test_ai_filter_guard.py-200-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-201-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-202-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-203-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py-204-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py-211-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py-212-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py-213-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py-214-
+tests/core/test_ai_filter_guard.py-215-
+tests/core/test_ai_filter_guard.py:216:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py-217-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-218-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py-219-        )
+tests/core/test_ai_filter_guard.py-220-
+tests/core/test_ai_filter_guard.py-221-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-222-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-223-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-224-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py-229-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py-230-
+tests/core/test_ai_filter_guard.py-231-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-232-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-233-
+tests/core/test_ai_filter_guard.py:234:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py-235-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-236-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py-237-        )
+tests/core/test_ai_filter_guard.py-238-
+tests/core/test_ai_filter_guard.py-239-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-240-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-241-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-242-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py-268-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-269-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-270-
+tests/core/test_ai_filter_guard.py-271-
+tests/core/test_ai_filter_guard.py-272-
+tests/core/test_ai_filter_guard.py:273:    def test_business_and_batch_cleanup_failures_are_both_preserved(self):
+tests/core/test_ai_filter_guard.py-274-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-275-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py-276-        )
+tests/core/test_ai_filter_guard.py-277-        self.storage.end_batch.side_effect = OSError(
+tests/core/test_ai_filter_guard.py-278-            "模拟远程上传失败"
+tests/core/test_ai_filter_guard.py-279-        )
+tests/core/test_ai_filter_guard.py-280-
+tests/core/test_ai_filter_guard.py-281-        with patch("trendradar.context.AIFilter") as filter_class:
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-1-import unittest
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-3-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-6-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-7-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-15-        ]
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-19-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-27-            },
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-139-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-140-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-141-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-142-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-143-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:144:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-145-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-146-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-147-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-148-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-149-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-150-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-151-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-152-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-159-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-160-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-161-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-162-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-163-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:164:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-165-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-166-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-167-        )
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-168-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-169-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-170-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-171-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-172-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-177-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-178-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-179-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-180-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-181-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:182:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-183-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-184-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-185-        )
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-186-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-187-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-188-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-189-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-190-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-1-import unittest
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-3-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-6-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-7-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-15-        ]
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-19-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-27-            },
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-191-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-192-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-193-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-194-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-195-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:196:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-197-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-198-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-199-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-200-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-201-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-202-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-203-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-204-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-211-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-212-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-213-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-214-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-215-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:216:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-217-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-218-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-219-        )
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-220-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-221-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-222-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-223-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-224-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-229-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-230-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-231-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-232-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-233-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:234:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-235-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-236-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-237-        )
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-238-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-239-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-240-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-241-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-242-            ai_filter.compute_interests_hash.return_value = "hash"
+Binary file tests/core/__pycache__/test_ai_filter_guard.cpython-313.pyc matches
+--
+tests/ai/test_client_usage.py-55-            "API_KEY": "test-key",
+tests/ai/test_client_usage.py-56-            "MAX_TOKENS": 100,
+tests/ai/test_client_usage.py-57-        }
+tests/ai/test_client_usage.py-58-
+tests/ai/test_client_usage.py-59-    def tearDown(self):
+tests/ai/test_client_usage.py:60:        self.temp_dir.cleanup()
+tests/ai/test_client_usage.py-61-
+tests/ai/test_client_usage.py-62-    def test_success_records_actual_model_and_cache_usage(self):
+tests/ai/test_client_usage.py-63-        response = SimpleNamespace(
+tests/ai/test_client_usage.py-64-            model="deepseek/deepseek-v4-flash",
+tests/ai/test_client_usage.py-65-            id="req-123",
+tests/ai/test_client_usage.py-66-            usage=SimpleNamespace(
+tests/ai/test_client_usage.py-67-                prompt_tokens=100, completion_tokens=20, total_tokens=120,
+tests/ai/test_client_usage.py-68-                prompt_cache_hit_tokens=40, prompt_cache_miss_tokens=60,
+--
+tests/ai/test_usage_ledger.py-13-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/ai/test_usage_ledger.py-14-        self.path = Path(self.temp_dir.name) / "usage.db"
+tests/ai/test_usage_ledger.py-15-        self.ledger = AIUsageLedger(self.path)
+tests/ai/test_usage_ledger.py-16-
+tests/ai/test_usage_ledger.py-17-    def tearDown(self):
+tests/ai/test_usage_ledger.py:18:        self.temp_dir.cleanup()
+tests/ai/test_usage_ledger.py-19-
+tests/ai/test_usage_ledger.py-20-    def record(self, **overrides):
+tests/ai/test_usage_ledger.py-21-        values = {
+tests/ai/test_usage_ledger.py-22-            "feature": "analysis",
+tests/ai/test_usage_ledger.py-23-            "operation": "summarize",
+tests/ai/test_usage_ledger.py-24-            "provider": "litellm",
+tests/ai/test_usage_ledger.py-25-            "model": "deepseek/deepseek-v4-pro",
+tests/ai/test_usage_ledger.py-26-            "request_status": "success",
+--
+tests/ai/test_usage_ledger_factory.py-13-
+tests/ai/test_usage_ledger_factory.py-14-
+tests/ai/test_usage_ledger_factory.py-15-class AIUsageLedgerFactoryTests(unittest.TestCase):
+tests/ai/test_usage_ledger_factory.py-16-    def setUp(self):
+tests/ai/test_usage_ledger_factory.py-17-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/ai/test_usage_ledger_factory.py:18:        self.addCleanup(self.temp_dir.cleanup)
+tests/ai/test_usage_ledger_factory.py-19-        self.addCleanup(clear_ai_usage_ledger_cache)
+tests/ai/test_usage_ledger_factory.py-20-
+tests/ai/test_usage_ledger_factory.py-21-    def test_default_path(self):
+tests/ai/test_usage_ledger_factory.py-22-        with patch.dict(os.environ, {}, clear=True):
+tests/ai/test_usage_ledger_factory.py-23-            resolved = resolve_ai_usage_db_path()
+tests/ai/test_usage_ledger_factory.py-24-
+tests/ai/test_usage_ledger_factory.py-25-        expected = (Path.cwd() / "data" / "ai_usage.db").resolve()
+tests/ai/test_usage_ledger_factory.py-26-        self.assertEqual(expected, resolved)
+--
+tests/ai/test_usage_ledger_integration.py-33-        self.env_patch.start()
+tests/ai/test_usage_ledger_integration.py-34-
+tests/ai/test_usage_ledger_integration.py-35-    def tearDown(self):
+tests/ai/test_usage_ledger_integration.py-36-        self.env_patch.stop()
+tests/ai/test_usage_ledger_integration.py-37-        clear_ai_usage_ledger_cache()
+tests/ai/test_usage_ledger_integration.py:38:        self.temp_dir.cleanup()
+tests/ai/test_usage_ledger_integration.py-39-
+tests/ai/test_usage_ledger_integration.py-40-    def test_ai_client_and_event_review_share_same_ledger(self):
+tests/ai/test_usage_ledger_integration.py-41-        ai_response = SimpleNamespace(
+tests/ai/test_usage_ledger_integration.py-42-            model="deepseek/deepseek-v4-flash",
+tests/ai/test_usage_ledger_integration.py-43-            id="req-normal-ai",
+tests/ai/test_usage_ledger_integration.py-44-            usage=SimpleNamespace(
+tests/ai/test_usage_ledger_integration.py-45-                prompt_tokens=100,
+tests/ai/test_usage_ledger_integration.py-46-                completion_tokens=20,
+Binary file tests/ai/__pycache__/test_client_usage.cpython-313.pyc matches
+Binary file tests/ai/__pycache__/test_usage_ledger.cpython-313.pyc matches
+Binary file tests/ai/__pycache__/test_usage_ledger_factory.cpython-313.pyc matches
+Binary file tests/ai/__pycache__/test_usage_ledger_integration.cpython-313.pyc matches
+--
+tests/core/test_ai_filter_guard.py-1-import unittest
+tests/core/test_ai_filter_guard.py-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py-3-
+tests/core/test_ai_filter_guard.py:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py-6-
+tests/core/test_ai_filter_guard.py-7-
+tests/core/test_ai_filter_guard.py-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py-15-        ]
+tests/core/test_ai_filter_guard.py-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py-19-
+tests/core/test_ai_filter_guard.py:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py-27-            },
+tests/core/test_ai_filter_guard.py-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py-191-
+tests/core/test_ai_filter_guard.py-192-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-193-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py-194-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py-195-
+tests/core/test_ai_filter_guard.py:196:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py-197-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py-198-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py-199-
+tests/core/test_ai_filter_guard.py-200-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-201-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-202-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-203-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py-204-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py-211-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py-212-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py-213-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py-214-
+tests/core/test_ai_filter_guard.py-215-
+tests/core/test_ai_filter_guard.py:216:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py-217-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-218-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py-219-        )
+tests/core/test_ai_filter_guard.py-220-
+tests/core/test_ai_filter_guard.py-221-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-222-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-223-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-224-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py-229-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py-230-
+tests/core/test_ai_filter_guard.py-231-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-232-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-233-
+tests/core/test_ai_filter_guard.py:234:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py-235-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-236-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py-237-        )
+tests/core/test_ai_filter_guard.py-238-
+tests/core/test_ai_filter_guard.py-239-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py-240-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py-241-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py-242-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py-268-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-269-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py-270-
+tests/core/test_ai_filter_guard.py-271-
+tests/core/test_ai_filter_guard.py-272-
+tests/core/test_ai_filter_guard.py:273:    def test_business_and_batch_cleanup_failures_are_both_preserved(self):
+tests/core/test_ai_filter_guard.py-274-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py-275-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py-276-        )
+tests/core/test_ai_filter_guard.py-277-        self.storage.end_batch.side_effect = OSError(
+tests/core/test_ai_filter_guard.py-278-            "模拟远程上传失败"
+tests/core/test_ai_filter_guard.py-279-        )
+tests/core/test_ai_filter_guard.py-280-
+tests/core/test_ai_filter_guard.py-281-        with patch("trendradar.context.AIFilter") as filter_class:
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-1-import unittest
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-3-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-6-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-7-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-15-        ]
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-19-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-27-            },
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-139-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-140-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-141-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-142-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-143-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:144:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-145-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-146-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-147-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-148-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-149-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-150-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-151-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-152-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-159-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-160-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-161-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-162-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-163-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:164:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-165-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-166-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-167-        )
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-168-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-169-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-170-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-171-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-172-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-177-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-178-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-179-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-180-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-181-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738:182:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-183-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-184-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-185-        )
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-186-
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-187-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-188-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-189-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.backup_20261126_130738-190-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-1-import unittest
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-2-from unittest.mock import MagicMock, patch
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-3-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:4:from trendradar.context import AppContext
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-5-from trendradar.ai.request_guard import AIRequestNotAllowedError
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-6-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-7-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-8-class AIFilterGuardTests(unittest.TestCase):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-9-    def setUp(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-10-        self.storage = MagicMock()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-11-        self.storage.get_latest_prompt_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-12-        self.storage.get_latest_ai_filter_tag_version.return_value = 1
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-15-        ]
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-16-        self.storage.get_all_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-17-        self.storage.get_all_rss_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-18-        self.storage.get_analyzed_news_ids.return_value = []
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-19-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:20:        self.ctx = AppContext({
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-21-            "FILTER": {"METHOD": "ai"},
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-22-            "AI": {"MODEL": "test-model"},
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-23-            "AI_FILTER": {
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-24-                "BATCH_SIZE": 10,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-25-                "BATCH_INTERVAL": 0,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-26-                "RECLASSIFY_THRESHOLD": 0.6,
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-27-            },
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-28-            "RSS": {"ENABLED": False},
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-191-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-192-        ai_filter.classify_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-193-        self.storage.save_ai_filter_results.assert_not_called()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-194-        self.storage.save_analyzed_news.assert_not_called()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-195-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:196:    def test_guard_denial_cleanup_failure_is_reported(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-197-        self.storage.get_latest_prompt_hash.return_value = None
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-198-        self.storage.end_batch.side_effect = OSError("模拟远程上传失败")
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-199-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-200-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-201-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-202-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-203-            ai_filter.compute_interests_hash.return_value = "hash"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-204-            ai_filter.extract_tags.side_effect = AIRequestNotAllowedError(
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-211-        self.assertFalse(result.success)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-212-        self.assertIn("AI 请求不在允许时间窗口", result.error)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-213-        self.assertIn("模拟远程上传失败", result.error)
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-214-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-215-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:216:    def test_batch_cleanup_when_prompt_hash_read_raises(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-217-        self.storage.get_latest_prompt_hash.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-218-            "模拟读取提示词 hash 失败"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-219-        )
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-220-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-221-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-222-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-223-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-224-            ai_filter.compute_interests_hash.return_value = "hash"
+--
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-229-                self.ctx.run_ai_filter()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-230-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-231-        self.storage.begin_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-232-        self.storage.end_batch.assert_called_once()
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-233-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak:234:    def test_batch_cleanup_when_news_query_raises(self):
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-235-        self.storage.get_all_news_ids.side_effect = RuntimeError(
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-236-            "模拟新闻查询失败"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-237-        )
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-238-
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-239-        with patch("trendradar.context.AIFilter") as filter_class:
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-240-            ai_filter = filter_class.return_value
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-241-            ai_filter.load_interests_content.return_value = "测试兴趣"
+tests/core/test_ai_filter_guard.py.before_pending_cleanup_guard_20261126_133802.bak-242-            ai_filter.compute_interests_hash.return_value = "hash"
+Binary file tests/core/__pycache__/test_ai_filter_guard.cpython-313.pyc matches
+--
+tests/market_data/test_database_backend.py-90-
+tests/market_data/test_database_backend.py-91-
+tests/market_data/test_database_backend.py-92-class MarketDatabaseBackendTests(unittest.TestCase):
+tests/market_data/test_database_backend.py-93-    def setUp(self):
+tests/market_data/test_database_backend.py-94-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/market_data/test_database_backend.py:95:        self.addCleanup(self.temp_dir.cleanup)
+tests/market_data/test_database_backend.py-96-
+tests/market_data/test_database_backend.py-97-        self.client = FakeS3Client()
+tests/market_data/test_database_backend.py-98-        self.backend = MarketDatabaseBackend(
+tests/market_data/test_database_backend.py-99-            {
+tests/market_data/test_database_backend.py-100-                "BUCKET_NAME": "trendradar-data",
+tests/market_data/test_database_backend.py-101-                "ENDPOINT_URL": "https://example.r2.cloudflarestorage.com",
+tests/market_data/test_database_backend.py-102-                "ACCESS_KEY_ID": "test-access-key",
+tests/market_data/test_database_backend.py-103-                "SECRET_ACCESS_KEY": "test-secret-key",
+--
+tests/market_data/test_database_lifecycle.py-207-
+tests/market_data/test_database_lifecycle.py-208-        self.db_path = self.root / "market.db"
+tests/market_data/test_database_lifecycle.py-209-        self.remote_path = self.root / "remote-market.db"
+tests/market_data/test_database_lifecycle.py-210-
+tests/market_data/test_database_lifecycle.py-211-    def tearDown(self):
+tests/market_data/test_database_lifecycle.py:212:        self.temp_dir.cleanup()
+tests/market_data/test_database_lifecycle.py-213-
+tests/market_data/test_database_lifecycle.py-214-    def create_database(self, path: Path):
+tests/market_data/test_database_lifecycle.py-215-        MarketStorage(str(path))
+tests/market_data/test_database_lifecycle.py-216-
+tests/market_data/test_database_lifecycle.py-217-    def test_local_mode_never_uploads_even_with_backend(self):
+tests/market_data/test_database_lifecycle.py-218-        backend = FakeBackend(exists=False)
+tests/market_data/test_database_lifecycle.py-219-
+tests/market_data/test_database_lifecycle.py-220-        lifecycle = MarketDatabaseLifecycle(
+--
+tests/market_data/test_database_lifecycle.py-383-        self.assertFalse(lifecycle.lock_path.exists())
+tests/market_data/test_database_lifecycle.py-384-
+tests/market_data/test_database_lifecycle.py-385-        with self.assertRaises(MarketDatabaseLifecycleError):
+tests/market_data/test_database_lifecycle.py-386-            lifecycle.finish()
+tests/market_data/test_database_lifecycle.py-387-
+tests/market_data/test_database_lifecycle.py:388:    def test_snapshot_cleanup_failure_keeps_remote_success(self):
+tests/market_data/test_database_lifecycle.py-389-        backend = FakeBackend(
+tests/market_data/test_database_lifecycle.py-390-            remote_database=self.remote_path,
+tests/market_data/test_database_lifecycle.py-391-            exists=False,
+tests/market_data/test_database_lifecycle.py-392-        )
+tests/market_data/test_database_lifecycle.py-393-
+tests/market_data/test_database_lifecycle.py-394-        lifecycle = MarketDatabaseLifecycle(
+tests/market_data/test_database_lifecycle.py-395-            self.db_path,
+tests/market_data/test_database_lifecycle.py-396-            backend=backend,
+tests/market_data/test_database_lifecycle.py-397-            storage_mode="auto",
+tests/market_data/test_database_lifecycle.py:398:            run_id="snapshot-cleanup-test",
+tests/market_data/test_database_lifecycle.py-399-        )
+tests/market_data/test_database_lifecycle.py-400-
+tests/market_data/test_database_lifecycle.py-401-        lifecycle.start()
+tests/market_data/test_database_lifecycle.py-402-
+tests/market_data/test_database_lifecycle.py-403-        original_unlink = Path.unlink
+tests/market_data/test_database_lifecycle.py-404-
+tests/market_data/test_database_lifecycle.py-405-        def fail_snapshot_unlink(path, *args, **kwargs):
+tests/market_data/test_database_lifecycle.py-406-            if path == lifecycle._snapshot_path:
+tests/market_data/test_database_lifecycle.py:407:                raise OSError("Simulated snapshot cleanup failure")
+tests/market_data/test_database_lifecycle.py-408-            return original_unlink(path, *args, **kwargs)
+tests/market_data/test_database_lifecycle.py-409-
+tests/market_data/test_database_lifecycle.py-410-        with patch.object(
+tests/market_data/test_database_lifecycle.py-411-            Path,
+tests/market_data/test_database_lifecycle.py-412-            "unlink",
+tests/market_data/test_database_lifecycle.py-413-            autospec=True,
+tests/market_data/test_database_lifecycle.py-414-            side_effect=fail_snapshot_unlink,
+tests/market_data/test_database_lifecycle.py-415-        ):
+tests/market_data/test_database_lifecycle.py-416-            result = lifecycle.finish()
+tests/market_data/test_database_lifecycle.py-417-
+tests/market_data/test_database_lifecycle.py-418-        self.assertEqual(result["status"], "success")
+tests/market_data/test_database_lifecycle.py-419-        self.assertEqual(result["persistence"], "remote")
+tests/market_data/test_database_lifecycle.py-420-        self.assertEqual(
+tests/market_data/test_database_lifecycle.py:421:            result["snapshot_cleanup"]["status"],
+tests/market_data/test_database_lifecycle.py-422-            "pending",
+tests/market_data/test_database_lifecycle.py-423-        )
+tests/market_data/test_database_lifecycle.py-424-        self.assertIn(
+tests/market_data/test_database_lifecycle.py:425:            "Simulated snapshot cleanup failure",
+tests/market_data/test_database_lifecycle.py:426:            result["snapshot_cleanup"]["error"],
+tests/market_data/test_database_lifecycle.py-427-        )
+tests/market_data/test_database_lifecycle.py-428-
+tests/market_data/test_database_lifecycle.py-429-        self.assertEqual(backend.upload_calls, 1)
+tests/market_data/test_database_lifecycle.py-430-        self.assertTrue(self.remote_path.exists())
+tests/market_data/test_database_lifecycle.py-431-
+tests/market_data/test_database_lifecycle.py-432-        retained_snapshot = lifecycle.retained_snapshot_path
+tests/market_data/test_database_lifecycle.py-433-        self.assertIsNotNone(retained_snapshot)
+tests/market_data/test_database_lifecycle.py-434-        self.assertTrue(retained_snapshot.exists())
+--
+tests/market_data/test_database_snapshot.py-13-)
+tests/market_data/test_database_snapshot.py-14-
+tests/market_data/test_database_snapshot.py-15-
+tests/market_data/test_database_snapshot.py-16-class DatabaseSnapshotTests(unittest.TestCase):
+tests/market_data/test_database_snapshot.py-17-
+tests/market_data/test_database_snapshot.py:18:    def test_cleanup_temporary_files_continues_after_unlink_failure(self):
+tests/market_data/test_database_snapshot.py-19-        from trendradar.market_data.database_snapshot import (
+tests/market_data/test_database_snapshot.py:20:            _cleanup_temporary_files,
+tests/market_data/test_database_snapshot.py-21-        )
+tests/market_data/test_database_snapshot.py-22-
+tests/market_data/test_database_snapshot.py-23-        first = self.root / "first.tmp"
+tests/market_data/test_database_snapshot.py-24-        second = self.root / "second.tmp"
+tests/market_data/test_database_snapshot.py-25-        third = self.root / "third.tmp"
+tests/market_data/test_database_snapshot.py-26-
+tests/market_data/test_database_snapshot.py-27-        for path in (first, second, third):
+tests/market_data/test_database_snapshot.py-28-            path.write_text("temporary", encoding="utf-8")
+--
+tests/market_data/test_database_snapshot.py-37-                raise PermissionError("simulated file lock")
+tests/market_data/test_database_snapshot.py-38-
+tests/market_data/test_database_snapshot.py-39-            return real_unlink(path, *args, **kwargs)
+tests/market_data/test_database_snapshot.py-40-
+tests/market_data/test_database_snapshot.py-41-        with mock.patch.object(Path, "unlink", tracked_unlink):
+tests/market_data/test_database_snapshot.py:42:            _cleanup_temporary_files([first, second, third])
+tests/market_data/test_database_snapshot.py-43-
+tests/market_data/test_database_snapshot.py-44-        self.assertEqual(attempted, [first, second, third])
+tests/market_data/test_database_snapshot.py-45-        self.assertTrue(first.exists())
+tests/market_data/test_database_snapshot.py-46-        self.assertFalse(second.exists())
+tests/market_data/test_database_snapshot.py-47-        self.assertFalse(third.exists())
+tests/market_data/test_database_snapshot.py-48-    def test_restore_rejects_corrupted_backup_before_publishing_it(self):
+tests/market_data/test_database_snapshot.py-49-        self._create_market_db(self.target, schema_version=13)
+tests/market_data/test_database_snapshot.py-50-        original_bytes = self.target.read_bytes()
+--
+tests/market_data/test_database_snapshot.py-211-        self.snapshot = self.root / "snapshot.db"
+tests/market_data/test_database_snapshot.py-212-        self.target = self.root / "target.db"
+tests/market_data/test_database_snapshot.py-213-        self._create_market_db(self.source)
+tests/market_data/test_database_snapshot.py-214-
+tests/market_data/test_database_snapshot.py-215-    def tearDown(self):
+tests/market_data/test_database_snapshot.py:216:        self.temp_dir.cleanup()
+tests/market_data/test_database_snapshot.py-217-
+tests/market_data/test_database_snapshot.py-218-    @staticmethod
+tests/market_data/test_database_snapshot.py-219-    def _create_market_db(path, schema_version=14):
+tests/market_data/test_database_snapshot.py-220-        connection = sqlite3.connect(path)
+tests/market_data/test_database_snapshot.py-221-        try:
+tests/market_data/test_database_snapshot.py-222-            connection.execute(
+tests/market_data/test_database_snapshot.py-223-                "CREATE TABLE schema_meta ("
+tests/market_data/test_database_snapshot.py-224-                "key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+--
+tests/market_data/test_event_review_input_builder.py-14-    def setUp(self):
+tests/market_data/test_event_review_input_builder.py-15-        self.tmp = tempfile.TemporaryDirectory()
+tests/market_data/test_event_review_input_builder.py-16-        self.storage = MarketStorage(str(Path(self.tmp.name) / "market.db"))
+tests/market_data/test_event_review_input_builder.py-17-
+tests/market_data/test_event_review_input_builder.py-18-    def tearDown(self):
+tests/market_data/test_event_review_input_builder.py:19:        self.tmp.cleanup()
+tests/market_data/test_event_review_input_builder.py-20-
+tests/market_data/test_event_review_input_builder.py-21-    def _save_event(self, source="fed_monetary"):
+tests/market_data/test_event_review_input_builder.py-22-        self.storage.save_events([
+tests/market_data/test_event_review_input_builder.py-23-            MarketEvent(
+tests/market_data/test_event_review_input_builder.py-24-                event_id="event-input-1", source=source,
+tests/market_data/test_event_review_input_builder.py-25-                title="Federal Reserve announces policy decision",
+tests/market_data/test_event_review_input_builder.py-26-                published_at="2026-11-18T08:30:00-05:00",
+tests/market_data/test_event_review_input_builder.py-27-                event_type="monetary_policy", direction="neutral",
+--
+tests/market_data/test_event_review_pipeline.py-102-        self.evidence_id = "event-source-" + digest
+tests/market_data/test_event_review_pipeline.py-103-        self.base = datetime(2026, 11, 18, 14, 0, tzinfo=timezone.utc)
+tests/market_data/test_event_review_pipeline.py-104-        self.ticks = iter((self.base, self.base + timedelta(seconds=8)))
+tests/market_data/test_event_review_pipeline.py-105-
+tests/market_data/test_event_review_pipeline.py-106-    def tearDown(self):
+tests/market_data/test_event_review_pipeline.py:107:        self.tmp.cleanup()
+tests/market_data/test_event_review_pipeline.py-108-
+tests/market_data/test_event_review_pipeline.py-109-    def test_reads_event_runs_five_roles_and_persists_passed_audit(self):
+tests/market_data/test_event_review_pipeline.py-110-        provider = DeterministicReviewProvider(self.evidence_id)
+tests/market_data/test_event_review_pipeline.py-111-        result = review_persisted_market_event(
+tests/market_data/test_event_review_pipeline.py-112-            storage=self.storage,
+tests/market_data/test_event_review_pipeline.py-113-            repository=self.repository,
+tests/market_data/test_event_review_pipeline.py-114-            provider=provider,
+tests/market_data/test_event_review_pipeline.py-115-            reviewer_model="fake/reviewer",
+--
+tests/market_data/test_event_review_pricing_repository.py-17-        self.tmp = tempfile.TemporaryDirectory()
+tests/market_data/test_event_review_pricing_repository.py-18-        self.storage = MarketStorage(str(Path(self.tmp.name) / "market.db"))
+tests/market_data/test_event_review_pricing_repository.py-19-        self.repository = EventReviewPricingRepository(self.storage)
+tests/market_data/test_event_review_pricing_repository.py-20-
+tests/market_data/test_event_review_pricing_repository.py-21-    def tearDown(self):
+tests/market_data/test_event_review_pricing_repository.py:22:        self.tmp.cleanup()
+tests/market_data/test_event_review_pricing_repository.py-23-
+tests/market_data/test_event_review_pricing_repository.py-24-    def add(self, **overrides):
+tests/market_data/test_event_review_pricing_repository.py-25-        values = {
+tests/market_data/test_event_review_pricing_repository.py-26-            "provider": "provider-a",
+tests/market_data/test_event_review_pricing_repository.py-27-            "model": "model-x",
+tests/market_data/test_event_review_pricing_repository.py-28-            "currency": "USD",
+tests/market_data/test_event_review_pricing_repository.py-29-            "input_price_per_million": "2.500000",
+tests/market_data/test_event_review_pricing_repository.py-30-            "output_price_per_million": "10",
+--
+tests/market_data/test_event_review_repository.py-30-            MarketEvent("event-1", "test", "测试事件", "2026-11-18T09:00:00+08:00")
+tests/market_data/test_event_review_repository.py-31-        ])
+tests/market_data/test_event_review_repository.py-32-        self.repository = EventReviewRepository(self.storage)
+tests/market_data/test_event_review_repository.py-33-
+tests/market_data/test_event_review_repository.py-34-    def tearDown(self):
+tests/market_data/test_event_review_repository.py:35:        self.tmp.cleanup()
+tests/market_data/test_event_review_repository.py-36-
+tests/market_data/test_event_review_repository.py-37-    def _execution(self, *, adjudicated=True):
+tests/market_data/test_event_review_repository.py-38-        evidence = (
+tests/market_data/test_event_review_repository.py-39-            ReviewEvidence(
+tests/market_data/test_event_review_repository.py-40-                evidence_id="ev-primary", event_id="event-1", source="官方公告",
+tests/market_data/test_event_review_repository.py-41-                source_url="https://example.org/notice", excerpt="官方事件证据",
+tests/market_data/test_event_review_repository.py-42-                evidence_kind="primary", published_at="2026-11-18T08:30:00+08:00",
+tests/market_data/test_event_review_repository.py-43-                captured_at="2026-11-18T09:01:00+08:00",
+--
+tests/market_data/test_event_review_service.py-29-        ])
+tests/market_data/test_event_review_service.py-30-        self.base = datetime(2026, 11, 18, 9, 0, tzinfo=timezone.utc)
+tests/market_data/test_event_review_service.py-31-        self.ticks = iter((self.base, self.base + timedelta(seconds=5)))
+tests/market_data/test_event_review_service.py-32-
+tests/market_data/test_event_review_service.py-33-    def tearDown(self):
+tests/market_data/test_event_review_service.py:34:        self.tmp.cleanup()
+tests/market_data/test_event_review_service.py-35-
+tests/market_data/test_event_review_service.py-36-    def _incomplete_execution(self):
+tests/market_data/test_event_review_service.py-37-        board = assemble_event_review_board(
+tests/market_data/test_event_review_service.py-38-            event_id="event-service", evidence=(), reviewer_assessments=()
+tests/market_data/test_event_review_service.py-39-        )
+tests/market_data/test_event_review_service.py-40-        return EventReviewBoardExecutionResult(
+tests/market_data/test_event_review_service.py-41-            board=board, reviewer_results=(), chief_result=None
+tests/market_data/test_event_review_service.py-42-        )
+--
+tests/market_data/test_event_review_usage_analytics.py-43-                     "2026-11-19T09:00:10+08:00","2026-11-19T09:00:11+08:00","provider_error"),
+tests/market_data/test_event_review_usage_analytics.py-44-                ],
+tests/market_data/test_event_review_usage_analytics.py-45-            )
+tests/market_data/test_event_review_usage_analytics.py-46-
+tests/market_data/test_event_review_usage_analytics.py-47-    def tearDown(self):
+tests/market_data/test_event_review_usage_analytics.py:48:        self.tmp.cleanup()
+tests/market_data/test_event_review_usage_analytics.py-49-
+tests/market_data/test_event_review_usage_analytics.py-50-    def test_aggregates_totals_and_breakdowns_without_inventing_missing_usage(self):
+tests/market_data/test_event_review_usage_analytics.py-51-        report = get_event_review_usage_report(self.storage)
+tests/market_data/test_event_review_usage_analytics.py-52-        self.assertEqual(report.totals.calls, 3)
+tests/market_data/test_event_review_usage_analytics.py-53-        self.assertEqual(report.totals.successful_calls, 2)
+tests/market_data/test_event_review_usage_analytics.py-54-        self.assertEqual(report.totals.failed_calls, 1)
+tests/market_data/test_event_review_usage_analytics.py-55-        self.assertEqual(report.totals.complete_usage_calls, 1)
+tests/market_data/test_event_review_usage_analytics.py-56-        self.assertEqual(report.totals.incomplete_usage_calls, 2)
+--
+tests/market_data/test_lifecycle_candidate_integration.py-19-    def setUp(self):
+tests/market_data/test_lifecycle_candidate_integration.py-20-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/market_data/test_lifecycle_candidate_integration.py-21-        self.storage = MarketStorage(str(Path(self.temp_dir.name) / "market.db"))
+tests/market_data/test_lifecycle_candidate_integration.py-22-
+tests/market_data/test_lifecycle_candidate_integration.py-23-    def tearDown(self):
+tests/market_data/test_lifecycle_candidate_integration.py:24:        self.temp_dir.cleanup()
+tests/market_data/test_lifecycle_candidate_integration.py-25-
+tests/market_data/test_lifecycle_candidate_integration.py-26-    @staticmethod
+tests/market_data/test_lifecycle_candidate_integration.py-27-    def make_document(text):
+tests/market_data/test_lifecycle_candidate_integration.py-28-        body = text.encode("utf-8")
+tests/market_data/test_lifecycle_candidate_integration.py-29-        url = "https://www.sse.com.cn/notice/lifecycle-integration"
+tests/market_data/test_lifecycle_candidate_integration.py-30-        return FetchedDocument(
+tests/market_data/test_lifecycle_candidate_integration.py-31-            source_id="sse",
+tests/market_data/test_lifecycle_candidate_integration.py-32-            requested_url=url,
+--
+tests/market_data/test_lifecycle_write_guard.py-14-    def setUp(self):
+tests/market_data/test_lifecycle_write_guard.py-15-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/market_data/test_lifecycle_write_guard.py-16-        self.storage = MarketStorage(str(Path(self.temp_dir.name) / "market.db"))
+tests/market_data/test_lifecycle_write_guard.py-17-
+tests/market_data/test_lifecycle_write_guard.py-18-    def tearDown(self):
+tests/market_data/test_lifecycle_write_guard.py:19:        self.temp_dir.cleanup()
+tests/market_data/test_lifecycle_write_guard.py-20-
+tests/market_data/test_lifecycle_write_guard.py-21-    def _candidate(
+tests/market_data/test_lifecycle_write_guard.py-22-        self, *, review_status="verified", event_date="2020-02-25",
+tests/market_data/test_lifecycle_write_guard.py-23-        event_type="delisting_effective",
+tests/market_data/test_lifecycle_write_guard.py-24-    ):
+tests/market_data/test_lifecycle_write_guard.py-25-        candidate_id = "evidence-actual-001"
+tests/market_data/test_lifecycle_write_guard.py-26-        payload = {
+tests/market_data/test_lifecycle_write_guard.py-27-            "metadata": {
+--
+tests/market_data/test_market_storage_read_interfaces.py-16-            Security("600000", "浦发银行", "SH", listing_status="active"),
+tests/market_data/test_market_storage_read_interfaces.py-17-            Security("000001", "平安银行", "SZ", listing_status="active"),
+tests/market_data/test_market_storage_read_interfaces.py-18-        ])
+tests/market_data/test_market_storage_read_interfaces.py-19-
+tests/market_data/test_market_storage_read_interfaces.py-20-    def tearDown(self):
+tests/market_data/test_market_storage_read_interfaces.py:21:        self.temp.cleanup()
+tests/market_data/test_market_storage_read_interfaces.py-22-
+tests/market_data/test_market_storage_read_interfaces.py-23-    def test_load_market_events_filters_publication_window_and_region(self):
+tests/market_data/test_market_storage_read_interfaces.py-24-        self.storage.save_events([
+tests/market_data/test_market_storage_read_interfaces.py-25-            MarketEvent("event-cn", "rss", "国内政策", "2026-11-18T09:00:00+08:00", region="CN"),
+tests/market_data/test_market_storage_read_interfaces.py-26-            MarketEvent("event-us", "wire", "美联储消息", "2026-11-18T10:00:00+08:00", region="US"),
+tests/market_data/test_market_storage_read_interfaces.py-27-            MarketEvent("event-old", "wire", "旧消息", "2026-11-16T10:00:00+08:00", region="US"),
+tests/market_data/test_market_storage_read_interfaces.py-28-        ])
+tests/market_data/test_market_storage_read_interfaces.py-29-        rows = self.storage.load_market_events(
+--
+tests/market_data/test_neeq_historical_evidence_register.py-18-        self.payload = b"%PDF-1.7\noriginal notice"
+tests/market_data/test_neeq_historical_evidence_register.py-19-        (self.root / "2017-684" / "notice.pdf").write_bytes(self.payload)
+tests/market_data/test_neeq_historical_evidence_register.py-20-        self.sha = hashlib.sha256(self.payload).hexdigest()
+tests/market_data/test_neeq_historical_evidence_register.py-21-
+tests/market_data/test_neeq_historical_evidence_register.py-22-    def tearDown(self):
+tests/market_data/test_neeq_historical_evidence_register.py:23:        self.temp.cleanup()
+tests/market_data/test_neeq_historical_evidence_register.py-24-
+tests/market_data/test_neeq_historical_evidence_register.py-25-    def tracker(self):
+tests/market_data/test_neeq_historical_evidence_register.py-26-        return {
+tests/market_data/test_neeq_historical_evidence_register.py-27-            "tracker_version": "neeq_followup_evidence_tracker_v1",
+tests/market_data/test_neeq_historical_evidence_register.py-28-            "tasks": [{
+tests/market_data/test_neeq_historical_evidence_register.py-29-                "task_id": "case-834502",
+tests/market_data/test_neeq_historical_evidence_register.py-30-                "security_code": "834502",
+tests/market_data/test_neeq_historical_evidence_register.py-31-                "company_short_name": "富海银涛",
+--
+tests/market_data/test_neeq_lifecycle_review.py-25-            "retrieved_at": "2026-11-13T20:00:00+08:00",
+tests/market_data/test_neeq_lifecycle_review.py-26-            "raw_record": {"companyCd": "870099"},
+tests/market_data/test_neeq_lifecycle_review.py-27-        }])
+tests/market_data/test_neeq_lifecycle_review.py-28-
+tests/market_data/test_neeq_lifecycle_review.py-29-    def tearDown(self):
+tests/market_data/test_neeq_lifecycle_review.py:30:        self.tmp.cleanup()
+tests/market_data/test_neeq_lifecycle_review.py-31-
+tests/market_data/test_neeq_lifecycle_review.py-32-    def test_lists_identity_candidate_and_raw_metadata(self):
+tests/market_data/test_neeq_lifecycle_review.py-33-        result = list_candidates(self.storage, target="identity", company_code="870099")
+tests/market_data/test_neeq_lifecycle_review.py-34-        self.assertEqual(len(result["identity_candidates"]), 1)
+tests/market_data/test_neeq_lifecycle_review.py-35-        self.assertEqual(result["identity_candidates"][0]["raw_record"]["companyCd"], "870099")
+tests/market_data/test_neeq_lifecycle_review.py-36-        self.assertEqual(
+tests/market_data/test_neeq_lifecycle_review.py-37-            result["identity_candidates"][0]["notice_classification"]["category"],
+tests/market_data/test_neeq_lifecycle_review.py-38-            "delisting_arrangement_risk_notice",
+--
+tests/market_data/test_neeq_p0_evidence_registration.py-74-                "relation_type": "supports_case",
+tests/market_data/test_neeq_p0_evidence_registration.py-75-            },
+tests/market_data/test_neeq_p0_evidence_registration.py-76-        ])
+tests/market_data/test_neeq_p0_evidence_registration.py-77-
+tests/market_data/test_neeq_p0_evidence_registration.py-78-    def tearDown(self):
+tests/market_data/test_neeq_p0_evidence_registration.py:79:        self.temp_dir.cleanup()
+tests/market_data/test_neeq_p0_evidence_registration.py-80-
+tests/market_data/test_neeq_p0_evidence_registration.py-81-    def test_payload_preview_contains_three_cases_and_eighteen_search_states(self):
+tests/market_data/test_neeq_p0_evidence_registration.py-82-        payload = build_payload("2026-11-16T16:00:00+08:00")
+tests/market_data/test_neeq_p0_evidence_registration.py-83-        self.assertEqual(len(payload["evidence"]), 5)
+tests/market_data/test_neeq_p0_evidence_registration.py-84-        self.assertEqual(len(payload["links"]), 5)
+tests/market_data/test_neeq_p0_evidence_registration.py-85-        self.assertEqual(len(payload["searches"]), 18)
+tests/market_data/test_neeq_p0_evidence_registration.py-86-        self.assertEqual(
+tests/market_data/test_neeq_p0_evidence_registration.py-87-            sum(item["evidence_kind"] == "review_application" for item in payload["searches"]),
+--
+tests/market_data/test_neeq_p0_manual_review_report.py-88-            "source_urls": ["https://example.org/sponsor.pdf"],
+tests/market_data/test_neeq_p0_manual_review_report.py-89-            "reviewer": "tester",
+tests/market_data/test_neeq_p0_manual_review_report.py-90-        })
+tests/market_data/test_neeq_p0_manual_review_report.py-91-
+tests/market_data/test_neeq_p0_manual_review_report.py-92-    def tearDown(self):
+tests/market_data/test_neeq_p0_manual_review_report.py:93:        self.temp_dir.cleanup()
+tests/market_data/test_neeq_p0_manual_review_report.py-94-
+tests/market_data/test_neeq_p0_manual_review_report.py-95-    def test_report_contains_exactly_three_p0_cases_and_mismatch_dates(self):
+tests/market_data/test_neeq_p0_manual_review_report.py-96-        report = build_report(self.storage, "2026-11-16T13:30:00+08:00")
+tests/market_data/test_neeq_p0_manual_review_report.py-97-        self.assertEqual(report["report_version"], "v4")
+tests/market_data/test_neeq_p0_manual_review_report.py-98-        self.assertEqual(report["case_count"], 3)
+tests/market_data/test_neeq_p0_manual_review_report.py-99-        by_code = {item["company_code"]: item for item in report["cases"]}
+tests/market_data/test_neeq_p0_manual_review_report.py-100-        self.assertEqual(set(by_code), {"836614", "838047", "430134"})
+tests/market_data/test_neeq_p0_manual_review_report.py-101-        self.assertEqual(by_code["836614"]["conditional_termination_dates"], ["2019-07-29"])
+--
+tests/market_data/test_neeq_termination_promotion.py-59-            self.lifecycle_id, review_status="verified", reviewer="reviewer",
+tests/market_data/test_neeq_termination_promotion.py-60-            reviewed_at="2026-11-14T10:00:00+08:00", review_notes="公告及日期已核验",
+tests/market_data/test_neeq_termination_promotion.py-61-        )
+tests/market_data/test_neeq_termination_promotion.py-62-
+tests/market_data/test_neeq_termination_promotion.py-63-    def tearDown(self):
+tests/market_data/test_neeq_termination_promotion.py:64:        self.temp.cleanup()
+tests/market_data/test_neeq_termination_promotion.py-65-
+tests/market_data/test_neeq_termination_promotion.py-66-    def promote(self, **overrides):
+tests/market_data/test_neeq_termination_promotion.py-67-        args = {
+tests/market_data/test_neeq_termination_promotion.py-68-            "identity_candidate_id": self.identity_id,
+tests/market_data/test_neeq_termination_promotion.py-69-            "lifecycle_candidate_id": self.lifecycle_id,
+tests/market_data/test_neeq_termination_promotion.py-70-            "effective_date": "2026-11-04",
+tests/market_data/test_neeq_termination_promotion.py-71-            "reviewer": "legal-reviewer", "legal_basis": "全国股转系统正式终止挂牌公告及审核记录",
+tests/market_data/test_neeq_termination_promotion.py-72-            "promoted_at": "2026-11-14T10:00:00+08:00",
+--
+tests/market_data/test_neeq_termination_review.py-57-            "evidence_id": self.evidence_id, "procedure_id": self.procedure_id,
+tests/market_data/test_neeq_termination_review.py-58-            "relation_type": "supports_procedure",
+tests/market_data/test_neeq_termination_review.py-59-        }])
+tests/market_data/test_neeq_termination_review.py-60-
+tests/market_data/test_neeq_termination_review.py-61-    def tearDown(self):
+tests/market_data/test_neeq_termination_review.py:62:        self.temp_dir.cleanup()
+tests/market_data/test_neeq_termination_review.py-63-
+tests/market_data/test_neeq_termination_review.py-64-    def _review(self, **overrides):
+tests/market_data/test_neeq_termination_review.py-65-        value = {
+tests/market_data/test_neeq_termination_review.py-66-            "case_id": self.case_id,
+tests/market_data/test_neeq_termination_review.py-67-            "evidence_id": self.evidence_id,
+tests/market_data/test_neeq_termination_review.py-68-            "procedure_id": self.procedure_id,
+tests/market_data/test_neeq_termination_review.py-69-            "review_status": "needs_more_evidence",
+tests/market_data/test_neeq_termination_review.py-70-            "conclusion_code": "decision_evidence_only",
+--
+tests/market_data/test_opportunity_data_provider.py-45-                    ("000001", "SW1:801080", "", "", "test"),
+tests/market_data/test_opportunity_data_provider.py-46-                ],
+tests/market_data/test_opportunity_data_provider.py-47-            )
+tests/market_data/test_opportunity_data_provider.py-48-
+tests/market_data/test_opportunity_data_provider.py-49-    def tearDown(self):
+tests/market_data/test_opportunity_data_provider.py:50:        self.temp.cleanup()
+tests/market_data/test_opportunity_data_provider.py-51-
+tests/market_data/test_opportunity_data_provider.py-52-    def test_load_snapshot_joins_windowed_events_evidence_universe_quotes_and_sectors(self):
+tests/market_data/test_opportunity_data_provider.py-53-        as_of = SHANGHAI.localize(datetime(2026, 11, 18, 10, 0, 0))
+tests/market_data/test_opportunity_data_provider.py-54-        self.storage.save_events([
+tests/market_data/test_opportunity_data_provider.py-55-            MarketEvent(
+tests/market_data/test_opportunity_data_provider.py-56-                "event-cn", "rss", "国内半导体政策",
+tests/market_data/test_opportunity_data_provider.py-57-                "2026-11-18T09:30:00+08:00", region="CN",
+tests/market_data/test_opportunity_data_provider.py-58-            ),
+--
+tests/market_data/test_relation_store.py-12-    def setUp(self):
+tests/market_data/test_relation_store.py-13-        self.temp = tempfile.TemporaryDirectory()
+tests/market_data/test_relation_store.py-14-        self.store = CrossMarketRelationStore(str(Path(self.temp.name) / "market.db"))
+tests/market_data/test_relation_store.py-15-
+tests/market_data/test_relation_store.py-16-    def tearDown(self):
+tests/market_data/test_relation_store.py:17:        self.temp.cleanup()
+tests/market_data/test_relation_store.py-18-
+tests/market_data/test_relation_store.py-19-    def propose(self, url="https://evidence.example/relation", evidence="reviewed supplier relationship"):
+tests/market_data/test_relation_store.py-20-        return self.store.propose(
+tests/market_data/test_relation_store.py-21-            us_entity="NVIDIA", us_ticker="nvda", cn_security_code="688012",
+tests/market_data/test_relation_store.py-22-            sector_code="sector:半导体", mapping_type="supply_chain", direction="positive", confidence=0.83,
+tests/market_data/test_relation_store.py-23-            evidence=evidence, source="company filing", source_url=url,
+tests/market_data/test_relation_store.py-24-        )
+tests/market_data/test_relation_store.py-25-
+--
+tests/market_data/test_result_store.py-15-    def setUp(self):
+tests/market_data/test_result_store.py-16-        self.temp = tempfile.TemporaryDirectory()
+tests/market_data/test_result_store.py-17-        self.store = RadarResultStore(str(Path(self.temp.name) / "market.db"))
+tests/market_data/test_result_store.py-18-
+tests/market_data/test_result_store.py-19-    def tearDown(self):
+tests/market_data/test_result_store.py:20:        self.temp.cleanup()
+tests/market_data/test_result_store.py-21-
+tests/market_data/test_result_store.py-22-    def candidate(self, code, tier="B", score=66.5, verified=False):
+tests/market_data/test_result_store.py-23-        return Candidate(
+tests/market_data/test_result_store.py-24-            security=Security(code, "测试证券"), tier=tier, score=score,
+tests/market_data/test_result_store.py-25-            reasons=["产业链关联候选", "成交活跃度加分"],
+tests/market_data/test_result_store.py-26-            evidence=[MappingEvidence(code, "supply_chain", .8, "supplier evidence",
+tests/market_data/test_result_store.py-27-                source="filing", source_url="https://evidence.example", direction="positive", verified=verified)],
+tests/market_data/test_result_store.py-28-            quote=QuoteSnapshot(code, "2026-11-09T14:33:00+08:00", change_pct=2.1,
+--
+tests/market_data/test_sector_data_provider.py-85-            Security("600000", "浦发银行", "SH"),
+tests/market_data/test_sector_data_provider.py-86-            Security("000001", "平安银行", "SZ"),
+tests/market_data/test_sector_data_provider.py-87-        ])
+tests/market_data/test_sector_data_provider.py-88-
+tests/market_data/test_sector_data_provider.py-89-    def tearDown(self):
+tests/market_data/test_sector_data_provider.py:90:        self.tmp.cleanup()
+tests/market_data/test_sector_data_provider.py-91-
+tests/market_data/test_sector_data_provider.py-92-    def snapshot(self):
+tests/market_data/test_sector_data_provider.py-93-        return SectorSnapshot(
+tests/market_data/test_sector_data_provider.py-94-            provider="akshare_sw",
+tests/market_data/test_sector_data_provider.py-95-            fetched_at="2026-11-18T00:00:00+00:00",
+tests/market_data/test_sector_data_provider.py-96-            sectors=(
+tests/market_data/test_sector_data_provider.py-97-                SectorRecord("SW1:801120", "银行", source_updated_at="2026-11-18"),
+tests/market_data/test_sector_data_provider.py-98-            ),
+--
+tests/market_data/test_storage_integration.py-91-        self.temp_dir = tempfile.TemporaryDirectory()
+tests/market_data/test_storage_integration.py-92-        self.db_path = Path(self.temp_dir.name) / "market.db"
+tests/market_data/test_storage_integration.py-93-        self.storage = MarketStorage(str(self.db_path))
+tests/market_data/test_storage_integration.py-94-
+tests/market_data/test_storage_integration.py-95-    def tearDown(self):
+tests/market_data/test_storage_integration.py:96:        self.temp_dir.cleanup()
+tests/market_data/test_storage_integration.py-97-
+tests/market_data/test_storage_integration.py-98-    def test_security_master_updater_writes_real_sqlite_database(self):
+tests/market_data/test_storage_integration.py-99-        securities = [
+tests/market_data/test_storage_integration.py-100-            Security("600000", "浦发银行", "SH", listing_status="active"),
+tests/market_data/test_storage_integration.py-101-            Security("000001", "平安银行", "SZ", listing_status="active"),
+tests/market_data/test_storage_integration.py-102-            Security("300001", "*ST示例", "SZ", listing_status="active", risk_flag=True),
+tests/market_data/test_storage_integration.py-103-        ]
+tests/market_data/test_storage_integration.py-104-        updater = SecurityMasterUpdater(
+--
+tests/market_data/test_workflow.py-35-
+tests/market_data/test_workflow.py-36-        self.app_context = Mock()
+tests/market_data/test_workflow.py-37-        self.app_context.get_ai_request_guard.return_value = self.guard
+tests/market_data/test_workflow.py-38-
+tests/market_data/test_workflow.py-39-        with patch(
+tests/market_data/test_workflow.py:40:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow.py-41-            return_value=self.app_context,
+tests/market_data/test_workflow.py-42-        ):
+tests/market_data/test_workflow.py-43-            self.context = MarketWorkflowContext(
+tests/market_data/test_workflow.py-44-                {"STORAGE": {"BACKEND": "local"}},
+tests/market_data/test_workflow.py-45-                db_path=self.db_path,
+tests/market_data/test_workflow.py-46-                run_id="workflow-test",
+tests/market_data/test_workflow.py-47-            )
+tests/market_data/test_workflow.py-48-
+--
+tests/market_data/test_workflow.py-85-            title="Test market event",
+tests/market_data/test_workflow.py-86-            published_at="2026-11-23T10:00:00+08:00",
+tests/market_data/test_workflow.py-87-        )
+tests/market_data/test_workflow.py-88-
+tests/market_data/test_workflow.py-89-    def tearDown(self):
+tests/market_data/test_workflow.py:90:        self.temp_dir.cleanup()
+tests/market_data/test_workflow.py-91-
+tests/market_data/test_workflow.py-92-    def run_workflow(
+tests/market_data/test_workflow.py-93-        self,
+tests/market_data/test_workflow.py-94-        *,
+tests/market_data/test_workflow.py-95-        us_fetcher=None,
+tests/market_data/test_workflow.py-96-        macro_fetcher=None,
+tests/market_data/test_workflow.py-97-        pipeline_error=None,
+tests/market_data/test_workflow.py-98-        radar_status="success",
+--
+tests/market_data/test_workflow.py-268-
+tests/market_data/test_workflow.py-269-        self.assertEqual(report["status"], "failed")
+tests/market_data/test_workflow.py-270-        self.lifecycle.finish.assert_not_called()
+tests/market_data/test_workflow.py-271-        self.radar.scan_and_persist_with_run.assert_not_called()
+tests/market_data/test_workflow.py-272-
+tests/market_data/test_workflow.py:273:    def test_database_finish_failure_triggers_abort_cleanup(self):
+tests/market_data/test_workflow.py-274-        self.lifecycle.finish.side_effect = RuntimeError(
+tests/market_data/test_workflow.py-275-            "database finish failed"
+tests/market_data/test_workflow.py-276-        )
+tests/market_data/test_workflow.py-277-
+tests/market_data/test_workflow.py-278-        report, _ = self.run_workflow()
+tests/market_data/test_workflow.py-279-
+tests/market_data/test_workflow.py-280-        self.assertEqual(report["status"], "failed")
+tests/market_data/test_workflow.py-281-        self.lifecycle.finish.assert_called_once()
+--
+tests/market_data/test_workflow_context.py-18-    def create_context(self, config=None, **kwargs):
+tests/market_data/test_workflow_context.py-19-        if config is None:
+tests/market_data/test_workflow_context.py-20-            config = {}
+tests/market_data/test_workflow_context.py-21-
+tests/market_data/test_workflow_context.py-22-        with patch(
+tests/market_data/test_workflow_context.py:23:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow_context.py-24-            return_value=self.app_context,
+tests/market_data/test_workflow_context.py-25-        ):
+tests/market_data/test_workflow_context.py-26-            return MarketWorkflowContext(config, **kwargs)
+tests/market_data/test_workflow_context.py-27-
+tests/market_data/test_workflow_context.py-28-    def test_generates_run_id_when_not_supplied(self):
+tests/market_data/test_workflow_context.py-29-        context = self.create_context()
+tests/market_data/test_workflow_context.py-30-
+tests/market_data/test_workflow_context.py-31-        self.assertTrue(context.run_id)
+--
+tests/market_data/test_workflow_context.py-59-                "REMOTE": {},
+tests/market_data/test_workflow_context.py-60-            }
+tests/market_data/test_workflow_context.py-61-        }
+tests/market_data/test_workflow_context.py-62-
+tests/market_data/test_workflow_context.py-63-        with patch(
+tests/market_data/test_workflow_context.py:64:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow_context.py-65-            return_value=self.app_context,
+tests/market_data/test_workflow_context.py-66-        ), patch(
+tests/market_data/test_workflow_context.py-67-            "trendradar.market_data.workflow_context.MarketDatabaseBackend"
+tests/market_data/test_workflow_context.py-68-        ) as backend:
+tests/market_data/test_workflow_context.py-69-            context = MarketWorkflowContext(config)
+tests/market_data/test_workflow_context.py-70-
+tests/market_data/test_workflow_context.py-71-        self.assertFalse(context.is_remote_database_enabled)
+tests/market_data/test_workflow_context.py-72-        self.assertIsNone(context.remote_database_backend)
+--
+tests/market_data/test_workflow_context.py-82-                },
+tests/market_data/test_workflow_context.py-83-            }
+tests/market_data/test_workflow_context.py-84-        }
+tests/market_data/test_workflow_context.py-85-
+tests/market_data/test_workflow_context.py-86-        with patch(
+tests/market_data/test_workflow_context.py:87:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow_context.py-88-            return_value=self.app_context,
+tests/market_data/test_workflow_context.py-89-        ), patch(
+tests/market_data/test_workflow_context.py-90-            "trendradar.market_data.workflow_context.MarketDatabaseBackend"
+tests/market_data/test_workflow_context.py-91-        ) as backend:
+tests/market_data/test_workflow_context.py-92-            context = MarketWorkflowContext(config)
+tests/market_data/test_workflow_context.py-93-
+tests/market_data/test_workflow_context.py-94-        self.assertFalse(context.is_remote_database_enabled)
+tests/market_data/test_workflow_context.py-95-        backend.assert_not_called()
+--
+tests/market_data/test_workflow_context.py-108-                "REMOTE": remote_config,
+tests/market_data/test_workflow_context.py-109-            }
+tests/market_data/test_workflow_context.py-110-        }
+tests/market_data/test_workflow_context.py-111-
+tests/market_data/test_workflow_context.py-112-        with patch(
+tests/market_data/test_workflow_context.py:113:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow_context.py-114-            return_value=self.app_context,
+tests/market_data/test_workflow_context.py-115-        ), patch(
+tests/market_data/test_workflow_context.py-116-            "trendradar.market_data.workflow_context.MarketDatabaseBackend"
+tests/market_data/test_workflow_context.py-117-        ) as backend:
+tests/market_data/test_workflow_context.py-118-            context = MarketWorkflowContext(config)
+tests/market_data/test_workflow_context.py-119-
+tests/market_data/test_workflow_context.py-120-        self.assertTrue(context.is_remote_database_enabled)
+tests/market_data/test_workflow_context.py-121-        backend.assert_called_once_with(
+--
+tests/market_data/test_workflow_context.py-139-        }
+tests/market_data/test_workflow_context.py-140-
+tests/market_data/test_workflow_context.py-141-        backend_instance = Mock()
+tests/market_data/test_workflow_context.py-142-
+tests/market_data/test_workflow_context.py-143-        with patch(
+tests/market_data/test_workflow_context.py:144:            "trendradar.market_data.workflow_context.AppContext",
+tests/market_data/test_workflow_context.py-145-            return_value=self.app_context,
+tests/market_data/test_workflow_context.py-146-        ), patch(
+tests/market_data/test_workflow_context.py-147-            "trendradar.market_data.workflow_context.MarketDatabaseBackend",
+tests/market_data/test_workflow_context.py-148-            return_value=backend_instance,
+tests/market_data/test_workflow_context.py-149-        ):
+tests/market_data/test_workflow_context.py-150-            context = MarketWorkflowContext(config)
+tests/market_data/test_workflow_context.py-151-
+tests/market_data/test_workflow_context.py-152-        self.assertIs(context.remote_database_backend, backend_instance)
+Binary file tests/market_data/__pycache__/test_database_backend.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_database_lifecycle.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_database_snapshot.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_input_builder.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_pipeline.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_pricing_repository.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_repository.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_service.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_event_review_usage_analytics.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_lifecycle_candidate_integration.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_lifecycle_write_guard.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_market_storage_read_interfaces.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_historical_evidence_register.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_lifecycle_review.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_p0_evidence_registration.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_p0_manual_review_report.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_termination_promotion.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_neeq_termination_review.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_opportunity_data_provider.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_relation_store.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_result_store.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_sector_data_provider.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_storage_integration.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_workflow.cpython-313.pyc matches
+Binary file tests/market_data/__pycache__/test_workflow_context.cpython-313.pyc matches
+--
+tests/storage/test_remote_batch.py-151-            backend.end_batch()
+tests/storage/test_remote_batch.py-152-
+tests/storage/test_remote_batch.py-153-        self.assertEqual(backend._batch_dirty, tasks)
+tests/storage/test_remote_batch.py-154-
+tests/storage/test_remote_batch.py-155-
+tests/storage/test_remote_batch.py:156:    def test_cleanup_preserves_temp_dir_when_dirty(self):
+tests/storage/test_remote_batch.py-157-        backend = self.make_backend()
+tests/storage/test_remote_batch.py-158-        task = ("2026-11-26", "news")
+tests/storage/test_remote_batch.py-159-        backend._batch_dirty.add(task)
+tests/storage/test_remote_batch.py-160-
+tests/storage/test_remote_batch.py-161-        marker = backend.temp_dir / "pending.db"
+tests/storage/test_remote_batch.py-162-        marker.write_bytes(b"pending database")
+tests/storage/test_remote_batch.py-163-
+tests/storage/test_remote_batch.py-164-        with self.assertRaisesRegex(RuntimeError, "仍有待上传任务"):
+tests/storage/test_remote_batch.py:165:            backend.cleanup()
+tests/storage/test_remote_batch.py-166-
+tests/storage/test_remote_batch.py-167-        self.assertTrue(backend.temp_dir.exists())
+tests/storage/test_remote_batch.py-168-        self.assertTrue(marker.exists())
+tests/storage/test_remote_batch.py-169-        self.assertIn(task, backend._batch_dirty)
+tests/storage/test_remote_batch.py-170-
+tests/storage/test_remote_batch.py-171-        # 测试结束前主动解除待上传状态，再正常清理。
+tests/storage/test_remote_batch.py-172-        backend._batch_dirty.clear()
+tests/storage/test_remote_batch.py:173:        backend.cleanup()
+tests/storage/test_remote_batch.py-174-        self.assertFalse(backend.temp_dir.exists())
+tests/storage/test_remote_batch.py-175-
+tests/storage/test_remote_batch.py:176:    def test_cleanup_removes_temp_dir_when_queue_is_empty(self):
+tests/storage/test_remote_batch.py-177-        backend = self.make_backend()
+tests/storage/test_remote_batch.py-178-        marker = backend.temp_dir / "clean.db"
+tests/storage/test_remote_batch.py-179-        marker.write_bytes(b"clean database")
+tests/storage/test_remote_batch.py-180-
+tests/storage/test_remote_batch.py:181:        backend.cleanup()
+tests/storage/test_remote_batch.py-182-
+tests/storage/test_remote_batch.py-183-        self.assertFalse(backend.temp_dir.exists())
+tests/storage/test_remote_batch.py-184-        self.assertEqual(backend._batch_dirty, set())
+tests/storage/test_remote_batch.py-185-
+tests/storage/test_remote_batch.py-186-
+tests/storage/test_remote_batch.py-187-if __name__ == "__main__":
+tests/storage/test_remote_batch.py-188-    unittest.main()
+Binary file tests/storage/__pycache__/test_remote_batch.cpython-313.pyc matches
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$
