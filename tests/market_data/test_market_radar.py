@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
-
+from zoneinfo import ZoneInfo
 from trendradar.market_data.models import Security, QuoteSnapshot, MappingEvidence, MarketEvent
 from trendradar.market_data.market_radar import MarketRadar
 from trendradar.market_data.relation_store import CrossMarketRelationStore
@@ -36,6 +36,108 @@ class StubQuoteFetcher:
 
 
 class MarketRadarTests(unittest.TestCase):
+    def test_scan_accepts_naive_clock_with_provider_quote_timestamp(self):
+        class NaiveTimestampQuoteFetcher:
+            source_name = "naive_timestamp"
+
+            def fetch(self, securities):
+                return ([
+                    QuoteSnapshot(
+                        "600000",
+                        "2026-11-09T14:33:00",
+                        price=10,
+                        change_pct=1,
+                        turnover=100,
+                        source="naive_timestamp",
+                        source_timestamp="2026-11-09T14:33:00",
+                        timestamp_quality="provider",
+                    )
+                ], "naive_timestamp")
+
+        radar = MarketRadar(
+            NaiveTimestampQuoteFetcher(),
+            max_quote_age_seconds=900,
+            clock=lambda: datetime(2026, 11, 9, 14, 33, 0),
+        )
+
+        securities = {
+            "600000": active_security("600000", "测试股票")
+        }
+        evidence = {
+            "e1": [
+                MappingEvidence(
+                    "600000",
+                    "direct_business",
+                    0.9,
+                    "source",
+                    verified=True,
+                )
+            ]
+        }
+
+        result = radar.scan(
+            [MarketEvent("e1", "rss", "event", "2026-11-09")],
+            securities,
+            direct_event_evidence=evidence,
+        )
+
+        self.assertEqual(
+            [item.security.code for item in result],
+            ["600000"],
+        )
+
+    def test_scan_interprets_naive_quote_timestamp_as_shanghai_time(self):
+        class NaiveQuoteTimestampFetcher:
+            source_name = "naive_quote_timestamp"
+
+            def fetch(self, securities):
+                return ([
+                    QuoteSnapshot(
+                        "600000",
+                        "2026-11-09T14:33:00",
+                        price=10,
+                        change_pct=1,
+                        turnover=100,
+                        source="naive_quote_timestamp",
+                        source_timestamp="2026-11-09T14:33:00",
+                        timestamp_quality="provider",
+                    )
+                ], "naive_quote_timestamp")
+
+        radar = MarketRadar(
+            NaiveQuoteTimestampFetcher(),
+            max_quote_age_seconds=900,
+            clock=lambda: datetime.fromisoformat(
+                "2026-11-09T14:33:00+08:00"
+            ),
+        )
+
+        securities = {
+            "600000": active_security("600000", "测试股票")
+        }
+        evidence = {
+            "e1": [
+                MappingEvidence(
+                    "600000",
+                    "direct_business",
+                    0.9,
+                    "source",
+                    verified=True,
+                )
+            ]
+        }
+
+        result = radar.scan(
+            [MarketEvent("e1", "rss", "event", "2026-11-09")],
+            securities,
+            direct_event_evidence=evidence,
+        )
+
+        self.assertEqual(
+            [item.security.code for item in result],
+            ["600000"],
+        )
+
     def test_normalize_code(self):
         self.assertEqual(normalize_security_code("600000.SH"), "600000")
         self.assertEqual(normalize_security_code("1"), "000001")
@@ -136,8 +238,25 @@ class MarketRadarTests(unittest.TestCase):
         class OneQuoteFetcher:
             source_name = "partial_provider"
             def fetch(self, securities):
-                timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
-                return ([QuoteSnapshot("600000", timestamp, price=10, change_pct=1, turnover=100, source="partial_provider", source_timestamp=timestamp, timestamp_quality="provider")], "partial_provider")
+                timestamp = datetime.now(
+                    ZoneInfo("Asia/Shanghai")
+                ).isoformat(timespec="seconds")
+
+                return (
+                    [
+                        QuoteSnapshot(
+                            "600000",
+                            timestamp,
+                            price=10,
+                            change_pct=1,
+                            turnover=100,
+                            source="partial_provider",
+                            source_timestamp=timestamp,
+                            timestamp_quality="provider",
+                        )
+                    ],
+                    "partial_provider",
+                )
         with tempfile.TemporaryDirectory() as temp:
             store = RadarResultStore(str(Path(temp) / "market.db"))
             radar = MarketRadar(OneQuoteFetcher(), result_store=store)
@@ -166,6 +285,38 @@ class MarketRadarTests(unittest.TestCase):
             self.assertEqual(tuple(run), (2, 1, "success", "stub")); self.assertEqual(len(rows), 2)
             self.assertEqual(sum(row["pushed"] for row in rows), 1)
 
+    def test_scan_failure_preserves_original_exception_when_finish_run_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            store = RadarResultStore(str(Path(temp) / "market.db"))
+
+            radar = MarketRadar(
+                StubQuoteFetcher(),
+                result_store=store,
+            )
+
+            def failing_scan(*args, **kwargs):
+                raise RuntimeError("original quote scan failure")
+
+            def failing_finish_run(*args, **kwargs):
+                raise OSError("finish_run persistence failure")
+
+            radar._scan = failing_scan
+
+            original_finish_run = store.finish_run
+            store.finish_run = failing_finish_run
+
+            try:
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    "original quote scan failure",
+                ):
+                    radar.scan_and_persist_with_run(
+                        [],
+                        {},
+                        run_at="2026-11-09T14:33:00+08:00",
+                    )
+            finally:
+                store.finish_run = original_finish_run
 
 if __name__ == "__main__":
     unittest.main()

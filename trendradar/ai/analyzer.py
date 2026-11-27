@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from trendradar.ai.client import AIClient
-
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 
 @dataclass
 class AIAnalysisResult:
@@ -49,6 +49,8 @@ class AIAnalyzer:
         analysis_config: Dict[str, Any],
         get_time_func: Callable,
         debug: bool = False,
+        *,
+        request_guard=None,
     ):
         """
         初始化 AI 分析器
@@ -58,6 +60,7 @@ class AIAnalyzer:
             analysis_config: AI 分析功能配置（language, prompt_file 等）
             get_time_func: 获取当前时间的函数
             debug: 是否开启调试模式
+            request_guard: AI 请求授权守卫
         """
         self.ai_config = ai_config
         self.analysis_config = analysis_config
@@ -65,7 +68,11 @@ class AIAnalyzer:
         self.debug = debug
 
         # 创建 AI 客户端（基于 LiteLLM）
-        self.client = AIClient(ai_config, feature="analysis")
+        self.client = AIClient(
+            ai_config,
+            feature="analysis",
+            request_guard=request_guard,
+        )
 
         # 验证配置
         valid, error = self.client.validate_config()
@@ -523,10 +530,13 @@ class AIAnalyzer:
                 print(f"[AI] 修复响应仍未通过校验：{repaired_result.error}")
                 return repaired_result
             return repaired_result
+        except AIRequestNotAllowedError:
+            # Guard 拒绝属于请求策略结果，应交给 analyze() 外层处理，
+            # 保留具体拒绝原因，不应被普通异常兜底逻辑吞掉。
+            raise
         except Exception as e:
             print(f"[AI] 重试修复 JSON 异常: {type(e).__name__}: {e}")
             return None
-
 
 
     def _format_rank_timeline(self, rank_timeline: List[Dict]) -> str:
@@ -767,6 +777,7 @@ class AIAnalyzer:
         missing_labels = []
         merged_labels = []
         duplicated_labels = []
+        empty_labels = []
 
         for label in required_strategy_labels:
             label_pattern = re.compile(
@@ -784,6 +795,16 @@ class AIAnalyzer:
                     missing_labels.append(label)
             elif len(matching_lines) > 1:
                 duplicated_labels.append(label)
+            else:
+                # 标签必须有实际内容，不能只有“天时：”
+                content = re.sub(
+                    rf"^[ \t]*{re.escape(label)}[ \t]*[:：]",
+                    "",
+                    matching_lines[0],
+                ).strip()
+
+                if not content:
+                    empty_labels.append(label)
 
         validation_errors = []
         if missing_labels:
@@ -792,6 +813,11 @@ class AIAnalyzer:
             validation_errors.append("标签未独占一行或与其他内容合并：" + "、".join(merged_labels))
         if duplicated_labels:
             validation_errors.append("标签重复出现：" + "、".join(duplicated_labels))
+
+        if empty_labels:
+            validation_errors.append(
+                "标签内容为空：" + "、".join(empty_labels)
+            )
 
         if validation_errors:
             result.error = "outlook_strategy 作战卡格式校验失败；" + "；".join(validation_errors)

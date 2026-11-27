@@ -8,13 +8,240 @@ from unittest.mock import Mock
 from openpyxl import Workbook
 
 from trendradar.market_data.listing_status_provider import (
+    EXCHANGE_LISTING_SOURCE_ID,
+    ExchangeListingStatusUpdater,
+    ListingStatusSnapshot,
     SSEMainBoardAProvider,
     SZSEBoardAProvider,
 )
-from trendradar.market_data.security_master_provider import SecurityMasterSourceError
+from trendradar.market_data.security_master_provider import (
+    DataSourceStatusRecordingError,
+    SecurityMasterSourceError,
+)
 
+class FakeStorage:
+    def __init__(self):
+        self.data_sources = {}
+        self.success_calls = []
+        self.failure_calls = []
+        self.applied_batches = []
+
+    def ensure_data_source(
+        self,
+        source_id,
+        source_name,
+        source_type,
+        **kwargs,
+    ):
+        self.data_sources[source_id] = {
+            "source_name": source_name,
+            "source_type": source_type,
+            **kwargs,
+        }
+
+    def apply_listing_status_snapshots(self, batch):
+        self.applied_batches.append(batch)
+        return {
+            "snapshots": len(batch),
+            "securities": sum(
+                len(item["statuses"])
+                for item in batch
+            ),
+        }
+
+    def mark_data_source_success(self, source_id, **kwargs):
+        self.success_calls.append(source_id)
+
+    def mark_data_source_failure(self, source_id, error, **kwargs):
+        self.failure_calls.append((source_id, error))
+
+
+class FakeSSEProvider:
+    def __init__(self, snapshot=None, error=None):
+        self.snapshot = snapshot
+        self.error = error
+
+    def fetch_snapshot(self):
+        if self.error:
+            raise self.error
+        return self.snapshot
+
+
+class FakeSZSEProvider:
+    def __init__(self, snapshots=None, error=None):
+        self.snapshots = snapshots or []
+        self.error = error
+
+    def fetch_snapshots(self):
+        if self.error:
+            raise self.error
+        return self.snapshots
+
+
+def make_listing_snapshot(exchange, board_scope, codes):
+    return ListingStatusSnapshot(
+        source_id=f"{exchange}_{board_scope}",
+        source_url="https://example.com/list",
+        exchange=exchange,
+        board_scope=board_scope,
+        fetched_at="2026-11-24T10:00:00+08:00",
+        source_as_of="2026-11-24",
+        active_codes=tuple(codes),
+    )
 
 class ListingStatusProviderTests(unittest.TestCase):
+    def test_success_status_recording_failure_reports_business_data_updated(self):
+        storage = FakeStorage()
+
+        def fail_success_recording(source_id, **kwargs):
+            raise RuntimeError("成功状态记录失败")
+
+        storage.mark_data_source_success = fail_success_recording
+
+        updater = ExchangeListingStatusUpdater(
+            storage,
+            sse_provider=FakeSSEProvider(
+                make_listing_snapshot(
+                    "SH", "main_board_a", ["600000"]
+                )
+            ),
+            szse_provider=FakeSZSEProvider([
+                make_listing_snapshot(
+                    "SZ", "main_board_a", ["000001"]
+                ),
+                make_listing_snapshot(
+                    "SZ", "chinext", ["300001"]
+                ),
+            ]),
+        )
+
+        with self.assertRaises(DataSourceStatusRecordingError) as context:
+            updater.update()
+
+        error = context.exception
+
+        self.assertEqual(error.source_id, EXCHANGE_LISTING_SOURCE_ID)
+        self.assertTrue(error.business_data_updated)
+        self.assertTrue(error.status_recording_failed)
+        self.assertIsInstance(error.original_error, RuntimeError)
+
+        # 证明三个板块的业务数据已经一次性提交。
+        self.assertEqual(len(storage.applied_batches), 1)
+        self.assertEqual(len(storage.applied_batches[0]), 3)
+
+        # 不应把状态记录失败误记为业务刷新失败。
+        self.assertEqual(storage.failure_calls, [])
+
+    def test_updater_registers_source_and_records_success(self):
+        storage = FakeStorage()
+
+        updater = ExchangeListingStatusUpdater(
+            storage,
+            sse_provider=FakeSSEProvider(
+                make_listing_snapshot(
+                    "SH", "main_board_a", ["600000"]
+                )
+            ),
+            szse_provider=FakeSZSEProvider([
+                make_listing_snapshot(
+                    "SZ", "main_board_a", ["000001"]
+                ),
+                make_listing_snapshot(
+                    "SZ", "chinext", ["300001"]
+                ),
+            ]),
+        )
+
+        result = updater.update()
+
+        self.assertEqual(result["snapshots"], 3)
+        self.assertIn(
+            "exchange_listing_status",
+            storage.data_sources,
+        )
+        self.assertEqual(
+            storage.success_calls,
+            ["exchange_listing_status"],
+        )
+        self.assertEqual(storage.failure_calls, [])
+        self.assertEqual(len(storage.applied_batches), 1)
+
+    def test_updater_failure_records_source_error(self):
+        storage = FakeStorage()
+
+        updater = ExchangeListingStatusUpdater(
+            storage,
+            sse_provider=FakeSSEProvider(
+                error=SecurityMasterSourceError("SSE unavailable")
+            ),
+            szse_provider=FakeSZSEProvider(),
+        )
+
+        with self.assertRaisesRegex(
+            SecurityMasterSourceError,
+            "SSE unavailable",
+        ):
+            updater.update()
+
+        self.assertEqual(storage.applied_batches, [])
+        self.assertEqual(storage.success_calls, [])
+        self.assertEqual(
+            storage.failure_calls[0][0],
+            "exchange_listing_status",
+        )
+
+    def test_updater_rejects_incomplete_scope_before_write(self):
+        storage = FakeStorage()
+
+        updater = ExchangeListingStatusUpdater(
+            storage,
+            sse_provider=FakeSSEProvider(
+                make_listing_snapshot(
+                    "SH", "main_board_a", ["600000"]
+                )
+            ),
+            szse_provider=FakeSZSEProvider([
+                make_listing_snapshot(
+                    "SZ", "main_board_a", ["000001"]
+                ),
+            ]),
+        )
+
+        with self.assertRaisesRegex(
+            SecurityMasterSourceError,
+            "板块覆盖不完整",
+        ):
+            updater.update()
+
+        self.assertEqual(storage.applied_batches, [])
+        self.assertEqual(storage.success_calls, [])
+        self.assertEqual(
+            storage.failure_calls[0][0],
+            "exchange_listing_status",
+        )
+
+    def test_updater_failure_recording_does_not_mask_original_error(self):
+        storage = FakeStorage()
+
+        def fail_recording(*args, **kwargs):
+            raise RuntimeError("状态记录失败")
+
+        storage.mark_data_source_failure = fail_recording
+
+        updater = ExchangeListingStatusUpdater(
+            storage,
+            sse_provider=FakeSSEProvider(
+                error=SecurityMasterSourceError("原始采集错误")
+            ),
+            szse_provider=FakeSZSEProvider(),
+        )
+
+        with self.assertRaisesRegex(
+            SecurityMasterSourceError,
+            "原始采集错误",
+        ):
+            updater.update()
+
     def test_sse_provider_accepts_only_normal_main_board_a_list(self):
         session = Mock()
         response = Mock()

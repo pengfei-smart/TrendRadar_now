@@ -12,6 +12,29 @@ from trendradar.market_data.sec_edgar_fetcher import (
 
 
 class SECEdgarFetcherTests(unittest.TestCase):
+    def test_owned_session_is_closed_once(self):
+        from unittest.mock import patch
+        with patch("trendradar.market_data.sec_edgar_fetcher.requests.Session") as factory:
+            session = factory.return_value
+            fetcher = SECEdgarFetcher(
+                companies={},
+                user_agent="TrendRadar test contact test@example.org",
+            )
+            fetcher.close()
+            fetcher.close()
+            session.close.assert_called_once_with()
+
+    def test_injected_session_is_not_closed(self):
+        session = Mock()
+        fetcher = SECEdgarFetcher(
+            companies={},
+            user_agent="TrendRadar test contact test@example.org",
+            session=session,
+        )
+        fetcher.close()
+        fetcher.close()
+        session.close.assert_not_called()
+
     def test_cik_is_normalized_and_request_is_scoped_to_company(self):
         self.assertEqual(SECEdgarFetcher._normalize_cik("320193"), "0000320193")
         self.assertEqual(SECEdgarFetcher._normalize_cik("0000320193"), "0000320193")

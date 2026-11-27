@@ -243,11 +243,21 @@ class StorageManager:
         return self.get_backend().is_first_crawl_today(date)
 
     def cleanup(self) -> None:
-        """清理资源"""
-        if self._backend:
-            self._backend.cleanup()
-        if self._remote_backend:
-            self._remote_backend.cleanup()
+        """分别清理本地和远程后端，避免单个后端失败影响另一个。"""
+        errors = []
+
+        for backend in (self._backend, self._remote_backend):
+            if backend is None:
+                continue
+            try:
+                backend.cleanup()
+            except Exception as exc:
+                errors.append(exc)
+
+        if len(errors) > 1:
+            raise errors[0] from errors[1]
+        if errors:
+            raise errors[0]
 
     def cleanup_old_data(self) -> int:
         """

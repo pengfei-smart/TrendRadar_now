@@ -8,8 +8,7 @@ AI 翻译器模块
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List
-
+from typing import Any, Callable, Dict, List, Optional
 from trendradar.ai.client import AIClient
 
 
@@ -37,13 +36,20 @@ class BatchTranslationResult:
 class AITranslator:
     """AI 翻译器"""
 
-    def __init__(self, translation_config: Dict[str, Any], ai_config: Dict[str, Any]):
+    def __init__(
+        self,
+        translation_config: Dict[str, Any],
+        ai_config: Dict[str, Any],
+        *,
+        request_guard=None,
+    ):
         """
         初始化 AI 翻译器
 
         Args:
             translation_config: AI 翻译配置 (AI_TRANSLATION)
             ai_config: AI 模型配置（LiteLLM 格式）
+            request_guard: AI 请求授权守卫
         """
         self.translation_config = translation_config
         self.ai_config = ai_config
@@ -51,10 +57,17 @@ class AITranslator:
         # 翻译配置
         self.enabled = translation_config.get("ENABLED", False)
         self.target_language = translation_config.get("LANGUAGE", "English")
-        self.scope = translation_config.get("SCOPE", {"HOTLIST": True, "RSS": True, "STANDALONE": True})
+        self.scope = translation_config.get(
+            "SCOPE",
+            {"HOTLIST": True, "RSS": True, "STANDALONE": True},
+        )
 
         # 创建 AI 客户端（基于 LiteLLM）
-        self.client = AIClient(ai_config, feature="translation")
+        self.client = AIClient(
+            ai_config,
+            feature="translation",
+            request_guard=request_guard,
+        )
 
         # 加载提示词模板
         self.system_prompt, self.user_prompt_template = self._load_prompt_template(

@@ -48,10 +48,20 @@ class SECEdgarFetcher:
         }
         self.user_agent = (user_agent or os.getenv("SEC_EDGAR_USER_AGENT", "")).strip()
         self.timeout = max(3, int(timeout))
-        self.session = session or requests.Session()
+        self._owns_session = session is None
+        self.session = session if session is not None else requests.Session()
+        self._closed = False
         self.min_interval = max(0.1, float(min_interval))
         self.forms = frozenset(str(form).strip().upper() for form in forms)
         self._last_request_at = 0.0
+
+    def close(self) -> None:
+        """关闭当前 Fetcher 自己创建的 HTTP Session。"""
+        if self._closed:
+            return
+        self._closed = True
+        if self._owns_session:
+            self.session.close()
 
     @staticmethod
     def _normalize_cik(value: str) -> str:

@@ -8,16 +8,130 @@ AI 客户端模块
 
 import logging
 import os
+import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from litellm import completion
+from litellm.exceptions import (
+    APIConnectionError,
+    InternalServerError,
+    RateLimitError,
+    ServiceUnavailableError,
+    Timeout,
+)
 
+from .request_guard import AIRequestNotAllowedError
 from .usage_ledger import AIUsageLedger, AIUsageRecord
 
 from .usage_ledger_factory import get_ai_usage_ledger
 
 logger = logging.getLogger(__name__)
+
+# 临时诊断：在 LiteLLM 自身 atexit 清理之前记录异步客户端状态。
+# 诊断结束后可以整体删除，不影响业务逻辑。
+import atexit
+import sys
+import litellm
+
+
+def _diagnose_litellm_async_clients():
+    prefix = "[LiteLLM退出诊断]"
+
+    def log(message):
+        print(f"{prefix} {message}", file=sys.stderr, flush=True)
+
+    try:
+        from importlib.metadata import PackageNotFoundError, version
+
+        try:
+            litellm_version = version("litellm")
+        except PackageNotFoundError:
+            litellm_version = "unknown"
+
+        log(f"version={litellm_version}")
+
+        cache = vars(litellm).get("in_memory_llm_clients_cache")
+        if cache is None:
+            log("client_cache=not_found")
+            return
+
+        cache_dict = vars(cache).get("cache_dict", {})
+        handlers = list(cache_dict.values())
+
+        log(f"cached_handler_count={len(handlers)}")
+
+        for index, handler in enumerate(handlers):
+            handler_name = type(handler).__name__
+            handler_dict = vars(handler)
+
+            client = handler_dict.get("client")
+            if client is None:
+                client = handler_dict.get("_client")
+
+            log(f"handler[{index}]={handler_name}")
+
+            if client is None:
+                log(f"handler[{index}].client=not_found")
+                continue
+
+            log(
+                f"handler[{index}].client_type="
+                f"{type(client).__name__}"
+            )
+            log(
+                f"handler[{index}].client_closed="
+                f"{getattr(client, 'is_closed', 'unknown')}"
+            )
+
+            transport = vars(client).get("_transport")
+            if transport is None:
+                log(f"handler[{index}].transport=not_found")
+                continue
+
+            log(
+                f"handler[{index}].transport_type="
+                f"{type(transport).__name__}"
+            )
+
+            session = vars(transport).get("client")
+
+            log(
+                f"handler[{index}].transport_client_type="
+                f"{type(session).__name__}"
+            )
+            log(
+                f"handler[{index}].transport_client_is_factory="
+                f"{callable(session)}"
+            )
+
+            if session is None or callable(session):
+                log(f"handler[{index}].aiohttp_session=not_created")
+                continue
+
+            session_loop = getattr(session, "_loop", None)
+
+            log(
+                f"handler[{index}].aiohttp_session_closed="
+                f"{getattr(session, 'closed', 'unknown')}"
+            )
+
+            if session_loop is None:
+                log(f"handler[{index}].session_loop=none")
+            else:
+                log(
+                    f"handler[{index}].session_loop="
+                    f"id:{id(session_loop)},"
+                    f"closed:{session_loop.is_closed()},"
+                    f"running:{session_loop.is_running()}"
+                )
+
+    except Exception as exc:
+        # 诊断异常绝不能影响程序正常退出。
+        log(f"diagnostic_error={type(exc).__name__}: {exc}")
+
+
+atexit.register(_diagnose_litellm_async_clients)
 
 
 def _read_value(value: Any, name: str) -> Any:
@@ -50,10 +164,16 @@ def _response_usage(response: Any) -> dict:
 class AIClient:
     """统一的 AI 客户端（基于 LiteLLM）"""
 
-    def __init__(self, config: Dict[str, Any], *, feature: str = "application", usage_ledger: AIUsageLedger | None = None):
+    def __init__(
+        self,
+        config: Dict[str, Any],
+        *,
+        feature: str = "application",
+        usage_ledger: AIUsageLedger | None = None,
+        request_guard=None,
+    ):
         """
         初始化 AI 客户端
-
         Args:
             config: AI 配置字典
                 - MODEL: 模型标识（格式: provider/model_name）
@@ -75,6 +195,8 @@ class AIClient:
         self.fallback_models = config.get("FALLBACK_MODELS", [])
         self.feature = feature
         self._usage_ledger = usage_ledger
+        self._request_guard = request_guard
+
 
     def chat(
         self,
@@ -83,84 +205,134 @@ class AIClient:
         usage_operation: str = "chat",
         **kwargs
     ) -> str:
-        """
-        调用 AI 模型进行对话
+        """调用 AI 模型进行对话，并在每次真实请求前检查 Guard。"""
 
-        Args:
-            messages: 消息列表，格式: [{"role": "system/user/assistant", "content": "..."}]
-            **kwargs: 额外参数，会覆盖默认配置
+        retries = kwargs.get("num_retries", self.num_retries)
+        if isinstance(retries, bool) or not isinstance(retries, int) or retries < 0:
+            raise ValueError("num_retries 必须是非负整数")
 
-        Returns:
-            str: AI 响应内容
-
-        Raises:
-            Exception: API 调用失败时抛出异常
-        """
-        # 构建请求参数
         params = {
             "model": self.model,
             "messages": messages,
             "temperature": kwargs.get("temperature", self.temperature),
             "timeout": kwargs.get("timeout", self.timeout),
-            "num_retries": kwargs.get("num_retries", self.num_retries),
+            # 关闭 LiteLLM 内部重试，由本客户端统一管理。
+            "num_retries": 0,
+            "max_retries": 0,
         }
 
-        # 添加 API Key
         if self.api_key:
             params["api_key"] = self.api_key
 
-        # 添加 API Base（如果配置了）
         if self.api_base:
             params["api_base"] = self.api_base
 
-        # 添加 max_tokens（如果配置了且不为 0）
         max_tokens = kwargs.get("max_tokens", self.max_tokens)
         if max_tokens and max_tokens > 0:
             params["max_tokens"] = max_tokens
 
-        # 添加 fallback 模型（如果配置了）
-        if self.fallback_models:
-            params["fallbacks"] = self.fallback_models
-
-        # 合并其他额外参数
         for key, value in kwargs.items():
-            if key not in params:
+            if key not in params and key not in (
+                "num_retries",
+                "max_retries",
+                "fallbacks",
+                "api_key",
+                "api_base",
+            ):
                 params[key] = value
 
-        # 只记录请求元数据和供应商返回的用量，不保存 prompt、响应正文或密钥。
+        # 只对明确的临时性错误进行重试。
+        retryable_errors = (
+            RateLimitError,
+            Timeout,
+            TimeoutError,
+            APIConnectionError,
+            ServiceUnavailableError,
+            InternalServerError,
+        )
+
+        def is_retryable(exc):
+            return isinstance(exc, retryable_errors)
+
         started_at = datetime.now(timezone.utc)
-        try:
-            response = completion(**params)
-        except Exception as exc:
-            self._append_usage(
-                operation=usage_operation, model=self.model, status="error",
-                started_at=started_at, error_code=type(exc).__name__,
-            )
-            raise
+        attempts = 0
+        last_error = None
+
+        while attempts <= retries:
+            # 每次真实请求之前都必须重新获得时间窗口授权。
+            try:
+                if self._request_guard is None:
+                    raise AIRequestNotAllowedError(
+                        "AIClient 缺少 RequestGuard，拒绝发起 AI 请求"
+                    )
+                self._request_guard.check()
+            except Exception:
+                # 如果之前已有真实请求失败，只记录那些真实请求。
+                if attempts > 0:
+                    self._append_usage(
+                        operation=usage_operation,
+                        model=self.model,
+                        status="error",
+                        started_at=started_at,
+                        error_code=type(last_error).__name__,
+                        attempts=attempts,
+                        attempts_known=True,
+                    )
+                raise
+
+            try:
+                response = completion(**params)
+                attempts += 1
+                break
+            except Exception as exc:
+                attempts += 1
+                last_error = exc
+
+                if not is_retryable(exc) or attempts > retries:
+                    self._append_usage(
+                        operation=usage_operation,
+                        model=self.model,
+                        status="error",
+                        started_at=started_at,
+                        error_code=type(exc).__name__,
+                        attempts=attempts,
+                        attempts_known=True,
+                    )
+                    raise
+                # 指数退避，避免连续请求加剧限流。
+                time.sleep(min(0.5 * (2 ** (attempts - 1)), 8))
+
         completed_at = datetime.now(timezone.utc)
         actual_model = _read_value(response, "model") or self.model
+
         self._append_usage(
-            operation=usage_operation, model=str(actual_model), status="success",
-            started_at=started_at, completed_at=completed_at,
+            operation=usage_operation,
+            model=str(actual_model),
+            status="success",
+            started_at=started_at,
+            completed_at=completed_at,
             request_id=str(_read_value(response, "id") or ""),
+            attempts=attempts,
+            attempts_known=True,
             **_response_usage(response),
         )
 
-        # 提取响应内容
-        # 某些模型/提供商返回 list（内容块）而非 str，统一转为 str
         content = response.choices[0].message.content
         if isinstance(content, list):
             content = "\n".join(
                 item.get("text", str(item)) if isinstance(item, dict) else str(item)
                 for item in content
             )
+
         return content or ""
 
 
     def _append_usage(
         self, *, operation: str, model: str, status: str,
         started_at: datetime, completed_at: datetime | None = None,
-        request_id: str = "", error_code: str = "", **usage: Any,
+        request_id: str = "", error_code: str = "",
+        attempts: int = 0, attempts_known: bool = True,
+        **usage: Any,
     ) -> None:
         """Best-effort persistence; telemetry failures never break AI features."""
         try:
@@ -171,7 +343,9 @@ class AIClient:
                 model=model, request_status=status, request_id=request_id,
                 started_at=started_at,
                 completed_at=completed_at or datetime.now(timezone.utc),
-                error_code=error_code, attempts=None, attempts_known=False,
+                error_code=error_code,
+                attempts=attempts,
+                attempts_known=attempts_known,
                 **usage,
             ))
         except Exception as exc:

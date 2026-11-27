@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from trendradar.ai.client import AIClient
-
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 
 @dataclass
 class AIFilterResult:
@@ -41,8 +41,14 @@ class AIFilter:
         filter_config: Dict[str, Any],
         get_time_func: Callable,
         debug: bool = False,
+        *,
+        request_guard=None,
     ):
-        self.client = AIClient(ai_config, feature="filter")
+        self.client = AIClient(
+            ai_config,
+            feature="filter",
+            request_guard=request_guard,
+        )
         self.filter_config = filter_config
         self.batch_size = filter_config.get("BATCH_SIZE", 200)
         self.get_time_func = get_time_func
@@ -50,15 +56,14 @@ class AIFilter:
 
         # 加载提示词模板
         self.classify_system, self.classify_user = self._load_prompt(
-            filter_config.get("PROMPT_FILE", "ai_filter_prompt.txt")
+            filter_config.get("prompt_file", "prompt.txt")
         )
         self.extract_system, self.extract_user = self._load_prompt(
-            filter_config.get("EXTRACT_PROMPT_FILE", "ai_filter_extract_prompt.txt")
+            filter_config.get("extract_prompt_file", "extract_prompt.txt")
         )
         self.update_tags_system, self.update_tags_user = self._load_prompt(
-            filter_config.get("UPDATE_TAGS_PROMPT_FILE", "update_tags_prompt.txt")
+            filter_config.get("update_tags_prompt_file", "update_tags_prompt.txt")
         )
-
     def _load_prompt(self, filename: str) -> tuple:
         """加载提示词文件，返回 (system_prompt, user_prompt_template)"""
         config_dir = Path(__file__).parent.parent.parent / "config" / "ai_filter"
@@ -200,6 +205,10 @@ class AIFilter:
             if self.debug:
                 print(f"[AI筛选][DEBUG] 尝试解析的 JSON 内容: {self._extract_json(response) if response else '(空响应)'}")
             return []
+
+        except AIRequestNotAllowedError:
+            raise
+
         except Exception as e:
             print(f"[AI筛选] 标签提取失败: {type(e).__name__}: {e}")
             return []
@@ -268,6 +277,10 @@ class AIFilter:
             print(f"[AI筛选] AI 标签更新方案: 保留 {keep_count}, 新增 {add_count}, 移除 {remove_count}, change_ratio={ratio:.2f}")
 
             return result
+
+        except AIRequestNotAllowedError:
+            raise
+
         except Exception as e:
             print(f"[AI筛选] 标签更新失败: {type(e).__name__}: {e}")
             return None
@@ -409,6 +422,10 @@ class AIFilter:
                 usage_operation="classify_news",
             )
             return self._parse_classify_response(response, titles, tags)
+
+        except AIRequestNotAllowedError:
+            raise
+
         except Exception as e:
             print(f"[AI筛选] 分类请求失败: {type(e).__name__}: {e}")
             return []

@@ -66,6 +66,7 @@ class RSSFetcher:
 
         self.parser = RSSParser()
         self.session = self._create_session()
+        self._closed = False
 
     def _create_session(self) -> requests.Session:
         """创建请求会话"""
@@ -83,6 +84,14 @@ class RSSFetcher:
             }
 
         return session
+
+    def close(self) -> None:
+        """关闭 HTTP Session，支持重复调用。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        self.session.close()
 
     def _filter_by_freshness(
         self,

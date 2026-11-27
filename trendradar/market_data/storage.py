@@ -1,10 +1,12 @@
 # 本文件负责独立市场SQLite初始化、版本迁移、事务写入与行情/事件持久化。
 """Standalone SQLite storage and safe schema migration for market radar."""
 
+import math
 import hashlib
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterable, Iterator
@@ -195,24 +197,268 @@ class MarketStorage:
                     f"ALTER TABLE security_master ADD COLUMN {column} TEXT"
                 )
 
+    @staticmethod
+    def _execute_schema_script(
+        connection: sqlite3.Connection,
+        script: str,
+    ) -> None:
+        """Execute a SQL script statement by statement without implicit commits."""
+        pending = ""
+
+        for line in script.splitlines(keepends=True):
+            pending += line
+
+            if sqlite3.complete_statement(pending):
+                statement = pending.strip()
+                if statement:
+                    connection.execute(statement)
+                pending = ""
+
+        if pending.strip():
+            # Permit trailing SQL comments, but reject incomplete SQL.
+            if not sqlite3.complete_statement(pending + "\n;"):
+                raise ValueError("market schema SQL contains an incomplete statement")
+            connection.execute(pending)
+
     def _initialize(self) -> None:
         schema_path = Path(__file__).resolve().parent.parent / "storage" / "market_schema.sql"
+        schema_script = schema_path.read_text(encoding="utf-8")
+
         with self.connect() as connection:
+            # Keep every compatibility migration and schema update in one transaction.
+            connection.execute("BEGIN IMMEDIATE")
+
             self._preflight_legacy_schema(connection)
             self._migrate_snapshot_uniqueness(connection)
-            connection.executescript(schema_path.read_text(encoding="utf-8"))
+            self._execute_schema_script(connection, schema_script)
             self._ensure_lifecycle_columns(connection)
+
             connection.execute(
                 """INSERT INTO schema_meta(key,value) VALUES('schema_version',?)
                 ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP""",
                 (str(self.SCHEMA_VERSION),),
             )
+
             # Legacy active flags came from a source without lifecycle status; invalidate unverified values.
             connection.execute(
                 """UPDATE security_master SET listing_status='unknown',
                 updated_at=CURRENT_TIMESTAMP
                 WHERE listing_status='active' AND listing_status_source=''"""
             )
+
+
+    @staticmethod
+    def _normalize_data_source_time(value: datetime | str | None = None) -> str:
+        """Normalize data-source timestamps to Asia/Shanghai ISO-8601."""
+        shanghai_tz = ZoneInfo("Asia/Shanghai")
+
+        if value is None:
+            parsed = datetime.now(shanghai_tz)
+        elif isinstance(value, datetime):
+            parsed = value
+        elif isinstance(value, str):
+            try:
+                parsed = datetime.fromisoformat(value)
+            except ValueError as exc:
+                raise ValueError(f"无效的数据源时间: {value!r}") from exc
+        else:
+            raise TypeError("时间必须是 datetime、ISO-8601 字符串或 None")
+
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=shanghai_tz)
+        else:
+            parsed = parsed.astimezone(shanghai_tz)
+
+        return parsed.isoformat(timespec="seconds")
+
+
+    def ensure_data_source(
+        self,
+        source_id: str,
+        source_name: str,
+        source_type: str,
+        *,
+        provider_url: str = "",
+        terms_url: str = "",
+        enabled: bool | None = None,
+        priority: int = 100,
+    ) -> dict:
+        """Create a data-source registry entry or update its metadata."""
+        source_id = str(source_id or "").strip()
+        source_name = str(source_name or "").strip()
+
+        if not source_id:
+            raise ValueError("source_id不能为空")
+        if not source_name:
+            raise ValueError("source_name不能为空")
+
+        self._validate_enum(
+            source_type,
+            {"security_master", "sector", "quote", "news", "macro", "mapping"},
+            "source_type",
+        )
+
+        if enabled is not None and not isinstance(enabled, bool):
+            raise TypeError("enabled必须是bool或None")
+
+        if isinstance(priority, bool) or not isinstance(priority, int):
+            raise TypeError("priority必须是整数")
+
+        # 新数据源默认启用；已有数据源默认保留原启用状态。
+        enabled_value = 1 if enabled is None else int(enabled)
+        enabled_override = int(enabled is not None)
+
+        with self.connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO data_sources (
+                    source_id, source_name, source_type,
+                    provider_url, terms_url, enabled, priority
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(source_id) DO UPDATE SET
+                    source_name=excluded.source_name,
+                    source_type=excluded.source_type,
+                    provider_url=excluded.provider_url,
+                    terms_url=excluded.terms_url,
+                    enabled=CASE
+                        WHEN ? = 1 THEN excluded.enabled
+                        ELSE data_sources.enabled
+                    END,
+                    priority=excluded.priority,
+                    updated_at=CURRENT_TIMESTAMP
+                """,
+                (
+                    source_id,
+                    source_name,
+                    source_type,
+                    str(provider_url or ""),
+                    str(terms_url or ""),
+                    enabled_value,
+                    priority,
+                    enabled_override,
+                ),
+            )
+
+        result = self.get_data_source(source_id)
+        assert result is not None
+        return result
+
+    def get_data_source(self, source_id: str) -> dict | None:
+        """Return one registered data source, or None if it does not exist."""
+        source_id = str(source_id or "").strip()
+        if not source_id:
+            raise ValueError("source_id不能为空")
+
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT * FROM data_sources WHERE source_id=?",
+                (source_id,),
+            ).fetchone()
+
+        return dict(row) if row else None
+
+    def mark_data_source_success(
+        self,
+        source_id: str,
+        *,
+        completed_at: datetime | str | None = None,
+    ) -> None:
+        """Record successful refresh without erasing historical failure time."""
+        source_id = str(source_id or "").strip()
+        if not source_id:
+            raise ValueError("source_id不能为空")
+
+        timestamp = self._normalize_data_source_time(completed_at)
+
+        with self.connect() as connection:
+            cursor = connection.execute(
+                """
+                UPDATE data_sources
+                SET last_success_at=?,
+                    last_error='',
+                    updated_at=CURRENT_TIMESTAMP
+                WHERE source_id=?
+                """,
+                (timestamp, source_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError(f"数据源不存在: {source_id}")
+
+    def mark_data_source_failure(
+        self,
+        source_id: str,
+        error: str,
+        *,
+        failed_at: datetime | str | None = None,
+    ) -> None:
+        """Record refresh failure while preserving the last successful time."""
+        source_id = str(source_id or "").strip()
+        if not source_id:
+            raise ValueError("source_id不能为空")
+
+        error = str(error or "").strip()
+        if not error:
+            raise ValueError("失败原因不能为空")
+
+        timestamp = self._normalize_data_source_time(failed_at)
+
+        with self.connect() as connection:
+            cursor = connection.execute(
+                """
+                UPDATE data_sources
+                SET last_failure_at=?,
+                    last_error=?,
+                    updated_at=CURRENT_TIMESTAMP
+                WHERE source_id=?
+                """,
+                (timestamp, error[:2000], source_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError(f"数据源不存在: {source_id}")
+
+    def is_data_source_refresh_due(
+        self,
+        source_id: str,
+        *,
+        interval_hours: float = 24,
+        now: datetime | str | None = None,
+    ) -> bool:
+        """Return whether a source has never succeeded or its success is expired."""
+        if isinstance(interval_hours, bool) or not isinstance(
+            interval_hours, (int, float)
+        ):
+            raise TypeError("interval_hours必须是数字")
+
+        if (
+            interval_hours <= 0
+            or (
+                isinstance(interval_hours, float)
+                and not math.isfinite(interval_hours)
+            )
+        ):
+            raise ValueError("interval_hours必须是有限的正数")
+
+        source = self.get_data_source(source_id)
+
+        if source is None or not source["last_success_at"]:
+            return True
+
+        current_time = datetime.fromisoformat(
+            self._normalize_data_source_time(now)
+        )
+        last_success = datetime.fromisoformat(source["last_success_at"])
+
+        if last_success.tzinfo is None:
+            last_success = last_success.replace(
+                tzinfo=ZoneInfo("Asia/Shanghai")
+            )
+        else:
+            last_success = last_success.astimezone(
+                ZoneInfo("Asia/Shanghai")
+            )
+
+        return current_time >= last_success + timedelta(hours=interval_hours)
 
     def count_securities(self) -> int:
         with self.connect() as connection:

@@ -74,12 +74,38 @@ class RadarResultStore:
         finally:
             conn.close()
 
-    def start_run(self, run_at: str, run_type: str = "snapshot", notes: str = "") -> int:
-        if not run_at.strip() or run_type not in {"snapshot", "intraday", "backfill", "manual"}:
+    def start_run(
+        self,
+        run_at: str,
+        run_type: str = "snapshot",
+        notes: str = "",
+    ) -> int:
+        valid_run_types = {
+            "snapshot",
+            "intraday",
+            "backfill",
+            "manual",
+            "scheduled",
+        }
+
+        if not run_at.strip() or run_type not in valid_run_types:
             raise ValueError("run_at and a valid run_type are required")
+
         with self.connect() as conn:
-            row = conn.execute("INSERT INTO radar_runs(run_at,run_type,status,notes) VALUES(?,?,'started',?) RETURNING run_id",
-                               (run_at.strip(), run_type, notes.strip())).fetchone()
+            row = conn.execute(
+                """
+                INSERT INTO radar_runs(
+                    run_at,
+                    run_type,
+                    status,
+                    notes
+                )
+                VALUES (?, ?, 'started', ?)
+                RETURNING run_id
+                """,
+                (run_at.strip(), run_type, notes.strip()),
+            ).fetchone()
+
             return int(row["run_id"])
 
     @staticmethod
@@ -131,3 +157,15 @@ class RadarResultStore:
             candidates = conn.execute("SELECT * FROM radar_candidates WHERE run_id=? ORDER BY score DESC,code",
                                      (run_id,)).fetchall()
         return {"run": dict(run), "candidates": [dict(row) for row in candidates]}
+
+    def get_latest_run(self) -> dict | None:
+        """Return the most recently created radar run and its candidates."""
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT run_id FROM radar_runs ORDER BY run_id DESC LIMIT 1"
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return self.get_run(int(row["run_id"]))

@@ -4,14 +4,27 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from trendradar.ai.usage_ledger import AIUsageLedger
-
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 from trendradar.market_data.ai_model_provider import (
     ChatModelError,
     ChatModelRequest,
     ChatModelResponse,
-    LiteLLMChatProvider,
+    LiteLLMChatProvider as _LiteLLMChatProvider,
     parse_json_object,
 )
+
+
+class AllowTestGuard:
+    """仅供单元测试使用的显式放行 Guard。"""
+
+    def check(self):
+        return None
+
+
+def LiteLLMChatProvider(*args, **kwargs):
+    """测试工厂：默认使用测试专用授权，允许显式传入其他 Guard。"""
+    kwargs.setdefault("request_guard", AllowTestGuard())
+    return _LiteLLMChatProvider(*args, **kwargs)
 
 
 def fake_response(content='{"ok": true}', finish_reason="stop", request_id="req-1"):
@@ -46,6 +59,25 @@ class AiModelProviderTests(unittest.TestCase):
             ChatModelRequest(model="model", system_prompt="system", user_prompt="user",
                              response_format="text")
 
+    def test_missing_request_guard_rejects_request_before_completion(self):
+        calls = []
+
+        def completion(**kwargs):
+            calls.append(kwargs)
+            return fake_response()
+
+        provider = _LiteLLMChatProvider(
+            completion_callable=completion,
+        )
+
+        with self.assertRaises(AIRequestNotAllowedError):
+            provider.complete(ChatModelRequest(
+                model="provider/model-x",
+                system_prompt="system",
+                user_prompt="user",
+            ))
+
+        self.assertEqual(calls, [])
     def test_successful_call_returns_provider_model_and_request_metadata(self):
         calls = []
 
@@ -232,6 +264,89 @@ class AiModelProviderTests(unittest.TestCase):
             self.assertEqual(row["error_code"], "ConnectionError")
             self.assertNotIn("private transport detail", str(row))
 
+    def test_guard_denial_before_first_attempt_does_not_call_api_or_record_usage(self):
+        class DenyGuard:
+            def check(self):
+                raise AIRequestNotAllowedError("AI request is not allowed")
+
+        calls = []
+
+        def completion(**kwargs):
+            calls.append(kwargs)
+            return fake_response()
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+
+            provider = LiteLLMChatProvider(
+                completion_callable=completion,
+                usage_ledger=ledger,
+                request_guard=DenyGuard(),
+            )
+
+            with self.assertRaises(AIRequestNotAllowedError):
+                provider.complete(ChatModelRequest(
+                    model="deepseek/deepseek-v4-pro",
+                    system_prompt="system",
+                    user_prompt="user",
+                    usage_operation="chief_reviewer",
+                ))
+
+            self.assertEqual(calls, [])
+            self.assertEqual(ledger.list_records(), ())
+
+    def test_guard_denial_between_retries_records_only_real_attempt(self):
+        class SequenceGuard:
+            def __init__(self):
+                self.check_calls = 0
+
+            def check(self):
+                self.check_calls += 1
+
+                if self.check_calls == 2:
+                    raise AIRequestNotAllowedError(
+                        "AI request is not allowed"
+                    )
+
+        calls = []
+        guard = SequenceGuard()
+
+        def completion(**kwargs):
+            calls.append(kwargs)
+            raise RetryableStatusError(503)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+
+            provider = LiteLLMChatProvider(
+                completion_callable=completion,
+                max_attempts=2,
+                retry_delay_seconds=0,
+                sleep_callable=lambda _: None,
+                usage_ledger=ledger,
+                request_guard=guard,
+            )
+
+            with self.assertRaises(AIRequestNotAllowedError):
+                provider.complete(ChatModelRequest(
+                    model="deepseek/deepseek-v4-pro",
+                    system_prompt="system",
+                    user_prompt="user",
+                    usage_operation="chief_reviewer",
+                ))
+
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(guard.check_calls, 2)
+
+            records = ledger.list_records()
+            self.assertEqual(len(records), 1)
+
+            row = records[0]
+            self.assertEqual(row["request_status"], "error")
+            self.assertEqual(row["operation"], "chief_reviewer")
+            self.assertEqual(row["attempts"], 1)
+            self.assertEqual(row["error_code"], "RetryableStatusError")
+
     def test_retries_transient_server_error_then_succeeds(self):
         calls = []
         sleeps = []
@@ -363,7 +478,85 @@ class AiModelProviderTests(unittest.TestCase):
         self.assertEqual(calls[0]["api_key"], secret)
         self.assertEqual(calls[0]["api_base"], "https://api.example.test/v1")
         self.assertNotIn(secret, repr(provider))
+    def test_guard_denial_blocks_completion_and_usage_record(self):
+        class DeniedGuard:
+            def check(self):
+                raise AIRequestNotAllowedError("outside allowed window")
 
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+            calls = []
+
+            def completion(**kwargs):
+                calls.append(kwargs)
+                return fake_response()
+
+            provider = LiteLLMChatProvider(
+                completion_callable=completion,
+                usage_ledger=ledger,
+                request_guard=DeniedGuard(),
+            )
+
+            with self.assertRaises(AIRequestNotAllowedError):
+                provider.complete(ChatModelRequest(
+                    model="deepseek/deepseek-v4-pro",
+                    system_prompt="system",
+                    user_prompt="user",
+                    usage_operation="reviewer:fact_checker",
+                ))
+
+            self.assertEqual(len(calls), 0)
+            self.assertEqual(ledger.list_records(), ())
+
+    def test_guard_rechecks_before_retry_and_records_only_real_attempt(self):
+        class RetryThenDeniedGuard:
+            def __init__(self):
+                self.check_count = 0
+
+            def check(self):
+                self.check_count += 1
+                if self.check_count >= 2:
+                    raise AIRequestNotAllowedError(
+                        "window closed before retry"
+                    )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            ledger = AIUsageLedger(Path(temp_dir) / "ai_usage.db")
+            guard = RetryThenDeniedGuard()
+            calls = []
+
+            def completion(**kwargs):
+                calls.append(kwargs)
+                raise RetryableStatusError(503)
+
+            provider = LiteLLMChatProvider(
+                completion_callable=completion,
+                max_attempts=3,
+                retry_delay_seconds=0,
+                sleep_callable=lambda _: None,
+                usage_ledger=ledger,
+                request_guard=guard,
+            )
+
+            with self.assertRaises(AIRequestNotAllowedError):
+                provider.complete(ChatModelRequest(
+                    model="deepseek/deepseek-v4-pro",
+                    system_prompt="system",
+                    user_prompt="user",
+                    usage_operation="reviewer:fact_checker",
+                ))
+
+            self.assertEqual(guard.check_count, 2)
+            self.assertEqual(len(calls), 1)
+
+            rows = ledger.list_records()
+            self.assertEqual(len(rows), 1)
+
+            row = rows[0]
+            self.assertEqual(row["request_status"], "error")
+            self.assertEqual(row["attempts"], 1)
+            self.assertEqual(row["attempts_known"], 1)
+            self.assertEqual(row["error_code"], "RetryableStatusError")
 
 if __name__ == "__main__":
     unittest.main()

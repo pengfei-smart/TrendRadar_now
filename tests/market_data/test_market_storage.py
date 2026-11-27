@@ -1,10 +1,12 @@
 # 本文件测试市场数据库schema版本、主数据UPSERT、事件幂等和多行情源唯一约束，属于数据库详细设计阶段。
 """SQLite market storage tests."""
 
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
-
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from trendradar.market_data.storage import MarketStorage
 from trendradar.market_data.models import MarketEvent, Security, QuoteSnapshot
 
@@ -433,6 +435,93 @@ class MarketStorageTests(unittest.TestCase):
             self.assertEqual(sh_status, "unknown")
 
 
+    def test_upsert_securities_rolls_back_on_batch_write_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            with storage.connect() as connection:
+                connection.execute("""
+                    CREATE TRIGGER fail_security_master_insert
+                    BEFORE INSERT ON security_master
+                    WHEN NEW.code = '000001'
+                    BEGIN
+                        SELECT RAISE(ABORT, 'injected security insert failure');
+                    END
+                """)
+
+            with self.assertRaises(sqlite3.IntegrityError):
+                storage.upsert_securities([
+                    Security("600000", "浦发银行", "SH"),
+                    Security("000001", "平安银行", "SZ"),
+                ])
+
+            with storage.connect() as connection:
+                count = connection.execute(
+                    "SELECT COUNT(*) FROM security_master"
+                ).fetchone()[0]
+
+            self.assertEqual(count, 0)
+
+    def test_multi_board_listing_snapshot_rolls_back_on_database_write_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.upsert_securities([
+                Security("600000", "浦发银行", "SH"),
+                Security("000001", "平安银行", "SZ"),
+            ])
+
+            with storage.connect() as connection:
+                connection.execute("""
+                    CREATE TRIGGER fail_sz_listing_snapshot
+                    BEFORE INSERT ON listing_status_snapshots
+                    WHEN NEW.exchange = 'SZ'
+                    BEGIN
+                        SELECT RAISE(ABORT, 'injected listing snapshot failure');
+                    END
+                """)
+
+            batch = [
+                {
+                    "source_id": "sse_main_board_a",
+                    "exchange": "SH",
+                    "board_scope": "main_board_a",
+                    "fetched_at": "2026-11-10T16:00:00+08:00",
+                    "source_as_of": "2026-11-10",
+                    "statuses": {"600000": "active"},
+                },
+                {
+                    "source_id": "szse_main_board_a",
+                    "exchange": "SZ",
+                    "board_scope": "main_board_a",
+                    "fetched_at": "2026-11-10T16:00:00+08:00",
+                    "source_as_of": "2026-11-10",
+                    "statuses": {"000001": "active"},
+                },
+            ]
+
+            with self.assertRaises(sqlite3.IntegrityError):
+                storage.apply_listing_status_snapshots(batch)
+
+            with storage.connect() as connection:
+                snapshot_count = connection.execute(
+                    "SELECT COUNT(*) FROM listing_status_snapshots"
+                ).fetchone()[0]
+
+                evidence_count = connection.execute(
+                    "SELECT COUNT(*) FROM listing_status_evidence"
+                ).fetchone()[0]
+
+                statuses = dict(connection.execute(
+                    "SELECT code, listing_status FROM security_master"
+                ).fetchall())
+
+            self.assertEqual(snapshot_count, 0)
+            self.assertEqual(evidence_count, 0)
+            self.assertEqual(statuses["600000"], "unknown")
+            self.assertEqual(statuses["000001"], "unknown")
+
+
     def test_absent_security_is_downgraded_to_unknown_not_delisted(self):
         with tempfile.TemporaryDirectory() as tmp:
             storage = MarketStorage(str(Path(tmp) / "market.db"))
@@ -554,6 +643,309 @@ class MarketStorageTests(unittest.TestCase):
                     "relationship_type": "cash_tender_offer",
                 }])
             self.assertEqual(len(storage.list_security_relationships()), 1)
+
+
+    def test_data_source_registration_and_metadata_update(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            source = storage.ensure_data_source(
+                "eastmoney_security_master",
+                "东方财富证券主数据",
+                "security_master",
+                provider_url="https://example.com/master",
+            )
+
+            self.assertEqual(source["source_id"], "eastmoney_security_master")
+            self.assertEqual(source["source_name"], "东方财富证券主数据")
+            self.assertEqual(source["enabled"], 1)
+            self.assertEqual(source["last_success_at"], "")
+
+            storage.mark_data_source_success(
+                "eastmoney_security_master",
+                completed_at="2026-11-24T08:00:00+08:00",
+            )
+
+            updated = storage.ensure_data_source(
+                "eastmoney_security_master",
+                "东方财富证券主数据（更新）",
+                "security_master",
+                provider_url="https://example.com/new-master",
+                priority=10,
+            )
+
+            self.assertEqual(updated["source_name"], "东方财富证券主数据（更新）")
+            self.assertEqual(updated["provider_url"], "https://example.com/new-master")
+            self.assertEqual(updated["priority"], 10)
+            self.assertEqual(
+                updated["last_success_at"],
+                "2026-11-24T08:00:00+08:00",
+            )
+
+
+    def test_data_source_metadata_update_preserves_enabled_state(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.ensure_data_source(
+                "test_source",
+                "测试数据源",
+                "security_master",
+            )
+
+            storage.ensure_data_source(
+                "test_source",
+                "测试数据源（更新）",
+                "security_master",
+                enabled=False,
+            )
+
+            updated = storage.ensure_data_source(
+                "test_source",
+                "测试数据源（再次更新）",
+                "security_master",
+                provider_url="https://example.com",
+            )
+
+            self.assertEqual(updated["enabled"], 0)
+            self.assertEqual(
+                updated["source_name"],
+                "测试数据源（再次更新）",
+            )
+
+            reenabled = storage.ensure_data_source(
+                "test_source",
+                "测试数据源",
+                "security_master",
+                enabled=True,
+            )
+
+            self.assertEqual(reenabled["enabled"], 1)
+
+    def test_data_source_registration_defaults_to_enabled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            source = storage.ensure_data_source(
+                "new_source",
+                "新数据源",
+                "security_master",
+            )
+
+            self.assertEqual(source["enabled"], 1)
+
+
+    def test_data_source_refresh_due_uses_success_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.ensure_data_source(
+                "exchange_listing_status",
+                "交易所上市状态",
+                "security_master",
+            )
+
+            self.assertTrue(
+                storage.is_data_source_refresh_due(
+                    "exchange_listing_status",
+                    now="2026-11-24T08:00:00+08:00",
+                )
+            )
+
+            storage.mark_data_source_success(
+                "exchange_listing_status",
+                completed_at="2026-11-24T08:00:00+08:00",
+            )
+
+            self.assertFalse(
+                storage.is_data_source_refresh_due(
+                    "exchange_listing_status",
+                    interval_hours=24,
+                    now="2026-11-25T07:59:59+08:00",
+                )
+            )
+
+            self.assertTrue(
+                storage.is_data_source_refresh_due(
+                    "exchange_listing_status",
+                    interval_hours=24,
+                    now="2026-11-25T08:00:00+08:00",
+                )
+            )
+
+    def test_data_source_failure_preserves_last_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.ensure_data_source(
+                "eastmoney_security_master",
+                "东方财富证券主数据",
+                "security_master",
+            )
+
+            storage.mark_data_source_success(
+                "eastmoney_security_master",
+                completed_at="2026-11-24T08:00:00+08:00",
+            )
+
+            storage.mark_data_source_failure(
+                "eastmoney_security_master",
+                "网络连接超时",
+                failed_at="2026-11-24T09:00:00+08:00",
+            )
+
+            source = storage.get_data_source("eastmoney_security_master")
+
+            self.assertEqual(
+                source["last_success_at"],
+                "2026-11-24T08:00:00+08:00",
+            )
+            self.assertEqual(
+                source["last_failure_at"],
+                "2026-11-24T09:00:00+08:00",
+            )
+            self.assertEqual(source["last_error"], "网络连接超时")
+
+    def test_data_source_success_clears_error_but_preserves_failure_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.ensure_data_source(
+                "exchange_listing_status",
+                "交易所上市状态",
+                "security_master",
+            )
+
+            storage.mark_data_source_failure(
+                "exchange_listing_status",
+                "接口暂时不可用",
+                failed_at="2026-11-24T08:00:00+08:00",
+            )
+
+            storage.mark_data_source_success(
+                "exchange_listing_status",
+                completed_at="2026-11-24T09:00:00+08:00",
+            )
+
+            source = storage.get_data_source("exchange_listing_status")
+
+            self.assertEqual(source["last_error"], "")
+            self.assertEqual(
+                source["last_failure_at"],
+                "2026-11-24T08:00:00+08:00",
+            )
+            self.assertEqual(
+                source["last_success_at"],
+                "2026-11-24T09:00:00+08:00",
+            )
+
+    def test_data_source_refresh_due_handles_disabled_and_missing_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            self.assertTrue(
+                storage.is_data_source_refresh_due("not_registered")
+            )
+
+            storage.ensure_data_source(
+                "disabled_source",
+                "停用的数据源",
+                "security_master",
+                enabled=False,
+            )
+
+            # 刷新时间判断与启用状态分离；是否执行由工作流决定。
+            self.assertTrue(
+                storage.is_data_source_refresh_due("disabled_source")
+            )
+
+    def test_data_source_rejects_invalid_arguments(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            with self.assertRaises(ValueError):
+                storage.ensure_data_source("", "名称", "security_master")
+
+            with self.assertRaises(ValueError):
+                storage.ensure_data_source("source", "", "security_master")
+
+            with self.assertRaises(ValueError):
+                storage.ensure_data_source("source", "名称", "invalid_type")
+
+            with self.assertRaises(ValueError):
+                storage.mark_data_source_success("not_registered")
+
+            with self.assertRaises(ValueError):
+                storage.mark_data_source_failure(
+                    "not_registered",
+                    "网络错误",
+                )
+
+            with self.assertRaises(TypeError):
+                storage.ensure_data_source(
+                    "source",
+                    "名称",
+                    "security_master",
+                    enabled=1,
+                )
+
+            storage.ensure_data_source(
+                "source",
+                "名称",
+                "security_master",
+            )
+
+            with self.assertRaises(ValueError):
+                storage.mark_data_source_failure("source", "")
+
+            with self.assertRaises(ValueError):
+                storage.is_data_source_refresh_due(
+                    "source",
+                    interval_hours=0,
+                )
+
+            for invalid_value in ("24", None, True):
+                with self.subTest(interval_hours=invalid_value):
+                    with self.assertRaises(TypeError):
+                        storage.is_data_source_refresh_due(
+                            "source",
+                            interval_hours=invalid_value,
+                        )
+
+            for invalid_value in (
+                -1,
+                float("nan"),
+                float("inf"),
+                float("-inf"),
+            ):
+                with self.subTest(interval_hours=invalid_value):
+                    with self.assertRaises(ValueError):
+                        storage.is_data_source_refresh_due(
+                            "source",
+                            interval_hours=invalid_value,
+                        )
+
+    def test_data_source_naive_timestamp_is_interpreted_as_shanghai(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            storage = MarketStorage(str(Path(tmp) / "market.db"))
+
+            storage.ensure_data_source(
+                "test_source",
+                "测试数据源",
+                "security_master",
+            )
+
+            storage.mark_data_source_success(
+                "test_source",
+                completed_at="2026-11-24T08:00:00",
+            )
+
+            source = storage.get_data_source("test_source")
+
+            self.assertEqual(
+                source["last_success_at"],
+                "2026-11-24T08:00:00+08:00",
+            )
 
 
 if __name__ == "__main__":

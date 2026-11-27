@@ -99,6 +99,65 @@ class Scheduler:
 
         return timeline
 
+
+    def is_ai_allowed_now(self) -> bool:
+        """
+        无日志地检查当前 Timeline 是否允许 AI 请求。
+
+        注意：
+        1. Schedule 禁用时始终拒绝 AI 请求。
+        2. 使用 Scheduler 当前 Timeline 作为唯一规则来源。
+        3. 每次调用都重新获取当前时间，不缓存授权结果。
+        4. 不执行 once 去重，也不修改调度状态。
+        """
+        if not self.enabled:
+            return False
+
+        now = self.get_time()
+        weekday = now.isoweekday()
+        now_hhmm = now.strftime("%H:%M")
+
+        day_plan_key = self.timeline["week_map"].get(weekday)
+        if day_plan_key is None:
+            return False
+
+        day_plan = self.timeline["day_plans"].get(day_plan_key)
+        if day_plan is None:
+            return False
+
+        # 复用现有 Timeline 时间段匹配规则。
+        # 不调用 _find_active_period，避免 last_wins 策略产生调度日志。
+        candidates = []
+
+        for idx, key in enumerate(day_plan.get("periods", [])):
+            period = self.timeline["periods"].get(key)
+            if period is None:
+                continue
+
+            if self._in_range(now_hhmm, period["start"], period["end"]):
+                candidates.append((idx, key))
+
+        if not candidates:
+            period_key = None
+        elif len(candidates) == 1:
+            period_key = candidates[0][1]
+        else:
+            policy = self.timeline.get("overlap", {}).get(
+                "policy", "error_on_overlap"
+            )
+
+            if policy == "error_on_overlap":
+                raise ValueError(
+                    f"检测到时间段重叠冲突: "
+                    f"{', '.join(item[1] for item in candidates)} "
+                    f"在 {now_hhmm} 重叠"
+                )
+
+            period_key = candidates[-1][1]
+
+        merged = self._merge_with_default(period_key)
+        return bool(merged.get("analyze", False))
+
     def resolve(self) -> ResolvedSchedule:
         """
         解析当前时间对应的调度配置
@@ -245,12 +304,12 @@ class Scheduler:
         Returns:
             是否在范围内
         """
-        if start <= end:
-            # 正常范围，如 08:00-09:00
-            return start <= now_hhmm <= end
+        if start < end:
+            # 正常范围，左闭右开，如 08:00-09:00
+            return start <= now_hhmm < end
         else:
-            # 跨日范围，如 22:00-07:00
-            return now_hhmm >= start or now_hhmm <= end
+            # 跨日范围，左闭右开，如 23:00-05:00
+            return now_hhmm >= start or now_hhmm < end
 
     def _merge_with_default(self, period_key: Optional[str]) -> Dict[str, Any]:
         """合并默认配置和时间段配置"""
@@ -394,31 +453,39 @@ class Scheduler:
                             f"请调整时间段，或将 overlap.policy 设为 'last_wins'"
                         )
 
+
     @staticmethod
     def _ranges_overlap(s1: str, e1: str, s2: str, e2: str) -> bool:
-        """检查两个时间范围是否重叠（支持跨日）"""
+        """检查两个时间范围是否重叠，统一采用左闭右开区间，支持跨日。"""
         def to_minutes(t: str) -> int:
             h, m = t.split(":")
             return int(h) * 60 + int(m)
 
         def expand_range(start: str, end: str) -> List[tuple]:
-            """将时间范围展开为分钟段列表，跨日时拆分为两段"""
+            """将时间范围展开为左闭右开分钟段，跨日时拆分为两段。"""
             s = to_minutes(start)
             e = to_minutes(end)
-            if s <= e:
+
+            # 零长度区间不产生有效时间范围。
+            # 正常配置会在 _validate_timeline 中提前拒绝。
+            if s == e:
+                return []
+
+            if s < e:
                 return [(s, e)]
-            else:
-                # 跨日：拆分为 [start, 23:59] 和 [00:00, end]
-                return [(s, 24 * 60 - 1), (0, e)]
+
+            # 跨午夜：[start, 24:00) + [00:00, end)
+            return [(s, 24 * 60), (0, e)]
 
         segs1 = expand_range(s1, e1)
         segs2 = expand_range(s2, e2)
 
         for a_start, a_end in segs1:
             for b_start, b_end in segs2:
-                # 两个区间有重叠的条件
-                if a_start <= b_end and b_start <= a_end:
+                # 左闭右开区间：只有真正交集才算重叠。
+                if a_start < b_end and b_start < a_end:
                     return True
+
         return False
 
     @staticmethod

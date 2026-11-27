@@ -10,20 +10,26 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from io import BytesIO
+import logging
 import time
 from typing import Mapping, Sequence
 
 import requests
 from openpyxl import load_workbook
 
-from trendradar.market_data.security_master_provider import SecurityMasterSourceError
+from trendradar.market_data.security_master_provider import (
+    DataSourceStatusRecordingError,
+    SecurityMasterSourceError,
+)
 
+logger = logging.getLogger(__name__)
 
 SSE_LIST_URL = "https://query.sse.com.cn/sseQuery/commonQuery.do"
 SZSE_LIST_URL = "https://www.szse.cn/api/report/ShowReport"
 SSE_REFERER = "https://www.sse.com.cn/assortment/stock/list/share/"
 SZSE_REFERER = "https://www.szse.cn/market/product/stock/list/index.html"
 
+EXCHANGE_LISTING_SOURCE_ID = "exchange_listing_status"
 
 @dataclass(frozen=True)
 class ListingStatusSnapshot:
@@ -90,11 +96,22 @@ class SSEMainBoardAProvider:
                  timeout: tuple[float, float] = (5.0, 25.0),
                  minimum_count: int = 800, max_attempts: int = 3,
                  backoff_seconds: float = 1.0):
-        self.session = session or requests.Session()
+        self._owns_session = session is None
+        self.session = session if session is not None else requests.Session()
+        self._closed = False
         self.timeout = timeout
         self.minimum_count = minimum_count
         self.max_attempts = max(1, int(max_attempts))
         self.backoff_seconds = max(0.0, float(backoff_seconds))
+
+    def close(self) -> None:
+        """关闭由当前 Provider 自己创建的 HTTP Session。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        if self._owns_session:
+            self.session.close()
 
     def fetch_snapshot(self) -> ListingStatusSnapshot:
         params = {
@@ -166,12 +183,23 @@ class SZSEBoardAProvider:
                  minimum_main_count: int = 300,
                  minimum_chinext_count: int = 500, max_attempts: int = 3,
                  backoff_seconds: float = 1.0):
-        self.session = session or requests.Session()
+        self._owns_session = session is None
+        self.session = session if session is not None else requests.Session()
+        self._closed = False
         self.timeout = timeout
         self.minimum_main_count = minimum_main_count
         self.minimum_chinext_count = minimum_chinext_count
         self.max_attempts = max(1, int(max_attempts))
         self.backoff_seconds = max(0.0, float(backoff_seconds))
+
+    def close(self) -> None:
+        """关闭由当前 Provider 自己创建的 HTTP Session。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        if self._owns_session:
+            self.session.close()
 
     def fetch_snapshots(self) -> tuple[ListingStatusSnapshot, ListingStatusSnapshot]:
         params = {"SHOWTYPE": "xlsx", "CATALOGID": "1110", "TABKEY": "tab1",
@@ -239,32 +267,127 @@ class SZSEBoardAProvider:
         )
 
 
+
 class ExchangeListingStatusUpdater:
     """Refresh verified active membership from all three exchange-board sources."""
 
-    def __init__(self, storage: object, sse_provider: SSEMainBoardAProvider | None = None,
-                 szse_provider: SZSEBoardAProvider | None = None):
+    def __init__(
+        self,
+        storage: object,
+        sse_provider: SSEMainBoardAProvider | None = None,
+        szse_provider: SZSEBoardAProvider | None = None,
+    ):
         self.storage = storage
-        self.sse_provider = sse_provider or SSEMainBoardAProvider()
-        self.szse_provider = szse_provider or SZSEBoardAProvider()
+        self._owns_sse_provider = sse_provider is None
+        self.sse_provider = (
+            sse_provider if sse_provider is not None
+            else SSEMainBoardAProvider()
+        )
+        self._owns_szse_provider = szse_provider is None
+        self.szse_provider = (
+            szse_provider if szse_provider is not None
+            else SZSEBoardAProvider()
+        )
+        self._closed = False
+
+    def close(self) -> None:
+        """只关闭由当前 Updater 自己创建的交易所 Provider。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        errors = []
+
+        owned_providers = (
+            (self.sse_provider, self._owns_sse_provider),
+            (self.szse_provider, self._owns_szse_provider),
+        )
+
+        for provider, owned in owned_providers:
+            if not owned:
+                continue
+            close = getattr(provider, "close", None)
+            if not callable(close):
+                continue
+            try:
+                close()
+            except Exception as exc:
+                errors.append(exc)
+
+        if errors:
+            raise RuntimeError(
+                f"{len(errors)} 个交易所 Provider 关闭失败"
+            ) from errors[0]
 
     def update(self) -> dict[str, int]:
-        # Fetch and validate every required board before writing any of them.
-        snapshots = (
-            self.sse_provider.fetch_snapshot(),
-            *self.szse_provider.fetch_snapshots(),
+        self.storage.ensure_data_source(
+            EXCHANGE_LISTING_SOURCE_ID,
+            "沪深交易所A股上市名单",
+            "security_master",
+            provider_url=f"SSE: {SSE_LIST_URL}; SZSE: {SZSE_LIST_URL}",
+            priority=20,
         )
-        expected = {("SH", "main_board_a"), ("SZ", "main_board_a"), ("SZ", "chinext")}
-        actual = {(item.exchange, item.board_scope) for item in snapshots}
-        if actual != expected:
-            raise SecurityMasterSourceError("交易所上市名单板块覆盖不完整")
-        batch = [{
-            "source_id": snapshot.source_id,
-            "exchange": snapshot.exchange,
-            "board_scope": snapshot.board_scope,
-            "fetched_at": snapshot.fetched_at,
-            "source_as_of": snapshot.source_as_of,
-            "statuses": {code: "active" for code in snapshot.active_codes},
-            "source_url": snapshot.source_url,
-        } for snapshot in snapshots]
-        return self.storage.apply_listing_status_snapshots(batch)
+
+        try:
+            # Fetch and validate every required board before writing any of them.
+            snapshots = (
+                self.sse_provider.fetch_snapshot(),
+                *self.szse_provider.fetch_snapshots(),
+            )
+
+            expected = {
+                ("SH", "main_board_a"),
+                ("SZ", "main_board_a"),
+                ("SZ", "chinext"),
+            }
+            actual = {
+                (item.exchange, item.board_scope)
+                for item in snapshots
+            }
+
+            if actual != expected:
+                raise SecurityMasterSourceError(
+                    "交易所上市名单板块覆盖不完整"
+                )
+
+            batch = [
+                {
+                    "source_id": snapshot.source_id,
+                    "exchange": snapshot.exchange,
+                    "board_scope": snapshot.board_scope,
+                    "fetched_at": snapshot.fetched_at,
+                    "source_as_of": snapshot.source_as_of,
+                    "statuses": {
+                        code: "active"
+                        for code in snapshot.active_codes
+                    },
+                    "source_url": snapshot.source_url,
+                }
+                for snapshot in snapshots
+            ]
+
+            result = self.storage.apply_listing_status_snapshots(batch)
+
+        except Exception as exc:
+            try:
+                self.storage.mark_data_source_failure(
+                    EXCHANGE_LISTING_SOURCE_ID,
+                    str(exc),
+                )
+            except Exception:
+                logger.exception(
+                    "Failed to record exchange listing refresh failure"
+                )
+            raise
+
+        try:
+            self.storage.mark_data_source_success(
+                EXCHANGE_LISTING_SOURCE_ID
+            )
+        except Exception as exc:
+            raise DataSourceStatusRecordingError(
+                EXCHANGE_LISTING_SOURCE_ID,
+                exc,
+            ) from exc
+
+        return result

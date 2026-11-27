@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 import threading
 
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 from trendradar.market_data.ai_model_provider import (
     ChatModelError, ChatModelRequest, ChatModelResponse,
 )
@@ -21,6 +22,11 @@ def request(*, max_tokens=100, timeout=10):
     )
 
 
+class AllowTestGuard:
+    def check(self):
+        return None
+
+
 class FakeProvider:
     def __init__(self, outcomes=None):
         self.outcomes = list(outcomes or [])
@@ -35,10 +41,24 @@ class FakeProvider:
 
 
 class EventReviewBudgetTests(unittest.TestCase):
+    def test_missing_guard_rejects_without_consuming_budget(self):
+        fake = FakeProvider()
+        guarded = EventReviewBudgetProvider(
+            fake, EventReviewBudget(max_model_calls=2)
+        )
+
+        with self.assertRaises(AIRequestNotAllowedError):
+            guarded.complete(request())
+
+        self.assertEqual(guarded.calls_used, 0)
+        self.assertEqual(fake.calls, 0)
+
     def test_limits_logical_calls_and_failed_calls_consume_budget(self):
         fake = FakeProvider([ChatModelError("failed")])
         guarded = EventReviewBudgetProvider(
-            fake, EventReviewBudget(max_model_calls=2)
+            fake,
+            EventReviewBudget(max_model_calls=2),
+            request_guard=AllowTestGuard(),
         )
         with self.assertRaises(ChatModelError):
             guarded.complete(request())
@@ -52,6 +72,7 @@ class EventReviewBudgetTests(unittest.TestCase):
         guarded = EventReviewBudgetProvider(
             FakeProvider(),
             EventReviewBudget(max_output_tokens_per_call=200, max_timeout_seconds=20),
+            request_guard=AllowTestGuard(),
         )
         with self.assertRaisesRegex(ChatModelError, "token budget"):
             guarded.complete(request(max_tokens=201))
@@ -62,8 +83,14 @@ class EventReviewBudgetTests(unittest.TestCase):
     def test_separate_event_wrappers_have_independent_budgets(self):
         fake = FakeProvider()
         shared = GlobalModelCallGuard(fake)
-        first = EventReviewBudgetProvider(shared, EventReviewBudget(max_model_calls=1))
-        second = EventReviewBudgetProvider(shared, EventReviewBudget(max_model_calls=1))
+        first = EventReviewBudgetProvider(
+            shared, EventReviewBudget(max_model_calls=1),
+            request_guard=AllowTestGuard(),
+        )
+        second = EventReviewBudgetProvider(
+            shared, EventReviewBudget(max_model_calls=1),
+            request_guard=AllowTestGuard(),
+        )
         first.complete(request())
         second.complete(request())
         self.assertEqual(fake.calls, 2)

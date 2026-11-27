@@ -1,4 +1,4 @@
-
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 import os
 import tempfile
 import unittest
@@ -14,6 +14,11 @@ from trendradar.market_data.ai_model_provider import (
     LiteLLMChatProvider,
 )
 
+class AllowTestGuard:
+    """仅供集成测试使用的显式放行 Guard。"""
+
+    def check(self):
+        return None
 
 class UnifiedUsageLedgerIntegrationTests(unittest.TestCase):
     def setUp(self):
@@ -55,6 +60,7 @@ class UnifiedUsageLedgerIntegrationTests(unittest.TestCase):
                 "MAX_TOKENS": 100,
             },
             feature="translation",
+            request_guard=AllowTestGuard(),
         )
 
         with patch(
@@ -86,6 +92,7 @@ class UnifiedUsageLedgerIntegrationTests(unittest.TestCase):
 
         provider = LiteLLMChatProvider(
             completion_callable=lambda **kwargs: review_response,
+            request_guard=AllowTestGuard(),
         )
 
         review_result = provider.complete(

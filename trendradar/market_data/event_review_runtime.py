@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from trendradar.core.loader import load_config
+
 from .ai_model_provider import LiteLLMChatProvider
 from .event_review_guard import (
     EventReviewBudget,
@@ -20,103 +22,116 @@ from .event_review_guard import (
 
 @dataclass(frozen=True)
 class EventReviewRuntime:
+    """Shared provider runtime and global safety controls."""
+
     provider: LiteLLMChatProvider
     reviewer_model: str
     chief_model: str
     global_guard: GlobalModelCallGuard
     event_budget: EventReviewBudget
+    request_guard: Any
 
     def provider_for_event(self) -> EventReviewBudgetProvider:
-        """Create a fresh per-event budget sharing this runtime's global guard."""
-        return EventReviewBudgetProvider(self.global_guard, self.event_budget)
-
+        """Create a fresh per-event budget sharing global protections."""
+        return EventReviewBudgetProvider(
+            provider=self.global_guard,
+            budget=self.event_budget,
+            request_guard=self.request_guard,
+        )
 
 def build_event_review_runtime(
     ai_config: Mapping[str, Any],
     *,
     reviewer_model: str | None = None,
     chief_model: str | None = None,
-    max_attempts: int = 1,
+    request_guard: Any = None,
     max_model_calls_per_event: int = 5,
     max_output_tokens_per_call: int = 3000,
     max_timeout_seconds: float = 60.0,
     max_concurrent_calls: int = 1,
-    circuit_failure_threshold: int = 5,
+    circuit_failure_threshold: int = 3,
     circuit_cooldown_seconds: float = 60.0,
 ) -> EventReviewRuntime:
-    """Create a guarded runtime without making API calls.
-
-    Runtime defaults to one transport attempt per role to keep the event call
-    ceiling predictable; retries can be explicitly enabled by the caller.
-    """
+    """Build a guarded Event Review runtime from resolved AI config."""
     if not isinstance(ai_config, Mapping):
-        raise TypeError("ai_config must be a mapping")
+        raise TypeError("AI config must be a mapping")
 
-    configured_model = ai_config.get("MODEL", ai_config.get("model", ""))
-    selected_reviewer = reviewer_model or configured_model
-    selected_chief = chief_model or configured_model
-    for field, value in (
-        ("reviewer_model", selected_reviewer),
-        ("chief_model", selected_chief),
+    if request_guard is None or not callable(
+        getattr(request_guard, "check", None)
     ):
-        if not isinstance(value, str) or not value.strip() or "/" not in value:
-            raise ValueError(f"{field} must use provider/model format")
-
-    api_key = ai_config.get("API_KEY", ai_config.get("api_key", ""))
-    # The repository's sample config uses this literal as an env-var hint.
-    if api_key == "AI_API_KEY":
-        api_key = ""
-    if not isinstance(api_key, str) or not api_key.strip():
         raise ValueError(
-            "AI API key is missing; set the configured API-key environment "
-            "variable or configure ai.api_key securely"
+            "A valid AI request guard is required to build Event Review Runtime"
         )
 
-    api_base = ai_config.get("API_BASE", ai_config.get("api_base", "")) or ""
+    resolved_reviewer_model = reviewer_model or ai_config.get("MODEL")
+    resolved_chief_model = chief_model or resolved_reviewer_model
+
+    if (
+        not isinstance(resolved_reviewer_model, str)
+        or not resolved_reviewer_model.strip()
+    ):
+        raise ValueError("reviewer_model is required")
+
+    if (
+        not isinstance(resolved_chief_model, str)
+        or not resolved_chief_model.strip()
+    ):
+        raise ValueError("chief_model is required")
+
+    api_key = ai_config.get("API_KEY")
+    if (
+        not isinstance(api_key, str)
+        or not api_key.strip()
+        or api_key.strip() == "AI_API_KEY"
+    ):
+        raise ValueError("AI API key is missing")
+
+    api_base = ai_config.get("API_BASE") or ""
     if not isinstance(api_base, str):
-        raise TypeError("AI API base must be a string")
+        raise TypeError("API base must be a string")
 
     provider = LiteLLMChatProvider(
         api_key=api_key,
         api_base=api_base,
-        max_attempts=max_attempts,
-        usage_ledger_enabled=True,
+        max_attempts=1,
+        request_guard=request_guard,
     )
-    budget = EventReviewBudget(
-        max_model_calls=max_model_calls_per_event,
-        max_output_tokens_per_call=max_output_tokens_per_call,
-        max_timeout_seconds=max_timeout_seconds,
-    )
+
     global_guard = GlobalModelCallGuard(
         provider,
         max_concurrent_calls=max_concurrent_calls,
         failure_threshold=circuit_failure_threshold,
         cooldown_seconds=circuit_cooldown_seconds,
     )
-    return EventReviewRuntime(
-        provider=provider,
-        reviewer_model=selected_reviewer.strip(),
-        chief_model=selected_chief.strip(),
-        global_guard=global_guard,
-        event_budget=budget,
+
+    event_budget = EventReviewBudget(
+        max_model_calls=max_model_calls_per_event,
+        max_output_tokens_per_call=max_output_tokens_per_call,
+        max_timeout_seconds=max_timeout_seconds,
     )
 
+    return EventReviewRuntime(
+        provider=provider,
+        reviewer_model=resolved_reviewer_model,
+        chief_model=resolved_chief_model,
+        global_guard=global_guard,
+        event_budget=event_budget,
+        request_guard=request_guard,
+    )
 
 def load_event_review_runtime(
     config_path: str | None = None,
     **runtime_options: Any,
 ) -> EventReviewRuntime:
-    """Load TrendRadar's normal application config and build a guarded runtime.
-
-    This reuses load_config(), including CONFIG_PATH and AI_* environment
-    overrides, so callers do not need to read or pass the API key themselves.
-    """
-    from trendradar.core.loader import load_config
-
+    """Load TrendRadar config and build the Event Review runtime."""
     application_config = load_config(config_path)
+    if not isinstance(application_config, Mapping):
+        raise TypeError("TrendRadar config must be a mapping")
+
     ai_config = application_config.get("AI")
     if not isinstance(ai_config, Mapping):
-        raise ValueError("TrendRadar AI configuration is missing or invalid")
+        raise ValueError("TrendRadar config does not contain a valid AI section")
+
     return build_event_review_runtime(ai_config, **runtime_options)
 
 

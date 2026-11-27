@@ -15,6 +15,7 @@ from typing import Any, Callable, Protocol
 
 from trendradar.ai.usage_ledger import AIUsageLedger, AIUsageRecord
 from trendradar.ai.usage_ledger_factory import get_ai_usage_ledger
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 
 
 logger = logging.getLogger(__name__)
@@ -147,6 +148,7 @@ class LiteLLMChatProvider:
         api_base: str = "",
         usage_ledger: AIUsageLedger | None = None,
         usage_ledger_enabled: bool = True,
+        request_guard=None,
     ):
         if not isinstance(provider_name, str) or not provider_name.strip():
             raise ValueError("provider_name must be a non-empty string")
@@ -168,6 +170,7 @@ class LiteLLMChatProvider:
         self._api_base = api_base.strip()
         self._usage_ledger = usage_ledger
         self._usage_ledger_enabled = bool(usage_ledger_enabled or usage_ledger is not None)
+        self._request_guard = request_guard
 
     def _completion(self) -> Callable[..., Any]:
         if self._completion_callable is not None:
@@ -181,11 +184,43 @@ class LiteLLMChatProvider:
     def complete(self, request: ChatModelRequest) -> ChatModelResponse:
         if not isinstance(request, ChatModelRequest):
             raise TypeError("request must be a ChatModelRequest")
-        completion = self._completion()
+
         last_error: Exception | None = None
         started_at = datetime.now(timezone.utc)
 
         for attempt in range(1, self.max_attempts + 1):
+            # 每次真实 API 尝试之前必须检查 Timeline 授权。
+            # 没有注入 Guard 时默认拒绝，禁止绕过时间窗口。
+            # 必须放在 try 外面，避免授权拒绝被当成 API 故障。
+            if self._request_guard is None:
+                raise AIRequestNotAllowedError(
+                    "AI 请求未配置授权守卫，已拒绝调用。"
+                )
+
+            try:
+                self._request_guard.check()
+            except AIRequestNotAllowedError:
+                # 如果之前已经发生过真实 API 尝试，
+                # 只记录此前真实尝试的失败，不计入本次授权拒绝。
+                if attempt > 1:
+                    error_type = (
+                        type(last_error).__name__
+                        if last_error is not None
+                        else "UnknownError"
+                    )
+                    self._append_usage(
+                        request=request,
+                        status="error",
+                        started_at=started_at,
+                        completed_at=datetime.now(timezone.utc),
+                        model=request.model,
+                        attempts=attempt - 1,
+                        error_code=error_type,
+                    )
+                raise
+
+            completion = self._completion()
+
             try:
                 call_kwargs = {
                     "model": request.model,
@@ -202,25 +237,36 @@ class LiteLLMChatProvider:
                     call_kwargs["api_key"] = self._api_key
                 if self._api_base:
                     call_kwargs["api_base"] = self._api_base
+
                 raw = completion(**call_kwargs)
+
                 (
                     content, finish_reason, request_id,
                     prompt_tokens, completion_tokens, total_tokens,
                     cache_hit, cache_miss,
                 ) = _extract_content(raw)
+
                 actual_model = (
                     raw.get("model") if isinstance(raw, dict)
                     else getattr(raw, "model", None)
                 ) or request.model
                 actual_model = str(actual_model)
+
                 self._append_usage(
-                    request=request, status="success", started_at=started_at,
-                    completed_at=datetime.now(timezone.utc), request_id=request_id,
-                    model=actual_model, attempts=attempt,
-                    prompt_tokens=prompt_tokens, completion_tokens=completion_tokens,
-                    total_tokens=total_tokens, prompt_cache_hit_tokens=cache_hit,
+                    request=request,
+                    status="success",
+                    started_at=started_at,
+                    completed_at=datetime.now(timezone.utc),
+                    request_id=request_id,
+                    model=actual_model,
+                    attempts=attempt,
+                    prompt_tokens=prompt_tokens,
+                    completion_tokens=completion_tokens,
+                    total_tokens=total_tokens,
+                    prompt_cache_hit_tokens=cache_hit,
                     prompt_cache_miss_tokens=cache_miss,
                 )
+
                 return ChatModelResponse(
                     content=content,
                     provider=self.provider_name,
@@ -234,9 +280,11 @@ class LiteLLMChatProvider:
                     prompt_cache_hit_tokens=cache_hit,
                     prompt_cache_miss_tokens=cache_miss,
                 )
+
             except ChatModelError as exc:
                 last_error = exc
                 break
+
             except Exception as exc:
                 last_error = exc
                 if attempt >= self.max_attempts or not _retryable_error(exc):
@@ -254,7 +302,6 @@ class LiteLLMChatProvider:
         raise ChatModelError(
             f"chat model request failed after {attempt} attempt(s): {error_type}"
         ) from last_error
-
 
     def _append_usage(
         self, *, request: ChatModelRequest, status: str,

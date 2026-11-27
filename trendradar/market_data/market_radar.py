@@ -2,9 +2,12 @@
 """Market opportunity radar orchestration layer."""
 
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from time import perf_counter
 from typing import Callable, Mapping, Sequence
+import logging
 
+logger = logging.getLogger(__name__)
 from trendradar.market_data.cross_market_mapper import discover_sector_evidence, resolve_trusted_relations
 from trendradar.market_data.models import Candidate, MarketEvent, Security, MappingEvidence
 from trendradar.market_data.opportunity_ranker import rank_candidates, score_candidate
@@ -12,6 +15,9 @@ from trendradar.market_data.quote_fetcher import QuoteFetcher
 from trendradar.market_data.relation_store import CrossMarketRelationStore
 from trendradar.market_data.result_store import RadarResultStore
 from trendradar.market_data.sector_mapper import expand_by_sectors
+
+
+_SHANGHAI_TZ = ZoneInfo("Asia/Shanghai")
 
 
 class MarketRadar:
@@ -28,7 +34,7 @@ class MarketRadar:
         self.relation_store = relation_store
         self.result_store = result_store
         self.max_quote_age_seconds = max(1, max_quote_age_seconds)
-        self.clock = clock or (lambda: datetime.now().astimezone())
+        self.clock = clock or (lambda: datetime.now(_SHANGHAI_TZ))
 
     def _scan(self, events: Sequence[MarketEvent], securities: Mapping[str, Security],
               trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
@@ -82,7 +88,8 @@ class MarketRadar:
         eligible_security_count = sum(1 for code in codes if code in securities and securities[code].listing_status == "active" and not securities[code].risk_flag)
         scan_time = self.clock()
         if scan_time.tzinfo is None:
-            scan_time = scan_time.astimezone()
+            scan_time = scan_time.replace(tzinfo=_SHANGHAI_TZ)
+
         for code in codes:
             security = securities.get(code)
             if not security or security.listing_status != "active" or security.risk_flag:
@@ -103,7 +110,7 @@ class MarketRadar:
             try:
                 quote_time = datetime.fromisoformat(quote.source_timestamp)
                 if quote_time.tzinfo is None:
-                    quote_time = quote_time.astimezone()
+                    quote_time = quote_time.replace(tzinfo=_SHANGHAI_TZ)
                 quote_age = (scan_time - quote_time).total_seconds()
             except (TypeError, ValueError):
                 continue
@@ -124,32 +131,114 @@ class MarketRadar:
         candidates, _, _, _ = self._scan(events, securities, trusted_relations, direct_event_evidence, limit_results)
         return candidates
 
-    def scan_and_persist(self, events: Sequence[MarketEvent], securities: Mapping[str, Security], *,
-                         run_at: str | None = None, run_type: str = "snapshot",
-                         trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
-                         direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
-                         source_status: str = "", quote_source: str = "", quote_data_at: str = "",
-                         notes: str = "") -> list[Candidate]:
-        """Persist full ranked candidates and return top push-limit selection."""
+
+    def scan_and_persist(
+        self,
+        events: Sequence[MarketEvent],
+        securities: Mapping[str, Security],
+        *,
+        run_at: str | None = None,
+        run_type: str = "snapshot",
+        trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
+        direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
+        source_status: str = "",
+        quote_source: str = "",
+        quote_data_at: str = "",
+        notes: str = "",
+    ) -> list[Candidate]:
+        """Persist ranked candidates and return the push selection."""
+        selected, _ = self.scan_and_persist_with_run(
+            events,
+            securities,
+            run_at=run_at,
+            run_type=run_type,
+            trusted_relations=trusted_relations,
+            direct_event_evidence=direct_event_evidence,
+            source_status=source_status,
+            quote_source=quote_source,
+            quote_data_at=quote_data_at,
+            notes=notes,
+        )
+        return selected
+
+    def scan_and_persist_with_run(
+        self,
+        events: Sequence[MarketEvent],
+        securities: Mapping[str, Security],
+        *,
+        run_at: str | None = None,
+        run_type: str = "snapshot",
+        trusted_relations: Mapping[str, Sequence[MappingEvidence]] | None = None,
+        direct_event_evidence: Mapping[str, Sequence[MappingEvidence]] | None = None,
+        source_status: str = "",
+        quote_source: str = "",
+        quote_data_at: str = "",
+        notes: str = "",
+    ) -> tuple[list[Candidate], int]:
+        """Persist candidates and return the selection with its exact run ID."""
         if self.result_store is None:
             raise RuntimeError("result_store is required for scan_and_persist")
-        run_at = run_at or datetime.now().astimezone().isoformat(timespec="seconds")
+
+        run_at = run_at or datetime.now(_SHANGHAI_TZ).isoformat(
+            timespec="seconds"
+        )
+
         started = perf_counter()
         run_id = self.result_store.start_run(run_at, run_type, notes)
+
         try:
             ranked, actual_source, actual_data_at, quality_status = self._scan(
-                events, securities, trusted_relations, direct_event_evidence, limit_results=False)
+                events,
+                securities,
+                trusted_relations,
+                direct_event_evidence,
+                limit_results=False,
+            )
+
             selected = ranked[:self.push_limit]
-            self.result_store.finish_run(run_id, ranked, status=quality_status,
-                pushed_codes=[candidate.security.code for candidate in selected],
-                source_status=source_status or (f"quote:{quality_status}:{actual_source}" if actual_source else "quote:empty"),
-                quote_source=quote_source or actual_source, quote_data_at=quote_data_at or actual_data_at,
-                duration_ms=int((perf_counter()-started)*1000), notes=notes)
-            return selected
+
+            self.result_store.finish_run(
+                run_id,
+                ranked,
+                status=quality_status,
+                pushed_codes=[
+                    candidate.security.code for candidate in selected
+                ],
+                source_status=(
+                    source_status
+                    or (
+                        f"quote:{quality_status}:{actual_source}"
+                        if actual_source
+                        else "quote:empty"
+                    )
+                ),
+                quote_source=quote_source or actual_source,
+                quote_data_at=quote_data_at or actual_data_at,
+                duration_ms=int((perf_counter() - started) * 1000),
+                notes=notes,
+            )
+
+            return selected, run_id
+
         except Exception as exc:
-            self.result_store.finish_run(run_id, [], status="failed",
-                source_status=source_status or f"quote:failed:{type(exc).__name__}",
-                quote_source=quote_source, quote_data_at=quote_data_at,
-                duration_ms=int((perf_counter()-started)*1000),
-                notes=f"{notes} | {type(exc).__name__}: {exc}".strip(" |"))
+            try:
+                self.result_store.finish_run(
+                    run_id,
+                    [],
+                    status="failed",
+                    source_status=(
+                        source_status
+                        or f"quote:failed:{type(exc).__name__}"
+                    ),
+                    quote_source=quote_source,
+                    quote_data_at=quote_data_at,
+                    duration_ms=int((perf_counter() - started) * 1000),
+                    notes=f"{notes} | {type(exc).__name__}: {exc}".strip(" |"),
+                )
+            except Exception:
+                logger.exception(
+                    "Failed to persist radar failure status for run %s",
+                    run_id,
+                )
+
             raise

@@ -6,6 +6,7 @@
 """
 
 from datetime import datetime
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -40,6 +41,10 @@ from trendradar.notification import (
 )
 from trendradar.ai import AITranslator
 from trendradar.ai.filter import AIFilter, AIFilterResult
+from trendradar.ai.request_guard import (
+    AIRequestGuard,
+    AIRequestNotAllowedError,
+)
 from trendradar.storage import get_storage_manager
 
 
@@ -75,6 +80,7 @@ class AppContext:
         self.config = config
         self._storage_manager = None
         self._scheduler = None
+        self._ai_request_guard = None
 
     # === 配置访问 ===
 
@@ -468,8 +474,11 @@ class AppContext:
         trans_config = self.config.get("AI_TRANSLATION", {})
         if trans_config.get("ENABLED", False):
             ai_config = self.config.get("AI", {})
-            translator = AITranslator(trans_config, ai_config)
-
+            translator = AITranslator(
+                trans_config,
+                ai_config,
+                request_guard=self.get_ai_request_guard(),
+            )
         return NotificationDispatcher(
             config=self.config,
             get_time_func=self.get_time,
@@ -495,6 +504,14 @@ class AppContext:
                 fallback_report_mode=self.config.get("REPORT_MODE", "current"),
             )
         return self._scheduler
+
+    def get_ai_request_guard(self) -> AIRequestGuard:
+        """获取基于当前 Timeline 的 AI 请求授权守卫（单例）。"""
+        if self._ai_request_guard is None:
+            self._ai_request_guard = AIRequestGuard(
+                self.create_scheduler()
+            )
+        return self._ai_request_guard
 
     # === AI 智能筛选 ===
 
@@ -541,7 +558,13 @@ class AppContext:
         debug = self.config.get("DEBUG", False)
 
         # 创建 AIFilter 实例
-        ai_filter = AIFilter(ai_config, filter_config, self.get_time, debug)
+        ai_filter = AIFilter(
+            ai_config,
+            filter_config,
+            self.get_time,
+            debug,
+            request_guard=self.get_ai_request_guard(),
+        )
 
         # 确定实际使用的兴趣文件名
         # None = 使用默认 config/ai_interests.txt，指定文件名 = config/custom/ai/{name}
@@ -554,8 +577,8 @@ class AppContext:
             print(f"[AI筛选][DEBUG] batch_size={filter_config.get('BATCH_SIZE', 200)}, "
                   f"batch_interval={filter_config.get('BATCH_INTERVAL', 5)}")
             print(f"[AI筛选][DEBUG] interests_file={effective_interests_file}")
-            print(f"[AI筛选][DEBUG] prompt_file={filter_config.get('PROMPT_FILE', 'prompt.txt')}")
-            print(f"[AI筛选][DEBUG] extract_prompt_file={filter_config.get('EXTRACT_PROMPT_FILE', 'extract_prompt.txt')}")
+            print(f"[AI筛选][DEBUG] prompt_file={filter_config.get('prompt_file', 'prompt.txt')}")
+            print(f"[AI筛选][DEBUG] extract_prompt_file={filter_config.get('extract_prompt_file', 'extract_prompt.txt')}")
 
         # 1. 读取兴趣描述
         # 传 configured_interests（可能为 None）给 load_interests_content，
@@ -573,60 +596,96 @@ class AppContext:
 
         # 2. 开启批量模式（远程后端延迟上传，所有写操作完成后统一上传）
         storage.begin_batch()
+        batch_active = True
 
-        # 3. 检查提示词是否变更
-        stored_hash = storage.get_latest_prompt_hash(interests_file=effective_interests_file)
+        def _end_batch_once():
+            """确保当前批处理最多结束一次。"""
+            nonlocal batch_active
 
-        if debug:
-            print(f"[AI筛选][DEBUG] 数据库存储 hash: {stored_hash}")
-            print(f"[AI筛选][DEBUG] hash 对比: stored={stored_hash} vs current={current_hash} → {'匹配' if stored_hash == current_hash else '不匹配'}")
+            if not batch_active:
+                return
 
-        if stored_hash != current_hash:
-            new_version = storage.get_latest_ai_filter_tag_version() + 1
-            threshold = filter_config.get("RECLASSIFY_THRESHOLD", 0.6)
+            batch_active = False
+            storage.end_batch()
 
-            if stored_hash is None:
-                # 首次运行，直接提取并保存全部标签
-                print(f"[AI筛选] 首次运行 ({effective_interests_file})，提取标签...")
-                tags_data = ai_filter.extract_tags(interests_content)
-                if not tags_data:
-                    storage.end_batch()
-                    return AIFilterResult(success=False, error="标签提取失败")
-                tags_data = self._with_ordered_priorities(tags_data, start_priority=1)
-                saved_count = storage.save_ai_filter_tags(tags_data, new_version, current_hash, interests_file=effective_interests_file)
-                print(f"[AI筛选] 已保存 {saved_count} 个标签 (版本 {new_version})")
+
+        def _guard_denied_result(error: AIRequestNotAllowedError) -> AIFilterResult:
+            """Guard 拒绝 AI 请求时，结束批处理并返回失败结果。"""
+            try:
+                _end_batch_once()
+            except Exception as cleanup_error:
+                error_message = (
+                    f"{error}; 批处理结束失败: "
+                    f"{type(cleanup_error).__name__}: {cleanup_error}"
+                )
+                print(f"[AI筛选] Guard 拒绝，批处理清理异常: {cleanup_error}")
             else:
-                # 兴趣描述已变更，让 AI 对比旧标签和新兴趣，给出更新方案
-                old_tags = storage.get_active_ai_filter_tags(interests_file=effective_interests_file)
-                update_result = ai_filter.update_tags(old_tags, interests_content)
+                error_message = str(error) or "AI 请求未获授权"
 
-                if update_result is None:
-                    # AI 标签更新失败，回退到重新提取全部标签
-                    print(f"[AI筛选] AI 标签更新失败，回退到重新提取")
-                    tags_data = ai_filter.extract_tags(interests_content)
+            print(f"[AI筛选] AI 请求被时间窗口守卫拒绝: {error_message}")
+            return AIFilterResult(success=False, error=error_message)
+
+        try:
+            # 3. 检查提示词是否变更
+            stored_hash = storage.get_latest_prompt_hash(interests_file=effective_interests_file)
+
+            if debug:
+                print(f"[AI筛选][DEBUG] 数据库存储 hash: {stored_hash}")
+                print(f"[AI筛选][DEBUG] hash 对比: stored={stored_hash} vs current={current_hash} → {'匹配' if stored_hash == current_hash else '不匹配'}")
+
+            if stored_hash != current_hash:
+                new_version = storage.get_latest_ai_filter_tag_version() + 1
+                threshold = filter_config.get("RECLASSIFY_THRESHOLD", 0.6)
+
+                if stored_hash is None:
+                    # 首次运行，直接提取并保存全部标签
+                    print(f"[AI筛选] 首次运行 ({effective_interests_file})，提取标签...")
+                    try:
+                        tags_data = ai_filter.extract_tags(interests_content)
+                    except AIRequestNotAllowedError as exc:
+                        return _guard_denied_result(exc)
                     if not tags_data:
-                        storage.end_batch()
+                        _end_batch_once()
                         return AIFilterResult(success=False, error="标签提取失败")
                     tags_data = self._with_ordered_priorities(tags_data, start_priority=1)
-                    deprecated_count = storage.deprecate_all_ai_filter_tags(interests_file=effective_interests_file)
-                    storage.clear_analyzed_news(interests_file=effective_interests_file)
-                    saved_count = storage.save_ai_filter_tags(tags_data, new_version, current_hash, interests_file=effective_interests_file)
-                    print(f"[AI筛选] 废弃 {deprecated_count} 个旧标签, 保存 {saved_count} 个新标签 (版本 {new_version})")
+
+		   # 清理旧版本标签和新闻分析记录，避免新旧标签混用
+                    deprecated_count = storage.deprecate_all_ai_filter_tags(
+			interests_file=effective_interests_file
+		    )
+                    storage.clear_analyzed_news(
+			interests_file=effective_interests_file
+		    )
+		   # 保存新标签
+                    saved_count = storage.save_ai_filter_tags(
+			tags_data,
+			new_version,
+			current_hash,
+			interests_file=effective_interests_file
+		    )
+
+                    print(
+                        f"[AI筛选] 废弃 {deprecated_count} 个旧标签, "
+                        f"保存 {saved_count} 个新标签 (版本 {new_version})"
+		    )
+
                 else:
-                    change_ratio = update_result["change_ratio"]
-                    keep_tags = update_result["keep"]
-                    add_tags = update_result["add"]
-                    remove_tags = update_result["remove"]
+                    # 兴趣描述已变更，让 AI 对比旧标签和新兴趣，给出更新方案
+                    old_tags = storage.get_active_ai_filter_tags(interests_file=effective_interests_file)
+                    try:
+                        update_result = ai_filter.update_tags(old_tags, interests_content)
+                    except AIRequestNotAllowedError as exc:
+                        return _guard_denied_result(exc)
 
-                    if debug:
-                        print(f"[AI筛选][DEBUG] AI 标签更新: keep={len(keep_tags)}, add={len(add_tags)}, remove={len(remove_tags)}, change_ratio={change_ratio:.2f}, threshold={threshold:.2f}")
-
-                    if change_ratio >= threshold:
-                        # 全量重分类：废弃所有旧标签，用 extract_tags 重新提取
-                        print(f"[AI筛选] 兴趣文件变更: {effective_interests_file} (AI change_ratio={change_ratio:.2f} >= threshold={threshold:.2f} → 全量重分类)")
-                        tags_data = ai_filter.extract_tags(interests_content)
+                    if update_result is None:
+                        # AI 标签更新失败，回退到重新提取全部标签
+                        print(f"[AI筛选] AI 标签更新失败，回退到重新提取")
+                        try:
+                            tags_data = ai_filter.extract_tags(interests_content)
+                        except AIRequestNotAllowedError as exc:
+                            return _guard_denied_result(exc)
                         if not tags_data:
-                            storage.end_batch()
+                            _end_batch_once()
                             return AIFilterResult(success=False, error="标签提取失败")
                         tags_data = self._with_ordered_priorities(tags_data, start_priority=1)
                         deprecated_count = storage.deprecate_all_ai_filter_tags(interests_file=effective_interests_file)
@@ -634,190 +693,235 @@ class AppContext:
                         saved_count = storage.save_ai_filter_tags(tags_data, new_version, current_hash, interests_file=effective_interests_file)
                         print(f"[AI筛选] 废弃 {deprecated_count} 个旧标签, 保存 {saved_count} 个新标签 (版本 {new_version})")
                     else:
-                        # 增量更新：按 AI 指示操作
-                        print(f"[AI筛选] 兴趣文件变更: {effective_interests_file} (AI change_ratio={change_ratio:.2f} < threshold={threshold:.2f} → 增量更新)")
-                        print(f"[AI筛选]   保留 {len(keep_tags)} 个标签, 新增 {len(add_tags)} 个, 废弃 {len(remove_tags)} 个")
+                        change_ratio = update_result["change_ratio"]
+                        keep_tags = update_result["keep"]
+                        add_tags = update_result["add"]
+                        remove_tags = update_result["remove"]
 
-                        # 废弃 AI 标记移除的标签
-                        if remove_tags:
-                            remove_set = set(remove_tags)
-                            removed_ids = [t["id"] for t in old_tags if t["tag"] in remove_set]
-                            if removed_ids:
-                                storage.deprecate_specific_ai_filter_tags(removed_ids)
+                        if debug:
+                            print(f"[AI筛选][DEBUG] AI 标签更新: keep={len(keep_tags)}, add={len(add_tags)}, remove={len(remove_tags)}, change_ratio={change_ratio:.2f}, threshold={threshold:.2f}")
+
+                        if change_ratio >= threshold:
+                            # 全量重分类：废弃所有旧标签，用 extract_tags 重新提取
+                            print(f"[AI筛选] 兴趣文件变更: {effective_interests_file} (AI change_ratio={change_ratio:.2f} >= threshold={threshold:.2f} → 全量重分类)")
+                            try:
+                                tags_data = ai_filter.extract_tags(interests_content)
+                            except AIRequestNotAllowedError as exc:
+                                return _guard_denied_result(exc)
+                            if not tags_data:
+                                _end_batch_once()
+                                return AIFilterResult(success=False, error="标签提取失败")
+                            tags_data = self._with_ordered_priorities(tags_data, start_priority=1)
+                            deprecated_count = storage.deprecate_all_ai_filter_tags(interests_file=effective_interests_file)
+                            storage.clear_analyzed_news(interests_file=effective_interests_file)
+                            saved_count = storage.save_ai_filter_tags(tags_data, new_version, current_hash, interests_file=effective_interests_file)
+                            print(f"[AI筛选] 废弃 {deprecated_count} 个旧标签, 保存 {saved_count} 个新标签 (版本 {new_version})")
+                        else:
+                            # 增量更新：按 AI 指示操作
+                            print(f"[AI筛选] 兴趣文件变更: {effective_interests_file} (AI change_ratio={change_ratio:.2f} < threshold={threshold:.2f} → 增量更新)")
+                            print(f"[AI筛选]   保留 {len(keep_tags)} 个标签, 新增 {len(add_tags)} 个, 废弃 {len(remove_tags)} 个")
+
+                            # 废弃 AI 标记移除的标签
+                            if remove_tags:
+                                remove_set = set(remove_tags)
+                                removed_ids = [t["id"] for t in old_tags if t["tag"] in remove_set]
+                                if removed_ids:
+                                    storage.deprecate_specific_ai_filter_tags(removed_ids)
+                                    if debug:
+                                        print(f"[AI筛选][DEBUG] 废弃标签 IDs: {removed_ids}")
+
+                            # 更新保留标签的描述
+                            keep_with_priority = []
+                            if keep_tags:
+                                storage.update_ai_filter_tag_descriptions(keep_tags, interests_file=effective_interests_file)
+                                keep_with_priority = self._with_ordered_priorities(keep_tags, start_priority=1)
+                                storage.update_ai_filter_tag_priorities(keep_with_priority, interests_file=effective_interests_file)
+
+                            # 保存新增标签
+                            if add_tags:
+                                add_start = keep_with_priority[-1]["priority"] + 1 if keep_with_priority else 1
+                                add_with_priority = self._with_ordered_priorities(add_tags, start_priority=add_start)
+                                saved_count = storage.save_ai_filter_tags(add_with_priority, new_version, current_hash, interests_file=effective_interests_file)
                                 if debug:
-                                    print(f"[AI筛选][DEBUG] 废弃标签 IDs: {removed_ids}")
+                                    print(f"[AI筛选][DEBUG] 新增保存 {saved_count} 个标签")
 
-                        # 更新保留标签的描述
-                        keep_with_priority = []
-                        if keep_tags:
-                            storage.update_ai_filter_tag_descriptions(keep_tags, interests_file=effective_interests_file)
-                            keep_with_priority = self._with_ordered_priorities(keep_tags, start_priority=1)
-                            storage.update_ai_filter_tag_priorities(keep_with_priority, interests_file=effective_interests_file)
+                            # 更新保留标签的 hash（标记为已处理）
+                            storage.update_ai_filter_tags_hash(effective_interests_file, current_hash)
 
-                        # 保存新增标签
-                        if add_tags:
-                            add_start = keep_with_priority[-1]["priority"] + 1 if keep_with_priority else 1
-                            add_with_priority = self._with_ordered_priorities(add_tags, start_priority=add_start)
-                            saved_count = storage.save_ai_filter_tags(add_with_priority, new_version, current_hash, interests_file=effective_interests_file)
-                            if debug:
-                                print(f"[AI筛选][DEBUG] 新增保存 {saved_count} 个标签")
+                            # 增量更新：清除不匹配新闻的分析记录，让它们有机会被新标签集重新分析
+                            if add_tags:
+                                cleared = storage.clear_unmatched_analyzed_news(interests_file=effective_interests_file)
+                                if cleared > 0:
+                                    print(f"[AI筛选]   清除 {cleared} 条不匹配记录，将在新标签下重新分析")
 
-                        # 更新保留标签的 hash（标记为已处理）
-                        storage.update_ai_filter_tags_hash(effective_interests_file, current_hash)
+            # 3. 获取当前 active 标签
+            active_tags = storage.get_active_ai_filter_tags(interests_file=effective_interests_file)
+            if debug:
+                print(f"[AI筛选][DEBUG] 从数据库获取 active 标签: {len(active_tags)} 个")
+                for t in active_tags:
+                    print(f"[AI筛选][DEBUG]   id={t['id']} tag={t['tag']} priority={t.get('priority', 9999)} version={t.get('version')} hash={t.get('prompt_hash', '')[:8]}...")
 
-                        # 增量更新：清除不匹配新闻的分析记录，让它们有机会被新标签集重新分析
-                        if add_tags:
-                            cleared = storage.clear_unmatched_analyzed_news(interests_file=effective_interests_file)
-                            if cleared > 0:
-                                print(f"[AI筛选]   清除 {cleared} 条不匹配记录，将在新标签下重新分析")
+            if not active_tags:
+                _end_batch_once()
+                return AIFilterResult(success=False, error="没有可用的标签")
 
-        # 3. 获取当前 active 标签
-        active_tags = storage.get_active_ai_filter_tags(interests_file=effective_interests_file)
-        if debug:
-            print(f"[AI筛选][DEBUG] 从数据库获取 active 标签: {len(active_tags)} 个")
-            for t in active_tags:
-                print(f"[AI筛选][DEBUG]   id={t['id']} tag={t['tag']} priority={t.get('priority', 9999)} version={t.get('version')} hash={t.get('prompt_hash', '')[:8]}...")
+            print(f"[AI筛选] 使用 {len(active_tags)} 个标签")
 
-        if not active_tags:
-            storage.end_batch()
-            return AIFilterResult(success=False, error="没有可用的标签")
+            # 4. 收集待分类新闻
+            # 热榜
+            all_news = storage.get_all_news_ids()
+            analyzed_hotlist = storage.get_analyzed_news_ids("hotlist", interests_file=effective_interests_file)
+            pending_news = [n for n in all_news if n["id"] not in analyzed_hotlist]
 
-        print(f"[AI筛选] 使用 {len(active_tags)} 个标签")
+            # RSS（先做新鲜度过滤，再去除已分类的）
+            pending_rss = []
+            freshness_filtered_rss = 0
+            if self.rss_enabled:
+                all_rss = storage.get_all_rss_ids()
 
-        # 4. 收集待分类新闻
-        # 热榜
-        all_news = storage.get_all_news_ids()
-        analyzed_hotlist = storage.get_analyzed_news_ids("hotlist", interests_file=effective_interests_file)
-        pending_news = [n for n in all_news if n["id"] not in analyzed_hotlist]
+                # 应用新鲜度过滤（与推送阶段一致）
+                rss_config = self.rss_config
+                freshness_config = rss_config.get("FRESHNESS_FILTER", {})
+                freshness_enabled = freshness_config.get("ENABLED", True)
+                default_max_age_days = freshness_config.get("MAX_AGE_DAYS", 3)
+                timezone = self.config.get("TIMEZONE", DEFAULT_TIMEZONE)
 
-        # RSS（先做新鲜度过滤，再去除已分类的）
-        pending_rss = []
-        freshness_filtered_rss = 0
-        if self.rss_enabled:
-            all_rss = storage.get_all_rss_ids()
+                # 构建 feed_id -> max_age_days 的映射
+                feed_max_age_map = {}
+                for feed_cfg in self.rss_feeds:
+                    feed_id = feed_cfg.get("id", "")
+                    max_age = feed_cfg.get("max_age_days")
+                    if max_age is not None:
+                        try:
+                            feed_max_age_map[feed_id] = int(max_age)
+                        except (ValueError, TypeError):
+                            pass
 
-            # 应用新鲜度过滤（与推送阶段一致）
-            rss_config = self.rss_config
-            freshness_config = rss_config.get("FRESHNESS_FILTER", {})
-            freshness_enabled = freshness_config.get("ENABLED", True)
-            default_max_age_days = freshness_config.get("MAX_AGE_DAYS", 3)
-            timezone = self.config.get("TIMEZONE", DEFAULT_TIMEZONE)
+                fresh_rss = []
+                for n in all_rss:
+                    published_at = n.get("published_at", "")
+                    feed_id = n.get("source_id", "")
+                    max_days = feed_max_age_map.get(feed_id, default_max_age_days)
+                    if freshness_enabled and max_days > 0 and published_at:
+                        if not is_within_days(published_at, max_days, timezone):
+                            freshness_filtered_rss += 1
+                            continue
+                    fresh_rss.append(n)
 
-            # 构建 feed_id -> max_age_days 的映射
-            feed_max_age_map = {}
-            for feed_cfg in self.rss_feeds:
-                feed_id = feed_cfg.get("id", "")
-                max_age = feed_cfg.get("max_age_days")
-                if max_age is not None:
-                    try:
-                        feed_max_age_map[feed_id] = int(max_age)
-                    except (ValueError, TypeError):
-                        pass
+                analyzed_rss = storage.get_analyzed_news_ids("rss", interests_file=effective_interests_file)
+                pending_rss = [n for n in fresh_rss if n["id"] not in analyzed_rss]
 
-            fresh_rss = []
-            for n in all_rss:
-                published_at = n.get("published_at", "")
-                feed_id = n.get("source_id", "")
-                max_days = feed_max_age_map.get(feed_id, default_max_age_days)
-                if freshness_enabled and max_days > 0 and published_at:
-                    if not is_within_days(published_at, max_days, timezone):
-                        freshness_filtered_rss += 1
-                        continue
-                fresh_rss.append(n)
+            # 始终打印总量/已分析/待分析 的详细数据
+            hotlist_total = len(all_news)
+            hotlist_skipped = len(analyzed_hotlist)
+            hotlist_pending = len(pending_news)
+            print(f"[AI筛选] 热榜: 总计 {hotlist_total} 条, 已分析跳过 {hotlist_skipped} 条, 本次发送AI分析 {hotlist_pending} 条")
+            if self.rss_enabled:
+                rss_total = len(all_rss)
+                rss_skipped = len(analyzed_rss)
+                rss_pending = len(pending_rss)
+                freshness_info = f", 新鲜度过滤 {freshness_filtered_rss} 条" if freshness_filtered_rss > 0 else ""
+                print(f"[AI筛选] RSS: 总计 {rss_total} 条{freshness_info}, 已分析跳过 {rss_skipped} 条, 本次发送AI分析 {rss_pending} 条")
 
-            analyzed_rss = storage.get_analyzed_news_ids("rss", interests_file=effective_interests_file)
-            pending_rss = [n for n in fresh_rss if n["id"] not in analyzed_rss]
+            total_pending = len(pending_news) + len(pending_rss)
+            if total_pending == 0:
+                print("[AI筛选] 没有新增新闻需要分类")
 
-        # 始终打印总量/已分析/待分析 的详细数据
-        hotlist_total = len(all_news)
-        hotlist_skipped = len(analyzed_hotlist)
-        hotlist_pending = len(pending_news)
-        print(f"[AI筛选] 热榜: 总计 {hotlist_total} 条, 已分析跳过 {hotlist_skipped} 条, 本次发送AI分析 {hotlist_pending} 条")
-        if self.rss_enabled:
-            rss_total = len(all_rss)
-            rss_skipped = len(analyzed_rss)
-            rss_pending = len(pending_rss)
-            freshness_info = f", 新鲜度过滤 {freshness_filtered_rss} 条" if freshness_filtered_rss > 0 else ""
-            print(f"[AI筛选] RSS: 总计 {rss_total} 条{freshness_info}, 已分析跳过 {rss_skipped} 条, 本次发送AI分析 {rss_pending} 条")
+            # 5. 批量分类
+            batch_size = filter_config.get("BATCH_SIZE", 200)
+            batch_interval = filter_config.get("BATCH_INTERVAL", 5)
+            total_results = []
+            batch_count = 0  # 跨热榜和 RSS 的全局批次计数
 
-        total_pending = len(pending_news) + len(pending_rss)
-        if total_pending == 0:
-            print("[AI筛选] 没有新增新闻需要分类")
+            # 处理热榜
+            for i in range(0, len(pending_news), batch_size):
+                if batch_count > 0 and batch_interval > 0:
+                    import time
+                    print(f"[AI筛选] 批次间隔等待 {batch_interval} 秒...")
+                    time.sleep(batch_interval)
+                batch = pending_news[i:i + batch_size]
+                titles_for_ai = [
+                    {"id": n["id"], "title": n["title"], "source": n.get("source_name", "")}
+                    for n in batch
+                ]
+                try:
+                    batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
+                except AIRequestNotAllowedError as exc:
+                    return _guard_denied_result(exc)
+                for r in batch_results:
+                    r["source_type"] = "hotlist"
+                total_results.extend(batch_results)
+                batch_count += 1
+                print(f"[AI筛选] 热榜批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
 
-        # 5. 批量分类
-        batch_size = filter_config.get("BATCH_SIZE", 200)
-        batch_interval = filter_config.get("BATCH_INTERVAL", 5)
-        total_results = []
-        batch_count = 0  # 跨热榜和 RSS 的全局批次计数
+            # 处理 RSS
+            for i in range(0, len(pending_rss), batch_size):
+                if batch_count > 0 and batch_interval > 0:
+                    import time
+                    print(f"[AI筛选] 批次间隔等待 {batch_interval} 秒...")
+                    time.sleep(batch_interval)
+                batch = pending_rss[i:i + batch_size]
+                titles_for_ai = [
+                    {"id": n["id"], "title": n["title"], "source": n.get("source_name", "")}
+                    for n in batch
+                ]
+                try:
+                    batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
+                except AIRequestNotAllowedError as exc:
+                    return _guard_denied_result(exc)
+                for r in batch_results:
+                    r["source_type"] = "rss"
+                total_results.extend(batch_results)
+                batch_count += 1
+                print(f"[AI筛选] RSS 批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
 
-        # 处理热榜
-        for i in range(0, len(pending_news), batch_size):
-            if batch_count > 0 and batch_interval > 0:
-                import time
-                print(f"[AI筛选] 批次间隔等待 {batch_interval} 秒...")
-                time.sleep(batch_interval)
-            batch = pending_news[i:i + batch_size]
-            titles_for_ai = [
-                {"id": n["id"], "title": n["title"], "source": n.get("source_name", "")}
-                for n in batch
-            ]
-            batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
-            for r in batch_results:
-                r["source_type"] = "hotlist"
-            total_results.extend(batch_results)
-            batch_count += 1
-            print(f"[AI筛选] 热榜批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
+            # 6. 保存结果
+            if total_results:
+                saved = storage.save_ai_filter_results(total_results)
+                print(f"[AI筛选] 保存 {saved} 条分类结果")
+                if debug and saved != len(total_results):
+                    print(f"[AI筛选][DEBUG] !! 保存数量不一致: 期望 {len(total_results)}, 实际 {saved}（可能有重复记录被跳过）")
 
-        # 处理 RSS
-        for i in range(0, len(pending_rss), batch_size):
-            if batch_count > 0 and batch_interval > 0:
-                import time
-                print(f"[AI筛选] 批次间隔等待 {batch_interval} 秒...")
-                time.sleep(batch_interval)
-            batch = pending_rss[i:i + batch_size]
-            titles_for_ai = [
-                {"id": n["id"], "title": n["title"], "source": n.get("source_name", "")}
-                for n in batch
-            ]
-            batch_results = ai_filter.classify_batch(titles_for_ai, active_tags, interests_content)
-            for r in batch_results:
-                r["source_type"] = "rss"
-            total_results.extend(batch_results)
-            batch_count += 1
-            print(f"[AI筛选] RSS 批次 {i // batch_size + 1}: {len(batch)} 条 → {len(batch_results)} 条匹配")
+            # 6.5 记录所有已分析的新闻（匹配+不匹配，用于去重）
+            matched_hotlist_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "hotlist"}
+            matched_rss_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "rss"}
 
-        # 6. 保存结果
-        if total_results:
-            saved = storage.save_ai_filter_results(total_results)
-            print(f"[AI筛选] 保存 {saved} 条分类结果")
-            if debug and saved != len(total_results):
-                print(f"[AI筛选][DEBUG] !! 保存数量不一致: 期望 {len(total_results)}, 实际 {saved}（可能有重复记录被跳过）")
+            if pending_news:
+                hotlist_ids = [n["id"] for n in pending_news]
+                storage.save_analyzed_news(
+                    hotlist_ids, "hotlist", effective_interests_file,
+                    current_hash, matched_hotlist_ids
+                )
 
-        # 6.5 记录所有已分析的新闻（匹配+不匹配，用于去重）
-        matched_hotlist_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "hotlist"}
-        matched_rss_ids = {r["news_item_id"] for r in total_results if r.get("source_type") == "rss"}
+            if pending_rss:
+                rss_ids = [n["id"] for n in pending_rss]
+                storage.save_analyzed_news(
+                    rss_ids, "rss", effective_interests_file,
+                    current_hash, matched_rss_ids
+                )
 
-        if pending_news:
-            hotlist_ids = [n["id"] for n in pending_news]
-            storage.save_analyzed_news(
-                hotlist_ids, "hotlist", effective_interests_file,
-                current_hash, matched_hotlist_ids
-            )
+            if pending_news or pending_rss:
+                total_analyzed = len(pending_news) + len(pending_rss)
+                total_matched = len(matched_hotlist_ids) + len(matched_rss_ids)
+                print(f"[AI筛选] 已记录 {total_analyzed} 条新闻分析状态 (匹配 {total_matched}, 不匹配 {total_analyzed - total_matched})")
 
-        if pending_rss:
-            rss_ids = [n["id"] for n in pending_rss]
-            storage.save_analyzed_news(
-                rss_ids, "rss", effective_interests_file,
-                current_hash, matched_rss_ids
-            )
+            # 7. 结束批量模式（统一上传数据库到远程存储）
+            _end_batch_once()
 
-        if pending_news or pending_rss:
-            total_analyzed = len(pending_news) + len(pending_rss)
-            total_matched = len(matched_hotlist_ids) + len(matched_rss_ids)
-            print(f"[AI筛选] 已记录 {total_analyzed} 条新闻分析状态 (匹配 {total_matched}, 不匹配 {total_analyzed - total_matched})")
-
-        # 7. 结束批量模式（统一上传数据库到远程存储）
-        storage.end_batch()
+        finally:
+            if batch_active:
+                active_error = sys.exc_info()[1]
+                try:
+                    _end_batch_once()
+                except Exception as cleanup_error:
+                    print(
+                        f"[AI筛选] 批处理结束失败: "
+                        f"{type(cleanup_error).__name__}: {cleanup_error}"
+                    )
+                    if active_error is not None:
+                        # 保留原始业务异常类型，同时将上传异常作为异常原因。
+                        raise active_error from cleanup_error
+                    raise
 
         # 8. 查询并组装返回结果
         all_results = storage.get_active_ai_filter_results(interests_file=effective_interests_file)
@@ -1108,8 +1212,32 @@ class AppContext:
     # === 资源清理 ===
 
     def cleanup(self):
-        """清理资源"""
-        if self._storage_manager:
-            self._storage_manager.cleanup_old_data()
-            self._storage_manager.cleanup()
+        """清理过期数据并尽可能释放存储资源。"""
+        active_error = sys.exc_info()[1]
+        manager = self._storage_manager
+        if manager is None:
+            return
+
+        errors = []
+        try:
+            manager.cleanup_old_data()
+        except Exception as exc:
+            errors.append(exc)
+
+        resource_cleanup_succeeded = False
+        try:
+            manager.cleanup()
+            resource_cleanup_succeeded = True
+        except Exception as exc:
+            errors.append(exc)
+
+        # 只有资源清理成功，才释放管理器引用。
+        if resource_cleanup_succeeded:
             self._storage_manager = None
+
+        if errors:
+            if active_error is not None:
+                raise active_error from errors[0]
+            if len(errors) > 1:
+                raise errors[0] from errors[1]
+            raise errors[0]

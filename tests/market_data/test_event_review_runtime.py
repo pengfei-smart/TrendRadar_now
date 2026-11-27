@@ -6,9 +6,26 @@ import unittest
 from unittest.mock import patch
 
 from trendradar.market_data.event_review_runtime import (
-    build_event_review_runtime,
-    load_event_review_runtime,
+    build_event_review_runtime as _build_event_review_runtime,
+    load_event_review_runtime as _load_event_review_runtime,
 )
+
+
+class AllowTestGuard:
+    """仅供单元测试使用的显式放行 Guard。"""
+
+    def check(self):
+        return None
+
+
+def build_event_review_runtime(*args, **kwargs):
+    kwargs.setdefault("request_guard", AllowTestGuard())
+    return _build_event_review_runtime(*args, **kwargs)
+
+
+def load_event_review_runtime(*args, **kwargs):
+    kwargs.setdefault("request_guard", AllowTestGuard())
+    return _load_event_review_runtime(*args, **kwargs)
 
 
 class EventReviewRuntimeTests(unittest.TestCase):
@@ -23,6 +40,13 @@ class EventReviewRuntimeTests(unittest.TestCase):
         self.assertEqual(runtime.provider.max_attempts, 1)
         self.assertTrue(runtime.provider._usage_ledger_enabled)
         self.assertNotIn("runtime-secret", repr(runtime.provider))
+
+    def test_rejects_runtime_creation_without_request_guard(self):
+        with self.assertRaisesRegex(ValueError, "request guard"):
+            _build_event_review_runtime({
+                "MODEL": "deepseek/example-model",
+                "API_KEY": "secret",
+            })
 
     def test_supports_separate_reviewer_and_chief_models(self):
         runtime = build_event_review_runtime(
@@ -85,7 +109,7 @@ class EventReviewRuntimeTests(unittest.TestCase):
             }
         }
         with patch(
-            "trendradar.core.loader.load_config",
+            "trendradar.market_data.event_review_runtime.load_config",
             return_value=application_config,
         ) as load_config:
             runtime = load_event_review_runtime("custom/config.yaml")
@@ -95,7 +119,7 @@ class EventReviewRuntimeTests(unittest.TestCase):
 
     def test_loads_default_config_path_when_not_supplied(self):
         with patch(
-            "trendradar.core.loader.load_config",
+            "trendradar.market_data.event_review_runtime.load_config",
             return_value={"AI": {
                 "MODEL": "deepseek/default",
                 "API_KEY": "resolved-secret",

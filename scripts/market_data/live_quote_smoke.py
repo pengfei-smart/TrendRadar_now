@@ -44,6 +44,13 @@ def _freshness_status(age_seconds: int | None, max_age_seconds: int) -> str:
     return "fresh" if age_seconds <= max_age_seconds else "stale"
 
 
+def _close_safely(resource, label: str) -> None:
+    try:
+        resource.close()
+    except Exception as exc:
+        print(f"[{label}] 关闭失败: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="东方财富批量行情真实接口抽样检查")
     parser.add_argument(
@@ -77,8 +84,9 @@ def main() -> int:
     started = time.monotonic()
     shanghai_tz = pytz.timezone("Asia/Shanghai")
     collected_at = datetime.now(timezone.utc).astimezone(shanghai_tz).isoformat(timespec="seconds")
+    quote_provider = EastmoneyBatchQuoteProvider()
     try:
-        quotes = EastmoneyBatchQuoteProvider().fetch_quotes(securities)
+        quotes = quote_provider.fetch_quotes(securities)
     except Exception as exc:
         print(json.dumps({
             "status": "failed",
@@ -89,6 +97,8 @@ def main() -> int:
             "error": str(exc),
         }, ensure_ascii=False, indent=2))
         return 1
+    finally:
+        _close_safely(quote_provider, "Quote Provider")
 
     collected_dt = datetime.now(timezone.utc)
     collected_at = collected_dt.astimezone(shanghai_tz).isoformat(timespec="seconds")

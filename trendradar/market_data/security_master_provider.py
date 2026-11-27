@@ -2,17 +2,18 @@
 """A-share security master ingestion, normalization and guarded refresh."""
 
 from __future__ import annotations
-
+import logging
 import re
 import sqlite3
 from dataclasses import dataclass
 from typing import Iterable, Mapping, Protocol, Sequence
-
 import requests
 
 from trendradar.market_data.models import Security
 from trendradar.market_data.security_master import normalize_security_code
+logger = logging.getLogger(__name__)
 
+SECURITY_MASTER_SOURCE_ID = "eastmoney_security_master"
 
 EASTMONEY_LIST_URL = "https://push2.eastmoney.com/api/qt/clist/get"
 EASTMONEY_FIELDS = "f12,f14,f13,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26"
@@ -21,7 +22,19 @@ EASTMONEY_MARKET_FILTER = "m:1+t:2,m:0+t:6,m:0+t:80"
 
 class SecurityMasterSourceError(RuntimeError):
     """Raised when the upstream security-master source is unavailable or malformed."""
+class DataSourceStatusRecordingError(RuntimeError):
+    """Business data was updated, but its success status could not be recorded."""
 
+    def __init__(self, source_id: str, original_error: Exception):
+        self.source_id = source_id
+        self.business_data_updated = True
+        self.status_recording_failed = True
+        self.original_error = original_error
+
+        super().__init__(
+            f"数据源 {source_id} 业务数据已成功写入，"
+            f"但成功状态记录失败：{original_error}"
+        )
 
 class SecurityMasterProvider(Protocol):
     def fetch_all(self) -> Sequence[Security]: ...
@@ -108,12 +121,23 @@ class EastmoneySecurityMasterProvider:
     ):
         if page_size < 1 or max_pages < 1:
             raise ValueError("page_size和max_pages必须为正数")
-        self.session = session or requests.Session()
+        self._owns_session = session is None
+        self.session = session if session is not None else requests.Session()
+        self._closed = False
         self.page_size = page_size
         self.timeout = timeout
         # 接口可能静默缩小单页返回量；页数上限按实际页容量动态计算。
         # 200页可覆盖当前全市场规模并留有增长余量，超过上限仍拒绝不完整快照。
         self.max_pages = max_pages
+
+    def close(self) -> None:
+        """关闭由当前 Provider 自己创建的 HTTP Session。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        if self._owns_session:
+            self.session.close()
 
     def _fetch_page(self, page: int) -> tuple[int, list[Mapping[str, object]]]:
         params = {
@@ -234,30 +258,82 @@ class SecurityMasterUpdater:
         return 0
 
     def update(self) -> SecurityMasterRefreshResult:
-        raw = list(self.provider.fetch_all())
-        fetched_count = len(raw)
-        if fetched_count < self.min_expected_count:
-            raise SecurityMasterSourceError(
-                f"证券主数据数量异常({fetched_count}<{self.min_expected_count})，拒绝写库"
-            )
-        normalized = self._normalize_snapshot(raw)
-        if len(normalized) != fetched_count:
-            raise SecurityMasterSourceError("规范化数量与源数据数量不一致，拒绝写库")
-
-        existing_count = self._existing_count()
-        if existing_count and len(normalized) < existing_count * (1 - self.max_count_drop_ratio):
-            raise SecurityMasterSourceError(
-                f"证券数量较本地减少超过{self.max_count_drop_ratio:.0%}，拒绝写库"
-            )
-
-        updated_count = int(self.storage.upsert_securities(normalized))
-        return SecurityMasterRefreshResult(
-            source=self.source_name, fetched_count=fetched_count,
-            normalized_count=len(normalized),
-            risk_count=sum(1 for item in normalized if item.risk_flag),
-            rejected_count=0, updated_count=updated_count,
+        # 注册数据源。保留之前的成功、失败时间和错误信息。
+        self.storage.ensure_data_source(
+            SECURITY_MASTER_SOURCE_ID,
+            "Eastmoney A股证券主数据",
+            "security_master",
+            provider_url=EASTMONEY_LIST_URL,
+            priority=10,
         )
 
+        try:
+            raw = list(self.provider.fetch_all())
+            fetched_count = len(raw)
+
+            if fetched_count < self.min_expected_count:
+                raise SecurityMasterSourceError(
+                    f"证券主数据数量异常({fetched_count}<{self.min_expected_count})，拒绝写库"
+                )
+
+            normalized = self._normalize_snapshot(raw)
+
+            if len(normalized) != fetched_count:
+                raise SecurityMasterSourceError(
+                    "规范化数量与源数据数量不一致，拒绝写库"
+                )
+
+            existing_count = self._existing_count()
+
+            if (
+                existing_count
+                and len(normalized)
+                < existing_count * (1 - self.max_count_drop_ratio)
+            ):
+                raise SecurityMasterSourceError(
+                    f"证券数量较本地减少超过"
+                    f"{self.max_count_drop_ratio:.0%}，拒绝写库"
+                )
+
+            updated_count = int(
+                self.storage.upsert_securities(normalized)
+            )
+
+            result = SecurityMasterRefreshResult(
+                source=self.source_name,
+                fetched_count=fetched_count,
+                normalized_count=len(normalized),
+                risk_count=sum(
+                    1 for item in normalized if item.risk_flag
+                ),
+                rejected_count=0,
+                updated_count=updated_count,
+            )
+
+        except Exception as exc:
+            try:
+                self.storage.mark_data_source_failure(
+                    SECURITY_MASTER_SOURCE_ID,
+                    str(exc),
+                )
+            except Exception:
+                logger.exception(
+                    "Failed to record security master refresh failure"
+                )
+
+            raise
+
+        try:
+            self.storage.mark_data_source_success(
+                SECURITY_MASTER_SOURCE_ID
+            )
+        except Exception as exc:
+            raise DataSourceStatusRecordingError(
+                SECURITY_MASTER_SOURCE_ID,
+                exc,
+            ) from exc
+
+        return result
 
 def eligible_securities(securities: Iterable[Security]) -> list[Security]:
     """Keep active, non-risk-warning main-board and ChiNext securities; exclude BJ and STAR."""

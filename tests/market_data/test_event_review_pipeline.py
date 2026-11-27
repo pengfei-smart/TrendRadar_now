@@ -20,6 +20,14 @@ from trendradar.market_data.models import MarketEvent
 from trendradar.market_data.storage import MarketStorage
 
 
+class AllowTestGuard:
+    """Allow AI requests only inside deterministic offline tests."""
+
+    def check(self):
+        return None
+
+
+
 class DeterministicReviewProvider:
     provider_name = "pipeline-fake"
 
@@ -138,7 +146,10 @@ class EventReviewPipelineTests(unittest.TestCase):
 
     def test_guarded_runtime_pipeline_uses_per_event_budget_and_persists(self):
         fake = DeterministicReviewProvider(self.evidence_id)
-        runtime = build_event_review_runtime({"MODEL": "fake/reviewer", "API_KEY": "test-secret"})
+        runtime = build_event_review_runtime(
+            {"MODEL": "fake/reviewer", "API_KEY": "test-secret"},
+            request_guard=AllowTestGuard(),
+        )
         runtime.global_guard._provider = fake
         result = review_persisted_market_event_with_runtime(
             storage=self.storage, repository=self.repository, runtime=runtime,
@@ -155,6 +166,7 @@ class EventReviewPipelineTests(unittest.TestCase):
         fake = DeterministicReviewProvider(self.evidence_id)
         runtime = build_event_review_runtime(
             {"MODEL": "fake/reviewer", "API_KEY": "test-secret"},
+            request_guard=AllowTestGuard(),
             max_model_calls_per_event=2,
         )
         runtime.global_guard._provider = fake
@@ -177,6 +189,7 @@ class EventReviewPipelineTests(unittest.TestCase):
         fake = UnexpectedFailureProvider()
         runtime = build_event_review_runtime(
             {"MODEL": "fake/reviewer", "API_KEY": "test-secret"},
+            request_guard=AllowTestGuard(),
             circuit_failure_threshold=1,
             circuit_cooldown_seconds=30,
         )

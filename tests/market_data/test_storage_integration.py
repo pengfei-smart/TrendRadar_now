@@ -2,6 +2,7 @@
 """Integration tests for market storage with security-master and quote ingestion."""
 
 import sqlite3
+from unittest.mock import patch
 from contextlib import closing
 import tempfile
 import unittest
@@ -21,6 +22,71 @@ class StaticProvider:
 
 
 class MarketStorageIntegrationTests(unittest.TestCase):
+    def test_initialize_failure_rolls_back_legacy_schema_migration(self):
+        self.storage.upsert_securities([
+            Security("600000", "浦发银行", "SH")
+        ])
+
+        with self.storage.connect() as connection:
+            connection.execute("DROP TABLE market_snapshots")
+            connection.execute("""
+                CREATE TABLE market_snapshots (
+                    snapshot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    code TEXT NOT NULL,
+                    timestamp TEXT NOT NULL,
+                    trading_date TEXT NOT NULL DEFAULT '',
+                    price REAL,
+                    change_pct REAL,
+                    turnover REAL,
+                    volume_ratio REAL,
+                    source TEXT NOT NULL DEFAULT '',
+                    delayed INTEGER NOT NULL DEFAULT 1,
+                    collected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(code, timestamp),
+                    FOREIGN KEY (code)
+                        REFERENCES security_master(code)
+                        ON UPDATE CASCADE
+                )
+            """)
+            connection.execute(
+                "UPDATE schema_meta SET value='13' "
+                "WHERE key='schema_version'"
+            )
+
+        with patch.object(
+            MarketStorage,
+            "_ensure_lifecycle_columns",
+            side_effect=RuntimeError("injected migration failure"),
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError, "injected migration failure"
+            ):
+                MarketStorage(str(self.db_path))
+
+        with self.storage.connect() as connection:
+            columns = {
+                row["name"]
+                for row in connection.execute(
+                    "PRAGMA table_info(market_snapshots)"
+                )
+            }
+            table_sql = connection.execute(
+                "SELECT sql FROM sqlite_master "
+                "WHERE type='table' AND name='market_snapshots'"
+            ).fetchone()["sql"]
+            version = connection.execute(
+                "SELECT value FROM schema_meta "
+                "WHERE key='schema_version'"
+            ).fetchone()["value"]
+
+        self.assertNotIn("timestamp_quality", columns)
+        self.assertNotIn("source_timestamp", columns)
+        self.assertIn("UNIQUE(code, timestamp)", table_sql)
+        self.assertNotIn(
+            "UNIQUE(code, timestamp, source)", table_sql
+        )
+        self.assertEqual(version, "13")
+
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.db_path = Path(self.temp_dir.name) / "market.db"

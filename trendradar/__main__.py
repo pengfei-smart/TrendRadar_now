@@ -41,7 +41,9 @@ from trendradar.crawler import DataFetcher
 from trendradar.storage import convert_crawl_results_to_news_data
 from trendradar.utils.time import DEFAULT_TIMEZONE, is_within_days, calculate_days_old
 from trendradar.ai import AIAnalyzer, AIAnalysisResult
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 from trendradar.core.scheduler import ResolvedSchedule
+
 
 
 def _parse_version(version_str: str) -> Tuple[int, int, int]:
@@ -502,7 +504,13 @@ class NewsAnalyzer:
         try:
             ai_config = self.ctx.config.get("AI", {})
             debug_mode = self.ctx.config.get("DEBUG", False)
-            analyzer = AIAnalyzer(ai_config, analysis_config, self.ctx.get_time, debug=debug_mode)
+            analyzer = AIAnalyzer(
+                ai_config,
+                analysis_config,
+                self.ctx.get_time,
+                debug=debug_mode,
+                request_guard=self.ctx.get_ai_request_guard(),
+            )
 
             # 确定 AI 分析使用的模式
             ai_mode_config = analysis_config.get("MODE", "follow_report")
@@ -582,6 +590,18 @@ class NewsAnalyzer:
                 print(f"[AI] 分析失败: {result.error}")
 
             return result
+        except AIRequestNotAllowedError as e:
+            error_msg = str(e)
+            if len(error_msg) > 200:
+                error_msg = error_msg[:200] + "..."
+
+            print(f"[AI] 请求被时间窗口守卫拒绝: {error_msg}")
+
+            return AIAnalysisResult(
+                success=False,
+                error=f"AIRequestNotAllowedError: {error_msg}",
+            )
+
         except Exception as e:
             import traceback
             error_type = type(e).__name__
@@ -1101,6 +1121,8 @@ class NewsAnalyzer:
             print("[RSS] 未配置任何 RSS 源")
             return None, None, None, set()
 
+        fetcher = None
+
         try:
             from trendradar.crawler.rss import RSSFetcher, RSSFeedConfig
 
@@ -1179,6 +1201,12 @@ class NewsAnalyzer:
         except Exception as e:
             print(f"[RSS] 抓取失败: {e}")
             return None, None, None, set()
+        finally:
+            if fetcher is not None:
+                try:
+                    fetcher.close()
+                except Exception as close_error:
+                    print(f"[RSS] 关闭 HTTP Session 失败: {close_error}")
 
     def _process_rss_data_by_mode(self, rss_data) -> Tuple[Optional[List[Dict]], Optional[List[Dict]], Optional[List[Dict]], set]:
         """
@@ -1723,7 +1751,7 @@ class NewsAnalyzer:
             if self.ctx.config.get("DEBUG", False):
                 raise
         finally:
-            # 清理资源（包括过期数据清理和数据库连接关闭）
+            # 清理资源，同时保留正在传播的业务异常
             self.ctx.cleanup()
 
 

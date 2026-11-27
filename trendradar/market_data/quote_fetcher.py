@@ -101,9 +101,20 @@ class EastmoneyBatchQuoteProvider:
     ):
         if batch_size < 1 or batch_size > 500:
             raise ValueError("batch_size必须在1到500之间")
-        self.session = session or requests.Session()
+        self._owns_session = session is None
+        self.session = session if session is not None else requests.Session()
+        self._closed = False
         self.batch_size = batch_size
         self.timeout = timeout
+
+    def close(self) -> None:
+        """关闭由当前 Provider 自己创建的 HTTP Session。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        if self._owns_session:
+            self.session.close()
 
     def _fetch_batch(self, secids: Sequence[str]) -> list[Mapping[str, object]]:
         params = {
@@ -193,6 +204,29 @@ class QuoteFetcher:
         self.providers = tuple(providers)
         if not self.providers:
             raise ValueError("至少需要配置一个行情provider")
+        self._closed = False
+
+    def close(self) -> None:
+        """关闭当前 QuoteFetcher 持有的 Provider。"""
+        if self._closed:
+            return
+
+        self._closed = True
+        errors = []
+
+        for provider in self.providers:
+            close = getattr(provider, "close", None)
+            if not callable(close):
+                continue
+            try:
+                close()
+            except Exception as exc:
+                errors.append(exc)
+
+        if errors:
+            raise RuntimeError(
+                f"{len(errors)} 个行情 Provider 关闭失败"
+            ) from errors[0]
 
     def fetch(self, securities: Sequence[Security]) -> tuple[list[QuoteSnapshot], str]:
         if not securities:

@@ -5,7 +5,7 @@ all event reviews in a process. Multi-process deployments need a shared
 coordination backend before claiming a cross-process global limit.
 """
 from __future__ import annotations
-
+from trendradar.ai.request_guard import AIRequestNotAllowedError
 from dataclasses import dataclass
 import threading
 import time
@@ -78,24 +78,33 @@ class GlobalModelCallGuard:
 
     def complete(self, request: ChatModelRequest) -> ChatModelResponse:
         self._check_breaker()
+
         if not self._semaphore.acquire(blocking=False):
             raise ChatModelError("global AI concurrency limit reached")
+
         try:
             self._check_breaker()
+
             try:
                 result = self._provider.complete(request)
+            except AIRequestNotAllowedError:
+                # 时间窗口授权拒绝不是模型故障，不应计入熔断失败次数。
+                raise
             except Exception as exc:
                 self._record_failure()
+
                 if isinstance(exc, ChatModelError):
                     raise
+
                 raise ChatModelError(
                     f"global AI provider failed: {type(exc).__name__}"
                 ) from exc
+
             self._record_success()
             return result
+
         finally:
             self._semaphore.release()
-
 
 class EventReviewBudgetProvider:
     """Enforce one event's logical-call, output-token and timeout budgets."""
@@ -104,9 +113,11 @@ class EventReviewBudgetProvider:
         self,
         provider: ChatModelProvider,
         budget: EventReviewBudget | None = None,
+        request_guard=None,
     ) -> None:
         self._provider = provider
         self.budget = budget or EventReviewBudget()
+        self._request_guard = request_guard
         self._calls = 0
         self._lock = threading.Lock()
 
@@ -118,17 +129,30 @@ class EventReviewBudgetProvider:
     def complete(self, request: ChatModelRequest) -> ChatModelResponse:
         if not isinstance(request, ChatModelRequest):
             raise TypeError("request must be a ChatModelRequest")
+
+        # 必须在预算扣减前检查时间窗口授权。
+        # 缺少 Guard 时默认拒绝，禁止绕过时间窗口限制。
+        if self._request_guard is None:
+            raise AIRequestNotAllowedError(
+                "EventReviewBudgetProvider 缺少 RequestGuard，拒绝发起 AI 请求"
+            )
+
+        self._request_guard.check()
+
         if request.max_tokens > self.budget.max_output_tokens_per_call:
             raise ChatModelError("event review output-token budget exceeded")
+
         if request.timeout_seconds > self.budget.max_timeout_seconds:
             raise ChatModelError("event review timeout budget exceeded")
+
         with self._lock:
             if self._calls >= self.budget.max_model_calls:
                 raise ChatModelError("event review model-call budget exhausted")
+
             # Failed calls consume budget too; no retry can evade this limit.
             self._calls += 1
-        return self._provider.complete(request)
 
+        return self._provider.complete(request)
 
 __all__ = [
     "EventReviewBudget",

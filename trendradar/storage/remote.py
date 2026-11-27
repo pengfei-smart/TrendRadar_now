@@ -253,16 +253,33 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
             raise
 
     def begin_batch(self):
-        """开启批量模式：延迟上传，避免频繁上传同一文件"""
+        """开启批量模式：延迟上传，保留之前未成功的上传任务"""
         self._batch_mode = True
-        self._batch_dirty.clear()
 
     def end_batch(self):
-        """结束批量模式：统一上传所有脏数据库"""
+        """结束批量模式：统一上传脏数据库，失败任务保留以便重试"""
         self._batch_mode = False
-        for date, db_type in self._batch_dirty:
-            self._upload_sqlite(date, db_type)
-        self._batch_dirty.clear()
+        failures = []
+
+        for date, db_type in list(self._batch_dirty):
+            task = (date, db_type)
+            try:
+                uploaded = self._upload_sqlite(date, db_type)
+                if uploaded:
+                    self._batch_dirty.discard(task)
+                else:
+                    failures.append(task)
+            except Exception as exc:
+                failures.append(task)
+                print(
+                    f"[远程存储] 批量上传异常 {task}: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+
+        if failures:
+            raise RuntimeError(
+                f"批量上传未全部成功，失败任务已保留，可重试：{failures}"
+            )
 
     def _upload_sqlite(self, date: Optional[str] = None, db_type: str = "news") -> bool:
         """
@@ -648,6 +665,14 @@ class RemoteStorageBackend(SQLiteStorageMixin, StorageBackend):
         # 检查 Python 是否正在关闭
         if sys.meta_path is None:
             return
+
+        # 存在待上传任务时，必须保留临时数据库和连接。
+        pending_tasks = getattr(self, "_batch_dirty", set())
+        if pending_tasks:
+            raise RuntimeError(
+                "远程存储仍有待上传任务，拒绝清理临时数据库："
+                f"{sorted(pending_tasks)}"
+            )
 
         # 关闭数据库连接
         db_connections = getattr(self, "_db_connections", {})

@@ -66,6 +66,13 @@ def chunks(items: Sequence[Security], size: int) -> list[Sequence[Security]]:
     return [items[index:index + size] for index in range(0, len(items), size)]
 
 
+def _close_safely(resource, label: str) -> None:
+    try:
+        resource.close()
+    except Exception as exc:
+        print(f"[{label}] 关闭失败: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="从东方财富证券主数据构建全A股有效证券池，逐批测试批量行情接口（只读，不写数据库）"
@@ -103,7 +110,11 @@ def main() -> int:
 
     try:
         master_started = time.monotonic()
-        all_securities = list(EastmoneySecurityMasterProvider().fetch_all())
+        master_provider = EastmoneySecurityMasterProvider()
+        try:
+            all_securities = list(master_provider.fetch_all())
+        finally:
+            _close_safely(master_provider, "Security Master Provider")
         master_elapsed = round(time.monotonic() - master_started, 3)
         eligible = eligible_securities(all_securities)
         exchange_excluded = sum(1 for item in all_securities if item.exchange == "BJ")
@@ -144,7 +155,11 @@ def main() -> int:
         for index, batch in enumerate(batches, start=1):
             batch_started = time.monotonic()
             try:
-                quotes = list(EastmoneyBatchQuoteProvider(batch_size=args.batch_size).fetch_quotes(batch))
+                quote_provider = EastmoneyBatchQuoteProvider(batch_size=args.batch_size)
+                try:
+                    quotes = list(quote_provider.fetch_quotes(batch))
+                finally:
+                    _close_safely(quote_provider, "Quote Provider")
                 batch_collected_at = datetime.now(timezone.utc)
                 batch_elapsed = round(time.monotonic() - batch_started, 3)
                 batch_counts, _ = freshness_counts(quotes, batch_collected_at, args.max_age_seconds)

@@ -30,6 +30,48 @@ class RadarResultStoreTests(unittest.TestCase):
             causal_status="verified" if verified else "unverified",
         )
 
+    def test_scheduled_run_type_is_persisted(self):
+        run_id = self.store.start_run(
+            "2026-11-24T14:33:00+08:00",
+            run_type="scheduled",
+        )
+
+        result = self.store.get_run(run_id)
+
+        self.assertEqual(result["run"]["run_type"], "scheduled")
+        self.assertEqual(result["run"]["status"], "started")
+
+    def test_get_latest_run_returns_none_when_empty(self):
+        self.assertIsNone(self.store.get_latest_run())
+
+    def test_get_latest_run_returns_most_recent_run(self):
+        first_run_id = self.store.start_run(
+            "2026-11-24T08:00:00+08:00",
+            run_type="scheduled",
+        )
+        self.store.finish_run(
+            first_run_id,
+            [],
+            status="success",
+        )
+
+        second_run_id = self.store.start_run(
+            "2026-11-24T14:33:00+08:00",
+            run_type="scheduled",
+        )
+        self.store.finish_run(
+            second_run_id,
+            [self.candidate("600000")],
+            status="partial",
+        )
+
+        latest = self.store.get_latest_run()
+
+        self.assertIsNotNone(latest)
+        self.assertEqual(latest["run"]["run_id"], second_run_id)
+        self.assertEqual(latest["run"]["status"], "partial")
+        self.assertEqual(len(latest["candidates"]), 1)
+
     def test_run_persists_all_candidates_and_evidence(self):
         run_id = self.store.start_run("2026-11-09T14:33:00+08:00")
         candidates = [self.candidate("688012", verified=True), self.candidate("600000", tier="C", score=42)]
