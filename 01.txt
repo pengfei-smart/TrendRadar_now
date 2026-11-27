@@ -1,0 +1,2912 @@
+
+pengfei@LAPTOP-97KRK4BC MINGW64 ~/Desktop/3/TrendRadar_dev (feature/ai-schedule-guard-v1)
+$ PYTHONPATH=. python -X utf8 scripts/market_data/audit_exchange_listing_universe.py
+F:\Python_3.13.11\Lib\site-packages\openpyxl\styles\stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+{
+  "status": "completed",
+  "write_performed": false,
+  "security_master_source": "eastmoney_clist",
+  "security_master_count": 4942,
+  "official_counts": {
+    "SH_main_board_a": 1700,
+    "SZ_main_board_a": 1494,
+    "SZ_chinext": 1411
+  },
+  "security_master_scope_counts": {
+    "SH_main_board_a": 1846,
+    "SZ_main_board_a": 1642,
+    "SZ_chinext": 1454
+  },
+  "scope_comparison": {
+    "SH_main_board_a": {
+      "official_count": 1700,
+      "master_count": 1846,
+      "matched_count": 1700,
+      "official_not_in_master_count": 0,
+      "official_not_in_master_sample": [],
+      "master_not_in_official_count": 146,
+      "master_not_in_official_sample": [
+        "600001",
+        "600002",
+        "600003",
+        "600005",
+        "600065",
+        "600068",
+        "600069",
+        "600070",
+        "600074",
+        "600077",
+        "600083",
+        "600086",
+        "600087",
+        "600090",
+        "600091",
+        "600092",
+        "600093",
+        "600102",
+        "600112",
+        "600122",
+        "600139",
+        "600145",
+        "600146",
+        "600175",
+        "600181",
+        "600190",
+        "600193",
+        "600200",
+        "600205",
+        "600209",
+        "600213",
+        "600220",
+        "600225",
+        "600240",
+        "600242",
+        "600247",
+        "600253",
+        "600260",
+        "600263",
+        "600270",
+        "600275",
+        "600277",
+        "600286",
+        "600290",
+        "600291",
+        "600296",
+        "600297",
+        "600306",
+        "600311",
+        "600317",
+        "600321",
+        "600355",
+        "600357",
+        "600385",
+        "600387",
+        "600393",
+        "600401",
+        "600421",
+        "600432",
+        "600462",
+        "600466",
+        "600472",
+        "600485",
+        "600532",
+        "600553",
+        "600555",
+        "600565",
+        "600591",
+        "600599",
+        "600607",
+        "600608",
+        "600614",
+        "600625",
+        "600627",
+        "600631",
+        "600632",
+        "600634",
+        "600636",
+        "600646",
+        "600647",
+        "600652",
+        "600656",
+        "600659",
+        "600669",
+        "600670",
+        "600672",
+        "600677",
+        "600680",
+        "600687",
+        "600695",
+        "600696",
+        "600700",
+        "600701",
+        "600705",
+        "600709",
+        "600723",
+        "600747",
+        "600752",
+        "600762",
+        "600766"
+      ],
+      "master_not_in_official_details": [
+        {
+          "code": "600001",
+          "name": "邯郸钢铁",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600002",
+          "name": "齐鲁石化",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600003",
+          "name": "ST东北高",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600005",
+          "name": "武钢股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600065",
+          "name": "*ST联谊",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600068",
+          "name": "葛洲坝",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600069",
+          "name": "退市银鸽",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600070",
+          "name": "*ST富润",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600074",
+          "name": "退市保千",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600077",
+          "name": "*ST宋都",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600083",
+          "name": "*ST博信",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600086",
+          "name": "退市金钰",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600087",
+          "name": "退市长油",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600090",
+          "name": "退市济堂",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600091",
+          "name": "退市明科",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600092",
+          "name": "S*ST精密",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600093",
+          "name": "退市易见",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600102",
+          "name": "莱钢股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600112",
+          "name": "*ST天成",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600122",
+          "name": "*ST宏图",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600139",
+          "name": "*ST西源",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600145",
+          "name": "退市新亿",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600146",
+          "name": "退市环球",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600175",
+          "name": "退市美都",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600181",
+          "name": "S*ST云大",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600190",
+          "name": "退市锦港",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600193",
+          "name": "退市创兴",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600200",
+          "name": "退市苏吴",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600205",
+          "name": "S山东铝",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600209",
+          "name": "退市罗顿",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600213",
+          "name": "*ST亚星",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600220",
+          "name": "ST阳光",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600225",
+          "name": "退市卓朗",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600240",
+          "name": "退市华业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600242",
+          "name": "退市中昌",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600247",
+          "name": "*ST成城",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600253",
+          "name": "天方药业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600260",
+          "name": "*ST凯乐",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600263",
+          "name": "路桥建设",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600270",
+          "name": "外运发展",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600275",
+          "name": "退市昌鱼",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600277",
+          "name": "ST亿利",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600286",
+          "name": "S*ST国瓷",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600290",
+          "name": "*ST华仪",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600291",
+          "name": "退市西水",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600296",
+          "name": "S兰铝",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600297",
+          "name": "广汇汽车",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600306",
+          "name": "退市商城",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600311",
+          "name": "*ST荣华",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600317",
+          "name": "营口港",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600321",
+          "name": "正源股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600355",
+          "name": "*ST精伦",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600357",
+          "name": "承德钒钛",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600385",
+          "name": "退市金泰",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600387",
+          "name": "退市海越",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600393",
+          "name": "ST粤泰",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600401",
+          "name": "退市海润",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600421",
+          "name": "退市华嵘",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600432",
+          "name": "退市吉恩",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600462",
+          "name": "退市九有",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600466",
+          "name": "*ST蓝光",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600472",
+          "name": "包头铝业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600485",
+          "name": "*ST信威",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600532",
+          "name": "退市未来",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600553",
+          "name": "太行水泥",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600555",
+          "name": "退市海创",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600565",
+          "name": "ST迪马",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600591",
+          "name": "*ST上航",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600599",
+          "name": "退市熊猫",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600607",
+          "name": "上实医药",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600608",
+          "name": "退市沪科",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600614",
+          "name": "退市鹏起",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600625",
+          "name": "PT水仙",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600627",
+          "name": "上电股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600631",
+          "name": "百联股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600632",
+          "name": "华联商厦",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600634",
+          "name": "退市富控",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600636",
+          "name": "退市国化",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600646",
+          "name": "ST国嘉",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600647",
+          "name": "退市同达",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600652",
+          "name": "退市游久",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600656",
+          "name": "退市博元",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600659",
+          "name": "*ST花雕",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600669",
+          "name": "*ST鞍成",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600670",
+          "name": "*ST斯达",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600672",
+          "name": "*ST华圣",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600677",
+          "name": "*ST航通",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600680",
+          "name": "*ST上普",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600687",
+          "name": "退市刚泰",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600695",
+          "name": "退市绿庭",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600696",
+          "name": "退市岩石",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600700",
+          "name": "*ST数码",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600701",
+          "name": "退市工新",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600705",
+          "name": "中航产融",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600709",
+          "name": "ST生态",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600723",
+          "name": "首商股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600747",
+          "name": "退市大控",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600752",
+          "name": "*ST哈慈",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600762",
+          "name": "S*ST金荔",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600766",
+          "name": "退市园城",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600767",
+          "name": "退市运盛",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600772",
+          "name": "S*ST龙昌",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600781",
+          "name": "退市辅仁",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600786",
+          "name": "东方锅炉",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600788",
+          "name": "*ST达曼",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600799",
+          "name": "*ST龙科",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600804",
+          "name": "退市鹏博",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600806",
+          "name": "退市昆机",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600811",
+          "name": "*ST东方",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600813",
+          "name": "ST鞍一工",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600823",
+          "name": "*ST世茂",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600832",
+          "name": "东方明珠",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600836",
+          "name": "*ST易连",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600837",
+          "name": "海通证券",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600840",
+          "name": "新湖创业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600842",
+          "name": "中西药业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600849",
+          "name": "上药转换",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "600852",
+          "name": "*ST中川",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600856",
+          "name": "退市中天",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600870",
+          "name": "退市厦华",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600878",
+          "name": "*ST北科",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600890",
+          "name": "退市中房",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600891",
+          "name": "退市秋林",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600896",
+          "name": "退市海医",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600898",
+          "name": "*ST美讯",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600899",
+          "name": "*ST信联",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600978",
+          "name": "*ST宜生",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "600991",
+          "name": "广汽长丰",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "601028",
+          "name": "玉龙股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "601059",
+          "name": "信达证券",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "601198",
+          "name": "东兴证券",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "601258",
+          "name": "*ST庞大",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "601268",
+          "name": "*ST二重",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "601299",
+          "name": "中国北车",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "601558",
+          "name": "退市锐电",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "601989",
+          "name": "中国重工",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "603003",
+          "name": "退市龙宇",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603056",
+          "name": "德邦股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "603133",
+          "name": "退市碳元",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603157",
+          "name": "退市拉夏",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603388",
+          "name": "*ST元成",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603555",
+          "name": "ST贵人",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603603",
+          "name": "退市博天",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603963",
+          "name": "*ST大药",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "603996",
+          "name": "退市中新",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "605081",
+          "name": "退市太和",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        }
+      ],
+      "name_category_summary": {
+        "total_count": 146,
+        "counts": {
+          "delisted_name": 58,
+          "risk_warning_name": 52,
+          "other": 36
+        },
+        "samples": {
+          "delisted_name": [
+            {
+              "code": "600069",
+              "name": "退市银鸽"
+            },
+            {
+              "code": "600074",
+              "name": "退市保千"
+            },
+            {
+              "code": "600086",
+              "name": "退市金钰"
+            },
+            {
+              "code": "600087",
+              "name": "退市长油"
+            },
+            {
+              "code": "600090",
+              "name": "退市济堂"
+            },
+            {
+              "code": "600091",
+              "name": "退市明科"
+            },
+            {
+              "code": "600093",
+              "name": "退市易见"
+            },
+            {
+              "code": "600145",
+              "name": "退市新亿"
+            },
+            {
+              "code": "600146",
+              "name": "退市环球"
+            },
+            {
+              "code": "600175",
+              "name": "退市美都"
+            },
+            {
+              "code": "600190",
+              "name": "退市锦港"
+            },
+            {
+              "code": "600193",
+              "name": "退市创兴"
+            },
+            {
+              "code": "600200",
+              "name": "退市苏吴"
+            },
+            {
+              "code": "600209",
+              "name": "退市罗顿"
+            },
+            {
+              "code": "600225",
+              "name": "退市卓朗"
+            },
+            {
+              "code": "600240",
+              "name": "退市华业"
+            },
+            {
+              "code": "600242",
+              "name": "退市中昌"
+            },
+            {
+              "code": "600275",
+              "name": "退市昌鱼"
+            },
+            {
+              "code": "600291",
+              "name": "退市西水"
+            },
+            {
+              "code": "600306",
+              "name": "退市商城"
+            }
+          ],
+          "risk_warning_name": [
+            {
+              "code": "600003",
+              "name": "ST东北高"
+            },
+            {
+              "code": "600065",
+              "name": "*ST联谊"
+            },
+            {
+              "code": "600070",
+              "name": "*ST富润"
+            },
+            {
+              "code": "600077",
+              "name": "*ST宋都"
+            },
+            {
+              "code": "600083",
+              "name": "*ST博信"
+            },
+            {
+              "code": "600092",
+              "name": "S*ST精密"
+            },
+            {
+              "code": "600112",
+              "name": "*ST天成"
+            },
+            {
+              "code": "600122",
+              "name": "*ST宏图"
+            },
+            {
+              "code": "600139",
+              "name": "*ST西源"
+            },
+            {
+              "code": "600181",
+              "name": "S*ST云大"
+            },
+            {
+              "code": "600213",
+              "name": "*ST亚星"
+            },
+            {
+              "code": "600220",
+              "name": "ST阳光"
+            },
+            {
+              "code": "600247",
+              "name": "*ST成城"
+            },
+            {
+              "code": "600260",
+              "name": "*ST凯乐"
+            },
+            {
+              "code": "600277",
+              "name": "ST亿利"
+            },
+            {
+              "code": "600286",
+              "name": "S*ST国瓷"
+            },
+            {
+              "code": "600290",
+              "name": "*ST华仪"
+            },
+            {
+              "code": "600311",
+              "name": "*ST荣华"
+            },
+            {
+              "code": "600355",
+              "name": "*ST精伦"
+            },
+            {
+              "code": "600393",
+              "name": "ST粤泰"
+            }
+          ],
+          "other": [
+            {
+              "code": "600001",
+              "name": "邯郸钢铁"
+            },
+            {
+              "code": "600002",
+              "name": "齐鲁石化"
+            },
+            {
+              "code": "600005",
+              "name": "武钢股份"
+            },
+            {
+              "code": "600068",
+              "name": "葛洲坝"
+            },
+            {
+              "code": "600102",
+              "name": "莱钢股份"
+            },
+            {
+              "code": "600205",
+              "name": "S山东铝"
+            },
+            {
+              "code": "600253",
+              "name": "天方药业"
+            },
+            {
+              "code": "600263",
+              "name": "路桥建设"
+            },
+            {
+              "code": "600270",
+              "name": "外运发展"
+            },
+            {
+              "code": "600296",
+              "name": "S兰铝"
+            },
+            {
+              "code": "600297",
+              "name": "广汇汽车"
+            },
+            {
+              "code": "600317",
+              "name": "营口港"
+            },
+            {
+              "code": "600321",
+              "name": "正源股份"
+            },
+            {
+              "code": "600357",
+              "name": "承德钒钛"
+            },
+            {
+              "code": "600472",
+              "name": "包头铝业"
+            },
+            {
+              "code": "600553",
+              "name": "太行水泥"
+            },
+            {
+              "code": "600607",
+              "name": "上实医药"
+            },
+            {
+              "code": "600625",
+              "name": "PT水仙"
+            },
+            {
+              "code": "600627",
+              "name": "上电股份"
+            },
+            {
+              "code": "600631",
+              "name": "百联股份"
+            }
+          ]
+        }
+      }
+    },
+    "SZ_main_board_a": {
+      "official_count": 1494,
+      "master_count": 1642,
+      "matched_count": 1494,
+      "official_not_in_master_count": 0,
+      "official_not_in_master_sample": [],
+      "master_not_in_official_count": 148,
+      "master_not_in_official_sample": [
+        "000003",
+        "000004",
+        "000005",
+        "000013",
+        "000015",
+        "000016",
+        "000018",
+        "000023",
+        "000024",
+        "000033",
+        "000038",
+        "000040",
+        "000046",
+        "000047",
+        "000150",
+        "000405",
+        "000406",
+        "000412",
+        "000413",
+        "000416",
+        "000418",
+        "000502",
+        "000508",
+        "000511",
+        "000515",
+        "000522",
+        "000527",
+        "000535",
+        "000540",
+        "000542",
+        "000549",
+        "000556",
+        "000562",
+        "000569",
+        "000578",
+        "000583",
+        "000584",
+        "000585",
+        "000587",
+        "000588",
+        "000594",
+        "000602",
+        "000606",
+        "000611",
+        "000613",
+        "000616",
+        "000618",
+        "000621",
+        "000622",
+        "000627",
+        "000638",
+        "000653",
+        "000658",
+        "000660",
+        "000662",
+        "000666",
+        "000667",
+        "000671",
+        "000673",
+        "000675",
+        "000687",
+        "000689",
+        "000693",
+        "000699",
+        "000730",
+        "000732",
+        "000748",
+        "000760",
+        "000763",
+        "000765",
+        "000769",
+        "000780",
+        "000787",
+        "000805",
+        "000806",
+        "000817",
+        "000827",
+        "000832",
+        "000835",
+        "000836",
+        "000851",
+        "000861",
+        "000866",
+        "000916",
+        "000918",
+        "000939",
+        "000956",
+        "000961",
+        "000971",
+        "000976",
+        "000979",
+        "000982",
+        "000996",
+        "002002",
+        "002013",
+        "002018",
+        "002070",
+        "002071",
+        "002087",
+        "002089"
+      ],
+      "master_not_in_official_details": [
+        {
+          "code": "000003",
+          "name": "PT金田A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000004",
+          "name": "国华退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000005",
+          "name": "ST星源",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000013",
+          "name": "*ST石化A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000015",
+          "name": "PT中浩A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000016",
+          "name": "*ST康佳A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000018",
+          "name": "神城A退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000023",
+          "name": "*ST深天",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000024",
+          "name": "招商地产",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000033",
+          "name": "新都退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000038",
+          "name": "大通退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000040",
+          "name": "*ST旭蓝",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000046",
+          "name": "*ST泛海",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000047",
+          "name": "ST中侨",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000150",
+          "name": "*ST宜康",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000405",
+          "name": "ST鑫光",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000406",
+          "name": "石油大明",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000412",
+          "name": "ST五环",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000413",
+          "name": "ST旭电",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000416",
+          "name": "*ST民控",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000418",
+          "name": "小天鹅A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000502",
+          "name": "绿景退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000508",
+          "name": "琼民源A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000511",
+          "name": "烯碳退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000515",
+          "name": "攀渝钛业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000522",
+          "name": "白云山A",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000527",
+          "name": "美的电器",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000535",
+          "name": "*ST猴王",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000540",
+          "name": "*ST中天",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000542",
+          "name": "TCL通讯",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000549",
+          "name": "S湘火炬",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000556",
+          "name": "PT南洋",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000562",
+          "name": "宏源证券",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000569",
+          "name": "长城股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000578",
+          "name": "盐湖集团",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000583",
+          "name": "S*ST托普",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000584",
+          "name": "工智退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000585",
+          "name": "东电退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000587",
+          "name": "*ST金洲",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000588",
+          "name": "PT粤金曼",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000594",
+          "name": "国恒退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000602",
+          "name": "金马集团",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000606",
+          "name": "顺利退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000611",
+          "name": "天首退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000613",
+          "name": "东海A退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000616",
+          "name": "*ST海投",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000618",
+          "name": "吉林化工",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000621",
+          "name": "*ST比特",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000622",
+          "name": "恒立退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000627",
+          "name": "*ST天茂",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000638",
+          "name": "*ST万方",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000653",
+          "name": "ST九州",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000658",
+          "name": "ST海洋",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000660",
+          "name": "*ST南华",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000662",
+          "name": "天夏退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000666",
+          "name": "经纬纺机",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000667",
+          "name": "ST美置",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000671",
+          "name": "ST阳光城",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000673",
+          "name": "当代退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000675",
+          "name": "ST银山",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000687",
+          "name": "华讯退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000689",
+          "name": "ST宏业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000693",
+          "name": "华泽退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000699",
+          "name": "S*ST佳纸",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000730",
+          "name": "*ST环保",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000732",
+          "name": "ST泰禾",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000748",
+          "name": "长城信息",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000760",
+          "name": "斯太退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000763",
+          "name": "锦州石化",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000765",
+          "name": "*ST华信",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000769",
+          "name": "*ST大菲",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000780",
+          "name": "ST平能",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000787",
+          "name": "*ST创智",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000805",
+          "name": "*ST炎黄",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000806",
+          "name": "银河退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000817",
+          "name": "辽河油田",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000827",
+          "name": "*ST长兴",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000832",
+          "name": "*ST龙涤",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000835",
+          "name": "长动退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000836",
+          "name": "ST富通",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000851",
+          "name": "*ST高鸿",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000861",
+          "name": "海印股份",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000866",
+          "name": "扬子石化",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000916",
+          "name": "华北高速",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000918",
+          "name": "*ST嘉凯",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000939",
+          "name": "凯迪退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000956",
+          "name": "中原油气",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000961",
+          "name": "ST中南",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000971",
+          "name": "*ST高升",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000976",
+          "name": "*ST华铁",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "000979",
+          "name": "中弘退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000982",
+          "name": "中银绒业",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "000996",
+          "name": "中期退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002002",
+          "name": "ST鸿达",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002013",
+          "name": "中航机电",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002018",
+          "name": "华信退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002070",
+          "name": "众和退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002071",
+          "name": "长城退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002087",
+          "name": "新纺退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002089",
+          "name": "新海退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002113",
+          "name": "*ST天润",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002118",
+          "name": "*ST紫鑫",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002143",
+          "name": "印纪退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002147",
+          "name": "新光退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002220",
+          "name": "天宝退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002231",
+          "name": "*ST奥维",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002260",
+          "name": "德奥退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002280",
+          "name": "ST联络",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002288",
+          "name": "*ST超华",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002308",
+          "name": "*ST威创",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002325",
+          "name": "*ST洪涛",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002336",
+          "name": "人乐退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002341",
+          "name": "ST新纶",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002359",
+          "name": "北讯退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002411",
+          "name": "必康退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002417",
+          "name": "深南退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002433",
+          "name": "太安退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002435",
+          "name": "ST长康",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002447",
+          "name": "晨鑫退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002450",
+          "name": "康得退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002464",
+          "name": "众应退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002473",
+          "name": "圣莱退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002477",
+          "name": "雏鹰退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002499",
+          "name": "科林退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002502",
+          "name": "ST鼎龙",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002503",
+          "name": "*ST搜特",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002504",
+          "name": "*ST弘高",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002505",
+          "name": "鹏都农牧",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002509",
+          "name": "天茂退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002604",
+          "name": "龙力退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002610",
+          "name": "ST爱康",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002618",
+          "name": "丹邦退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002619",
+          "name": "*ST艾格",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002621",
+          "name": "*ST美吉",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002665",
+          "name": "ST航高",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002680",
+          "name": "长生退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002684",
+          "name": "猛狮退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002699",
+          "name": "*ST美盛",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002711",
+          "name": "欧浦退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002731",
+          "name": "萃华退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002740",
+          "name": "*ST爱迪",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002750",
+          "name": "龙津退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002751",
+          "name": "易尚退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002770",
+          "name": "科迪退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002776",
+          "name": "*ST柏龙",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "002781",
+          "name": "奇信退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002808",
+          "name": "恒久退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "002898",
+          "name": "赛隆退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        }
+      ],
+      "name_category_summary": {
+        "total_count": 148,
+        "counts": {
+          "delisted_name": 0,
+          "risk_warning_name": 63,
+          "other": 85
+        },
+        "samples": {
+          "delisted_name": [],
+          "risk_warning_name": [
+            {
+              "code": "000005",
+              "name": "ST星源"
+            },
+            {
+              "code": "000013",
+              "name": "*ST石化A"
+            },
+            {
+              "code": "000016",
+              "name": "*ST康佳A"
+            },
+            {
+              "code": "000023",
+              "name": "*ST深天"
+            },
+            {
+              "code": "000040",
+              "name": "*ST旭蓝"
+            },
+            {
+              "code": "000046",
+              "name": "*ST泛海"
+            },
+            {
+              "code": "000047",
+              "name": "ST中侨"
+            },
+            {
+              "code": "000150",
+              "name": "*ST宜康"
+            },
+            {
+              "code": "000405",
+              "name": "ST鑫光"
+            },
+            {
+              "code": "000412",
+              "name": "ST五环"
+            },
+            {
+              "code": "000413",
+              "name": "ST旭电"
+            },
+            {
+              "code": "000416",
+              "name": "*ST民控"
+            },
+            {
+              "code": "000535",
+              "name": "*ST猴王"
+            },
+            {
+              "code": "000540",
+              "name": "*ST中天"
+            },
+            {
+              "code": "000583",
+              "name": "S*ST托普"
+            },
+            {
+              "code": "000587",
+              "name": "*ST金洲"
+            },
+            {
+              "code": "000616",
+              "name": "*ST海投"
+            },
+            {
+              "code": "000621",
+              "name": "*ST比特"
+            },
+            {
+              "code": "000627",
+              "name": "*ST天茂"
+            },
+            {
+              "code": "000638",
+              "name": "*ST万方"
+            }
+          ],
+          "other": [
+            {
+              "code": "000003",
+              "name": "PT金田A"
+            },
+            {
+              "code": "000004",
+              "name": "国华退"
+            },
+            {
+              "code": "000015",
+              "name": "PT中浩A"
+            },
+            {
+              "code": "000018",
+              "name": "神城A退"
+            },
+            {
+              "code": "000024",
+              "name": "招商地产"
+            },
+            {
+              "code": "000033",
+              "name": "新都退"
+            },
+            {
+              "code": "000038",
+              "name": "大通退"
+            },
+            {
+              "code": "000406",
+              "name": "石油大明"
+            },
+            {
+              "code": "000418",
+              "name": "小天鹅A"
+            },
+            {
+              "code": "000502",
+              "name": "绿景退"
+            },
+            {
+              "code": "000508",
+              "name": "琼民源A"
+            },
+            {
+              "code": "000511",
+              "name": "烯碳退"
+            },
+            {
+              "code": "000515",
+              "name": "攀渝钛业"
+            },
+            {
+              "code": "000522",
+              "name": "白云山A"
+            },
+            {
+              "code": "000527",
+              "name": "美的电器"
+            },
+            {
+              "code": "000542",
+              "name": "TCL通讯"
+            },
+            {
+              "code": "000549",
+              "name": "S湘火炬"
+            },
+            {
+              "code": "000556",
+              "name": "PT南洋"
+            },
+            {
+              "code": "000562",
+              "name": "宏源证券"
+            },
+            {
+              "code": "000569",
+              "name": "长城股份"
+            }
+          ]
+        }
+      }
+    },
+    "SZ_chinext": {
+      "official_count": 1411,
+      "master_count": 1454,
+      "matched_count": 1411,
+      "official_not_in_master_count": 0,
+      "official_not_in_master_sample": [],
+      "master_not_in_official_count": 43,
+      "master_not_in_official_sample": [
+        "300023",
+        "300028",
+        "300029",
+        "300038",
+        "300064",
+        "300089",
+        "300090",
+        "300104",
+        "300108",
+        "300116",
+        "300117",
+        "300156",
+        "300178",
+        "300186",
+        "300202",
+        "300208",
+        "300216",
+        "300262",
+        "300273",
+        "300280",
+        "300282",
+        "300297",
+        "300309",
+        "300312",
+        "300325",
+        "300330",
+        "300336",
+        "300344",
+        "300356",
+        "300362",
+        "300367",
+        "300372",
+        "300379",
+        "300391",
+        "300392",
+        "300431",
+        "300495",
+        "300526",
+        "300630",
+        "300742",
+        "300799",
+        "301139",
+        "301661"
+      ],
+      "master_not_in_official_details": [
+        {
+          "code": "300023",
+          "name": "宝德退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300028",
+          "name": "金亚退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300029",
+          "name": "天龙退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300038",
+          "name": "数知退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300064",
+          "name": "金刚退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300089",
+          "name": "文化退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300090",
+          "name": "盛运退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300104",
+          "name": "乐视退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300108",
+          "name": "*ST吉药",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "300116",
+          "name": "*ST保力",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "300117",
+          "name": "*ST嘉寓",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "300156",
+          "name": "神雾退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300178",
+          "name": "腾邦退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300186",
+          "name": "大华农",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300202",
+          "name": "聚龙退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300208",
+          "name": "中程退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300216",
+          "name": "千山退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300262",
+          "name": "*ST巴安",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "300273",
+          "name": "和佳退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300280",
+          "name": "紫天退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300282",
+          "name": "三盛退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300297",
+          "name": "蓝盾退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300309",
+          "name": "吉艾退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300312",
+          "name": "邦讯退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300325",
+          "name": "德威退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300330",
+          "name": "计通退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300336",
+          "name": "新文退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300344",
+          "name": "立方退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300356",
+          "name": "光一退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300362",
+          "name": "天翔退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300367",
+          "name": "网力退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300372",
+          "name": "欣泰退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300379",
+          "name": "东通退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300391",
+          "name": "长药退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300392",
+          "name": "腾信退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300431",
+          "name": "暴风退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300495",
+          "name": "*ST美尚",
+          "listing_status_from_source": "unknown",
+          "risk_flag": true
+        },
+        {
+          "code": "300526",
+          "name": "中潜退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300630",
+          "name": "普利退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300742",
+          "name": "越博退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "300799",
+          "name": "左江退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "301139",
+          "name": "元道退",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        },
+        {
+          "code": "301661",
+          "name": "猎奇智能",
+          "listing_status_from_source": "unknown",
+          "risk_flag": false
+        }
+      ],
+      "name_category_summary": {
+        "total_count": 43,
+        "counts": {
+          "delisted_name": 0,
+          "risk_warning_name": 5,
+          "other": 38
+        },
+        "samples": {
+          "delisted_name": [],
+          "risk_warning_name": [
+            {
+              "code": "300108",
+              "name": "*ST吉药"
+            },
+            {
+              "code": "300116",
+              "name": "*ST保力"
+            },
+            {
+              "code": "300117",
+              "name": "*ST嘉寓"
+            },
+            {
+              "code": "300262",
+              "name": "*ST巴安"
+            },
+            {
+              "code": "300495",
+              "name": "*ST美尚"
+            }
+          ],
+          "other": [
+            {
+              "code": "300023",
+              "name": "宝德退"
+            },
+            {
+              "code": "300028",
+              "name": "金亚退"
+            },
+            {
+              "code": "300029",
+              "name": "天龙退"
+            },
+            {
+              "code": "300038",
+              "name": "数知退"
+            },
+            {
+              "code": "300064",
+              "name": "金刚退"
+            },
+            {
+              "code": "300089",
+              "name": "文化退"
+            },
+            {
+              "code": "300090",
+              "name": "盛运退"
+            },
+            {
+              "code": "300104",
+              "name": "乐视退"
+            },
+            {
+              "code": "300156",
+              "name": "神雾退"
+            },
+            {
+              "code": "300178",
+              "name": "腾邦退"
+            },
+            {
+              "code": "300186",
+              "name": "大华农"
+            },
+            {
+              "code": "300202",
+              "name": "聚龙退"
+            },
+            {
+              "code": "300208",
+              "name": "中程退"
+            },
+            {
+              "code": "300216",
+              "name": "千山退"
+            },
+            {
+              "code": "300273",
+              "name": "和佳退"
+            },
+            {
+              "code": "300280",
+              "name": "紫天退"
+            },
+            {
+              "code": "300282",
+              "name": "三盛退"
+            },
+            {
+              "code": "300297",
+              "name": "蓝盾退"
+            },
+            {
+              "code": "300309",
+              "name": "吉艾退"
+            },
+            {
+              "code": "300312",
+              "name": "邦讯退"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "cross_board_duplicates": [],
+  "security_master_exchange_counts": {
+    "SH": 1846,
+    "SZ": 3096
+  },
+  "security_master_board_counts": {
+    "SH_MAIN": 1846,
+    "CHINEXT": 1454,
+    "SZ_MAIN": 1642
+  },
+  "sse_snapshot_fetched_at": "2026-11-27T15:00:08.847722+00:00",
+  "szse_snapshot_fetched_at": "2026-11-27T15:00:10.590056+00:00",
+  "known_delisted_presence": {
+    "600991": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "601028": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "601059": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "601198": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "601299": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "601989": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    },
+    "603056": {
+      "in_security_master": true,
+      "in_official_current_lists": false
+    }
+  }
+}
